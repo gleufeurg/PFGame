@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PFGame</title>
+  <style>
+    body {
+      margin: 0;
+      background: #1e1e2e;
+      color: #eee;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    canvas {
+      background: #2b2d42;
+      border: 2px solid #555;
+      margin-top: 20px;
+    }
+    #info {
+      margin-top: 12px;
+      min-height: 3em;
+      max-width: 800px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>PFGame</h1>
+  <!-- Le canvas, c'est l'équivalent de l'écran / de la Game View dans Unity -->
+  <canvas id="game" width="800" height="500"></canvas>
+  <!-- Zone de texte HTML classique, modifiée depuis le JavaScript (comme un élément d'UI) -->
+  <p id="info">Déplace-toi avec les flèches ou ZQSD et ramasse les objets.</p>
+
+  <!-- On charge le script à la fin, une fois que le canvas existe dans la page -->
+  <script src="game.js"></script>
+</body>
+</html>
