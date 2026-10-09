@@ -10,7 +10,7 @@
         body { /*pré-réglages du body, là où se trouve le canvas du jeu*/
             margin: 0; /* pas de marge automatique*/
             overflow: hidden; /*enlève les barres de défilement*/
-            background-color: #2e2e2e;
+            background-color: #00033e;
             color: white;
             outline: 1px, solid gold;
             font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas ou*/
@@ -40,7 +40,7 @@
         /////////////
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
-        const bgColor = "#2e2e2e";
+        const bgColor = "#000017";
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -49,19 +49,23 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
-        /////////////
-        ////STARS////  Background stars
-        /////////////
-        const star = { x: canvas.width, y: canvas.height }; /*Background's stars infos, x and y are displaye boundaries*/
+        //////////////////////
+        ////STARS & GALAXY////  Background stars
+        //////////////////////
         const stars = []; /*stars array*/
+        const STAR_COORDINATES = { x: canvas.width, y: canvas.height }; /*Stars display boundaries, can also just put a flat number*/
         const STAR_MAX_SIZE = 4;
-        const STAR_COUNT = 200; /*The amount of quantity displayed*/
+        const STAR_COUNT = 200; /*The amount of stars displayed*/
+
+        const GALAXY_THICKNESS = 300;
+        const galaxyTop = canvas.height / 2 - GALAXY_THICKNESS / 2;
+        const galaxyGradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0);
 
         function createStars() {
             for (let i = 0; i < STAR_COUNT; i++) {
                 stars.push({
-                    x: Math.random() * star.x,
-                    y: Math.random() * star.y,
+                    x: Math.random() * STAR_COORDINATES.x,
+                    y: Math.random() * STAR_COORDINATES.y,
                     size: Math.random() * STAR_MAX_SIZE
                 });
             }
@@ -69,11 +73,19 @@
             drawStars();
         }
 
+        function drawGalaxy() {
+            galaxyGradient.addColorStop(0, 1, 1, 1)
+            galaxyGradient.addColorStop(120, 80, 200, 0.3)
+            galaxyGradient.addColorStop(1, 1, 1, 1)
+
+            ctx.fillStyle = galaxyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
         function drawStars() {
             for (const star of stars) {
                 ctx.fillStyle = "white";
                 ctx.fillRect(star.x, star.y, star.size, star.size);
-                console.log(stars.size);
             }
         }
 
@@ -86,6 +98,7 @@
 
         function gameStart() {
             createStars();
+            drawGalaxy();
         }
 
         function gameUpdate() {
