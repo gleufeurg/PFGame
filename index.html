@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Evangeline's Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; /* pas de marge automatique*/
+            overflow: hidden; /*enlève les barres de défilement*/
+            background-color: #2e2e2e;
+            color: white;
+            outline-color: gold;
+            font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas où*/
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #game {
+            display: block;
+            outline: 1px solid darkblue;
+            outline-offset: -1px;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+    <canvas id="game"></canvas>
+    <script>
+        const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
+        const ctx = canvas.getContext("2d"); /*context of the game canvas, in this one, we want a 2d game*/
+
+        ctx.fillStyle = "#0b1410";
+        ctx.fillRec;
+
+        ctx.width = window.innerWidth;
+        ctx.height = window.innerHeight;
+    </script>
+</body>
+</html>
