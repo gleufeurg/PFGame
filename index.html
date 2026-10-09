@@ -25,7 +25,7 @@
     </style>
     <script>
 
-</script>
+    </script>
 </head>
 <body>
     <canvas id="game"></canvas>
@@ -33,7 +33,7 @@
         /////////////////////
         ////MISCS SETTINGS///  All the variables you can manually change to modify the game
         /////////////////////
-        
+
 
         /////////////
         ////CANVAS///
@@ -74,9 +74,9 @@
         }
 
         function drawGalaxy() {
-            galaxyGradient.addColorStop(0, 1, 1, 1)
-            galaxyGradient.addColorStop(120, 80, 200, 0.3)
-            galaxyGradient.addColorStop(1, 1, 1, 1)
+            galaxyGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
+            galaxyGradient.addColorStop(0.5, "rgba(85, 0, 255, 0.3)")
+            galaxyGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
 
             ctx.fillStyle = galaxyGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -89,6 +89,19 @@
             }
         }
 
+        ///////////////////////
+        ////PLAYER & PLANETS///
+        ///////////////////////
+
+        function drawCentrePlanet() {
+            ctx.fillStyle = "rba(1, 255,0,0,1)";
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, canvas.height / 2 + 150);
+            ctx.lineTo(canvas.width / 2 + 150, canvas.height / 2 - 150);
+            ctx.lineTo(canvas.width / 2 - 150, canvas.height / 2 - 150);
+            ctx.closePath();
+            ctx.fill();
+        }
 
         /////////////////////
         ////START & UPDATE///
@@ -99,12 +112,13 @@
         function gameStart() {
             createStars();
             drawGalaxy();
+            drawCentrePlanet();
         }
 
         function gameUpdate() {
 
         }
-        
+
     </script>
 </body>
 </html>
