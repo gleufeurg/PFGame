@@ -26,44 +26,45 @@
         const endScreenDisplay = document.getElementById("endScreen");
 
         document.addEventListener("keydown", function (event) {
-            if (event.key === "r") {
-                //Restart game
-                Restart();
-            }
-
             if (event.key === " ") {
                 //Update Score
-                UpdateScore(1);
+                updateScore(1);
             }
 
             if (event.key === "d") {
                 //TakeDamage
-                TakeDamage(1);
+                takeDamage(1);
             }
 
             if (life <= 0) {
                 //Check game status
-                if (hasGameEnded)
+                if (hasGameEnded) {
                     return;
-                endScreenDisplay.textContent = "GAME OVER";
-                hasGameEnded = true;
+                    endScreenDisplay.textContent = "GAME OVER";
+                    hasGameEnded = true;
+                }
+            }
+
+            if (event.key === "r") {
+                //Restart game
+                restart();
             }
         })
 
-        function Restart() {
-            UpdateScore(-score);
+        function restart() {
+            updateScore(-score);
             life = 5;
             lifeDisplay.textContent = life;
-            endScreenDisplay.textContent = null;
+            endScreenDisplay.textContent = "";
             hasGameEnded = false;
         }
 
-        function UpdateScore(n) {
+        function updateScore(n) {
             score += n;
             scoreDisplay.textContent = score;
         }
 
-        function TakeDamage(n) {
+        function takeDamage(n) {
             life -= n;
             lifeDisplay.textContent = life;
         }
