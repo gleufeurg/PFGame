@@ -53,15 +53,15 @@
         /////////////
         ////STARS////
         /////////////
-        const star = { x: 800, y: 45, size: 3 }; /*Background's stars infos*/
-        const starNum = 200; /*Number of stars displayed on the background*/
-        const stars = []; /*stars array*/
+        const star = { x: 800, y: 45, size: 3, starNum: 200 }; /*Background's stars infos, x and y are displaye boundaries, starNum is the quantity displayed*/
+        const stars = [star.starNum]; /*stars array*/
 
         function createStars() {
             for (const star of stars) {
                 star.push;
                 ctx.fillStyle = "white";
                 ctx.fillRect(Math.random(0, star.x), Math.random(0, star.y), star.size, star.size);
+                console.log(stars.length);
             }
         }
 
