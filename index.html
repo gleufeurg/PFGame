@@ -3,12 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Eva's game</title>
+    <style>
+        body {
+            background-color: #1e1e2e;
+            color: white;
+            font-family: Rubik;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #score {
+            color: aquamarine;
+        }
+        
+        #life {
+            color: brown;
+        }
+
+        #endScreen {
+            color: darkred;
+            font-family: Rubik;
+            font-weight: bold;
+            font-size: 100px;
+        }
+
+        .stat {
+            font-size: 20px;
+            text-align: left;
+            padding: 10px;
+            color: slategrey;
+            border: double;
+        }
+    </style>
 </head>
 <body>
     <h1>Mon piti jeu</h1>
     <span id="endScreen"></span>
-    <p>Score : <span id="score"></span></p>
-    <p>Life : <span id="life"></span></p>
+    <span class = "stat"> Score : <span id="score"></span></span>
+    <span class ="stat"> Life : <span id="life"></span></span>
     <script>
         //LIFE
         let life = 5;
@@ -68,7 +100,6 @@
                 hasGameEnded = true;
             }
         }
-
     </script>
 </body>
 </html>         
