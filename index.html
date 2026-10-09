@@ -7,13 +7,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <style>
-        body {
+        body { /*pré-réglages du body, là où se trouve le canvas du jeu*/
             margin: 0; /* pas de marge automatique*/
             overflow: hidden; /*enlève les barres de défilement*/
             background-color: #2e2e2e;
             color: white;
             outline: 1px, solid gold;
-            font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas où*/
+            font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas ou*/
             text-align: center;
             font-size: 30px;
         }
@@ -21,13 +21,6 @@
         #game {
             /*outline: 1px solid antiquewhite;
             outline-offset: -1px;*/
-        }
-
-        h1 {
-            color: white;
-            outline: 10px, solid gold;
-            font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas où*/
-            text-align: center;
         }
     </style>
     <script>
@@ -47,28 +40,29 @@
         /////////////
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
+        const bgColor = "#2e2e2e";
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        ctx.fillStyle = "#0b1410";
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
         /////////////
-        ////STARS////
+        ////STARS////  Background stars
         /////////////
-        const star = { x: 800, y: 45 }; /*Background's stars infos, x and y are displaye boundaries*/
+        const star = { x: canvas.width, y: canvas.height }; /*Background's stars infos, x and y are displaye boundaries*/
         const stars = []; /*stars array*/
-        const STAR_SIZE_RANGE = { min: 2, max: 4 };
+        const STAR_MAX_SIZE = 4;
         const STAR_COUNT = 200; /*The amount of quantity displayed*/
 
         function createStars() {
             for (let i = 0; i < STAR_COUNT; i++) {
                 stars.push({
-                    x: Math.random(0, star.x),
-                    y: Math.random(0, star.y),
-                    size: Math.random(STAR_SIZE_RANGE.min, STAR_SIZE_RANGE.max)
+                    x: Math.random() * star.x,
+                    y: Math.random() * star.y,
+                    size: Math.random() * STAR_MAX_SIZE
                 });
             }
 
