@@ -94,7 +94,11 @@
         ///////////////////////
 
         function drawCentrePlanet() {
-            //ctx.fillStyle = "rba(1, 255,0,0,1)";
+            ctx.fillStyle = "#ffe680";
+            const innerRadius = 100;
+            const outerRadius = 100;
+
+            //TRIANGLE
             //ctx.beginPath();
             //ctx.moveTo(canvas.width / 2, canvas.height / 2 + 150);
             //ctx.lineTo(canvas.width / 2 + 150, canvas.height / 2 - 150);
@@ -102,13 +106,42 @@
             //ctx.closePath();
             //ctx.fill();
 
-            ctx.beginPath();
-            for (let i = 0; i < 15; i++) {
-                const angle = 360 / 15 * 1;
-                const x = Math.cos(angle);
-                const y = Math.sin(angle);
 
-                ctx.lineTo(canvas.width / 2, canvas.height / 2 + 150);
+            //CIRCLE
+            //ctx.beginPath();
+            //const centerX = canvas.width / 2;
+            //const centerY = canvas.height / 2;
+            //const count = 50;
+
+            //for (let i = 0; i < count; i++) {
+            //    const angle = Math.PI * 2 / count * i;
+
+            //    const x = centerX + Math.cos(angle) * outerRadius;
+            //    const y = centerY + Math.sin(angle) * outerRadius;
+            //    ctx.lineTo(x, y);
+            //    ctx.fill();
+            //}
+
+
+            //STAR
+            ctx.beginPath();
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const count = 50;
+
+            for (let i = 0; i < count; i++) {
+                const angle = Math.PI * 2 / count * i;
+
+                if (i % 2 === 0) {
+                    const x = centerX + Math.cos(angle) * innerRadius;
+                    const y = centerY + Math.sin(angle) * innerRadius;
+                    ctx.lineTo(x,y);
+                } else {
+                    const x = centerX + Math.cos(angle) * outerRadius;
+                    const y = centerY + Math.sin(angle) * outerRadius;
+                    ctx.lineTo(x,y);
+                }
+
             }
             ctx.fill();
         }
