@@ -37,6 +37,11 @@
 <body>
     <canvas id="game"></canvas>
     <script>
+        /////////////////////
+        ////MISCS SETTINGS///  All the variables you can manually change to modify the game
+        /////////////////////
+        
+
         /////////////
         ////CANVAS///
         /////////////
@@ -53,17 +58,31 @@
         /////////////
         ////STARS////
         /////////////
-        const star = { x: 800, y: 45, size: 3, starNum: 200 }; /*Background's stars infos, x and y are displaye boundaries, starNum is the quantity displayed*/
-        const stars = [star.starNum]; /*stars array*/
+        const star = { x: 800, y: 45 }; /*Background's stars infos, x and y are displaye boundaries*/
+        const stars = []; /*stars array*/
+        const STAR_SIZE_RANGE = { min: 2, max: 4 };
+        const STAR_COUNT = 200; /*The amount of quantity displayed*/
 
         function createStars() {
+            for (let i = 0; i < STAR_COUNT; i++) {
+                stars.push({
+                    x: Math.random(0, star.x),
+                    y: Math.random(0, star.y),
+                    size: Math.random(STAR_SIZE_RANGE.min, STAR_SIZE_RANGE.max)
+                });
+            }
+
+            drawStars();
+        }
+
+        function drawStars() {
             for (const star of stars) {
-                star.push;
                 ctx.fillStyle = "white";
-                ctx.fillRect(Math.random(0, star.x), Math.random(0, star.y), star.size, star.size);
-                console.log(stars.length);
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+                console.log(stars.size);
             }
         }
+
 
         /////////////////////
         ////START & UPDATE///
