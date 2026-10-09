@@ -95,8 +95,9 @@
 
         function drawCentrePlanet() {
             ctx.fillStyle = "#ffe680";
-            const innerRadius = 100;
+            const innerRadius = 50;
             const outerRadius = 100;
+            const count = 10;
 
             //TRIANGLE
             //ctx.beginPath();
@@ -127,7 +128,6 @@
             ctx.beginPath();
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const count = 50;
 
             for (let i = 0; i < count; i++) {
                 const angle = Math.PI * 2 / count * i;
