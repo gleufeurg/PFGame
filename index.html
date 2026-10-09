@@ -95,9 +95,12 @@
 
         function drawCentrePlanet() {
             ctx.fillStyle = "#ffe680";
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const count = 50;
             const innerRadius = 50;
             const outerRadius = 100;
-            const count = 10;
+            ctx.beginPath();
 
             //TRIANGLE
             //ctx.beginPath();
@@ -123,27 +126,47 @@
             //    ctx.fill();
             //}
 
+            //DOUBLE CIRCLE
+            for (let i = 0; i < count; i++) {
+                const angle = Math.PI * 2 / count * i;
 
-            //STAR
-            ctx.beginPath();
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+                const x = centerX + Math.cos(angle) * outerRadius;
+                const y = centerY + Math.sin(angle) * outerRadius;
+
+                ctx.lineTo(x, y);
+                ctx.fill();
+            }
 
             for (let i = 0; i < count; i++) {
                 const angle = Math.PI * 2 / count * i;
 
-                if (i % 2 === 0) {
-                    const x = centerX + Math.cos(angle) * innerRadius;
-                    const y = centerY + Math.sin(angle) * innerRadius;
-                    ctx.lineTo(x,y);
-                } else {
-                    const x = centerX + Math.cos(angle) * outerRadius;
-                    const y = centerY + Math.sin(angle) * outerRadius;
-                    ctx.lineTo(x,y);
-                }
-
+                const x = centerX + Math.cos(angle) * innerRadius;
+                const y = centerY + Math.sin(angle) * innerRadius;
+                ctx.lineTo(x, y);
+                ctx.fillStyle = "#111111";
+                ctx.fill();
             }
-            ctx.fill();
+
+            //STAR
+            //ctx.beginPath();
+            //const centerX = canvas.width / 2;
+            //const centerY = canvas.height / 2;
+
+            //for (let i = 0; i < count; i++) {
+            //    const angle = Math.PI * 2 / count * i;
+
+            //    if (i % 2 === 0) {
+            //        const x = centerX + Math.cos(angle) * innerRadius;
+            //        const y = centerY + Math.sin(angle) * innerRadius;
+            //        ctx.lineTo(x,y);
+            //    } else {
+            //        const x = centerX + Math.cos(angle) * outerRadius;
+            //        const y = centerY + Math.sin(angle) * outerRadius;
+            //        ctx.lineTo(x,y);
+            //    }
+
+            //}
+            //ctx.fill();
         }
 
         /////////////////////
