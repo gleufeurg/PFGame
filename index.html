@@ -2,9 +2,72 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>PFGame</title>
+    <title>Eva's game</title>
 </head>
 <body>
-    <h1>Mon jeu</h1>
+    <h1>Mon piti jeu</h1>
+    <span id="endScreen"></span>
+    <p>Score : <span id="score"></span></p>
+    <p>Life : <span id="life"></span></p>
+    <script>
+        //LIFE
+        let life = 5;
+        const lifeDisplay = document.getElementById("life");
+        lifeDisplay.textContent = life;
+
+        //SCORE
+        let score = 0;
+        const scoreDisplay = document.getElementById("score");
+        scoreDisplay.textContent = score;
+
+        //MISC
+        let damage = 3;
+        let hasGameEnded = false;
+        const endScreenDisplay = document.getElementById("endScreen");
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "r") {
+                //Restart game
+                Restart();
+            }
+
+            if (event.key === " ") {
+                //Update Score
+                UpdateScore(1);
+            }
+
+            if (event.key === "d") {
+                //TakeDamage
+                TakeDamage(1);
+            }
+
+            if (life <= 0) {
+                //Check game status
+                if (hasGameEnded)
+                    return;
+                endScreenDisplay.textContent = "GAME OVER";
+                hasGameEnded = true;
+            }
+        })
+
+        function Restart() {
+            UpdateScore(-score);
+            life = 5;
+            lifeDisplay.textContent = life;
+            endScreenDisplay.textContent = null;
+            hasGameEnded = false;
+        }
+
+        function UpdateScore(n) {
+            score += n;
+            scoreDisplay.textContent = score;
+        }
+
+        function TakeDamage(n) {
+            life -= n;
+            lifeDisplay.textContent = life;
+        }
+
+    </script>
 </body>
-</html>
+</html>         
