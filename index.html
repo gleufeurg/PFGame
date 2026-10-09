@@ -12,33 +12,73 @@
             overflow: hidden; /*enlève les barres de défilement*/
             background-color: #2e2e2e;
             color: white;
-            outline-color: gold;
+            outline: 1px, solid gold;
             font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas où*/
             text-align: center;
             font-size: 30px;
         }
 
         #game {
-            display: block;
-            outline: 1px solid darkblue;
-            outline-offset: -1px;
+            /*outline: 1px solid antiquewhite;
+            outline-offset: -1px;*/
+        }
+
+        h1 {
+            color: white;
+            outline: 10px, solid gold;
+            font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas où*/
+            text-align: center;
         }
     </style>
     <script>
 
-    </script>
+</script>
 </head>
 <body>
     <canvas id="game"></canvas>
     <script>
+        /////////////
+        ////CANVAS///
+        /////////////
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
-        const ctx = canvas.getContext("2d"); /*context of the game canvas, in this one, we want a 2d game*/
+        const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
         ctx.fillStyle = "#0b1410";
-        ctx.fillRec;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.width = window.innerWidth;
-        ctx.height = window.innerHeight;
+
+        /////////////
+        ////STARS////
+        /////////////
+        const star = { x: 800, y: 45, size: 3 }; /*Background's stars infos*/
+        const starNum = 200; /*Number of stars displayed on the background*/
+        const stars = []; /*stars array*/
+
+        function createStars() {
+            for (const star of stars) {
+                star.push;
+                ctx.fillStyle = "white";
+                ctx.fillRect(Math.random(0, star.x), Math.random(0, star.y), star.size, star.size);
+            }
+        }
+
+        /////////////////////
+        ////START & UPDATE///
+        /////////////////////
+        gameStart();
+        gameUpdate();
+
+        function gameStart() {
+            createStars();
+        }
+
+        function gameUpdate() {
+
+        }
+        
     </script>
 </body>
 </html>
