@@ -59,7 +59,6 @@
 
         const GALAXY_THICKNESS = 300;
         const galaxyTop = canvas.height / 2 - GALAXY_THICKNESS / 2;
-        const galaxyGradient = ctx.createLinearGradient(0, 0, canvas.height, canvas.width);
 
         function createStars() {
             for (let i = 0; i < STAR_COUNT; i++) {
@@ -74,6 +73,7 @@
         }
 
         function drawGalaxy() {
+            const galaxyGradient = ctx.createLinearGradient(0, 0, canvas.height, canvas.width);
             galaxyGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
             galaxyGradient.addColorStop(0.5, "rgba(85, 0, 255, 0.3)")
             galaxyGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
@@ -87,6 +87,15 @@
                 ctx.fillStyle = "white";
                 ctx.fillRect(star.x, star.y, star.size, star.size);
             }
+        }
+
+        function drawCanvas(){
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawGalaxy();
+            drawStars();
+            drawCentrePlanet();
         }
 
         ///////////////////////
@@ -151,7 +160,7 @@
             //STAR
             ctx.beginPath();
             for (let i = 0; i < branches; i++) {
-                const angle = playerRotation - Math.PI / 2 / branches * i;
+                const angle = (playerRotation - Math.PI / 2) + (Math.PI * 2 / branches * i);
 
                 if (i % 2 === 0) {
                     const x = centerX + Math.cos(angle) * innerRadius;
@@ -176,16 +185,17 @@
             createStars();
             drawGalaxy();
             drawCentrePlanet();
-            gameUpdate();
+            requestAnimationFrame(gameUpdate);
         }
 
         function gameUpdate(currentTime) {
-            const deltaTime = (currentTime - lastTime) / 1000; //DeltaTime en milisecondes
-            lastTime = currentTime;
+            const deltaTime = (currentTime - lastTime) / 1000; //DeltaTime en secondes
+            lastTime = currentTime; 
 
             playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
 
-            drawCentrePlanet();
+            drawCanvas();
+
             requestAnimationFrame(gameUpdate);
         }
     </script>
