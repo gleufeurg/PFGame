@@ -25,7 +25,7 @@
     </style>
     <script>
 
-    </script>
+</script>
 </head>
 <body>
     <canvas id="game"></canvas>
@@ -45,8 +45,20 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
+
+        function drawCanvas() {
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawGalaxy();
+            drawStars();
+            drawPlayer();
+            //drawStarShape("#ffe680");
+        }
+
+
         //////////////////////
-        ////STARS & GALAXY////  Background stars
+        ////BACKGROUND////////  Background stars and galaxy effect
         //////////////////////
         const stars = []; /*stars array*/
         const STAR_COORDINATES = { x: canvas.width, y: canvas.height }; /*Stars display boundaries, can also just put a flat number*/
@@ -85,115 +97,112 @@
             }
         }
 
-        function drawCanvas(){
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawGalaxy();
-            drawStars();
-            drawCentrePlanet();
-        }
 
         ///////////////////////
         ////PLAYER & PLANETS///
         ///////////////////////
-        const PLAYER_ROTATION_SPEED = .5;
-        let playerRotation = 0;
+        let planet = { name: "", x : 0, y : 0};
+        const PLAYER_ROTATION_SPEED = 10;
+        let playerRotation = 5; //dunno why we assign the value here
+        const ORBITING_PLANETS_COUNT = 5;
+        const planets = [];
 
-        function drawCentrePlanet() {
+        function drawStarShape(color = "#ffe680", branches = 10, innerRadius = 10, outerRadius = 25, rotationSpeed = .5, rotationalDirection = - 1) {
             //PARAMETERS
-            ctx.fillStyle = "#ffe680";
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const count = 50;
-            const branches = 10;
-            const innerRadius = 35;
-            const outerRadius = 75;
 
-            //TRIANGLE
-            //ctx.beginPath();
-            //ctx.moveTo(canvas.width / 2, canvas.height / 2 + 150);
-            //ctx.lineTo(canvas.width / 2 + 150, canvas.height / 2 - 150);
-            //ctx.lineTo(canvas.width / 2 - 150, canvas.height / 2 - 150);
-            //ctx.closePath();
-            //ctx.fill();
-
-
-            ////CIRCLE
-            //ctx.beginPath();
-            //for (let i = 0; i < count; i++) {
-            //    const angle = Math.PI * 2 / count * i;
-
-            //    const x = centerX + Math.cos(angle) * outerRadius;
-            //    const y = centerY + Math.sin(angle) * outerRadius;
-            //    ctx.lineTo(x, y);
-            //    ctx.fill();
-            //}
-
-            ////DOUBLE CIRCLE
-            //ctx.beginPath();
-            //for (let i = 0; i < count; i++) {
-            //    const angle = Math.PI * 2 / count * i;
-
-            //    const x = centerX + Math.cos(angle) * outerRadius;
-            //    const y = centerY + Math.sin(angle) * outerRadius;
-
-            //    ctx.lineTo(x, y);
-            //    ctx.fill();
-            //}
-
-            //ctx.beginPath();
-            //for (let i = 0; i < count; i++) {
-            //    const angle = Math.PI * 2 / count * i;
-
-            //    const x = centerX + Math.cos(angle) * innerRadius;
-            //    const y = centerY + Math.sin(angle) * innerRadius;
-            //    ctx.lineTo(x, y);
-            //    ctx.fillStyle = "#111111";
-            //}
-            //ctx.fill();
 
             //STAR
             ctx.beginPath();
             for (let i = 0; i < branches; i++) {
-                const angle = (playerRotation - Math.PI / 2) + (Math.PI * 2 / branches * i);
+                const angle = (playerRotation * rotationSpeed * rotationalDirection - Math.PI / 2) + (Math.PI * 2 / branches * i);
 
                 if (i % 2 == 0) {
                     const x = centerX + Math.cos(angle) * innerRadius;
                     const y = centerY + Math.sin(angle) * innerRadius;
-                    ctx.lineTo(x,y);
+                    ctx.lineTo(x, y);
                 } else {
                     const x = centerX + Math.cos(angle) * outerRadius;
                     const y = centerY + Math.sin(angle) * outerRadius;
-                    ctx.lineTo(x,y);
+                    ctx.lineTo(x, y);
                 }
             }
+            ctx.fillStyle = color;
             ctx.fill();
         }
+
+        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, offset = {x: 0, y: 0}) {
+            //PARAMETERS
+            const centerX = canvas.width / 2 + offset.x;
+            const centerY = canvas.height / 2 + offset.y;
+
+            //CIRCLE
+            ctx.beginPath();
+            for (let i = 0; i < count; i++) {
+                const angle = (playerRotation * rotationSpeed * rotationalDirection - Math.PI / 2) + (Math.PI * 2 / count * i);
+
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                ctx.lineTo(x, y);
+
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+        }
+
+        function drawTriangle(color = "#ffe680", height = 25) {
+            //PARAMETERS
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+
+
+            //TRIANGLE
+            ctx.beginPath();
+            ctx.moveTo(centerX - height, centerY - height);
+            ctx.lineTo(centerX + height, centerY - height);
+            ctx.lineTo(centerX, centerY + height);
+            ctx.closePath();
+
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        function drawPlayer() {
+            drawCircle("#ffe680", 25, 3, .1, -1); //Center player
+
+            //Create and draw 
+
+            for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
+                planets.push(planet);
+                drawCircle("#ffe680", 25, 3, .1, 0, 25)
+            }
+        }
+
 
         /////////////////////
         ////START & UPDATE///
         /////////////////////
         let lastTime = performance.now();
-        gameStart();
+
 
         function gameStart() {
             createStars();
-            drawGalaxy();
-            drawCentrePlanet();
             requestAnimationFrame(gameUpdate);
         }
 
         function gameUpdate(currentTime) {
             const deltaTime = (currentTime - lastTime) / 1000; //DeltaTime en secondes
-            lastTime = currentTime; 
+            lastTime = currentTime;
 
             playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
 
             drawCanvas();
-
             requestAnimationFrame(gameUpdate);
         }
+
+        gameStart();
     </script>
 </body>
 </html>
