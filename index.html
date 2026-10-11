@@ -52,8 +52,8 @@
 
             drawGalaxy();
             drawStars();
+            drawPlanets();
             drawPlayer();
-            //drawStarShape("#ffe680");
         }
 
 
@@ -101,10 +101,12 @@
         ///////////////////////
         ////PLAYER & PLANETS///
         ///////////////////////
-        let planet = { name: "", orbitRadius = 100, speed = 5, color = "#00ff00"};
-        const PLAYER_ROTATION_SPEED = 10;
+        //let planet = { name: "", orbitRadius = 100, speed = 5, color = "#00ff00"};
+        const PLAYER_ROTATION_SPEED = 2;
         let playerRotation = 0;
         const ORBITING_PLANETS_COUNT = 5;
+        let planetOrbitalRotation = 0;
+        const PLANETS_ORBITAL_ROTATION_SPEED = .25;
         const planets = [];
 
         function drawStarShape(color = "#ffe680", branches = 10, innerRadius = 10, outerRadius = 25, rotationSpeed = .5, rotationalDirection = - 1) {
@@ -132,13 +134,13 @@
             ctx.fill();
         }
 
-        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", offset = { x: 0, y: 0 }) {
+        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", location = { x : canvas.width / 2, y : canvas.height / 2 }) {
             //PARAMETERS
-            const centerX = canvas.width / 2 + offset.x;
-            const centerY = canvas.height / 2 + offset.y;
+            const centerX = location.x;
+            const centerY = location.y;
 
             if (outline) {
-                drawCircle(outlineColor, outlineWidth, count, rotationSpeed, rotationalDirection, false, 0, outlineColor, offset);
+                drawCircle(outlineColor, outlineWidth, count, rotationSpeed, rotationalDirection, false, 0, outlineColor, location);
             }
 
             //CIRCLE
@@ -176,14 +178,23 @@
         }
 
         function drawPlayer() {
-            drawCircle("#ffe680", 25, 3, .1, -1, true, 32); //Center player
-
-            
+            drawCircle("#ffe680", 25, 3, .1, -1, true, 32); //Centered shape is the player
         }
 
         function drawPlanets() {
-            for (const star of stars) {
-                //
+            //PARAMETERS
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 100;
+            const color = "#00ff00";
+
+            for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
+                const angle = planetOrbitalRotation + Math.PI * 2 / ORBITING_PLANETS_COUNT * i; //Compared to starShape(), I just added planetOrbitalRotation to the existing angle and it worked, no need for Math.PI / 2
+
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+
+                drawCircle(color, 20, 50, 0, 0, false, 0, 0, {x:x,y:y});
             }
         }
         
@@ -193,7 +204,7 @@
 
             for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
                 planets.push({
-                    planet
+                    //Not useful right now
                 });
                 drawCircle("#ffe680", 25, 3, .1, { x: canvas.width / 2, y: canvas.height / 2 })
             }
@@ -216,9 +227,9 @@
             lastTime = currentTime;
 
             playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
+            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
 
             drawCanvas();
-            drawPlanets();
             requestAnimationFrame(gameUpdate);
         }
 
