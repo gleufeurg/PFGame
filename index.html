@@ -101,9 +101,9 @@
         ///////////////////////
         ////PLAYER & PLANETS///
         ///////////////////////
-        let planet = { name: "", x : 0, y : 0};
+        let planet = { name: "", orbitRadius = 100, speed = 5, color = "#00ff00"};
         const PLAYER_ROTATION_SPEED = 10;
-        let playerRotation = 5; //dunno why we assign the value here
+        let playerRotation = 0;
         const ORBITING_PLANETS_COUNT = 5;
         const planets = [];
 
@@ -132,10 +132,14 @@
             ctx.fill();
         }
 
-        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, offset = {x: 0, y: 0}) {
+        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", offset = { x: 0, y: 0 }) {
             //PARAMETERS
             const centerX = canvas.width / 2 + offset.x;
             const centerY = canvas.height / 2 + offset.y;
+
+            if (outline) {
+                drawCircle(outlineColor, outlineWidth, count, rotationSpeed, rotationalDirection, false, 0, outlineColor, offset);
+            }
 
             //CIRCLE
             ctx.beginPath();
@@ -149,7 +153,9 @@
                 ctx.fillStyle = color;
                 ctx.fill();
             }
+
         }
+
 
         function drawTriangle(color = "#ffe680", height = 25) {
             //PARAMETERS
@@ -170,16 +176,28 @@
         }
 
         function drawPlayer() {
-            drawCircle("#ffe680", 25, 3, .1, -1); //Center player
+            drawCircle("#ffe680", 25, 3, .1, -1, true, 32); //Center player
 
+            
+        }
+
+        function drawPlanets() {
+            for (const star of stars) {
+                //
+            }
+        }
+        
+
+        function createPlanets() {
             //Create and draw 
 
             for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
-                planets.push(planet);
-                drawCircle("#ffe680", 25, 3, .1, 0, 25)
+                planets.push({
+                    planet
+                });
+                drawCircle("#ffe680", 25, 3, .1, { x: canvas.width / 2, y: canvas.height / 2 })
             }
         }
-
 
         /////////////////////
         ////START & UPDATE///
@@ -189,6 +207,7 @@
 
         function gameStart() {
             createStars();
+            createPlanets();
             requestAnimationFrame(gameUpdate);
         }
 
@@ -199,6 +218,7 @@
             playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
 
             drawCanvas();
+            drawPlanets();
             requestAnimationFrame(gameUpdate);
         }
 
