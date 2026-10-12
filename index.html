@@ -216,26 +216,45 @@
         ///ENEMIES///
         /////////////
         const enemies = [];
-        const ENEMY_SIZE = 10;
-        const ENEMY_SPEED = 60;              // pixels par seconde
-        const ENEMY_COLOR = "#ff4d4d";
         const ENEMY_SPAWN_INTERVAL = 1;      // un ennemi toutes les X secondes
         const PLAYER_RADIUS = 25;
         let enemySpawnTimer = 0;
 
-        function spawnEnemy() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+        //TYPES (éléments)
+        const ENEMY_TYPES = {
+            water: { color: "#4da6ff", speed: 50, size: 12 },
+            fire: { color: "#ff5533", speed: 90, size: 9 },
+            plant: { color: "#55dd55", speed: 35, size: 14 },
+            air: { color: "#e0f7ff", speed: 70, size: 8 }
+        };
 
-            const angle = Math.random() * Math.PI * 2;
-            const spawnDistance = Math.hypot(canvas.width, canvas.height) / 2 + ENEMY_SIZE;
+        //MOUVEMENTS
+        const MOVEMENT_TYPES = ["straight", "wave", "zigzag", "spiral"];
+        const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
+        const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
+        const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
+
+        function pickRandom(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function spawnEnemy() {
+            const type = pickRandom(Object.keys(ENEMY_TYPES));
+            const stats = ENEMY_TYPES[type];
+            const startDistance = Math.hypot(canvas.width, canvas.height) / 2 + stats.size + ENEMY_WAVE_AMPLITUDE;
 
             enemies.push({
-                x: centerX + Math.cos(angle) * spawnDistance,
-                y: centerY + Math.sin(angle) * spawnDistance,
-                size: ENEMY_SIZE,
-                speed: ENEMY_SPEED,
-                color: ENEMY_COLOR
+                type: type,
+                movement: pickRandom(MOVEMENT_TYPES),
+                color: stats.color,
+                speed: stats.speed,
+                size: stats.size,
+                angle: Math.random() * Math.PI * 2,
+                distance: startDistance,
+                startDistance: startDistance,
+                time: 0,
+                x: 0,
+                y: 0
             });
         }
 
@@ -254,17 +273,31 @@
             for (let i = enemies.length - 1; i >= 0; i--) {
                 const enemy = enemies[i];
 
-                const dx = centerX - enemy.x;
-                const dy = centerY - enemy.y;
-                const distance = Math.hypot(dx, dy);
+                enemy.time += deltaTime;
+                enemy.distance -= enemy.speed * deltaTime;
 
-                if (distance <= PLAYER_RADIUS + enemy.size) {
+                if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
                     enemies.splice(i, 1);
                     continue;
                 }
 
-                enemy.x += dx / distance * enemy.speed * deltaTime;
-                enemy.y += dy / distance * enemy.speed * deltaTime;
+                let sideOffset = 0;
+
+                if (enemy.movement === "wave") {
+                    sideOffset = Math.sin(enemy.time * ENEMY_WAVE_FREQUENCY) * ENEMY_WAVE_AMPLITUDE;
+                } else if (enemy.movement === "zigzag") {
+                    sideOffset = Math.asin(Math.sin(enemy.time * ENEMY_WAVE_FREQUENCY)) / (Math.PI / 2) * ENEMY_WAVE_AMPLITUDE;
+                } else if (enemy.movement === "spiral") {
+                    enemy.angle += ENEMY_SPIRAL_SPEED * deltaTime;
+                }
+
+                sideOffset *= enemy.distance / enemy.startDistance;
+
+                const dirX = Math.cos(enemy.angle);
+                const dirY = Math.sin(enemy.angle);
+
+                enemy.x = centerX + dirX * enemy.distance - dirY * sideOffset;
+                enemy.y = centerY + dirY * enemy.distance + dirX * sideOffset;
             }
         }
 
