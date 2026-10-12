@@ -523,14 +523,15 @@
         const xpDisplay = document.getElementById("xp");
 
         function gainRewards(goldAmount, xpAmount) {
-            gold += Math.round(goldAmount * playerStats.goldMultiplier);
-            xp += Math.round(xpAmount * playerStats.xpMultiplier);
+            //On garde les virgules (ex: 1.1 or par ennemi avec +10%) pour que les petits bonus comptent quand même
+            gold += goldAmount * playerStats.goldMultiplier;
+            xp += xpAmount * playerStats.xpMultiplier;
             updateHud();
         }
 
         function updateHud() {
-            goldDisplay.textContent = gold;
-            xpDisplay.textContent = xp;
+            goldDisplay.textContent = Math.floor(gold); //on affiche sans les virgules
+            xpDisplay.textContent = Math.floor(xp);
         }
 
         // RÉGLAGES DES PLANÈTES
@@ -596,15 +597,24 @@
         ///ENEMIES///
         /////////////
         const enemies = [];
-        const ENEMY_SPAWN_INTERVAL = 1;      // un ennemi toutes les X secondes
+        //Fréquence d'apparition : elle augmente petit à petit pendant la partie
+        const ENEMY_SPAWN_INTERVAL_START = 1;    // au début : un ennemi toutes les X secondes
+        const ENEMY_SPAWN_INTERVAL_MIN = 0.15;   // jamais plus rapide que ça
+        const ENEMY_SPAWN_RAMP = 0.02;           // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
         let enemySpawnTimer = 0;
+        let runTime = 0;                         // secondes écoulées depuis le début de la partie
+
+        //Ex: à 0s -> 1s entre 2 ennemis, à 60s -> 0.45s, à 120s -> 0.29s, à 5min -> 0.15s
+        function getEnemySpawnInterval() {
+            return Math.max(ENEMY_SPAWN_INTERVAL_MIN, ENEMY_SPAWN_INTERVAL_START / (1 + runTime * ENEMY_SPAWN_RAMP));
+        }
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 10, health: 3, gold: 2, xp: 3 },
-            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 20, health: 2, gold: 3, xp: 4 },
-            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 15, health: 5, gold: 4, xp: 6 },
-            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 5, health: 1, gold: 1, xp: 2 }
+            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 10, health: 3, gold: 1, xp: 1 },
+            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 20, health: 2, gold: 1, xp: 1 },
+            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 15, health: 5, gold: 1, xp: 1 },
+            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 5, health: 1, gold: 1, xp: 1 }
         };
 
         //MOVEMENTS
@@ -648,8 +658,9 @@
 
         function updateEnemies(deltaTime) {
             //SPAWN
+            runTime += deltaTime;
             enemySpawnTimer += deltaTime;
-            if (enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
+            if (enemySpawnTimer >= getEnemySpawnInterval()) {
                 spawnEnemy();
                 enemySpawnTimer = 0;
             }
@@ -1019,7 +1030,7 @@
 
         function renderSkillTree() {
             const tree = currentTree;
-            treeXp.textContent = xp;
+            treeXp.textContent = Math.floor(xp);
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
 
@@ -1121,7 +1132,7 @@
         }
 
         function renderShop() {
-            shopGold.textContent = gold;
+            shopGold.textContent = Math.floor(gold);
             shopItems.innerHTML = "";
 
             for (const item of SHOP_ITEMS) {
@@ -1158,6 +1169,7 @@
             enemies.length = 0;
             bullets.length = 0;
             enemySpawnTimer = 0;
+            runTime = 0;
             fireTimer = 0;
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
