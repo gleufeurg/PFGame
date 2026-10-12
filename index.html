@@ -36,6 +36,8 @@
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
         const bgColor = "#000017";
+        const OUTLINE_WIDTH = 2;        // contour fin des planètes et des ennemis, en pixels
+        const OUTLINE_COLOR = "black";
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -224,7 +226,6 @@
         const PLANET_COLORS = ["#7df9ff", "#ff7eb6", "#9dff7a", "#ffb86b", "#c3a6ff"];
         const PLANET_ORBIT_RADIUS = 100;
         const PLANET_SIZE = 20;
-        const PLANET_OUTLINE_WIDTH = 3;
 
         // CRÉATION (une seule fois, au démarrage)
         function createPlanets() {
@@ -249,7 +250,7 @@
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
 
-                drawCircle(planet.color, planet.size, 50, 0, 0, true, planet.size + PLANET_OUTLINE_WIDTH, "black", { x: planet.x, y: planet.y });
+                drawCircle(planet.color, planet.size, 50, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
             }
         }
 
@@ -348,7 +349,7 @@
 
         function drawEnemies() {
             for (const enemy of enemies) {
-                drawCircle(enemy.color, enemy.size, 30, 0, 0, false, 0, 0, { x: enemy.x, y: enemy.y });
+                drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
             }
         }
 
