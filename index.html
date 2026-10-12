@@ -30,11 +30,6 @@
 <body>
     <canvas id="game"></canvas>
     <script>
-        /////////////////////
-        ////MISCS SETTINGS///  All the variables you can manually change to modify the game
-        /////////////////////
-
-
         /////////////
         ////CANVAS///
         /////////////
@@ -53,6 +48,7 @@
             drawGalaxy();
             drawStars();
             drawPlanets();
+            drawEnemies();
             drawPlayer();
         }
 
@@ -134,7 +130,7 @@
             ctx.fill();
         }
 
-        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", location = { x : canvas.width / 2, y : canvas.height / 2 }) {
+        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", location = { x: canvas.width / 2, y: canvas.height / 2 }) {
             //PARAMETERS
             const centerX = location.x;
             const centerY = location.y;
@@ -153,8 +149,8 @@
                 ctx.lineTo(x, y);
 
             }
-                ctx.fillStyle = color;
-                ctx.fill();
+            ctx.fillStyle = color;
+            ctx.fill();
 
         }
 
@@ -181,34 +177,104 @@
             drawCircle("#ffe680", 25, 3, .1, -1, true, 32); //Centered shape is the player
         }
 
-        function drawPlanets() {
-            //PARAMETERS
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 100;
-            const color = "#00ff00";
+        // RÉGLAGES DES PLANÈTES
+        const PLANET_COLORS = ["#7df9ff", "#ff7eb6", "#9dff7a", "#ffb86b", "#c3a6ff"];
+        const PLANET_ORBIT_RADIUS = 100;
+        const PLANET_SIZE = 20;
 
-            for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
-                const angle = planetOrbitalRotation + Math.PI * 2 / ORBITING_PLANETS_COUNT * i; 
-
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
-
-                drawCircle(color, 20, 50, 0, 0, false, 0, 0, {x:x,y:y});
-            }
-        }
-        
-
+        // CRÉATION (une seule fois, au démarrage)
         function createPlanets() {
-            //Create and draw 
-
             for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
                 planets.push({
-                    //Not useful right now
+                    //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
+                    name: "Projet " + (i + 1),
+                    color: PLANET_COLORS[i],
+                    size: PLANET_SIZE,
+                    x: 0,
+                    y: 0
                 });
-                drawCircle("#ffe680", 25, 3, .1, { x: canvas.width / 2, y: canvas.height / 2 })
             }
         }
+
+
+        function drawPlanets() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let i = 0; i < planets.length; i++) {
+                const planet = planets[i];
+                const angle = planetOrbitalRotation + Math.PI * 2 / planets.length * i;
+
+                planet.x = centerX + Math.cos(angle) * PLANET_ORBIT_RADIUS;
+                planet.y = centerY + Math.sin(angle) * PLANET_ORBIT_RADIUS;
+
+                drawCircle(planet.color, planet.size, 50, 0, 0, false, 0, 0, { x: planet.x, y: planet.y });
+            }
+        }
+
+        /////////////
+        ///ENEMIES///
+        /////////////
+        const enemies = [];
+        const ENEMY_SIZE = 10;
+        const ENEMY_SPEED = 60;              // pixels par seconde
+        const ENEMY_COLOR = "#ff4d4d";
+        const ENEMY_SPAWN_INTERVAL = 1;      // un ennemi toutes les X secondes
+        const PLAYER_RADIUS = 25;
+        let enemySpawnTimer = 0;
+
+        function spawnEnemy() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            const angle = Math.random() * Math.PI * 2;
+            const spawnDistance = Math.hypot(canvas.width, canvas.height) / 2 + ENEMY_SIZE;
+
+            enemies.push({
+                x: centerX + Math.cos(angle) * spawnDistance,
+                y: centerY + Math.sin(angle) * spawnDistance,
+                size: ENEMY_SIZE,
+                speed: ENEMY_SPEED,
+                color: ENEMY_COLOR
+            });
+        }
+
+        function updateEnemies(deltaTime) {
+            //SPAWN
+            enemySpawnTimer += deltaTime;
+            if (enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
+                spawnEnemy();
+                enemySpawnTimer = 0;
+            }
+
+            //MOVE
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+
+                const dx = centerX - enemy.x;
+                const dy = centerY - enemy.y;
+                const distance = Math.hypot(dx, dy);
+
+                if (distance <= PLAYER_RADIUS + enemy.size) {
+                    enemies.splice(i, 1);
+                    continue;
+                }
+
+                enemy.x += dx / distance * enemy.speed * deltaTime;
+                enemy.y += dy / distance * enemy.speed * deltaTime;
+            }
+        }
+
+        function drawEnemies() {
+            for (const enemy of enemies) {
+                drawCircle(enemy.color, enemy.size, 30, 0, 0, false, 0, 0, { x: enemy.x, y: enemy.y });
+            }
+        }
+
+        
 
         /////////////////////
         ////START & UPDATE///
@@ -229,6 +295,7 @@
             playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
             planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
 
+            updateEnemies(deltaTime);
             drawCanvas();
             requestAnimationFrame(gameUpdate);
         }
