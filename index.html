@@ -127,10 +127,18 @@
             transform: rotate(180deg);
         }
 
-        #timeMenu { /*le menu déroulant, sous le bouton*/
+        @media (max-width: 900px) { /*pas assez de place à droite : le menu s'ouvre en dessous, vers la gauche*/
+            #timeMenu {
+                top: calc(100% + 8px);
+                left: auto;
+                right: 0;
+            }
+        }
+
+        #timeMenu { /*le menu déroulant, à droite du bouton*/
             position: absolute;
-            top: calc(100% + 8px);
-            right: 0; /*aligné sur le bord droit du bouton : il s'ouvre vers la gauche*/
+            top: 0;
+            left: calc(100% + 10px); /*à 10px à droite du bouton*/
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -462,25 +470,25 @@
             right: 16px;
             bottom: 16px;
             z-index: 5; /*au-dessus du shop / skill tree, sous les paramètres*/
-            width: 260px;
-            padding: 16px;
+            width: 340px;
+            padding: 20px;
             box-sizing: border-box;
             overflow-y: auto;
             background-color: #0b0b2e;
             border: 1px solid white;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 16px;
             text-align: left;
         }
 
         #statsPanel h2 {
-            margin: 0 0 8px;
-            font-size: 20px;
+            margin: 0 0 10px;
+            font-size: 24px;
         }
 
         #statsPanel h3 { /*titre de catégorie*/
-            margin: 14px 0 6px;
-            font-size: 13px;
+            margin: 18px 0 8px;
+            font-size: 14px;
             text-transform: uppercase; /*écrit en majuscules*/
             letter-spacing: 1px;
             color: #aaaacc;
@@ -490,7 +498,7 @@
             display: flex;
             justify-content: space-between;
             gap: 8px;
-            padding: 3px 0;
+            padding: 5px 0;
             border-bottom: 1px solid #ffffff14;
         }
 
@@ -521,7 +529,7 @@
         }
 
         body.statsVisible .overlay { /*on laisse la place à la fenêtre de stats*/
-            padding-right: 292px;
+            padding-right: 372px;
             box-sizing: border-box;
         }
 
@@ -535,12 +543,12 @@
                 top: auto;
                 left: 16px;
                 width: auto;
-                max-height: 38vh;
+                max-height: 42vh;
             }
 
             body.statsVisible .overlay {
                 padding-right: 0;
-                padding-bottom: calc(38vh + 24px);
+                padding-bottom: calc(42vh + 24px);
             }
         }
 
@@ -1131,7 +1139,7 @@
 
         //Le bouton affiche la vitesse actuelle, ex: "⏩ x2 ▾"
         function updateTimeMenuButton() {
-            timeMenuButton.innerHTML = "⏩ x" + gameSpeed + " <span class='arrow'>▾</span>";
+            timeMenuButton.innerHTML = "⏩ x" + gameSpeed + " <span class='arrow'>▸</span>";
             timeMenuButton.classList.toggle("open", !timeMenu.classList.contains("hidden")); //toggle(classe, vrai/faux) : ajoute ou enlève
         }
 
