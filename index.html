@@ -24,11 +24,53 @@
 
         #hud { /*affichage de l'or et de l'XP, par-dessus le canvas*/
             position: fixed; /*reste collé à l'écran, au-dessus du canvas*/
-            top: 16px;
-            left: 16px;
-            font-size: 20px;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
             text-align: left;
             pointer-events: none; /*les clics passent à travers, vers le canvas*/
+        }
+
+        .hudRow { /*une "pastille" : icône + valeur*/
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 110px;
+            padding: 6px 14px 6px 10px;
+            border: 1px solid #ffffff33;
+            border-radius: 20px;
+            background-color: #0b0b2ecc;
+        }
+
+        .hudValue {
+            font-size: 20px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums; /*chiffres de même largeur*/
+        }
+
+        .hudLabel {
+            font-size: 12px;
+            color: #aaaacc;
+            margin-left: auto; /*pousse le libellé tout à droite*/
+        }
+
+        .goldIcon { /*une pièce : rond doré avec un reflet*/
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fff6c4, #ffd84d 45%, #b88a00);
+            box-shadow: 0 0 8px #ffd84d88;
+        }
+
+        .xpIcon { /*un cristal : losange cyan*/
+            width: 13px;
+            height: 13px;
+            margin: 0 2px;
+            transform: rotate(45deg);
+            background: linear-gradient(135deg, #e0feff, #7df9ff 50%, #1c9aa6);
+            box-shadow: 0 0 8px #7df9ff88;
         }
 
         #gold {
@@ -37,6 +79,19 @@
 
         #xp {
             color: #7df9ff;
+        }
+
+        .pulse { /*petit "pop" quand la valeur augmente*/
+            animation: pulse 0.25s ease-out;
+        }
+
+        @keyframes pulse { /*les étapes de l'animation : de 0% à 100% de sa durée*/
+            0% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+
+        .hudValue {
+            display: inline-block; /*nécessaire pour que "scale" fonctionne sur du texte*/
         }
 
         #topBar { /*en haut au centre : le chronomètre est pile au centre, le bouton est collé à sa gauche*/
@@ -93,11 +148,11 @@
 
         @media (max-width: 600px) { /*petit écran : on descend la barre sous l'or et l'XP pour ne pas les recouvrir*/
             #topBar {
-                top: 64px;
+                top: 104px;
             }
 
             #toast {
-                top: 124px;
+                top: 164px;
             }
         }
 
@@ -434,7 +489,10 @@
     </style>
 </head>
 <body>
-    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
+    <div id="hud">
+        <div class="hudRow"><span class="goldIcon"></span><span id="gold" class="hudValue">0</span><span class="hudLabel">OR</span></div>
+        <div class="hudRow"><span class="xpIcon"></span><span id="xp" class="hudValue">0</span><span class="hudLabel">XP</span></div>
+    </div>
     <div id="topBar">
         <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
         <span id="runTimeDisplay">0:00</span>
@@ -532,9 +590,9 @@
 
             drawGalaxy();
             drawStars();
-            drawPlanets();
             drawEnemies();
             drawBullets();
+            drawPlanets(); //après les ennemis : les planètes passent devant eux
             drawPlayer();
         }
 
@@ -794,8 +852,19 @@
         }
 
         function updateHud() {
-            goldDisplay.textContent = Math.floor(gold); //on affiche sans les virgules
-            xpDisplay.textContent = Math.floor(xp);
+            setHudValue(goldDisplay, Math.floor(gold)); //on affiche sans les virgules
+            setHudValue(xpDisplay, Math.floor(xp));
+        }
+
+        //Change le nombre affiché, et le fait "pulser" s'il a augmenté
+        function setHudValue(element, value) {
+            const oldValue = Number(element.textContent);
+            element.textContent = value;
+            if (value > oldValue) {
+                element.classList.remove("pulse");
+                void element.offsetWidth; //astuce : force le navigateur à "oublier" l'animation pour pouvoir la rejouer
+                element.classList.add("pulse");
+            }
         }
 
         // RÉGLAGES DES PLANÈTES
