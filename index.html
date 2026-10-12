@@ -39,6 +39,40 @@
             color: #7df9ff;
         }
 
+        #skipTimeButton { /*bouton "passer le temps", sous la roue crantée*/
+            position: fixed;
+            top: 66px;
+            right: 12px;
+            padding: 8px 12px;
+            border: 1px solid #ffffff55;
+            border-radius: 22px;
+            background-color: #0b0b2ecc;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        #skipTimeButton:hover {
+            border-color: white;
+        }
+
+        #toast { /*message temporaire au milieu en haut de l'écran*/
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%); /*centre le message sur sa position*/
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: #0b0b2ecc;
+            font-size: 16px;
+            pointer-events: none;
+            transition: opacity 0.3s; /*apparition / disparition en douceur*/
+        }
+
+        #toast.hiddenToast {
+            opacity: 0;
+        }
+
         #hint { /*petite aide en bas de l'écran*/
             position: fixed;
             bottom: 16px;
@@ -304,7 +338,9 @@
     </style>
 </head>
 <body>
-    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
+    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span><br>Temps : <span id="runTimeDisplay">0:00</span></div>
+    <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
+    <div id="toast" class="hiddenToast"></div>
     <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
@@ -684,6 +720,69 @@
         //Ex: à 0s -> 1s entre 2 ennemis, à 60s -> 0.45s, à 120s -> 0.29s, à 5min -> 0.15s
         function getEnemySpawnInterval() {
             return Math.max(ENEMY_SPAWN_INTERVAL_MIN, ENEMY_SPAWN_INTERVAL_START / (1 + runTime * ENEMY_SPAWN_RAMP));
+        }
+
+        //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
+        //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
+        const TIME_SKIP_SECONDS = 30;
+        const skipTimeButton = document.getElementById("skipTimeButton");
+        skipTimeButton.textContent = "⏩ +" + TIME_SKIP_SECONDS + " s";
+
+        function skipTime(seconds) {
+            if (isGameOver || isPaused) {
+                return;
+            }
+            let remaining = seconds;
+            let spawnedCount = 0;
+
+            //On avance d'ennemi en ennemi : le temps jusqu'au prochain, puis on le fait apparaître, etc.
+            //(l'intervalle raccourcit au fur et à mesure, comme en vrai)
+            while (remaining > 0) {
+                const timeUntilNextSpawn = getEnemySpawnInterval() - enemySpawnTimer;
+
+                if (timeUntilNextSpawn > remaining) {
+                    //Pas assez de temps pour un autre ennemi : on garde ce temps pour le prochain
+                    enemySpawnTimer += remaining;
+                    runTime += remaining;
+                    remaining = 0;
+                } else {
+                    remaining -= timeUntilNextSpawn;
+                    runTime += timeUntilNextSpawn;
+                    enemySpawnTimer = 0;
+                    spawnEnemy();
+                    spawnedCount++;
+                }
+            }
+
+            playSound("skip");
+            showToast("⏩ +" + seconds + " s : " + spawnedCount + " ennemis arrivent !");
+        }
+
+        skipTimeButton.addEventListener("click", function () {
+            skipTime(TIME_SKIP_SECONDS);
+        });
+
+        //TOAST : petit message qui s'affiche quelques secondes
+        const TOAST_DURATION = 2.5;          // secondes
+        const toast = document.getElementById("toast");
+        let toastTimeout = null;
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.remove("hiddenToast");
+            clearTimeout(toastTimeout); //si un message était déjà affiché, on relance son chrono
+            toastTimeout = setTimeout(function () {
+                toast.classList.add("hiddenToast");
+            }, TOAST_DURATION * 1000); //setTimeout attend des millisecondes
+        }
+
+        //Temps de jeu affiché en minutes:secondes (ex: 1:05)
+        const runTimeDisplay = document.getElementById("runTimeDisplay");
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return minutes + ":" + String(seconds).padStart(2, "0"); //padStart : "5" devient "05"
         }
 
         //TYPES (éléments)
@@ -1280,6 +1379,9 @@
             if (event.key === "r" && isGameOver && !isSettingsOpen) {
                 restartGame();
             }
+            if (event.key === "t") {
+                skipTime(TIME_SKIP_SECONDS);
+            }
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
                 if (isSettingsOpen) {
@@ -1348,6 +1450,7 @@
             menuClose: function () { playTone(660, 440, 0.12, "sine", 0.2); },
             buy: function () { playTone(660, 660, 0.08, "square", 0.12); playTone(990, 990, 0.12, "square", 0.12, 0.08); },
             denied: function () { playTone(160, 120, 0.15, "sawtooth", 0.15); },
+            skip: function () { playTone(300, 900, 0.3, "sawtooth", 0.1); },
             click: function () { playTone(1000, 1000, 0.03, "square", 0.06); }
         };
 
@@ -1480,6 +1583,7 @@
                 playerHitTimer -= deltaTime;
             }
 
+            runTimeDisplay.textContent = formatTime(runTime);
             drawCanvas();
             requestAnimationFrame(gameUpdate);
         }
