@@ -332,6 +332,74 @@
             text-align: left;
         }
 
+        /*STATS : fenêtre à droite, visible dans le shop et les skill trees*/
+        #statsPanel {
+            position: fixed;
+            top: 72px;
+            right: 16px;
+            bottom: 16px;
+            z-index: 5; /*au-dessus du shop / skill tree, sous les paramètres*/
+            width: 260px;
+            padding: 16px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background-color: #0b0b2e;
+            border: 1px solid white;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        #statsPanel h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+        }
+
+        #statsPanel h3 { /*titre de catégorie*/
+            margin: 14px 0 6px;
+            font-size: 13px;
+            text-transform: uppercase; /*écrit en majuscules*/
+            letter-spacing: 1px;
+            color: #aaaacc;
+        }
+
+        .statRow { /*une ligne : nom à gauche, valeur à droite*/
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 3px 0;
+            border-bottom: 1px solid #ffffff14;
+        }
+
+        .statValue {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.statsVisible .overlay { /*on laisse la place à la fenêtre de stats*/
+            padding-right: 292px;
+            box-sizing: border-box;
+        }
+
+        #settingsPanel {
+            z-index: 30; /*les paramètres passent par-dessus tout*/
+            padding-right: 0 !important;
+        }
+
+        @media (max-width: 900px) { /*écran étroit : les stats passent en bas*/
+            #statsPanel {
+                top: auto;
+                left: 16px;
+                width: auto;
+                max-height: 38vh;
+            }
+
+            body.statsVisible .overlay {
+                padding-right: 0;
+                padding-bottom: calc(38vh + 24px);
+            }
+        }
+
         /*SETTINGS*/
         #settingsPanel .panel {
             max-width: 420px;
@@ -418,6 +486,12 @@
             </section>
         </div>
     </div>
+
+    <!-- STATS : à droite, affichée dans le shop et les skill trees -->
+    <aside id="statsPanel" class="hidden">
+        <h2>Statistiques</h2>
+        <div id="statsContent"></div>
+    </aside>
 
     <!-- PARAMÈTRES : roue crantée en haut à droite, ou touche Échap -->
     <div id="settingsPanel" class="overlay hidden">
@@ -1012,6 +1086,7 @@
 
             if (enemy.health <= 0) {
                 enemies.splice(index, 1);
+                killsThisRun++;
                 gainRewards(enemy.gold, enemy.xp);
                 healPlayer(playerStats.lifeOnKill);
                 playSound("enemyKill");
@@ -1290,10 +1365,12 @@
             nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
+            showStatsPanel();
         }
 
         function closeSkillTree() {
             skillTreePanel.classList.add("hidden");
+            hideStatsPanel();
             currentTree = null;
             updatePause();
             playSound("menuClose");
@@ -1301,6 +1378,7 @@
 
         function renderSkillTree() {
             const tree = currentTree;
+            renderStatsPanel(); //les stats changent quand on débloque une compétence
             treeXp.textContent = Math.floor(xp);
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
@@ -1400,11 +1478,14 @@
         }
 
         function openGameOver() {
+            updateRecords();
             renderShop();
             gameOverPanel.classList.remove("hidden");
+            showStatsPanel();
         }
 
         function renderShop() {
+            renderStatsPanel(); //les stats changent quand on achète une amélioration
             shopGold.textContent = Math.floor(gold);
             shopItems.innerHTML = "";
 
@@ -1447,8 +1528,10 @@
             fireTimer = 0;
             isShieldReady = false;
             shieldTimer = SHIELD_COOLDOWN;
+            killsThisRun = 0;
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
+            hideStatsPanel();
             playSound("menuClose");
         }
 
@@ -1472,6 +1555,128 @@
                 }
             }
         });
+
+
+        /////////////////////
+        ////STATS PANEL//////  Fenêtre de droite qui résume les stats du joueur et les records
+        /////////////////////
+        const statsPanel = document.getElementById("statsPanel");
+        const statsContent = document.getElementById("statsContent");
+        const ELEMENT_NAMES = { water: "Eau", fire: "Feu", plant: "Plante", air: "Air" };
+
+        //RECORDS (gardés dans le navigateur, comme le volume)
+        let killsThisRun = 0;
+        let bestKills = 0;
+        let bestTime = 0;
+
+        function loadRecords() {
+            try {
+                const saved = JSON.parse(localStorage.getItem("records"));
+                if (saved !== null) {
+                    bestKills = saved.bestKills;
+                    bestTime = saved.bestTime;
+                }
+            } catch (error) {
+            }
+        }
+
+        function updateRecords() {
+            bestKills = Math.max(bestKills, killsThisRun);
+            bestTime = Math.max(bestTime, runTime);
+            try {
+                localStorage.setItem("records", JSON.stringify({ bestKills: bestKills, bestTime: bestTime }));
+            } catch (error) {
+            }
+        }
+
+        //Petites fonctions pour écrire les nombres proprement
+        function formatPercent(multiplier) {
+            return Math.round(multiplier * 100) + "%"; //ex: 1.25 -> "125%"
+        }
+
+        function formatNumber(value) {
+            return Math.round(value * 100) / 100; //2 chiffres max après la virgule
+        }
+
+        //Chaque catégorie = un titre + des lignes [nom, valeur]
+        function getStatsCategories() {
+            const elementBonuses = [];
+            for (const element of Object.keys(playerStats.damageVs)) {
+                if (playerStats.damageVs[element] > 0) {
+                    elementBonuses.push(["Dégâts bonus vs " + ELEMENT_NAMES[element], "+" + playerStats.damageVs[element]]);
+                }
+            }
+
+            return [
+                {
+                    title: "Vie",
+                    rows: [
+                        ["Points de vie", Math.floor(playerHealth) + " / " + Math.floor(playerStats.maxHealth)],
+                        ["Régénération", formatNumber(playerStats.regen) + " PV/s"],
+                        ["Vie par ennemi tué", "+" + formatNumber(playerStats.lifeOnKill)]
+                    ]
+                },
+                {
+                    title: "Attaque",
+                    rows: [
+                        ["Dégâts par balle", playerStats.damage],
+                        ["Vitesse d'attaque", formatPercent(playerStats.attackSpeed)],
+                        ["Tirs par seconde", formatNumber(playerStats.attackSpeed / BASE_FIRE_INTERVAL)],
+                        ["Balles par tir", playerStats.bulletCount],
+                        ["Portée", playerStats.range + " px"],
+                        ["Vitesse des balles", formatPercent(playerStats.bulletSpeed)]
+                    ].concat(elementBonuses) //concat = ajoute les lignes de elementBonuses à la fin
+                },
+                {
+                    title: "Défense",
+                    rows: [
+                        ["Esquive", formatPercent(playerStats.dodgeChance)],
+                        ["Bouclier", playerStats.shield > 0 ? "Oui (recharge " + SHIELD_COOLDOWN + " s)" : "Non"]
+                    ]
+                },
+                {
+                    title: "Gains",
+                    rows: [
+                        ["Or gagné", formatPercent(playerStats.goldMultiplier)],
+                        ["XP gagnée", formatPercent(playerStats.xpMultiplier)]
+                    ]
+                },
+                {
+                    title: "Ennemis",
+                    rows: [
+                        ["Ennemis tués (partie)", killsThisRun],
+                        ["Record d'ennemis tués", bestKills],
+                        ["Temps (partie)", formatTime(runTime)],
+                        ["Meilleur temps", formatTime(bestTime)],
+                        ["Apparition", "1 toutes les " + formatNumber(getEnemySpawnInterval()) + " s"]
+                    ]
+                }
+            ];
+        }
+
+        function renderStatsPanel() {
+            let html = "";
+            for (const category of getStatsCategories()) {
+                html += "<h3>" + category.title + "</h3>";
+                for (const row of category.rows) {
+                    html += "<div class='statRow'><span>" + row[0] + "</span><span class='statValue'>" + row[1] + "</span></div>";
+                }
+            }
+            statsContent.innerHTML = html;
+        }
+
+        function showStatsPanel() {
+            renderStatsPanel();
+            statsPanel.classList.remove("hidden");
+            document.body.classList.add("statsVisible");
+        }
+
+        function hideStatsPanel() {
+            statsPanel.classList.add("hidden");
+            document.body.classList.remove("statsVisible");
+        }
+
+        loadRecords();
 
 
         /////////////////////
