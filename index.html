@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Evangeline's Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,10 +13,13 @@
             overflow: hidden; /*enlève les barres de défilement*/
             background-color: #00033e;
             color: white;
-            outline: 1px, solid gold;
             font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas ou*/
             text-align: center;
             font-size: 30px;
+        }
+
+        button {
+            font-family: inherit; /*les boutons n'héritent pas de la police par défaut*/
         }
 
         #hud { /*affichage de l'or et de l'XP, par-dessus le canvas*/
@@ -34,14 +38,271 @@
         #xp {
             color: #7df9ff;
         }
-    </style>
-    <script>
 
-</script>
+        #hint { /*petite aide en bas de l'écran*/
+            position: fixed;
+            bottom: 16px;
+            left: 0;
+            right: 0;
+            font-size: 14px;
+            color: #ffffff88;
+            pointer-events: none;
+        }
+
+        /*////////////////////
+          ////PANNEAUX (menus)
+          ////////////////////*/
+        .hidden {
+            display: none !important; /*cache un élément ; on ajoute/enlève cette classe en JS*/
+        }
+
+        .overlay { /*fond sombre qui recouvre tout l'écran*/
+            position: fixed;
+            inset: 0; /*= top: 0; right: 0; bottom: 0; left: 0;*/
+            background-color: rgba(0, 0, 23, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .panel { /*la "fenêtre" au milieu de l'overlay*/
+            background-color: #0b0b2e;
+            border: 1px solid white;
+            border-radius: 12px;
+            padding: 24px;
+            width: calc(100% - 32px);
+            max-width: 1100px;
+            max-height: calc(100% - 32px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .panel h1, .panel h2 {
+            margin-top: 0;
+        }
+
+        .placeholder { /*les espaces que tu rempliras plus tard*/
+            border: 1px dashed #ffffff66;
+            border-radius: 8px;
+            padding: 16px;
+            color: #aaaacc;
+        }
+
+        .primaryButton {
+            background-color: white;
+            color: #000017;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /*SKILL TREE*/
+        #skillTreePanel .panel {
+            display: flex;
+            gap: 24px;
+        }
+
+        #projectArea { /*à gauche : la présentation du projet*/
+            flex: 0 0 34%;
+            border-right: 1px solid #ffffff33;
+            padding-right: 24px;
+        }
+
+        #projectContent {
+            min-height: 240px;
+        }
+
+        #treeArea { /*à droite : l'arbre*/
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .treeHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .treeHeader h2 {
+            margin: 0;
+            color: var(--tree-color);
+        }
+
+        #treeXp {
+            color: #7df9ff;
+        }
+
+        #treeCanvas { /*zone où sont placées les compétences*/
+            position: relative;
+            height: 420px;
+            margin: 16px 0;
+        }
+
+        #treeLinks, #treeNodes {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #treeLinks line {
+            stroke: #ffffff33;
+            stroke-width: 3;
+        }
+
+        #treeLinks line.active {
+            stroke: var(--tree-color);
+        }
+
+        .skillNode { /*une compétence = un bouton rond*/
+            position: absolute;
+            transform: translate(-50%, -50%); /*centre le bouton sur sa position*/
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #555577;
+            background-color: #151538;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .skillNode.keystone { /*compétence majeure, au bout d'une branche*/
+            width: 64px;
+            height: 64px;
+            font-size: 13px;
+        }
+
+        .skillNode.available {
+            border-color: var(--tree-color);
+        }
+
+        .skillNode.unlocked {
+            background-color: var(--tree-color);
+            border-color: white;
+            color: #000017;
+        }
+
+        .skillNode.locked {
+            opacity: 0.4;
+        }
+
+        #nodeInfo {
+            min-height: 48px;
+            margin: 0;
+        }
+
+        /*GAME OVER + SHOP*/
+        #gameOverPanel .panel {
+            max-width: 760px;
+            text-align: center;
+        }
+
+        #shopGold {
+            color: #ffd84d;
+        }
+
+        #shopItems {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /*autant de colonnes que possible, 200px min*/
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .shopItem {
+            border: 1px solid #ffffff44;
+            border-radius: 8px;
+            padding: 12px;
+            background-color: #151538;
+            color: white;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .shopItem:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .shopItem .cost {
+            color: #ffd84d;
+        }
+
+        #contactArea {
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        @media (max-width: 700px) { /*petits écrans : le projet passe au-dessus de l'arbre*/
+            #skillTreePanel .panel {
+                flex-direction: column;
+            }
+
+            #projectArea {
+                border-right: none;
+                padding-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
+    <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
     <canvas id="game"></canvas>
+
+    <!-- SKILL TREE : s'ouvre quand on clique sur une planète -->
+    <div id="skillTreePanel" class="overlay hidden">
+        <div class="panel">
+            <section id="projectArea">
+                <h2 id="projectTitle"></h2>
+                <div id="projectContent" class="placeholder"></div>
+            </section>
+            <section id="treeArea">
+                <div class="treeHeader">
+                    <h2 id="treeTitle"></h2>
+                    <span>XP disponible : <span id="treeXp">0</span></span>
+                    <button id="closeTreeButton" class="primaryButton">Reprendre ▶</button>
+                </div>
+                <div id="treeCanvas">
+                    <svg id="treeLinks"></svg>
+                    <div id="treeNodes"></div>
+                </div>
+                <p id="nodeInfo"></p>
+            </section>
+        </div>
+    </div>
+
+    <!-- GAME OVER : le shop + les contacts -->
+    <div id="gameOverPanel" class="overlay hidden">
+        <div class="panel">
+            <h1>GAME OVER</h1>
+            <p>Or disponible : <span id="shopGold">0</span></p>
+            <div id="shopItems"></div>
+            <button id="restartButton" class="primaryButton">Rejouer (R)</button>
+            <section id="contactArea">
+                <h2>Contact</h2>
+                <div class="placeholder">
+                    <!-- À REMPLIR : tes coordonnées -->
+                    Mail : ton.mail@exemple.com<br>
+                    Téléphone : 06 00 00 00 00<br>
+                    LinkedIn / Portfolio : ...
+                </div>
+            </section>
+        </div>
+    </div>
+
     <script>
         /////////////
         ////CANVAS///
@@ -67,10 +328,6 @@
             drawEnemies();
             drawBullets();
             drawPlayer();
-
-            if (isGameOver) {
-                drawGameOver();
-            }
         }
 
 
@@ -82,9 +339,6 @@
         const STAR_MAX_SIZE = 4;
         const STAR_COUNT = 200; /*The amount of stars displayed*/
 
-        const GALAXY_THICKNESS = 300;
-        const galaxyTop = canvas.height / 2 - GALAXY_THICKNESS / 2;
-
         function createStars() {
             for (let i = 0; i < STAR_COUNT; i++) {
                 stars.push({
@@ -93,8 +347,6 @@
                     size: Math.random() * STAR_MAX_SIZE
                 });
             }
-
-            drawStars();
         }
 
         function drawGalaxy() {
@@ -115,13 +367,65 @@
         }
 
 
+        /////////////////////
+        ////PLAYER STATS/////  Toutes les valeurs que le shop et les skill trees peuvent améliorer
+        /////////////////////
+        const BASE_STATS = {
+            maxHealth: 100,       // points de vie max
+            regen: 0,             // PV regagnés par seconde
+            damageReduction: 0,   // dégâts en moins à chaque coup reçu
+            lifeOnKill: 0,        // PV regagnés à chaque ennemi tué
+            damage: 1,            // dégâts par balle
+            attackSpeed: 1,       // multiplicateur de cadence de tir (1 = normal, 1.5 = 50% plus rapide)
+            range: 300,           // distance max pour viser, en pixels
+            bulletSpeed: 1,       // multiplicateur de vitesse des balles
+            bulletCount: 1,       // nombre de balles par tir
+            goldMultiplier: 1,    // multiplicateur d'or gagné
+            xpMultiplier: 1       // multiplicateur d'XP gagnée
+        };
+        let playerStats = {};
+
+        //Recalcule les stats à partir de zéro : base + niveaux du shop + compétences débloquées
+        function computeStats() {
+            playerStats = { ...BASE_STATS }; //copie de BASE_STATS (sans la modifier)
+            playerStats.damageVs = { water: 0, fire: 0, plant: 0, air: 0 }; //dégâts bonus contre chaque élément
+
+            for (const item of SHOP_ITEMS) {
+                applyEffect(item.effect, item.level);
+            }
+
+            for (const tree of SKILL_TREES) {
+                for (const node of tree.nodes) {
+                    if (node.unlocked) {
+                        applyEffect(node.effect, 1);
+                    }
+                }
+            }
+        }
+
+        function applyEffect(effect, times) {
+            if (effect.stat === "damageVs") {
+                playerStats.damageVs[effect.element] += effect.value * times;
+            } else {
+                playerStats[effect.stat] += effect.value * times;
+            }
+        }
+
+        //À appeler après chaque achat : si la vie max augmente, on gagne aussi ces PV
+        function refreshStats() {
+            const oldMaxHealth = playerStats.maxHealth;
+            computeStats();
+            if (playerStats.maxHealth > oldMaxHealth) {
+                playerHealth += playerStats.maxHealth - oldMaxHealth;
+            }
+        }
+
+
         ///////////////////////
         ////PLAYER & PLANETS///
         ///////////////////////
-        //let planet = { name: "", orbitRadius = 100, speed = 5, color = "#00ff00"};
         const PLAYER_ROTATION_SPEED = 2;
         let playerRotation = 0;
-        const ORBITING_PLANETS_COUNT = 5;
         let planetOrbitalRotation = 0;
         const PLANETS_ORBITAL_ROTATION_SPEED = .25;
         const planets = [];
@@ -132,7 +436,7 @@
             for (let i = 0; i < branches; i++) {
                 const angle = (playerRotation * rotationSpeed * rotationalDirection) + (Math.PI * 2 / branches * i);
 
-                if (i % 2 == 0) {
+                if (i % 2 === 0) {
                     const x = center.x + Math.cos(angle) * innerRadius;
                     const y = center.y + Math.sin(angle) * innerRadius;
                     ctx.lineTo(x, y);
@@ -163,29 +467,32 @@
                 const x = centerX + Math.cos(angle) * radius;
                 const y = centerY + Math.sin(angle) * radius;
                 ctx.lineTo(x, y);
-
             }
             ctx.fillStyle = color;
             ctx.fill();
-
         }
 
         //PLAYER HEALTH
         const PLAYER_RADIUS = 32;
-        const PLAYER_MAX_HEALTH = 100;
         const PLAYER_HIT_FLASH_DURATION = 0.15;   // secondes
-        let playerHealth = PLAYER_MAX_HEALTH;
+        let playerHealth = 0;                     // mis à la vie max au démarrage
         let playerHitTimer = 0;
         let isGameOver = false;
+        let isPaused = false;                     // true quand un skill tree est ouvert
 
         function damagePlayer(amount) {
-            playerHealth -= amount;
+            playerHealth -= Math.max(1, amount - playerStats.damageReduction); //on prend toujours au moins 1 dégât
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
 
             if (playerHealth <= 0) {
                 playerHealth = 0;
                 isGameOver = true;
+                openGameOver();
             }
+        }
+
+        function healPlayer(amount) {
+            playerHealth = Math.min(playerStats.maxHealth, playerHealth + amount); //jamais au-dessus de la vie max
         }
 
         function drawPlayer() {
@@ -197,14 +504,15 @@
 
         //HEALTH NUMBER (au centre du joueur)
         function drawPlayerHealth() {
+            const healthText = Math.ceil(playerHealth); //arrondi au-dessus : la régénération donne des nombres à virgule
             ctx.font = "bold 20px Rubik";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
             ctx.lineWidth = 3;
             ctx.strokeStyle = OUTLINE_COLOR;
-            ctx.strokeText(playerHealth, center.x, center.y); //contour noir du texte, pour qu'il reste lisible
+            ctx.strokeText(healthText, center.x, center.y); //contour du texte, pour qu'il reste lisible
             ctx.fillStyle = "brown";
-            ctx.fillText(playerHealth, center.x, center.y);
+            ctx.fillText(healthText, center.x, center.y);
             ctx.textBaseline = "alphabetic"; //on remet la valeur par défaut pour les autres textes
         }
 
@@ -215,59 +523,35 @@
         const xpDisplay = document.getElementById("xp");
 
         function gainRewards(goldAmount, xpAmount) {
-            gold += goldAmount;
-            xp += xpAmount;
+            gold += Math.round(goldAmount * playerStats.goldMultiplier);
+            xp += Math.round(xpAmount * playerStats.xpMultiplier);
+            updateHud();
+        }
+
+        function updateHud() {
             goldDisplay.textContent = gold;
             xpDisplay.textContent = xp;
         }
 
-        //GAME OVER
-        function drawGameOver() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
-            ctx.font = "60px Rubik";
-            ctx.fillText("GAME OVER", center.x, center.y - 180);
-            ctx.font = "24px Rubik";
-            ctx.fillText("Appuie sur R pour recommencer", center.x, center.y - 140);
-        }
-
-        function restartGame() {
-            playerHealth = PLAYER_MAX_HEALTH;
-            enemies.length = 0;
-            bullets.length = 0;
-            enemySpawnTimer = 0;
-            fireTimer = 0;
-            isGameOver = false;
-        }
-
-        document.addEventListener("keydown", function (event) {
-            if (event.key === "r" && isGameOver) {
-                restartGame();
-            }
-        });
-
         // RÉGLAGES DES PLANÈTES
-        const PLANET_COLORS = ["#7df9ff", "#ff7eb6", "#9dff7a", "#ffb86b", "#c3a6ff"];
         const PLANET_ORBIT_RADIUS = 100;
         const PLANET_SIZE = 20;
+        const PLANET_CLICK_MARGIN = 8;            // pixels en plus autour de la planète pour cliquer plus facilement
 
-        // CRÉATION (une seule fois, au démarrage)
+        // CRÉATION (une seule fois, au démarrage) : une planète par skill tree
         function createPlanets() {
-            for (let i = 0; i < ORBITING_PLANETS_COUNT; i++) {
+            for (const tree of SKILL_TREES) {
                 planets.push({
                     //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
-                    name: "Projet " + (i + 1),
-                    color: PLANET_COLORS[i],
+                    name: tree.name,
+                    color: tree.color,
                     size: PLANET_SIZE,
+                    tree: tree,
                     x: 0,
                     y: 0
                 });
             }
         }
-
 
         function drawPlanets() {
             for (let i = 0; i < planets.length; i++) {
@@ -280,6 +564,33 @@
                 drawCircle(planet.color, planet.size, 4, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
             }
         }
+
+        //Renvoie la planète sous la souris, ou null
+        function findPlanetAt(x, y) {
+            for (const planet of planets) {
+                if (Math.hypot(planet.x - x, planet.y - y) <= planet.size + PLANET_CLICK_MARGIN) {
+                    return planet;
+                }
+            }
+            return null;
+        }
+
+        canvas.addEventListener("click", function (event) {
+            if (isGameOver || isPaused) {
+                return;
+            }
+            const planet = findPlanetAt(event.offsetX, event.offsetY);
+            if (planet !== null) {
+                openSkillTree(planet.tree);
+            }
+        });
+
+        //Le curseur devient une main quand on survole une planète
+        canvas.addEventListener("mousemove", function (event) {
+            const planet = findPlanetAt(event.offsetX, event.offsetY);
+            canvas.style.cursor = planet !== null ? "pointer" : "default";
+        });
+
 
         /////////////
         ///ENEMIES///
@@ -351,8 +662,11 @@
                 enemy.distance -= enemy.speed * deltaTime;
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
-                    damagePlayer(enemy.damage);
                     enemies.splice(i, 1);
+                    damagePlayer(enemy.damage);
+                    if (isGameOver) {
+                        return; //la partie est finie, on arrête de bouger les ennemis
+                    }
                     continue;
                 }
 
@@ -382,30 +696,28 @@
             }
         }
 
+
         /////////////
         ///BULLETS///
         /////////////
         const bullets = [];
-        const PLAYER_FIRE_INTERVAL = 0.35;   // un tir toutes les X secondes
-        const PLAYER_RANGE = 300;            // distance max pour viser un ennemi, en pixels
-        const BULLET_SPEED = 400;            // pixels par seconde
+        const BASE_FIRE_INTERVAL = 0.35;     // un tir toutes les X secondes (divisé par playerStats.attackSpeed)
+        const BASE_BULLET_SPEED = 400;       // pixels par seconde (multiplié par playerStats.bulletSpeed)
         const BULLET_SIZE = 4;
-        const BULLET_DAMAGE = 1;
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
 
-        function findClosestEnemy() {
-            let closestEnemy = null;
-            let closestDistance = PLAYER_RANGE;
-
+        //Renvoie les ennemis à portée, du plus proche au plus loin
+        function findEnemiesInRange() {
+            const inRange = [];
             for (const enemy of enemies) {
                 const distance = Math.hypot(enemy.x - center.x, enemy.y - center.y);
-                if (distance < closestDistance) {
-                    closestEnemy = enemy;
-                    closestDistance = distance;
+                if (distance < playerStats.range) {
+                    inRange.push({ enemy: enemy, distance: distance });
                 }
             }
-            return closestEnemy;
+            inRange.sort(function (a, b) { return a.distance - b.distance; }); //trie du plus petit au plus grand
+            return inRange;
         }
 
         function shootAt(target) {
@@ -419,27 +731,31 @@
         }
 
         function hitEnemy(enemy, index) {
-            enemy.health -= BULLET_DAMAGE;
+            enemy.health -= playerStats.damage + playerStats.damageVs[enemy.type];
 
             if (enemy.health <= 0) {
                 enemies.splice(index, 1);
                 gainRewards(enemy.gold, enemy.xp);
+                healPlayer(playerStats.lifeOnKill);
             }
         }
 
         function updateBullets(deltaTime) {
-            //FIRE
+            //FIRE : une balle par ennemi le plus proche (s'il y a moins d'ennemis que de balles, on recommence au plus proche)
             fireTimer += deltaTime;
-            if (fireTimer >= PLAYER_FIRE_INTERVAL) {
-                const target = findClosestEnemy();
-                if (target !== null) {
-                    shootAt(target);
+            if (fireTimer >= BASE_FIRE_INTERVAL / playerStats.attackSpeed) {
+                const targets = findEnemiesInRange();
+                if (targets.length > 0) {
+                    for (let i = 0; i < playerStats.bulletCount; i++) {
+                        shootAt(targets[i % targets.length].enemy);
+                    }
                     fireTimer = 0;
                 }
             }
 
             //MOVE & HIT
             const maxDistance = Math.hypot(canvas.width, canvas.height) / 2;
+            const bulletSpeed = BASE_BULLET_SPEED * playerStats.bulletSpeed;
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
@@ -449,12 +765,14 @@
                     const dx = bullet.target.x - bullet.x;
                     const dy = bullet.target.y - bullet.y;
                     const distance = Math.hypot(dx, dy);
-                    bullet.dirX = dx / distance;
-                    bullet.dirY = dy / distance;
+                    if (distance > 0) {
+                        bullet.dirX = dx / distance;
+                        bullet.dirY = dy / distance;
+                    }
                 }
 
-                bullet.x += bullet.dirX * BULLET_SPEED * deltaTime;
-                bullet.y += bullet.dirY * BULLET_SPEED * deltaTime;
+                bullet.x += bullet.dirX * bulletSpeed * deltaTime;
+                bullet.y += bullet.dirY * bulletSpeed * deltaTime;
 
                 let hasHit = false;
                 for (let j = enemies.length - 1; j >= 0; j--) {
@@ -480,15 +798,391 @@
             }
         }
 
-        
+
+        /////////////////////
+        ////SKILL TREES//////
+        /////////////////////
+        //Forme commune à tous les arbres (style Path of Exile) : un départ en bas, 3 branches qui montent,
+        //des compétences "pont" entre les branches, et une compétence majeure (keystone) au bout de chaque branche.
+        //x et y sont en % de la zone de l'arbre. requires = il faut avoir débloqué AU MOINS UNE de ces compétences.
+        const TREE_LAYOUT = {
+            root: { x: 50, y: 90, cost: 5, requires: [] },
+            a1: { x: 28, y: 72, cost: 10, requires: ["root"] },
+            a2: { x: 16, y: 48, cost: 20, requires: ["a1"] },
+            a3: { x: 12, y: 14, cost: 60, requires: ["a2", "ab"], keystone: true },
+            b1: { x: 50, y: 66, cost: 10, requires: ["root"] },
+            b2: { x: 50, y: 42, cost: 20, requires: ["b1"] },
+            b3: { x: 50, y: 12, cost: 60, requires: ["b2"], keystone: true },
+            c1: { x: 72, y: 72, cost: 10, requires: ["root"] },
+            c2: { x: 84, y: 48, cost: 20, requires: ["c1"] },
+            c3: { x: 88, y: 14, cost: 60, requires: ["c2", "bc"], keystone: true },
+            ab: { x: 32, y: 28, cost: 30, requires: ["a2", "b2"] },
+            bc: { x: 68, y: 28, cost: 30, requires: ["b2", "c2"] }
+        };
+
+        //Le contenu de chaque arbre : 1 arbre = 1 planète = 1 projet.
+        //label = texte court dans le rond ; effect = ce que la compétence améliore (voir BASE_STATS)
+        const SKILL_TREES_DATA = [
+            {
+                name: "Pyro",
+                color: "#ff7a45",
+                project: {
+                    title: "Projet 1",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                skills: {
+                    root: { label: "DMG", name: "Étincelle", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    a1: { label: "FEU", name: "Brûlure ciblée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                    a2: { label: "FEU", name: "Maître des flammes", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                    a3: { label: "BRAISE", name: "Cœur de braise", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                    b1: { label: "VIT", name: "Gâchette chaude", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    b2: { label: "VIT", name: "Rafale", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    b3: { label: "x2", name: "Double canon", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "POR", name: "Longue mèche", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                    c2: { label: "VEL", name: "Projectiles ardents", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                    c3: { label: "MÉTÉO", name: "Météore", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } },
+                    ab: { label: "DMG", name: "Fournaise", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    bc: { label: "VIT", name: "Combustion", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                }
+            },
+            {
+                name: "Hydro",
+                color: "#4da6ff",
+                project: {
+                    title: "Projet 2",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                skills: {
+                    root: { label: "PV", name: "Source", description: "+20 PV max", effect: { stat: "maxHealth", value: 20 } },
+                    a1: { label: "REG", name: "Ruisseau", description: "+0.5 PV régénérés par seconde", effect: { stat: "regen", value: 0.5 } },
+                    a2: { label: "REG", name: "Marée", description: "+1 PV régénéré par seconde", effect: { stat: "regen", value: 1 } },
+                    a3: { label: "OCÉAN", name: "Océan", description: "+2 PV régénérés par seconde", effect: { stat: "regen", value: 2 } },
+                    b1: { label: "ARM", name: "Écume", description: "-2 dégâts subis par coup", effect: { stat: "damageReduction", value: 2 } },
+                    b2: { label: "ARM", name: "Carapace", description: "-3 dégâts subis par coup", effect: { stat: "damageReduction", value: 3 } },
+                    b3: { label: "ABYSS", name: "Abysses", description: "+60 PV max", effect: { stat: "maxHealth", value: 60 } },
+                    c1: { label: "EAU", name: "Vapeur", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                    c2: { label: "EAU", name: "Torrent", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                    c3: { label: "VAGUE", name: "Raz-de-marée", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    ab: { label: "VIE", name: "Soif", description: "+1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } },
+                    bc: { label: "PV", name: "Profondeurs", description: "+30 PV max", effect: { stat: "maxHealth", value: 30 } }
+                }
+            },
+            {
+                name: "Flore",
+                color: "#55dd55",
+                project: {
+                    title: "Projet 3",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                skills: {
+                    root: { label: "VIE", name: "Racines", description: "+1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } },
+                    a1: { label: "XP", name: "Photosynthèse", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                    a2: { label: "XP", name: "Floraison", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                    a3: { label: "ARBRE", name: "Arbre-monde", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
+                    b1: { label: "REG", name: "Sève", description: "+0.5 PV régénérés par seconde", effect: { stat: "regen", value: 0.5 } },
+                    b2: { label: "VIE", name: "Ronces", description: "+2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 2 } },
+                    b3: { label: "SYMB", name: "Symbiose", description: "+3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 3 } },
+                    c1: { label: "PLA", name: "Épines", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
+                    c2: { label: "PLA", name: "Lianes", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
+                    c3: { label: "FORÊT", name: "Forêt vorace", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                    ab: { label: "XP", name: "Pollen", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
+                    bc: { label: "PV", name: "Écorce", description: "+25 PV max", effect: { stat: "maxHealth", value: 25 } }
+                }
+            },
+            {
+                name: "Aéro",
+                color: "#e0f7ff",
+                project: {
+                    title: "Projet 4",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                skills: {
+                    root: { label: "VIT", name: "Brise", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    a1: { label: "POR", name: "Horizon", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                    a2: { label: "POR", name: "Ciel ouvert", description: "+50 de portée", effect: { stat: "range", value: 50 } },
+                    a3: { label: "ŒIL", name: "Œil du cyclone", description: "+100 de portée", effect: { stat: "range", value: 100 } },
+                    b1: { label: "VEL", name: "Courant", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                    b2: { label: "VIT", name: "Bourrasque", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    b3: { label: "x2", name: "Tempête", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "AIR", name: "Cisaille", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
+                    c2: { label: "AIR", name: "Tornade", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
+                    c3: { label: "OURAG", name: "Ouragan", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
+                    ab: { label: "VEL", name: "Jet stream", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
+                    bc: { label: "VIT", name: "Rafales", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                }
+            },
+            {
+                name: "Cosmos",
+                color: "#ffd84d",
+                project: {
+                    title: "Projet 5",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                skills: {
+                    root: { label: "OR", name: "Poussière d'étoile", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    a1: { label: "OR", name: "Comète", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
+                    a2: { label: "OR", name: "Pluie d'or", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
+                    a3: { label: "TRÉSOR", name: "Trésor stellaire", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
+                    b1: { label: "XP", name: "Constellation", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                    b2: { label: "XP", name: "Nébuleuse", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                    b3: { label: "NOVA", name: "Supernova", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "DMG", name: "Gravité", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    c2: { label: "AIR", name: "Étoile filante", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
+                    c3: { label: "TROU", name: "Trou noir", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } },
+                    ab: { label: "OR", name: "Alignement", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    bc: { label: "DMG", name: "Orbite", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } }
+                }
+            }
+        ];
+
+        //Assemble la forme (TREE_LAYOUT) et le contenu (skills) de chaque arbre
+        function createSkillTree(treeData) {
+            const nodes = [];
+            for (const id of Object.keys(TREE_LAYOUT)) {
+                const layout = TREE_LAYOUT[id];
+                const skill = treeData.skills[id];
+                nodes.push({
+                    id: id,
+                    x: layout.x,
+                    y: layout.y,
+                    cost: layout.cost,
+                    requires: layout.requires,
+                    isKeystone: layout.keystone === true,
+                    label: skill.label,
+                    name: skill.name,
+                    description: skill.description,
+                    effect: skill.effect,
+                    unlocked: false
+                });
+            }
+            return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
+        }
+
+        const SKILL_TREES = [];
+        for (const treeData of SKILL_TREES_DATA) {
+            SKILL_TREES.push(createSkillTree(treeData));
+        }
+
+        function findNode(tree, id) {
+            for (const node of tree.nodes) {
+                if (node.id === id) {
+                    return node;
+                }
+            }
+            return null;
+        }
+
+        // "unlocked" = déjà pris, "available" = on peut le prendre, "locked" = pas encore relié
+        function getNodeState(tree, node) {
+            if (node.unlocked) {
+                return "unlocked";
+            }
+            if (node.requires.length === 0) {
+                return "available";
+            }
+            for (const requiredId of node.requires) {
+                if (findNode(tree, requiredId).unlocked) {
+                    return "available";
+                }
+            }
+            return "locked";
+        }
+
+        //SKILL TREE : AFFICHAGE (HTML)
+        const skillTreePanel = document.getElementById("skillTreePanel");
+        const projectTitle = document.getElementById("projectTitle");
+        const projectContent = document.getElementById("projectContent");
+        const treeTitle = document.getElementById("treeTitle");
+        const treeXp = document.getElementById("treeXp");
+        const treeLinks = document.getElementById("treeLinks");
+        const treeNodes = document.getElementById("treeNodes");
+        const nodeInfo = document.getElementById("nodeInfo");
+        let currentTree = null;
+
+        function openSkillTree(tree) {
+            isPaused = true;
+            currentTree = tree;
+            skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
+            projectTitle.textContent = tree.project.title;
+            projectContent.innerHTML = tree.project.html;
+            treeTitle.textContent = tree.name;
+            nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
+            renderSkillTree();
+            skillTreePanel.classList.remove("hidden");
+        }
+
+        function closeSkillTree() {
+            skillTreePanel.classList.add("hidden");
+            currentTree = null;
+            isPaused = false;
+        }
+
+        function renderSkillTree() {
+            const tree = currentTree;
+            treeXp.textContent = xp;
+            treeLinks.innerHTML = "";
+            treeNodes.innerHTML = "";
+
+            //LIENS entre les compétences (lignes SVG)
+            for (const node of tree.nodes) {
+                for (const requiredId of node.requires) {
+                    const parent = findNode(tree, requiredId);
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", parent.x + "%");
+                    line.setAttribute("y1", parent.y + "%");
+                    line.setAttribute("x2", node.x + "%");
+                    line.setAttribute("y2", node.y + "%");
+                    if (parent.unlocked && node.unlocked) {
+                        line.classList.add("active");
+                    }
+                    treeLinks.appendChild(line);
+                }
+            }
+
+            //COMPÉTENCES (boutons)
+            for (const node of tree.nodes) {
+                const button = document.createElement("button");
+                button.className = "skillNode " + getNodeState(tree, node);
+                if (node.isKeystone) {
+                    button.classList.add("keystone");
+                }
+                button.textContent = node.label;
+                button.style.left = node.x + "%";
+                button.style.top = node.y + "%";
+                button.addEventListener("mouseenter", function () { showNodeInfo(node); });
+                button.addEventListener("click", function () { unlockNode(node); });
+                treeNodes.appendChild(button);
+            }
+        }
+
+        function showNodeInfo(node) {
+            const state = getNodeState(currentTree, node);
+            let status = "";
+            if (state === "unlocked") {
+                status = "✔ Débloquée";
+            } else if (state === "locked") {
+                status = "🔒 Débloque d'abord une compétence reliée";
+            } else if (xp < node.cost) {
+                status = "Pas assez d'XP";
+            } else {
+                status = "Clique pour débloquer";
+            }
+            nodeInfo.textContent = node.name + " : " + node.description + " | Coût : " + node.cost + " XP | " + status;
+        }
+
+        function unlockNode(node) {
+            if (getNodeState(currentTree, node) !== "available" || xp < node.cost) {
+                showNodeInfo(node);
+                return;
+            }
+            xp -= node.cost;
+            node.unlocked = true;
+            refreshStats();
+            updateHud();
+            renderSkillTree();
+            showNodeInfo(node);
+        }
+
+        document.getElementById("closeTreeButton").addEventListener("click", closeSkillTree);
+
+        //Cliquer sur le fond sombre (en dehors de la fenêtre) ferme aussi l'arbre
+        skillTreePanel.addEventListener("click", function (event) {
+            if (event.target === skillTreePanel) {
+                closeSkillTree();
+            }
+        });
+
+
+        /////////////////////
+        ////SHOP & GAME OVER/
+        /////////////////////
+        //Améliorations de base, achetées avec l'or quand on meurt. Le prix augmente à chaque niveau.
+        const SHOP_ITEMS = [
+            { name: "Cadence de tir", description: "+10% de vitesse d'attaque", baseCost: 10, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "attackSpeed", value: 0.1 } },
+            { name: "Portée", description: "+25 de portée", baseCost: 10, costGrowth: 1.5, maxLevel: 8, level: 0, effect: { stat: "range", value: 25 } },
+            { name: "Balle supplémentaire", description: "+1 balle par tir", baseCost: 60, costGrowth: 2.5, maxLevel: 3, level: 0, effect: { stat: "bulletCount", value: 1 } },
+            { name: "Vie max", description: "+20 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 20 } },
+            { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "damage", value: 1 } },
+            { name: "Régénération", description: "+0.5 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.5 } },
+            { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } }
+        ];
+
+        const gameOverPanel = document.getElementById("gameOverPanel");
+        const shopGold = document.getElementById("shopGold");
+        const shopItems = document.getElementById("shopItems");
+
+        function getShopItemCost(item) {
+            return Math.round(item.baseCost * Math.pow(item.costGrowth, item.level)); //Math.pow(a, b) = a puissance b
+        }
+
+        function openGameOver() {
+            renderShop();
+            gameOverPanel.classList.remove("hidden");
+        }
+
+        function renderShop() {
+            shopGold.textContent = gold;
+            shopItems.innerHTML = "";
+
+            for (const item of SHOP_ITEMS) {
+                const cost = getShopItemCost(item);
+                const isMaxed = item.level >= item.maxLevel;
+
+                const button = document.createElement("button");
+                button.className = "shopItem";
+                button.disabled = isMaxed || gold < cost;
+                button.innerHTML =
+                    "<strong>" + item.name + "</strong> (niv. " + item.level + "/" + item.maxLevel + ")<br>" +
+                    item.description + "<br>" +
+                    "<span class='cost'>" + (isMaxed ? "MAX" : cost + " or") + "</span>";
+                button.addEventListener("click", function () { buyShopItem(item); });
+                shopItems.appendChild(button);
+            }
+        }
+
+        function buyShopItem(item) {
+            const cost = getShopItemCost(item);
+            if (item.level >= item.maxLevel || gold < cost) {
+                return;
+            }
+            gold -= cost;
+            item.level++;
+            refreshStats();
+            updateHud();
+            renderShop();
+        }
+
+        function restartGame() {
+            computeStats();
+            playerHealth = playerStats.maxHealth;
+            enemies.length = 0;
+            bullets.length = 0;
+            enemySpawnTimer = 0;
+            fireTimer = 0;
+            isGameOver = false;
+            gameOverPanel.classList.add("hidden");
+        }
+
+        document.getElementById("restartButton").addEventListener("click", restartGame);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "r" && isGameOver) {
+                restartGame();
+            }
+            if (event.key === "Escape" && isPaused) {
+                closeSkillTree();
+            }
+        });
+
 
         /////////////////////
         ////START & UPDATE///
         /////////////////////
         let lastTime = performance.now();
 
-
         function gameStart() {
+            computeStats();
+            playerHealth = playerStats.maxHealth;
             createStars();
             createPlanets();
             requestAnimationFrame(gameUpdate);
@@ -498,14 +1192,17 @@
             const deltaTime = (currentTime - lastTime) / 1000; //DeltaTime en secondes
             lastTime = currentTime;
 
-            playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
-            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
+            //Pendant la pause (skill tree ouvert) ou le game over, plus rien ne bouge
+            if (!isGameOver && !isPaused) {
+                playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
+                planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
 
-            if (!isGameOver) {
                 updateEnemies(deltaTime);
                 updateBullets(deltaTime);
+                healPlayer(playerStats.regen * deltaTime);
+                playerHitTimer -= deltaTime;
             }
-            playerHitTimer -= deltaTime;
+
             drawCanvas();
             requestAnimationFrame(gameUpdate);
         }
