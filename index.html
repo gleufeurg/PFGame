@@ -472,25 +472,25 @@
             right: 16px;
             bottom: 16px;
             z-index: 5; /*au-dessus du shop / skill tree, sous les paramètres*/
-            width: 340px;
-            padding: 20px;
+            width: 440px;
+            padding: 24px;
             box-sizing: border-box;
             overflow-y: auto;
             background-color: #0b0b2e;
             border: 1px solid white;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px;
             text-align: left;
         }
 
         #statsPanel h2 {
-            margin: 0 0 10px;
-            font-size: 24px;
+            margin: 0 0 12px;
+            font-size: 28px;
         }
 
         #statsPanel h3 { /*titre de catégorie*/
-            margin: 18px 0 8px;
-            font-size: 14px;
+            margin: 20px 0 8px;
+            font-size: 15px;
             text-transform: uppercase; /*écrit en majuscules*/
             letter-spacing: 1px;
             color: #aaaacc;
@@ -500,7 +500,7 @@
             display: flex;
             justify-content: space-between;
             gap: 8px;
-            padding: 5px 0;
+            padding: 6px 0;
             border-bottom: 1px solid #ffffff14;
         }
 
@@ -531,13 +531,24 @@
         }
 
         body.statsVisible .overlay { /*on laisse la place à la fenêtre de stats*/
-            padding-right: 372px;
+            padding-right: 472px;
             box-sizing: border-box;
         }
 
         #settingsPanel {
             z-index: 30; /*les paramètres passent par-dessus tout*/
             padding-right: 0 !important;
+        }
+
+        @media (max-width: 1100px) { /*écran moins large : la fenêtre de stats reprend sa taille moyenne*/
+            #statsPanel {
+                width: 340px;
+                font-size: 16px;
+            }
+
+            body.statsVisible .overlay {
+                padding-right: 372px;
+            }
         }
 
         @media (max-width: 900px) { /*écran étroit : les stats passent en bas*/
