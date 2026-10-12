@@ -39,26 +39,42 @@
             color: #7df9ff;
         }
 
-        #skipTimeButton { /*bouton "passer le temps", sous la roue crantée*/
+        #topBar { /*en haut au centre : chronomètre + bouton "passer le temps"*/
             position: fixed;
-            top: 66px;
-            right: 12px;
-            padding: 8px 12px;
-            border: 1px solid #ffffff55;
-            border-radius: 22px;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%); /*centre la barre sur sa position*/
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        #runTimeDisplay {
+            font-size: 26px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums; /*chiffres de même largeur : le chrono ne "tremble" pas*/
+            pointer-events: none;
+        }
+
+        #skipTimeButton {
+            padding: 10px 20px;
+            border: 1px solid #ffffff88;
+            border-radius: 26px;
             background-color: #0b0b2ecc;
             color: white;
-            font-size: 14px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         #skipTimeButton:hover {
             border-color: white;
         }
 
-        #toast { /*message temporaire au milieu en haut de l'écran*/
+        #toast { /*message temporaire au milieu en haut de l'écran, sous le chrono*/
             position: fixed;
-            top: 16px;
+            top: 72px;
             left: 50%;
             transform: translateX(-50%); /*centre le message sur sa position*/
             padding: 8px 16px;
@@ -338,8 +354,11 @@
     </style>
 </head>
 <body>
-    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span><br>Temps : <span id="runTimeDisplay">0:00</span></div>
-    <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
+    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
+    <div id="topBar">
+        <span id="runTimeDisplay">0:00</span>
+        <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
+    </div>
     <div id="toast" class="hiddenToast"></div>
     <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
@@ -476,7 +495,8 @@
         const BASE_STATS = {
             maxHealth: 10,        // points de vie max
             regen: 0,             // PV regagnés par seconde
-            damageReduction: 0,   // dégâts en moins à chaque coup reçu
+            dodgeChance: 0,       // chance d'esquiver un coup (0.1 = 10%)
+            shield: 0,            // 1 ou plus = un bouclier bloque un coup, puis se recharge
             lifeOnKill: 0,        // PV regagnés à chaque ennemi tué
             damage: 1,            // dégâts par balle
             attackSpeed: 1,       // multiplicateur de cadence de tir (1 = normal, 1.5 = 50% plus rapide)
@@ -583,15 +603,43 @@
         let isGameOver = false;
         let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
         let isSettingsOpen = false;
-        const MIN_DAMAGE_TAKEN = 1;               // un coup d'ennemi fait toujours au moins 1 dégât (même avec de l'armure)
+        const MIN_DAMAGE_TAKEN = 1;               // un coup d'ennemi fait toujours au moins 1 dégât
 
         //Le jeu est en pause tant qu'un des menus est ouvert
         function updatePause() {
             isPaused = isSettingsOpen || currentTree !== null;
         }
 
+        //BOUCLIER : bloque un coup, puis se recharge pendant SHIELD_COOLDOWN secondes
+        const SHIELD_COOLDOWN = 10;
+        const SHIELD_COLOR = "#7df9ff";
+        let isShieldReady = false;
+        let shieldTimer = SHIELD_COOLDOWN;        // plein au départ : le bouclier est prêt tout de suite
+
+        function updateShield(deltaTime) {
+            if (playerStats.shield > 0 && !isShieldReady) {
+                shieldTimer += deltaTime;
+                if (shieldTimer >= SHIELD_COOLDOWN) {
+                    isShieldReady = true;
+                }
+            }
+        }
+
         function damagePlayer(amount) {
-            playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount - playerStats.damageReduction); //on prend toujours un minimum de dégâts
+            //1. Esquive : Math.random() < 0.1 arrive 1 fois sur 10
+            if (Math.random() < playerStats.dodgeChance) {
+                playSound("dodge");
+                return;
+            }
+            //2. Bouclier : il absorbe le coup, puis se recharge
+            if (isShieldReady) {
+                isShieldReady = false;
+                shieldTimer = 0;
+                playSound("shieldBlock");
+                return;
+            }
+
+            playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount); //on prend toujours au moins MIN_DAMAGE_TAKEN
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
 
             //La vie affichée est arrondie en dessous (9.9 -> 9) : sous 1 PV, on est donc à 0 -> mort
@@ -614,6 +662,22 @@
             //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
             drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
             drawPlayerHealth();
+            drawShield();
+        }
+
+        //Un anneau lumineux autour du joueur quand le bouclier est prêt
+        function drawShield() {
+            if (!isShieldReady) {
+                return;
+            }
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, PLAYER_RADIUS + 14, 0, Math.PI * 2); //arc(x, y, rayon, angle de début, angle de fin) : un cercle complet
+            ctx.strokeStyle = SHIELD_COLOR;
+            ctx.lineWidth = 2;
+            ctx.shadowColor = SHIELD_COLOR;
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
         }
 
         //HEALTH NUMBER (au centre du joueur)
@@ -1061,8 +1125,8 @@
                     a1: { label: "REG", name: "Ruisseau", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                     a2: { label: "REG", name: "Marée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
                     a3: { label: "OCÉAN", name: "Océan", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
-                    b1: { label: "ARM", name: "Écume", description: "-0.2 dégât subi par coup", effect: { stat: "damageReduction", value: 0.2 } },
-                    b2: { label: "ARM", name: "Carapace", description: "-0.3 dégât subi par coup", effect: { stat: "damageReduction", value: 0.3 } },
+                    b1: { label: "ESQ", name: "Écume", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
+                    b2: { label: "BOUC", name: "Carapace", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
                     b3: { label: "ABYSS", name: "Abysses", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
                     c1: { label: "EAU", name: "Vapeur", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
                     c2: { label: "EAU", name: "Torrent", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
@@ -1369,6 +1433,8 @@
             enemySpawnTimer = 0;
             runTime = 0;
             fireTimer = 0;
+            isShieldReady = false;
+            shieldTimer = SHIELD_COOLDOWN;
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
             playSound("menuClose");
@@ -1452,6 +1518,8 @@
             buy: function () { playTone(660, 660, 0.08, "square", 0.12); playTone(990, 990, 0.12, "square", 0.12, 0.08); },
             denied: function () { playTone(160, 120, 0.15, "sawtooth", 0.15); },
             skip: function () { playTone(300, 900, 0.3, "sawtooth", 0.1); },
+            dodge: function () { playTone(1200, 500, 0.12, "sine", 0.12); },
+            shieldBlock: function () { playTone(500, 500, 0.06, "square", 0.15); playTone(250, 180, 0.2, "triangle", 0.2, 0.05); },
             click: function () { playTone(1000, 1000, 0.03, "square", 0.06); }
         };
 
@@ -1582,6 +1650,7 @@
                 updateBullets(deltaTime);
                 healPlayer(playerStats.regen * deltaTime);
                 playerHitTimer -= deltaTime;
+                updateShield(deltaTime);
             }
 
             runTimeDisplay.textContent = formatTime(runTime);
