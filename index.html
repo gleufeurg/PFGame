@@ -371,7 +371,7 @@
         ////PLAYER STATS/////  Toutes les valeurs que le shop et les skill trees peuvent améliorer
         /////////////////////
         const BASE_STATS = {
-            maxHealth: 100,       // points de vie max
+            maxHealth: 10,        // points de vie max
             regen: 0,             // PV regagnés par seconde
             damageReduction: 0,   // dégâts en moins à chaque coup reçu
             lifeOnKill: 0,        // PV regagnés à chaque ennemi tué
@@ -478,10 +478,11 @@
         let playerHealth = 0;                     // mis à la vie max au démarrage
         let playerHitTimer = 0;
         let isGameOver = false;
-        let isPaused = false;                     // true quand un skill tree est ouvert
+        let isPaused = false;
+        const MIN_DAMAGE_TAKEN = 0.1;             // même avec beaucoup d'armure, un coup fait au moins ça                     // true quand un skill tree est ouvert
 
         function damagePlayer(amount) {
-            playerHealth -= Math.max(1, amount - playerStats.damageReduction); //on prend toujours au moins 1 dégât
+            playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount - playerStats.damageReduction); //on prend toujours un minimum de dégâts
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
 
             if (playerHealth <= 0) {
@@ -504,7 +505,7 @@
 
         //HEALTH NUMBER (au centre du joueur)
         function drawPlayerHealth() {
-            const healthText = Math.ceil(playerHealth); //arrondi au-dessus : la régénération donne des nombres à virgule
+            const healthText = Math.round(playerHealth * 10) / 10; //arrondi à 1 chiffre après la virgule (ex: 7.5)
             ctx.font = "bold 20px Rubik";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
@@ -611,10 +612,10 @@
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 10, health: 3, gold: 1, xp: 1 },
-            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 20, health: 2, gold: 1, xp: 1 },
-            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 15, health: 5, gold: 1, xp: 1 },
-            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 5, health: 1, gold: 1, xp: 1 }
+            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 1, health: 3, gold: 1, xp: 1 },
+            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 2, health: 2, gold: 1, xp: 1 },
+            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 1.5, health: 5, gold: 1, xp: 1 },
+            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 0.5, health: 1, gold: 1, xp: 1 }
         };
 
         //MOVEMENTS
@@ -864,18 +865,18 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 skills: {
-                    root: { label: "PV", name: "Source", description: "+20 PV max", effect: { stat: "maxHealth", value: 20 } },
-                    a1: { label: "REG", name: "Ruisseau", description: "+0.5 PV régénérés par seconde", effect: { stat: "regen", value: 0.5 } },
-                    a2: { label: "REG", name: "Marée", description: "+1 PV régénéré par seconde", effect: { stat: "regen", value: 1 } },
-                    a3: { label: "OCÉAN", name: "Océan", description: "+2 PV régénérés par seconde", effect: { stat: "regen", value: 2 } },
-                    b1: { label: "ARM", name: "Écume", description: "-2 dégâts subis par coup", effect: { stat: "damageReduction", value: 2 } },
-                    b2: { label: "ARM", name: "Carapace", description: "-3 dégâts subis par coup", effect: { stat: "damageReduction", value: 3 } },
-                    b3: { label: "ABYSS", name: "Abysses", description: "+60 PV max", effect: { stat: "maxHealth", value: 60 } },
+                    root: { label: "PV", name: "Source", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    a1: { label: "REG", name: "Ruisseau", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                    a2: { label: "REG", name: "Marée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                    a3: { label: "OCÉAN", name: "Océan", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
+                    b1: { label: "ARM", name: "Écume", description: "-0.2 dégât subi par coup", effect: { stat: "damageReduction", value: 0.2 } },
+                    b2: { label: "ARM", name: "Carapace", description: "-0.3 dégât subi par coup", effect: { stat: "damageReduction", value: 0.3 } },
+                    b3: { label: "ABYSS", name: "Abysses", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
                     c1: { label: "EAU", name: "Vapeur", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
                     c2: { label: "EAU", name: "Torrent", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
                     c3: { label: "VAGUE", name: "Raz-de-marée", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    ab: { label: "VIE", name: "Soif", description: "+1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } },
-                    bc: { label: "PV", name: "Profondeurs", description: "+30 PV max", effect: { stat: "maxHealth", value: 30 } }
+                    ab: { label: "VIE", name: "Soif", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                    bc: { label: "PV", name: "Profondeurs", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } }
                 }
             },
             {
@@ -886,18 +887,18 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 skills: {
-                    root: { label: "VIE", name: "Racines", description: "+1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } },
+                    root: { label: "VIE", name: "Racines", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
                     a1: { label: "XP", name: "Photosynthèse", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
                     a2: { label: "XP", name: "Floraison", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
                     a3: { label: "ARBRE", name: "Arbre-monde", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
-                    b1: { label: "REG", name: "Sève", description: "+0.5 PV régénérés par seconde", effect: { stat: "regen", value: 0.5 } },
-                    b2: { label: "VIE", name: "Ronces", description: "+2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 2 } },
-                    b3: { label: "SYMB", name: "Symbiose", description: "+3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 3 } },
+                    b1: { label: "REG", name: "Sève", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                    b2: { label: "VIE", name: "Ronces", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
+                    b3: { label: "SYMB", name: "Symbiose", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
                     c1: { label: "PLA", name: "Épines", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
                     c2: { label: "PLA", name: "Lianes", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
                     c3: { label: "FORÊT", name: "Forêt vorace", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
                     ab: { label: "XP", name: "Pollen", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
-                    bc: { label: "PV", name: "Écorce", description: "+25 PV max", effect: { stat: "maxHealth", value: 25 } }
+                    bc: { label: "PV", name: "Écorce", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } }
                 }
             },
             {
@@ -1112,9 +1113,9 @@
             { name: "Cadence de tir", description: "+10% de vitesse d'attaque", baseCost: 10, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "attackSpeed", value: 0.1 } },
             { name: "Portée", description: "+25 de portée", baseCost: 10, costGrowth: 1.5, maxLevel: 8, level: 0, effect: { stat: "range", value: 25 } },
             { name: "Balle supplémentaire", description: "+1 balle par tir", baseCost: 60, costGrowth: 2.5, maxLevel: 3, level: 0, effect: { stat: "bulletCount", value: 1 } },
-            { name: "Vie max", description: "+20 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 20 } },
+            { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 2 } },
             { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "damage", value: 1 } },
-            { name: "Régénération", description: "+0.5 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.5 } },
+            { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.05 } },
             { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } }
         ];
 
