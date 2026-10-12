@@ -483,6 +483,38 @@
             text-align: left;
         }
 
+        /*BARRE DE DÉFILEMENT turquoise de la fenêtre de stats*/
+        /*Chrome / Edge / Safari : on dessine chaque partie de la barre*/
+        #statsPanel::-webkit-scrollbar {
+            width: 10px; /*largeur de la barre*/
+        }
+
+        #statsPanel::-webkit-scrollbar-track { /*le "rail" dans lequel glisse la barre*/
+            margin: 12px 0; /*ne touche pas les coins arrondis de la fenêtre*/
+            border-radius: 10px;
+            background-color: rgba(64, 224, 208, 0.08);
+        }
+
+        #statsPanel::-webkit-scrollbar-thumb { /*la partie qu'on attrape*/
+            border: 2px solid transparent; /*bordure transparente = la barre paraît plus fine et "flotte" dans son rail*/
+            border-radius: 10px;
+            background-color: #40e0d0; /*turquoise*/
+            background-clip: padding-box; /*la couleur s'arrête avant la bordure transparente*/
+            box-shadow: 0 0 6px rgba(64, 224, 208, 0.6) inset;
+        }
+
+        #statsPanel::-webkit-scrollbar-thumb:hover {
+            background-color: #7ff5e9; /*plus clair au survol*/
+        }
+
+        /*Firefox : il ne connaît que la couleur (barre, rail) et "thin"*/
+        @supports (-moz-appearance: none) {
+            #statsPanel {
+                scrollbar-width: thin;
+                scrollbar-color: #40e0d0 rgba(64, 224, 208, 0.08);
+            }
+        }
+
         #statsPanel h2 {
             margin: 0 0 12px;
             font-size: 28px;
