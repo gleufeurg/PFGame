@@ -18,6 +18,23 @@
             font-size: 30px;
         }
 
+        #hud { /*affichage de l'or et de l'XP, par-dessus le canvas*/
+            position: fixed; /*reste collé à l'écran, au-dessus du canvas*/
+            top: 16px;
+            left: 16px;
+            font-size: 20px;
+            text-align: left;
+            pointer-events: none; /*les clics passent à travers, vers le canvas*/
+        }
+
+        #gold {
+            color: #ffd84d;
+        }
+
+        #xp {
+            color: #7df9ff;
+        }
+
         #game {
             /*outline: 1px solid antiquewhite;
             outline-offset: -1px;*/
@@ -28,6 +45,7 @@
 </script>
 </head>
 <body>
+    <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
     <canvas id="game"></canvas>
     <script>
         /////////////
@@ -52,8 +70,8 @@
             drawStars();
             drawPlanets();
             drawEnemies();
+            drawBullets();
             drawPlayer();
-            drawHealthBar();
 
             if (isGameOver) {
                 drawGameOver();
@@ -158,6 +176,7 @@
         }
 
         //PLAYER HEALTH
+        const PLAYER_RADIUS = 32;
         const PLAYER_MAX_HEALTH = 100;
         const PLAYER_HIT_FLASH_DURATION = 0.15;   // secondes
         let playerHealth = PLAYER_MAX_HEALTH;
@@ -176,24 +195,35 @@
 
         function drawPlayer() {
             const color = playerHitTimer > 0 ? "white" : "#ffe680";
-            drawCircle(color, 25, 3, .1, -1, true, 32); //Centered shape is the player
+            //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
+            drawCircle(color, PLAYER_RADIUS, 3, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
+            drawPlayerHealth();
         }
 
-        //HEALTH BAR
-        const HEALTH_BAR_WIDTH = 120;
-        const HEALTH_BAR_HEIGHT = 10;
-        const HEALTH_BAR_OFFSET_Y = 150;          // distance sous le joueur
+        //HEALTH NUMBER (au centre du joueur)
+        function drawPlayerHealth() {
+            ctx.font = "bold 14px Rubik";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = OUTLINE_COLOR;
+            ctx.strokeText(playerHealth, center.x, center.y); //contour noir du texte, pour qu'il reste lisible
+            ctx.fillStyle = "white";
+            ctx.fillText(playerHealth, center.x, center.y);
+            ctx.textBaseline = "alphabetic"; //on remet la valeur par défaut pour les autres textes
+        }
 
-        function drawHealthBar() {
-            const x = center.x - HEALTH_BAR_WIDTH / 2;
-            const y = center.y + HEALTH_BAR_OFFSET_Y;
-            const healthPercent = playerHealth / PLAYER_MAX_HEALTH;
+        //REWARDS (or et XP)
+        let gold = 0;
+        let xp = 0;
+        const goldDisplay = document.getElementById("gold");
+        const xpDisplay = document.getElementById("xp");
 
-            ctx.fillStyle = "#330011";
-            ctx.fillRect(x, y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-
-            ctx.fillStyle = "#ff3366";
-            ctx.fillRect(x, y, HEALTH_BAR_WIDTH * healthPercent, HEALTH_BAR_HEIGHT);
+        function gainRewards(goldAmount, xpAmount) {
+            gold += goldAmount;
+            xp += xpAmount;
+            goldDisplay.textContent = gold;
+            xpDisplay.textContent = xp;
         }
 
         //GAME OVER
@@ -212,7 +242,9 @@
         function restartGame() {
             playerHealth = PLAYER_MAX_HEALTH;
             enemies.length = 0;
+            bullets.length = 0;
             enemySpawnTimer = 0;
+            fireTimer = 0;
             isGameOver = false;
         }
 
@@ -259,15 +291,14 @@
         /////////////
         const enemies = [];
         const ENEMY_SPAWN_INTERVAL = 1;      // un ennemi toutes les X secondes
-        const PLAYER_RADIUS = 25;
         let enemySpawnTimer = 0;
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 10 },
-            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 20 },
-            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 15 },
-            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 5 }
+            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 10, health: 3, gold: 2, xp: 3 },
+            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 20, health: 2, gold: 3, xp: 4 },
+            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 15, health: 5, gold: 4, xp: 6 },
+            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 5, health: 1, gold: 1, xp: 2 }
         };
 
         //MOVEMENTS
@@ -297,6 +328,9 @@
                 speed: stats.speed,
                 size: size,
                 damage: stats.damage,
+                health: stats.health,
+                gold: stats.gold,
+                xp: stats.xp,
                 angle: Math.random() * Math.PI * 2,
                 distance: startDistance,
                 startDistance: startDistance,
@@ -353,6 +387,104 @@
             }
         }
 
+        /////////////
+        ///BULLETS///
+        /////////////
+        const bullets = [];
+        const PLAYER_FIRE_INTERVAL = 0.35;   // un tir toutes les X secondes
+        const PLAYER_RANGE = 300;            // distance max pour viser un ennemi, en pixels
+        const BULLET_SPEED = 400;            // pixels par seconde
+        const BULLET_SIZE = 4;
+        const BULLET_DAMAGE = 1;
+        const BULLET_COLOR = "#fff6b0";
+        let fireTimer = 0;
+
+        function findClosestEnemy() {
+            let closestEnemy = null;
+            let closestDistance = PLAYER_RANGE;
+
+            for (const enemy of enemies) {
+                const distance = Math.hypot(enemy.x - center.x, enemy.y - center.y);
+                if (distance < closestDistance) {
+                    closestEnemy = enemy;
+                    closestDistance = distance;
+                }
+            }
+            return closestEnemy;
+        }
+
+        function shootAt(target) {
+            bullets.push({
+                x: center.x,
+                y: center.y,
+                dirX: 0,
+                dirY: 0,
+                target: target
+            });
+        }
+
+        function hitEnemy(enemy, index) {
+            enemy.health -= BULLET_DAMAGE;
+
+            if (enemy.health <= 0) {
+                enemies.splice(index, 1);
+                gainRewards(enemy.gold, enemy.xp);
+            }
+        }
+
+        function updateBullets(deltaTime) {
+            //FIRE
+            fireTimer += deltaTime;
+            if (fireTimer >= PLAYER_FIRE_INTERVAL) {
+                const target = findClosestEnemy();
+                if (target !== null) {
+                    shootAt(target);
+                    fireTimer = 0;
+                }
+            }
+
+            //MOVE & HIT
+            const maxDistance = Math.hypot(canvas.width, canvas.height) / 2;
+
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+
+                //La balle suit sa cible tant qu'elle est vivante, sinon elle continue tout droit
+                if (enemies.includes(bullet.target)) {
+                    const dx = bullet.target.x - bullet.x;
+                    const dy = bullet.target.y - bullet.y;
+                    const distance = Math.hypot(dx, dy);
+                    bullet.dirX = dx / distance;
+                    bullet.dirY = dy / distance;
+                }
+
+                bullet.x += bullet.dirX * BULLET_SPEED * deltaTime;
+                bullet.y += bullet.dirY * BULLET_SPEED * deltaTime;
+
+                let hasHit = false;
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const enemy = enemies[j];
+                    if (Math.hypot(enemy.x - bullet.x, enemy.y - bullet.y) <= enemy.size + BULLET_SIZE) {
+                        hitEnemy(enemy, j);
+                        hasHit = true;
+                        break;
+                    }
+                }
+
+                const isOffScreen = Math.hypot(bullet.x - center.x, bullet.y - center.y) > maxDistance;
+
+                if (hasHit || isOffScreen) {
+                    bullets.splice(i, 1);
+                }
+            }
+        }
+
+        function drawBullets() {
+            for (const bullet of bullets) {
+                drawCircle(BULLET_COLOR, BULLET_SIZE, 12, 0, 0, true, BULLET_SIZE + OUTLINE_WIDTH, OUTLINE_COLOR, { x: bullet.x, y: bullet.y });
+            }
+        }
+
         
 
         /////////////////////
@@ -376,6 +508,7 @@
 
             if (!isGameOver) {
                 updateEnemies(deltaTime);
+                updateBullets(deltaTime);
             }
             playerHitTimer -= deltaTime;
             drawCanvas();
