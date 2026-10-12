@@ -94,7 +94,7 @@
             display: inline-block; /*nécessaire pour que "scale" fonctionne sur du texte*/
         }
 
-        #topBar { /*en haut au centre : le chronomètre est pile au centre, le bouton est collé à sa gauche*/
+        #topBar { /*en haut au centre : le chronomètre est pile au centre, les boutons sont collés à sa droite*/
             position: fixed;
             top: 12px;
             left: 50%;
@@ -111,22 +111,52 @@
             pointer-events: none;
         }
 
-        #skipTimeButton {
+        #timeControls { /*boutons "passer le temps" + vitesse du jeu*/
             position: absolute; /*sorti du centrage : seul le chrono compte pour centrer la barre*/
-            right: calc(100% + 14px); /*à 14px à gauche du chrono*/
-            padding: 10px 20px;
-            border: 1px solid #ffffff88;
-            border-radius: 26px;
-            background-color: #0b0b2ecc;
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
+            left: calc(100% + 14px); /*à 14px à droite du chrono*/
+            display: flex;
+            align-items: center;
+            gap: 8px;
             white-space: nowrap;
         }
 
-        #skipTimeButton:hover {
-            border-color: white;
+        .skipButton { /*bouton orange "passer le temps"*/
+            padding: 8px 14px;
+            border: none;
+            border-radius: 22px;
+            background-color: #ff8a1f;
+            color: #1a0a00;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 0 10px #ff8a1f66; /*petite lueur orange*/
+            cursor: pointer;
+        }
+
+        .skipButton:hover {
+            background-color: #ffa54d;
+        }
+
+        .speedGroup { /*les 3 boutons de vitesse collés ensemble*/
+            display: flex;
+            margin-left: 6px;
+            border: 1px solid #ff8a1f;
+            border-radius: 22px;
+            overflow: hidden; /*les coins arrondis coupent aussi les boutons à l'intérieur*/
+        }
+
+        .speedButton {
+            padding: 8px 12px;
+            border: none;
+            background-color: #0b0b2ecc;
+            color: #ffb366;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .speedButton.active { /*la vitesse choisie*/
+            background-color: #ff8a1f;
+            color: #1a0a00;
         }
 
         #toast { /*message temporaire au milieu en haut de l'écran, sous le chrono*/
@@ -146,13 +176,33 @@
             opacity: 0;
         }
 
+        @media (max-width: 1100px) { /*écran moyen : les boutons passent sous le chrono, centrés*/
+            #topBar {
+                flex-direction: column;
+                height: auto;
+                gap: 8px;
+            }
+
+            #timeControls {
+                position: static;
+                flex-wrap: wrap; /*passe à la ligne si ça ne rentre pas*/
+                justify-content: center;
+                width: max-content;
+                max-width: calc(100vw - 24px);
+            }
+
+            #toast {
+                top: 116px;
+            }
+        }
+
         @media (max-width: 600px) { /*petit écran : on descend la barre sous l'or et l'XP pour ne pas les recouvrir*/
             #topBar {
                 top: 104px;
             }
 
             #toast {
-                top: 164px;
+                top: 250px;
             }
         }
 
@@ -494,8 +544,11 @@
         <div class="hudRow"><span class="xpIcon"></span><span id="xp" class="hudValue">0</span><span class="hudLabel">XP</span></div>
     </div>
     <div id="topBar">
-        <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
         <span id="runTimeDisplay">0:00</span>
+        <div id="timeControls">
+            <div id="skipButtons"></div>
+            <div id="speedButtons" class="speedGroup"></div>
+        </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
     <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
@@ -944,9 +997,8 @@
 
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
-        const TIME_SKIP_SECONDS = 30;
-        const skipTimeButton = document.getElementById("skipTimeButton");
-        skipTimeButton.textContent = "⏩ +" + TIME_SKIP_SECONDS + " s";
+        const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes)
+        const TIME_SKIP_KEY_SECONDS = 30;          // ce que fait la touche T
 
         function skipTime(seconds) {
             if (isGameOver || isPaused) {
@@ -978,9 +1030,44 @@
             showToast("⏩ +" + seconds + " s : " + spawnedCount + " ennemis arrivent !");
         }
 
-        skipTimeButton.addEventListener("click", function () {
-            skipTime(TIME_SKIP_SECONDS);
-        });
+        //Crée un bouton orange par option de TIME_SKIP_OPTIONS
+        const skipButtons = document.getElementById("skipButtons");
+        for (const seconds of TIME_SKIP_OPTIONS) {
+            const button = document.createElement("button");
+            button.className = "skipButton";
+            button.textContent = "⏩ +" + seconds + " s";
+            button.title = "Passer " + seconds + " secondes";
+            button.addEventListener("click", function () { skipTime(seconds); });
+            skipButtons.appendChild(button);
+        }
+
+        //VITESSE DU JEU : x1, x2, x4... (multiplie le temps qui passe à chaque image)
+        const GAME_SPEED_OPTIONS = [1, 2, 4];
+        let gameSpeed = 1;
+        const speedButtons = document.getElementById("speedButtons");
+
+        function renderSpeedButtons() {
+            speedButtons.innerHTML = "";
+            for (const speed of GAME_SPEED_OPTIONS) {
+                const button = document.createElement("button");
+                button.className = "speedButton";
+                if (speed === gameSpeed) {
+                    button.classList.add("active");
+                }
+                button.textContent = "x" + speed;
+                button.title = "Vitesse du jeu x" + speed;
+                button.addEventListener("click", function () { setGameSpeed(speed); });
+                speedButtons.appendChild(button);
+            }
+        }
+
+        function setGameSpeed(speed) {
+            gameSpeed = speed;
+            renderSpeedButtons();
+            playSound("click");
+        }
+
+        renderSpeedButtons();
 
         //TOAST : petit message qui s'affiche quelques secondes
         const TOAST_DURATION = 2.5;          // secondes
@@ -1611,7 +1698,7 @@
                 restartGame();
             }
             if (event.key === "t") {
-                skipTime(TIME_SKIP_SECONDS);
+                skipTime(TIME_SKIP_KEY_SECONDS);
             }
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
@@ -1923,25 +2010,41 @@
             requestAnimationFrame(gameUpdate);
         }
 
+        const MAX_FRAME_TIME = 0.1;   // si le navigateur a "gelé" (onglet caché...), on ne rattrape pas plus que ça
+        const MAX_STEP = 1 / 60;      // taille max d'un pas de simulation, en secondes
+
         function gameUpdate(currentTime) {
-            const deltaTime = (currentTime - lastTime) / 1000; //DeltaTime en secondes
+            const deltaTime = Math.min(MAX_FRAME_TIME, (currentTime - lastTime) / 1000); //DeltaTime en secondes
             lastTime = currentTime;
 
-            //Pendant la pause (skill tree ouvert) ou le game over, plus rien ne bouge
-            if (!isGameOver && !isPaused) {
-                playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
-                planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
-
-                updateEnemies(deltaTime);
-                updateBullets(deltaTime);
-                healPlayer(playerStats.regen * deltaTime);
-                playerHitTimer -= deltaTime;
-                updateShield(deltaTime);
+            //En x2 / x4, il passe 2 / 4 fois plus de temps de jeu à chaque image.
+            //On le découpe en petits pas pour que les balles ne "sautent" pas par-dessus les ennemis.
+            let timeToSimulate = deltaTime * gameSpeed;
+            while (timeToSimulate > 0) {
+                const step = Math.min(MAX_STEP, timeToSimulate);
+                updateGame(step);
+                timeToSimulate -= step;
             }
 
             runTimeDisplay.textContent = formatTime(runTime);
             drawCanvas();
             requestAnimationFrame(gameUpdate);
+        }
+
+        //Tout ce qui bouge pendant "deltaTime" secondes de jeu
+        function updateGame(deltaTime) {
+            //Pendant la pause (skill tree ouvert) ou le game over, plus rien ne bouge
+            if (isGameOver || isPaused) {
+                return;
+            }
+            playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
+            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
+
+            updateEnemies(deltaTime);
+            updateBullets(deltaTime);
+            healPlayer(playerStats.regen * deltaTime);
+            playerHitTimer -= deltaTime;
+            updateShield(deltaTime);
         }
 
         gameStart();
