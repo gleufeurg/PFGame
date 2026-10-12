@@ -34,11 +34,6 @@
         #xp {
             color: #7df9ff;
         }
-
-        #game {
-            /*outline: 1px solid antiquewhite;
-            outline-offset: -1px;*/
-        }
     </style>
     <script>
 
@@ -54,8 +49,8 @@
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
         const bgColor = "#000017";
-        const OUTLINE_WIDTH = 2;        // contour fin des planètes et des ennemis, en pixels
-        const OUTLINE_COLOR = "black";
+        const OUTLINE_WIDTH = 1;        // contour fin des planètes et des ennemis, en pixels
+        const OUTLINE_COLOR = "white";
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -151,7 +146,7 @@
             ctx.fill();
         }
 
-        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ff0000", location = center) {
+        function drawCircle(color = "#ffe680", radius = 20, count = 50, rotationSpeed = .25, rotationalDirection = - 1, outline = false, outlineWidth = 0, outlineColor = "#ffffff", location = center) {
             //PARAMETERS
             const centerX = location.x;
             const centerY = location.y;
@@ -196,19 +191,19 @@
         function drawPlayer() {
             const color = playerHitTimer > 0 ? "white" : "#ffe680";
             //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
-            drawCircle(color, PLAYER_RADIUS, 3, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
+            drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
             drawPlayerHealth();
         }
 
         //HEALTH NUMBER (au centre du joueur)
         function drawPlayerHealth() {
-            ctx.font = "bold 14px Rubik";
+            ctx.font = "bold 20px Rubik";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
             ctx.lineWidth = 3;
             ctx.strokeStyle = OUTLINE_COLOR;
             ctx.strokeText(playerHealth, center.x, center.y); //contour noir du texte, pour qu'il reste lisible
-            ctx.fillStyle = "white";
+            ctx.fillStyle = "brown";
             ctx.fillText(playerHealth, center.x, center.y);
             ctx.textBaseline = "alphabetic"; //on remet la valeur par défaut pour les autres textes
         }
@@ -282,7 +277,7 @@
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
 
-                drawCircle(planet.color, planet.size, 50, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
+                drawCircle(planet.color, planet.size, 4, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
             }
         }
 
