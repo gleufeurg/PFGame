@@ -583,7 +583,7 @@
         let isGameOver = false;
         let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
         let isSettingsOpen = false;
-        const MIN_DAMAGE_TAKEN = 0.1;             // même avec beaucoup d'armure, un coup fait au moins ça
+        const MIN_DAMAGE_TAKEN = 1;               // un coup d'ennemi fait toujours au moins 1 dégât (même avec de l'armure)
 
         //Le jeu est en pause tant qu'un des menus est ouvert
         function updatePause() {
@@ -594,7 +594,8 @@
             playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount - playerStats.damageReduction); //on prend toujours un minimum de dégâts
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
 
-            if (playerHealth <= 0) {
+            //La vie affichée est arrondie en dessous (9.9 -> 9) : sous 1 PV, on est donc à 0 -> mort
+            if (playerHealth < 1) {
                 playerHealth = 0;
                 isGameOver = true;
                 playSound("gameOver");
@@ -617,7 +618,7 @@
 
         //HEALTH NUMBER (au centre du joueur)
         function drawPlayerHealth() {
-            const healthText = Math.round(playerHealth * 10) / 10; //arrondi à 1 chiffre après la virgule (ex: 7.5)
+            const healthText = Math.floor(playerHealth); //pas de virgule : 9.9 -> 9 (la régénération continue de s'accumuler en dessous)
             ctx.font = "bold 20px Rubik";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
