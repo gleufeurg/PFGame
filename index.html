@@ -1413,20 +1413,23 @@
         /////////////////////
         //Forme commune à tous les arbres (style Path of Exile) : un départ en bas, 3 branches qui montent,
         //des compétences "pont" entre les branches, et une compétence majeure (keystone) au bout de chaque branche.
-        //x et y sont en % de la zone de l'arbre. requires = il faut avoir débloqué AU MOINS UNE de ces compétences.
+        //x et y sont en % de la zone de l'arbre. links = les compétences reliées à celle-ci par une ligne.
+        //Les liens marchent DANS LES DEUX SENS : une compétence est débloquable dès qu'UNE de ses voisines est débloquée
+        //(comme dans Path of Exile : on peut arriver par n'importe quel chemin). Il suffit d'écrire chaque lien une seule fois.
+        //start: true = point de départ de l'arbre (débloquable sans voisine).
         const TREE_LAYOUT = {
-            root: { x: 50, y: 90, cost: 5, requires: [] },
-            a1: { x: 28, y: 72, cost: 10, requires: ["root"] },
-            a2: { x: 16, y: 48, cost: 20, requires: ["a1"] },
-            a3: { x: 12, y: 14, cost: 60, requires: ["a2", "ab"], keystone: true },
-            b1: { x: 50, y: 66, cost: 10, requires: ["root"] },
-            b2: { x: 50, y: 42, cost: 20, requires: ["b1"] },
-            b3: { x: 50, y: 12, cost: 60, requires: ["b2"], keystone: true },
-            c1: { x: 72, y: 72, cost: 10, requires: ["root"] },
-            c2: { x: 84, y: 48, cost: 20, requires: ["c1"] },
-            c3: { x: 88, y: 14, cost: 60, requires: ["c2", "bc"], keystone: true },
-            ab: { x: 32, y: 28, cost: 30, requires: ["a2", "b2"] },
-            bc: { x: 68, y: 28, cost: 30, requires: ["b2", "c2"] }
+            root: { x: 50, y: 90, cost: 5, links: [], start: true },
+            a1: { x: 28, y: 72, cost: 10, links: ["root"] },
+            a2: { x: 16, y: 48, cost: 20, links: ["a1"] },
+            a3: { x: 12, y: 14, cost: 60, links: ["a2", "ab"], keystone: true },
+            b1: { x: 50, y: 66, cost: 10, links: ["root"] },
+            b2: { x: 50, y: 42, cost: 20, links: ["b1"] },
+            b3: { x: 50, y: 12, cost: 60, links: ["b2"], keystone: true },
+            c1: { x: 72, y: 72, cost: 10, links: ["root"] },
+            c2: { x: 84, y: 48, cost: 20, links: ["c1"] },
+            c3: { x: 88, y: 14, cost: 60, links: ["c2", "bc"], keystone: true },
+            ab: { x: 32, y: 28, cost: 30, links: ["a2", "b2"] },
+            bc: { x: 68, y: 28, cost: 30, links: ["b2", "c2"] }
         };
 
         //Le contenu de chaque arbre : 1 arbre = 1 planète = 1 projet.
@@ -1555,7 +1558,9 @@
                     x: layout.x,
                     y: layout.y,
                     cost: layout.cost,
-                    requires: layout.requires,
+                    links: layout.links,
+                    isStart: layout.start === true,
+                    neighbors: [], //rempli juste après : toutes les compétences reliées, dans les deux sens
                     isKeystone: layout.keystone === true,
                     label: skill.label,
                     name: skill.name,
@@ -1564,6 +1569,15 @@
                     unlocked: false
                 });
             }
+            //VOISINES : si A est relié à B, alors B est voisine de A ET A est voisine de B
+            for (const node of nodes) {
+                for (const linkedId of node.links) {
+                    const linkedNode = nodes.find(function (other) { return other.id === linkedId; }); //find = le 1er élément qui correspond
+                    node.neighbors.push(linkedNode);
+                    linkedNode.neighbors.push(node);
+                }
+            }
+
             return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
         }
 
@@ -1586,11 +1600,11 @@
             if (node.unlocked) {
                 return "unlocked";
             }
-            if (node.requires.length === 0) {
+            if (node.isStart) {
                 return "available";
             }
-            for (const requiredId of node.requires) {
-                if (findNode(tree, requiredId).unlocked) {
+            for (const neighbor of node.neighbors) {
+                if (neighbor.unlocked) {
                     return "available";
                 }
             }
@@ -1638,8 +1652,8 @@
 
             //LIENS entre les compétences (lignes SVG)
             for (const node of tree.nodes) {
-                for (const requiredId of node.requires) {
-                    const parent = findNode(tree, requiredId);
+                for (const linkedId of node.links) {
+                    const parent = findNode(tree, linkedId);
                     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
                     line.setAttribute("x1", parent.x + "%");
                     line.setAttribute("y1", parent.y + "%");
