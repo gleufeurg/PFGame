@@ -34,6 +34,7 @@
         ////CANVAS///
         /////////////
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
+        const center = { x: canvas.width / 2, y: canvas.height / 2 };
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
         const bgColor = "#000017";
 
@@ -106,23 +107,18 @@
         const planets = [];
 
         function drawStarShape(color = "#ffe680", branches = 10, innerRadius = 10, outerRadius = 25, rotationSpeed = .5, rotationalDirection = - 1) {
-            //PARAMETERS
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-
             //STAR
             ctx.beginPath();
             for (let i = 0; i < branches; i++) {
                 const angle = (playerRotation * rotationSpeed * rotationalDirection) + (Math.PI * 2 / branches * i);
 
                 if (i % 2 == 0) {
-                    const x = centerX + Math.cos(angle) * innerRadius;
-                    const y = centerY + Math.sin(angle) * innerRadius;
+                    const x = center.x + Math.cos(angle) * innerRadius;
+                    const y = center.y + Math.sin(angle) * innerRadius;
                     ctx.lineTo(x, y);
                 } else {
-                    const x = centerX + Math.cos(angle) * outerRadius;
-                    const y = centerY + Math.sin(angle) * outerRadius;
+                    const x = center.x + Math.cos(angle) * outerRadius;
+                    const y = center.y + Math.sin(angle) * outerRadius;
                     ctx.lineTo(x, y);
                 }
             }
@@ -154,25 +150,6 @@
 
         }
 
-
-        function drawTriangle(color = "#ffe680", height = 25) {
-            //PARAMETERS
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-
-
-            //TRIANGLE
-            ctx.beginPath();
-            ctx.moveTo(centerX - height, centerY - height);
-            ctx.lineTo(centerX + height, centerY - height);
-            ctx.lineTo(centerX, centerY + height);
-            ctx.closePath();
-
-            ctx.fillStyle = color;
-            ctx.fill();
-        }
-
         function drawPlayer() {
             drawCircle("#ffe680", 25, 3, .1, -1, true, 32); //Centered shape is the player
         }
@@ -198,15 +175,12 @@
 
 
         function drawPlanets() {
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
             for (let i = 0; i < planets.length; i++) {
                 const planet = planets[i];
                 const angle = planetOrbitalRotation + Math.PI * 2 / planets.length * i;
 
-                planet.x = centerX + Math.cos(angle) * PLANET_ORBIT_RADIUS;
-                planet.y = centerY + Math.sin(angle) * PLANET_ORBIT_RADIUS;
+                planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
+                planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
 
                 drawCircle(planet.color, planet.size, 50, 0, 0, false, 0, 0, { x: planet.x, y: planet.y });
             }
@@ -228,7 +202,7 @@
             air: { color: "#e0f7ff", speed: 70, size: 8 }
         };
 
-        //MOUVEMENTS
+        //MOVEMENTS
         const MOVEMENT_TYPES = ["straight", "wave", "zigzag", "spiral"];
         const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
         const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
@@ -267,9 +241,6 @@
             }
 
             //MOVE
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
             for (let i = enemies.length - 1; i >= 0; i--) {
                 const enemy = enemies[i];
 
@@ -296,8 +267,8 @@
                 const dirX = Math.cos(enemy.angle);
                 const dirY = Math.sin(enemy.angle);
 
-                enemy.x = centerX + dirX * enemy.distance - dirY * sideOffset;
-                enemy.y = centerY + dirY * enemy.distance + dirX * sideOffset;
+                enemy.x = center.x + dirX * enemy.distance - dirY * sideOffset;
+                enemy.y = center.y + dirY * enemy.distance + dirX * sideOffset;
             }
         }
 
