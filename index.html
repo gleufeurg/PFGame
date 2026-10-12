@@ -39,14 +39,14 @@
             color: #7df9ff;
         }
 
-        #topBar { /*en haut au centre : chronomètre + bouton "passer le temps"*/
+        #topBar { /*en haut au centre : le chronomètre est pile au centre, le bouton est collé à sa gauche*/
             position: fixed;
             top: 12px;
             left: 50%;
-            transform: translateX(-50%); /*centre la barre sur sa position*/
+            transform: translateX(-50%); /*centre la barre (donc le chrono) sur sa position*/
+            height: 46px;
             display: flex;
             align-items: center;
-            gap: 14px;
         }
 
         #runTimeDisplay {
@@ -57,6 +57,8 @@
         }
 
         #skipTimeButton {
+            position: absolute; /*sorti du centrage : seul le chrono compte pour centrer la barre*/
+            right: calc(100% + 14px); /*à 14px à gauche du chrono*/
             padding: 10px 20px;
             border: 1px solid #ffffff88;
             border-radius: 26px;
@@ -87,6 +89,16 @@
 
         #toast.hiddenToast {
             opacity: 0;
+        }
+
+        @media (max-width: 600px) { /*petit écran : on descend la barre sous l'or et l'XP pour ne pas les recouvrir*/
+            #topBar {
+                top: 64px;
+            }
+
+            #toast {
+                top: 124px;
+            }
         }
 
         #hint { /*petite aide en bas de l'écran*/
@@ -356,8 +368,8 @@
 <body>
     <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
     <div id="topBar">
-        <span id="runTimeDisplay">0:00</span>
         <button id="skipTimeButton" title="Passer le temps (touche T)"></button>
+        <span id="runTimeDisplay">0:00</span>
     </div>
     <div id="toast" class="hiddenToast"></div>
     <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
