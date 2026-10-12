@@ -49,6 +49,31 @@
             pointer-events: none;
         }
 
+        #settingsButton { /*roue crantée en haut à droite*/
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            z-index: 10; /*toujours au-dessus des autres menus*/
+            width: 44px;
+            height: 44px;
+            padding: 8px;
+            border: 1px solid #ffffff55;
+            border-radius: 50%;
+            background-color: #0b0b2ecc;
+            color: white;
+            cursor: pointer;
+        }
+
+        #settingsButton:hover {
+            border-color: white;
+        }
+
+        #settingsButton svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor; /*l'icône prend la couleur du texte du bouton*/
+        }
+
         /*////////////////////
           ////PANNEAUX (menus)
           ////////////////////*/
@@ -245,6 +270,27 @@
             text-align: left;
         }
 
+        /*SETTINGS*/
+        #settingsPanel .panel {
+            max-width: 420px;
+        }
+
+        .settingRow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        #volumeSlider {
+            flex: 1;
+        }
+
+        .smallText {
+            font-size: 13px;
+            color: #aaaacc;
+        }
+
         @media (max-width: 700px) { /*petits écrans : le projet passe au-dessus de l'arbre*/
             #skillTreePanel .panel {
                 flex-direction: column;
@@ -260,6 +306,9 @@
 <body>
     <div id="hud">Or : <span id="gold">0</span><br>XP : <span id="xp">0</span></div>
     <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
+    <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
+    </button>
     <canvas id="game"></canvas>
 
     <!-- SKILL TREE : s'ouvre quand on clique sur une planète -->
@@ -300,6 +349,24 @@
                     LinkedIn / Portfolio : ...
                 </div>
             </section>
+        </div>
+    </div>
+
+    <!-- PARAMÈTRES : roue crantée en haut à droite, ou touche Échap -->
+    <div id="settingsPanel" class="overlay hidden">
+        <div class="panel">
+            <h2>Paramètres</h2>
+            <div class="settingRow">
+                <label for="volumeSlider">Volume</label>
+                <input type="range" id="volumeSlider" min="0" max="100" step="1">
+                <span id="volumeValue"></span>
+            </div>
+            <div class="settingRow">
+                <input type="checkbox" id="muteCheckbox">
+                <label for="muteCheckbox">Couper le son</label>
+            </div>
+            <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
+            <p class="smallText">Échap : ouvrir / fermer ce menu</p>
         </div>
     </div>
 
@@ -478,8 +545,14 @@
         let playerHealth = 0;                     // mis à la vie max au démarrage
         let playerHitTimer = 0;
         let isGameOver = false;
-        let isPaused = false;
-        const MIN_DAMAGE_TAKEN = 0.1;             // même avec beaucoup d'armure, un coup fait au moins ça                     // true quand un skill tree est ouvert
+        let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
+        let isSettingsOpen = false;
+        const MIN_DAMAGE_TAKEN = 0.1;             // même avec beaucoup d'armure, un coup fait au moins ça
+
+        //Le jeu est en pause tant qu'un des menus est ouvert
+        function updatePause() {
+            isPaused = isSettingsOpen || currentTree !== null;
+        }
 
         function damagePlayer(amount) {
             playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount - playerStats.damageReduction); //on prend toujours un minimum de dégâts
@@ -488,7 +561,10 @@
             if (playerHealth <= 0) {
                 playerHealth = 0;
                 isGameOver = true;
+                playSound("gameOver");
                 openGameOver();
+            } else {
+                playSound("playerHit");
             }
         }
 
@@ -612,14 +688,20 @@
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, damage: 1, health: 3, gold: 1, xp: 1 },
-            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, damage: 2, health: 2, gold: 1, xp: 1 },
-            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, damage: 1.5, health: 5, gold: 1, xp: 1 },
-            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, damage: 0.5, health: 1, gold: 1, xp: 1 }
+            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, health: 3, gold: 1, xp: 1 },
+            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, health: 2, gold: 1, xp: 1 },
+            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, health: 5, gold: 1, xp: 1 },
+            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, health: 1, gold: 1, xp: 1 }
         };
 
+        //DÉGÂTS : un ennemi qui touche le joueur fait (ses PV restants / ENEMY_DAMAGE_DIVIDER) dégâts
+        const ENEMY_DAMAGE_DIVIDER = 10;
+
         //MOVEMENTS
-        const MOVEMENT_TYPES = ["straight", "wave", "zigzag", "spiral"];
+        const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
+        const SPECIAL_MOVEMENT_TYPES = ["wave", "zigzag", "spiral"];
+        const SPECIAL_OUTLINE_COLOR = "#ffe14d"; // contour jaune des ennemis à mouvement spécial
+        const SPECIAL_GLOW = 12;              // force de la lueur autour d'eux
         const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
         const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
         const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
@@ -640,11 +722,10 @@
 
             enemies.push({
                 type: type,
-                movement: pickRandom(MOVEMENT_TYPES),
+                movement: Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight",
                 color: stats.color,
                 speed: stats.speed,
                 size: size,
-                damage: stats.damage,
                 health: stats.health,
                 gold: stats.gold,
                 xp: stats.xp,
@@ -675,7 +756,7 @@
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
                     enemies.splice(i, 1);
-                    damagePlayer(enemy.damage);
+                    damagePlayer(enemy.health / ENEMY_DAMAGE_DIVIDER);
                     if (isGameOver) {
                         return; //la partie est finie, on arrête de bouger les ennemis
                     }
@@ -704,7 +785,15 @@
 
         function drawEnemies() {
             for (const enemy of enemies) {
-                drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
+                if (enemy.movement === "straight") {
+                    drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
+                } else {
+                    //Mouvement spécial : contour jaune un peu plus épais + lueur (shadowBlur = flou de l'ombre, shadowColor = sa couleur)
+                    ctx.shadowColor = SPECIAL_OUTLINE_COLOR;
+                    ctx.shadowBlur = SPECIAL_GLOW;
+                    drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
+                    ctx.shadowBlur = 0; //on coupe la lueur pour ne pas l'appliquer au reste
+                }
             }
         }
 
@@ -749,6 +838,9 @@
                 enemies.splice(index, 1);
                 gainRewards(enemy.gold, enemy.xp);
                 healPlayer(playerStats.lifeOnKill);
+                playSound("enemyKill");
+            } else {
+                playSound("enemyHit");
             }
         }
 
@@ -1012,8 +1104,9 @@
         let currentTree = null;
 
         function openSkillTree(tree) {
-            isPaused = true;
             currentTree = tree;
+            updatePause();
+            playSound("menuOpen");
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
@@ -1026,7 +1119,8 @@
         function closeSkillTree() {
             skillTreePanel.classList.add("hidden");
             currentTree = null;
-            isPaused = false;
+            updatePause();
+            playSound("menuClose");
         }
 
         function renderSkillTree() {
@@ -1085,8 +1179,10 @@
         function unlockNode(node) {
             if (getNodeState(currentTree, node) !== "available" || xp < node.cost) {
                 showNodeInfo(node);
+                playSound("denied");
                 return;
             }
+            playSound("buy");
             xp -= node.cost;
             node.unlocked = true;
             refreshStats();
@@ -1157,6 +1253,7 @@
             if (item.level >= item.maxLevel || gold < cost) {
                 return;
             }
+            playSound("buy");
             gold -= cost;
             item.level++;
             refreshStats();
@@ -1174,18 +1271,185 @@
             fireTimer = 0;
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
+            playSound("menuClose");
         }
 
         document.getElementById("restartButton").addEventListener("click", restartGame);
 
         document.addEventListener("keydown", function (event) {
-            if (event.key === "r" && isGameOver) {
+            if (event.key === "r" && isGameOver && !isSettingsOpen) {
                 restartGame();
             }
-            if (event.key === "Escape" && isPaused) {
-                closeSkillTree();
+            //Échap : ferme le menu ouvert, sinon ouvre les paramètres
+            if (event.key === "Escape") {
+                if (isSettingsOpen) {
+                    closeSettings();
+                } else if (currentTree !== null) {
+                    closeSkillTree();
+                } else {
+                    openSettings();
+                }
             }
         });
+
+
+        /////////////////////
+        ////SOUNDS///////////  Sons créés directement par le navigateur (Web Audio), pas besoin de fichiers audio
+        /////////////////////
+        const soundSettings = { volume: 0.5, isMuted: false };
+        const SOUND_MIN_GAP = 0.04;      // secondes minimum entre 2 fois le même son (évite le bruit quand plein de balles touchent)
+        let audioContext = null;         // le "moteur audio", créé au premier clic/touche (les navigateurs l'exigent)
+        let masterGain = null;           // le bouton de volume général
+        const lastSoundTimes = {};
+
+        function initAudio() {
+            if (audioContext !== null) {
+                return;
+            }
+            audioContext = new AudioContext();
+            masterGain = audioContext.createGain();
+            masterGain.connect(audioContext.destination); //destination = les haut-parleurs
+            applyVolume();
+        }
+
+        function applyVolume() {
+            if (masterGain !== null) {
+                masterGain.gain.value = soundSettings.isMuted ? 0 : soundSettings.volume;
+            }
+        }
+
+        //Joue une note : fréquence de départ -> fréquence d'arrivée (en Hz), pendant "duration" secondes
+        //type = forme du son : "sine" (doux), "triangle", "square" (rétro), "sawtooth" (râpeux)
+        //delay = attendre X secondes avant de la jouer (pour enchaîner plusieurs notes)
+        function playTone(startFrequency, endFrequency, duration, type, volume, delay = 0) {
+            const startTime = audioContext.currentTime + delay;
+            const oscillator = audioContext.createOscillator(); //génère le son
+            const gain = audioContext.createGain();             //règle son volume
+
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(startFrequency, startTime);
+            oscillator.frequency.exponentialRampToValueAtTime(endFrequency, startTime + duration);
+            gain.gain.setValueAtTime(volume, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration); //le son s'éteint en douceur
+
+            oscillator.connect(gain);
+            gain.connect(masterGain);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        }
+
+        //La liste des sons du jeu : modifie les nombres pour changer les sons
+        const SOUNDS = {
+            playerHit: function () { playTone(200, 60, 0.25, "square", 0.25); },
+            enemyHit: function () { playTone(700, 450, 0.05, "triangle", 0.06); },
+            enemyKill: function () { playTone(880, 1400, 0.1, "sine", 0.12); },
+            gameOver: function () { playTone(440, 110, 0.9, "sawtooth", 0.2); },
+            menuOpen: function () { playTone(440, 660, 0.12, "sine", 0.2); },
+            menuClose: function () { playTone(660, 440, 0.12, "sine", 0.2); },
+            buy: function () { playTone(660, 660, 0.08, "square", 0.12); playTone(990, 990, 0.12, "square", 0.12, 0.08); },
+            denied: function () { playTone(160, 120, 0.15, "sawtooth", 0.15); },
+            click: function () { playTone(1000, 1000, 0.03, "square", 0.06); }
+        };
+
+        function playSound(name) {
+            if (audioContext === null || soundSettings.isMuted || soundSettings.volume === 0) {
+                return;
+            }
+            const now = audioContext.currentTime;
+            if (lastSoundTimes[name] !== undefined && now - lastSoundTimes[name] < SOUND_MIN_GAP) {
+                return;
+            }
+            lastSoundTimes[name] = now;
+            SOUNDS[name]();
+        }
+
+        //Le navigateur n'autorise le son qu'après une action du joueur
+        document.addEventListener("pointerdown", initAudio);
+        document.addEventListener("keydown", initAudio);
+
+
+        /////////////////////
+        ////SETTINGS/////////
+        /////////////////////
+        const settingsPanel = document.getElementById("settingsPanel");
+        const volumeSlider = document.getElementById("volumeSlider");
+        const volumeValue = document.getElementById("volumeValue");
+        const muteCheckbox = document.getElementById("muteCheckbox");
+
+        //Sauvegarde du son dans le navigateur (localStorage), pour le retrouver la prochaine fois
+        function loadSoundSettings() {
+            try {
+                const saved = JSON.parse(localStorage.getItem("soundSettings"));
+                if (saved !== null) {
+                    soundSettings.volume = saved.volume;
+                    soundSettings.isMuted = saved.isMuted;
+                }
+            } catch (error) {
+                //localStorage indisponible (navigation privée...) : on garde les valeurs par défaut
+            }
+        }
+
+        function saveSoundSettings() {
+            try {
+                localStorage.setItem("soundSettings", JSON.stringify(soundSettings));
+            } catch (error) {
+            }
+        }
+
+        function renderSettings() {
+            volumeSlider.value = Math.round(soundSettings.volume * 100);
+            volumeValue.textContent = Math.round(soundSettings.volume * 100) + "%";
+            muteCheckbox.checked = soundSettings.isMuted;
+        }
+
+        function openSettings() {
+            isSettingsOpen = true;
+            updatePause();
+            renderSettings();
+            settingsPanel.classList.remove("hidden");
+            playSound("menuOpen");
+        }
+
+        function closeSettings() {
+            isSettingsOpen = false;
+            updatePause();
+            settingsPanel.classList.add("hidden");
+            playSound("menuClose");
+        }
+
+        document.getElementById("settingsButton").addEventListener("click", function () {
+            if (isSettingsOpen) {
+                closeSettings();
+            } else {
+                openSettings();
+            }
+        });
+
+        document.getElementById("closeSettingsButton").addEventListener("click", closeSettings);
+
+        settingsPanel.addEventListener("click", function (event) {
+            if (event.target === settingsPanel) {
+                closeSettings();
+            }
+        });
+
+        //"input" = à chaque mouvement du curseur
+        volumeSlider.addEventListener("input", function () {
+            soundSettings.volume = volumeSlider.value / 100;
+            applyVolume();
+            renderSettings();
+            saveSoundSettings();
+            playSound("click"); //petit son pour entendre le nouveau volume
+        });
+
+        muteCheckbox.addEventListener("change", function () {
+            soundSettings.isMuted = muteCheckbox.checked;
+            applyVolume();
+            saveSoundSettings();
+            playSound("click");
+        });
+
+        loadSoundSettings();
 
 
         /////////////////////
