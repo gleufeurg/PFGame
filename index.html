@@ -34,12 +34,12 @@
         ////CANVAS///
         /////////////
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
-        const center = { x: canvas.width / 2, y: canvas.height / 2 };
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
         const bgColor = "#000017";
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        const center = { x: canvas.width / 2, y: canvas.height / 2 };
 
 
         function drawCanvas() {
