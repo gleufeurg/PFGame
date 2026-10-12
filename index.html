@@ -690,8 +690,17 @@
         const canvas = document.getElementById("game"); /*the game canvas that we will draw on*/
         const ctx = canvas.getContext("2d"); /*le pinceau du jeu, il permet de "dessiner"/de faire les visuels du jeu*/
         const bgColor = "#000017";
-        const OUTLINE_WIDTH = 1;        // contour fin des planètes et des ennemis, en pixels
-        const OUTLINE_COLOR = "white";
+        const OUTLINE_WIDTH = 2.5;      // épaisseur du contour des formes (joueur, planètes, ennemis, balles), en pixels
+        const OUTLINE_DARKNESS = 0.45;  // le contour = la couleur de la forme, assombrie (0 = noir, 1 = même couleur)
+        const OUTLINE_COLOR = "white";  // contour du chiffre de vie
+
+        //Assombrit une couleur "#rrggbb" : chaque composante (rouge, vert, bleu) est multipliée par factor
+        function darkenColor(hex, factor) {
+            const red = Math.round(parseInt(hex.slice(1, 3), 16) * factor);
+            const green = Math.round(parseInt(hex.slice(3, 5), 16) * factor);
+            const blue = Math.round(parseInt(hex.slice(5, 7), 16) * factor);
+            return "rgb(" + red + ", " + green + ", " + blue + ")";
+        }
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -844,6 +853,7 @@
         //LUEUR : un petit dégradé rond pré-dessiné une fois par couleur, puis recopié (beaucoup plus rapide que shadowBlur)
         const glowSprites = {};
         const GLOW_SPRITE_SIZE = 64;
+        const GLOW_INTENSITY = 0.5;          // force de TOUTES les lueurs du jeu (0 = aucune, 1 = fort)
 
         //Transforme "#ff8800" en "rgba(255, 136, 0, alpha)"
         function hexToRgba(hex, alpha) {
@@ -873,7 +883,7 @@
 
         //Dessine une lueur de rayon "radius" autour de (x, y)
         function drawGlow(color, x, y, radius, alpha) {
-            ctx.globalAlpha = alpha;
+            ctx.globalAlpha = alpha * GLOW_INTENSITY;
             ctx.drawImage(getGlowSprite(color), x - radius, y - radius, radius * 2, radius * 2);
             ctx.globalAlpha = 1;
         }
@@ -1045,10 +1055,6 @@
             const centerX = location.x;
             const centerY = location.y;
 
-            if (outline) {
-                drawCircle(outlineColor, outlineWidth, count, rotationSpeed, rotationalDirection, false, 0, outlineColor, location);
-            }
-
             //CIRCLE
             ctx.beginPath();
             for (let i = 0; i < count; i++) {
@@ -1058,8 +1064,17 @@
                 const y = centerY + Math.sin(angle) * radius;
                 ctx.lineTo(x, y);
             }
+            ctx.closePath(); //relie le dernier point au premier (nécessaire pour un contour propre)
             ctx.fillStyle = color;
             ctx.fill();
+
+            //CONTOUR : un trait qui suit le bord de la forme (outlineWidth = son épaisseur)
+            if (outline) {
+                ctx.lineWidth = outlineWidth;
+                ctx.lineJoin = "round"; //coins arrondis : plus doux sur les carrés
+                ctx.strokeStyle = outlineColor;
+                ctx.stroke();
+            }
         }
 
         //PLAYER HEALTH
@@ -1132,11 +1147,11 @@
         function drawPlayer() {
             //Aura qui "respire" doucement autour du joueur
             const breathing = 0.5 + 0.15 * Math.sin(visualTime * 2);
-            drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 3, breathing);
+            drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 2.5, breathing);
 
             const color = playerHitTimer > 0 ? "white" : "#ffe680";
             //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
-            drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
+            drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, OUTLINE_WIDTH + 0.5, darkenColor("#ffe680", OUTLINE_DARKNESS)); //Centered shape is the player
             drawPlayerHealth();
             drawShield();
         }
@@ -1211,6 +1226,7 @@
                     //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
                     name: tree.name,
                     color: tree.color,
+                    outlineColor: darkenColor(tree.color, OUTLINE_DARKNESS),
                     size: PLANET_SIZE,
                     tree: tree,
                     x: 0,
@@ -1236,9 +1252,9 @@
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
 
-                const glowStrength = planet === hoveredPlanet ? 0.9 : 0.45;
-                drawGlow(planet.color, planet.x, planet.y, planet.size * 2.8, glowStrength);
-                drawCircle(planet.color, planet.size, 4, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
+                const glowStrength = planet === hoveredPlanet ? 1 : 0.4;
+                drawGlow(planet.color, planet.x, planet.y, planet.size * 2.4, glowStrength);
+                drawCircle(planet.color, planet.size, 4, 0, 0, true, OUTLINE_WIDTH, planet.outlineColor, { x: planet.x, y: planet.y });
             }
         }
 
@@ -1455,6 +1471,7 @@
                 type: type,
                 movement: Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight",
                 color: stats.color,
+                outlineColor: darkenColor(stats.color, OUTLINE_DARKNESS),
                 speed: stats.speed,
                 size: size,
                 health: stats.health,
@@ -1523,12 +1540,12 @@
                 const bodyColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
 
                 if (enemy.movement === "straight") {
-                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.4, 0.35);
-                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, location);
+                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2, 0.3);
+                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, OUTLINE_WIDTH, enemy.outlineColor, location);
                 } else {
                     //Mouvement spécial : contour jaune un peu plus épais + lueur jaune
-                    drawGlow(SPECIAL_OUTLINE_COLOR, enemy.x, enemy.y, enemy.size + SPECIAL_GLOW * 2, 0.6);
-                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, location);
+                    drawGlow(SPECIAL_OUTLINE_COLOR, enemy.x, enemy.y, enemy.size + SPECIAL_GLOW * 2, 0.8);
+                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, location);
                 }
 
                 //Petit reflet en haut à gauche : donne du volume (effet "bille")
@@ -1550,6 +1567,7 @@
         const BASE_BULLET_SPEED = 400;       // pixels par seconde (multiplié par playerStats.bulletSpeed)
         const BULLET_SIZE = 4;
         const BULLET_COLOR = "#fff6b0";
+        const BULLET_OUTLINE_COLOR = darkenColor(BULLET_COLOR, OUTLINE_DARKNESS);
         let fireTimer = 0;
 
         //Renvoie les ennemis à portée, du plus proche au plus loin
@@ -1659,7 +1677,7 @@
                 ctx.globalAlpha = 1;
 
                 drawGlow(BULLET_COLOR, bullet.x, bullet.y, BULLET_SIZE * 3, 0.6);
-                drawCircle(BULLET_COLOR, BULLET_SIZE, 12, 0, 0, true, BULLET_SIZE + OUTLINE_WIDTH, OUTLINE_COLOR, { x: bullet.x, y: bullet.y });
+                drawCircle(BULLET_COLOR, BULLET_SIZE, 12, 0, 0, true, 1.5, BULLET_OUTLINE_COLOR, { x: bullet.x, y: bullet.y });
             }
         }
 
