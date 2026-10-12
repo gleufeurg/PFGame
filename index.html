@@ -274,6 +274,7 @@
         }
 
         .overlay { /*fond sombre qui recouvre tout l'écran*/
+            backdrop-filter: blur(4px); /*floute le jeu derrière le menu*/
             position: fixed;
             z-index: 2; /*devant le chrono et son menu*/
             inset: 0; /*= top: 0; right: 0; bottom: 0; left: 0;*/
@@ -286,8 +287,9 @@
         }
 
         .panel { /*la "fenêtre" au milieu de l'overlay*/
-            background-color: #0b0b2e;
-            border: 1px solid white;
+            background: linear-gradient(180deg, #16163f, #0b0b2e); /*léger dégradé vertical*/
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            border: 1px solid #ffffff55;
             border-radius: 12px;
             padding: 24px;
             width: calc(100% - 32px);
@@ -564,8 +566,19 @@
             margin: 16px 0;
         }
 
-        #volumeSlider {
+        .settingRow label.volumeLabel {
+            width: 120px;
+        }
+
+        .settingRow input[type="range"] {
             flex: 1;
+            accent-color: #ff8a1f; /*couleur du curseur*/
+        }
+
+        .volumeValue {
+            width: 44px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
         }
 
         .smallText {
@@ -660,11 +673,7 @@
     <div id="settingsPanel" class="overlay hidden">
         <div class="panel">
             <h2>Paramètres</h2>
-            <div class="settingRow">
-                <label for="volumeSlider">Volume</label>
-                <input type="range" id="volumeSlider" min="0" max="100" step="1">
-                <span id="volumeValue"></span>
-            </div>
+            <div id="volumeSliders"></div>
             <div class="settingRow">
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
@@ -689,17 +698,26 @@
         const center = { x: canvas.width / 2, y: canvas.height / 2 };
 
 
-        function drawCanvas() {
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        let visualTime = 0;   // temps "réel" pour les animations du décor (continue même en pause)
 
-            drawGalaxy();
+        function drawCanvas() {
+            //Petite secousse de l'écran quand le joueur est touché : on décale tout le dessin au hasard
+            ctx.save(); //mémorise l'état du pinceau (position, couleurs...) pour le remettre après
+            if (screenShakeTimer > 0) {
+                const strength = SCREEN_SHAKE_STRENGTH * (screenShakeTimer / SCREEN_SHAKE_DURATION);
+                ctx.translate(randomBetween(-strength, strength), randomBetween(-strength, strength)); //translate = décale le pinceau
+            }
+
+            ctx.drawImage(backgroundCanvas, 0, 0); //le fond (dégradé + nébuleuses), dessiné une seule fois au démarrage
             drawStars();
             drawRange();
             drawEnemies();
             drawBullets();
+            drawEffects();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
             drawPlayer();
+
+            ctx.restore(); //on annule la secousse pour la prochaine image
         }
 
 
@@ -711,24 +729,78 @@
         const STAR_MAX_SIZE = 4;
         const STAR_COUNT = 200; /*The amount of stars displayed*/
 
+        const STAR_COLORS = ["#ffffff", "#cfe3ff", "#fff1c9", "#e6d6ff"]; // blanc, bleuté, doré, lilas
+        const STAR_DRIFT_SPEED = 4;                 // les étoiles glissent très lentement vers la gauche (pixels/s)
+
         function createStars() {
             for (let i = 0; i < STAR_COUNT; i++) {
                 stars.push({
                     x: Math.random() * STAR_COORDINATES.x,
                     y: Math.random() * STAR_COORDINATES.y,
-                    size: Math.random() * STAR_MAX_SIZE
+                    size: Math.random() * STAR_MAX_SIZE,
+                    color: pickRandom(STAR_COLORS),
+                    twinkleSpeed: randomBetween(0.5, 2),        // vitesse du scintillement
+                    twinklePhase: Math.random() * Math.PI * 2,  // décalage : elles ne scintillent pas toutes en même temps
+                    depth: randomBetween(0.3, 1)                // profondeur : les lointaines bougent moins (effet de parallaxe)
                 });
             }
         }
 
-        function drawGalaxy() {
-            const galaxyGradient = ctx.createLinearGradient(0, 0, canvas.height, canvas.width);
+        //FOND : dessiné UNE SEULE FOIS dans un canvas caché (backgroundCanvas), puis recopié à chaque image.
+        //C'est beaucoup plus rapide que de recalculer tous ces dégradés 60 fois par seconde.
+        const backgroundCanvas = document.createElement("canvas");
+        const NEBULAS = [ // nuages de couleur : position (en % de l'écran), taille (en % de la diagonale), couleur
+            { x: 0.2, y: 0.25, size: 0.45, color: "rgba(110, 60, 255, 0.22)" },
+            { x: 0.8, y: 0.7, size: 0.5, color: "rgba(30, 180, 220, 0.16)" },
+            { x: 0.65, y: 0.15, size: 0.3, color: "rgba(255, 80, 170, 0.12)" },
+            { x: 0.15, y: 0.85, size: 0.35, color: "rgba(60, 220, 160, 0.10)" }
+        ];
+
+        function createBackground() {
+            backgroundCanvas.width = canvas.width;
+            backgroundCanvas.height = canvas.height;
+            const bgCtx = backgroundCanvas.getContext("2d");
+            const diagonal = Math.hypot(canvas.width, canvas.height);
+
+            //1. Base : un dégradé rond, un peu plus clair au centre
+            const baseGradient = bgCtx.createRadialGradient(center.x, center.y, 0, center.x, center.y, diagonal / 2);
+            baseGradient.addColorStop(0, "#14143f");
+            baseGradient.addColorStop(1, bgColor);
+            bgCtx.fillStyle = baseGradient;
+            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            //2. Nébuleuses : des dégradés ronds colorés, transparents sur les bords
+            for (const nebula of NEBULAS) {
+                const x = nebula.x * canvas.width;
+                const y = nebula.y * canvas.height;
+                const radius = nebula.size * diagonal;
+                const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
+                gradient.addColorStop(0, nebula.color);
+                gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+                bgCtx.fillStyle = gradient;
+                bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            //3. Ta voie lactée
+            drawGalaxy(bgCtx);
+
+            //4. Vignette : les bords de l'écran plus sombres, pour attirer l'œil au centre
+            const vignette = bgCtx.createRadialGradient(center.x, center.y, diagonal * 0.25, center.x, center.y, diagonal * 0.6);
+            vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+            vignette.addColorStop(1, "rgba(0, 0, 10, 0.6)");
+            bgCtx.fillStyle = vignette;
+            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        //targetCtx = le canvas sur lequel dessiner (ici le fond caché)
+        function drawGalaxy(targetCtx) {
+            const galaxyGradient = targetCtx.createLinearGradient(0, 0, canvas.height, canvas.width);
             galaxyGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
             galaxyGradient.addColorStop(0.5, "rgba(85, 0, 255, 0.3)")
             galaxyGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
 
-            ctx.fillStyle = galaxyGradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            targetCtx.fillStyle = galaxyGradient;
+            targetCtx.fillRect(0, 0, canvas.width, canvas.height)
         }
 
         //PORTÉE : un fin cercle rouge autour du joueur = jusqu'où il peut tirer
@@ -739,14 +811,148 @@
             ctx.arc(center.x, center.y, playerStats.range, 0, Math.PI * 2);
             ctx.strokeStyle = RANGE_COLOR;
             ctx.lineWidth = 1;
+            ctx.setLineDash([8, 10]);                 //pointillés : 8 px de trait, 10 px de vide
+            ctx.lineDashOffset = -visualTime * 12;    //les pointillés tournent doucement
             ctx.stroke();
+            ctx.setLineDash([]);                      //on remet un trait plein pour la suite
         }
 
         function drawStars() {
             for (const star of stars) {
-                ctx.fillStyle = "white";
+                //Glisse vers la gauche, et réapparaît à droite quand elle sort de l'écran
+                star.x -= STAR_DRIFT_SPEED * star.depth * frameTime;
+                if (star.x < -STAR_MAX_SIZE) {
+                    star.x = canvas.width;
+                }
+                //Scintillement : l'opacité monte et descend avec un sinus
+                const twinkle = 0.55 + 0.45 * Math.sin(visualTime * star.twinkleSpeed + star.twinklePhase);
+                ctx.globalAlpha = twinkle * star.depth;
+                ctx.fillStyle = star.color;
                 ctx.fillRect(star.x, star.y, star.size, star.size);
+                //Les plus grosses étoiles ont un petit halo
+                if (star.size > 3) {
+                    drawGlow(star.color, star.x + star.size / 2, star.y + star.size / 2, star.size * 3, 0.5 * twinkle);
+                }
             }
+            ctx.globalAlpha = 1; //globalAlpha = opacité de tout ce qu'on dessine ensuite (1 = opaque)
+        }
+
+
+        //////////////////////
+        ////GLOW & EFFECTS////  Lueurs, particules et ondes de choc
+        //////////////////////
+        //LUEUR : un petit dégradé rond pré-dessiné une fois par couleur, puis recopié (beaucoup plus rapide que shadowBlur)
+        const glowSprites = {};
+        const GLOW_SPRITE_SIZE = 64;
+
+        //Transforme "#ff8800" en "rgba(255, 136, 0, alpha)"
+        function hexToRgba(hex, alpha) {
+            const red = parseInt(hex.slice(1, 3), 16);   //parseInt(texte, 16) = lit un nombre en hexadécimal
+            const green = parseInt(hex.slice(3, 5), 16);
+            const blue = parseInt(hex.slice(5, 7), 16);
+            return "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+        }
+
+        function getGlowSprite(color) {
+            if (glowSprites[color] === undefined) {
+                const sprite = document.createElement("canvas");
+                sprite.width = GLOW_SPRITE_SIZE;
+                sprite.height = GLOW_SPRITE_SIZE;
+                const spriteCtx = sprite.getContext("2d");
+                const half = GLOW_SPRITE_SIZE / 2;
+                const gradient = spriteCtx.createRadialGradient(half, half, 0, half, half, half);
+                gradient.addColorStop(0, hexToRgba(color, 0.9));
+                gradient.addColorStop(0.35, hexToRgba(color, 0.35));
+                gradient.addColorStop(1, hexToRgba(color, 0));
+                spriteCtx.fillStyle = gradient;
+                spriteCtx.fillRect(0, 0, GLOW_SPRITE_SIZE, GLOW_SPRITE_SIZE);
+                glowSprites[color] = sprite;
+            }
+            return glowSprites[color];
+        }
+
+        //Dessine une lueur de rayon "radius" autour de (x, y)
+        function drawGlow(color, x, y, radius, alpha) {
+            ctx.globalAlpha = alpha;
+            ctx.drawImage(getGlowSprite(color), x - radius, y - radius, radius * 2, radius * 2);
+            ctx.globalAlpha = 1;
+        }
+
+        //PARTICULES : petits éclats quand un ennemi meurt ou est touché
+        const particles = [];
+        const MAX_PARTICLES = 500;          // au-delà, on n'en crée plus (pour ne pas ralentir le jeu)
+
+        function spawnParticles(x, y, color, count, speed) {
+            for (let i = 0; i < count && particles.length < MAX_PARTICLES; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const particleSpeed = randomBetween(speed * 0.3, speed);
+                const life = randomBetween(0.3, 0.7);
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * particleSpeed, // vitesse horizontale
+                    vy: Math.sin(angle) * particleSpeed, // vitesse verticale
+                    size: randomBetween(1.5, 3.5),
+                    color: color,
+                    life: life,
+                    maxLife: life
+                });
+            }
+        }
+
+        //ONDES DE CHOC : un anneau qui grandit et s'efface (joueur touché, bouclier...)
+        const shockwaves = [];
+
+        function spawnShockwave(x, y, color, maxRadius) {
+            shockwaves.push({ x: x, y: y, color: color, radius: 0, maxRadius: maxRadius, life: 0.5, maxLife: 0.5 });
+        }
+
+        //SECOUSSE DE L'ÉCRAN
+        const SCREEN_SHAKE_DURATION = 0.25;
+        const SCREEN_SHAKE_STRENGTH = 4;    // pixels max (petit : on reste "cosy")
+        let screenShakeTimer = 0;
+
+        function updateEffects(deltaTime) {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                particle.x += particle.vx * deltaTime;
+                particle.y += particle.vy * deltaTime;
+                particle.vx *= 0.94; //freine petit à petit
+                particle.vy *= 0.94;
+                particle.life -= deltaTime;
+                if (particle.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            for (let i = shockwaves.length - 1; i >= 0; i--) {
+                const wave = shockwaves[i];
+                wave.life -= deltaTime;
+                wave.radius = wave.maxRadius * (1 - wave.life / wave.maxLife);
+                if (wave.life <= 0) {
+                    shockwaves.splice(i, 1);
+                }
+            }
+            for (const enemy of enemies) {
+                enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
+            }
+            screenShakeTimer -= deltaTime;
+        }
+
+        function drawEffects() {
+            for (const particle of particles) {
+                ctx.globalAlpha = particle.life / particle.maxLife; //s'efface en fin de vie
+                ctx.fillStyle = particle.color;
+                ctx.fillRect(particle.x - particle.size / 2, particle.y - particle.size / 2, particle.size, particle.size);
+            }
+            for (const wave of shockwaves) {
+                ctx.globalAlpha = wave.life / wave.maxLife;
+                ctx.beginPath();
+                ctx.arc(wave.x, wave.y, wave.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = wave.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
         }
 
 
@@ -897,11 +1103,14 @@
                 isShieldReady = false;
                 shieldTimer = 0;
                 playSound("shieldBlock");
+                spawnShockwave(center.x, center.y, SHIELD_COLOR, PLAYER_RADIUS * 3);
                 return;
             }
 
             playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount); //on prend toujours au moins MIN_DAMAGE_TAKEN
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
+            screenShakeTimer = SCREEN_SHAKE_DURATION;
+            spawnShockwave(center.x, center.y, "#ff4d6d", PLAYER_RADIUS * 4);
 
             //La vie affichée est arrondie en dessous (9.9 -> 9) : sous 1 PV, on est donc à 0 -> mort
             if (playerHealth < 1) {
@@ -918,7 +1127,13 @@
             playerHealth = Math.min(playerStats.maxHealth, playerHealth + amount); //jamais au-dessus de la vie max
         }
 
+        const PLAYER_GLOW_COLOR = "#ffe680";
+
         function drawPlayer() {
+            //Aura qui "respire" doucement autour du joueur
+            const breathing = 0.5 + 0.15 * Math.sin(visualTime * 2);
+            drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 3, breathing);
+
             const color = playerHitTimer > 0 ? "white" : "#ffe680";
             //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
             drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, PLAYER_RADIUS + OUTLINE_WIDTH * 2, OUTLINE_COLOR); //Centered shape is the player
@@ -1004,7 +1219,16 @@
             }
         }
 
+        let hoveredPlanet = null;   // la planète sous la souris (elle brille plus fort)
+
         function drawPlanets() {
+            //L'orbite : un cercle très discret
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, PLANET_ORBIT_RADIUS, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
             for (let i = 0; i < planets.length; i++) {
                 const planet = planets[i];
                 const angle = planetOrbitalRotation + Math.PI * 2 / planets.length * i;
@@ -1012,6 +1236,8 @@
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
 
+                const glowStrength = planet === hoveredPlanet ? 0.9 : 0.45;
+                drawGlow(planet.color, planet.x, planet.y, planet.size * 2.8, glowStrength);
                 drawCircle(planet.color, planet.size, 4, 0, 0, true, planet.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: planet.x, y: planet.y });
             }
         }
@@ -1039,6 +1265,7 @@
         //Le curseur devient une main quand on survole une planète
         canvas.addEventListener("mousemove", function (event) {
             const planet = findPlanetAt(event.offsetX, event.offsetY);
+            hoveredPlanet = planet;
             canvas.style.cursor = planet !== null ? "pointer" : "default";
         });
 
@@ -1237,6 +1464,7 @@
                 distance: startDistance,
                 startDistance: startDistance,
                 time: 0,
+                hitTimer: 0,    // > 0 : l'ennemi vient d'être touché (il clignote en blanc)
                 x: 0,
                 y: 0
             });
@@ -1287,17 +1515,29 @@
             }
         }
 
+        const ENEMY_HIT_FLASH_DURATION = 0.08;
+
         function drawEnemies() {
             for (const enemy of enemies) {
+                const location = { x: enemy.x, y: enemy.y };
+                const bodyColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
+
                 if (enemy.movement === "straight") {
-                    drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
+                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.4, 0.35);
+                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH, OUTLINE_COLOR, location);
                 } else {
-                    //Mouvement spécial : contour jaune un peu plus épais + lueur (shadowBlur = flou de l'ombre, shadowColor = sa couleur)
-                    ctx.shadowColor = SPECIAL_OUTLINE_COLOR;
-                    ctx.shadowBlur = SPECIAL_GLOW;
-                    drawCircle(enemy.color, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, { x: enemy.x, y: enemy.y });
-                    ctx.shadowBlur = 0; //on coupe la lueur pour ne pas l'appliquer au reste
+                    //Mouvement spécial : contour jaune un peu plus épais + lueur jaune
+                    drawGlow(SPECIAL_OUTLINE_COLOR, enemy.x, enemy.y, enemy.size + SPECIAL_GLOW * 2, 0.6);
+                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, enemy.size + OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, location);
                 }
+
+                //Petit reflet en haut à gauche : donne du volume (effet "bille")
+                ctx.globalAlpha = 0.35;
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(enemy.x - enemy.size * 0.35, enemy.y - enemy.size * 0.35, enemy.size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
             }
         }
 
@@ -1337,8 +1577,11 @@
 
         function hitEnemy(enemy, index) {
             enemy.health -= playerStats.damage + playerStats.damageVs[enemy.type];
+            enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
+            spawnParticles(enemy.x, enemy.y, BULLET_COLOR, 3, 120);
 
             if (enemy.health <= 0) {
+                spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
                 enemies.splice(index, 1);
                 killsThisRun++;
                 gainRewards(enemy.gold, enemy.xp);
@@ -1401,8 +1644,21 @@
             }
         }
 
+        const BULLET_TRAIL_LENGTH = 12;   // longueur de la traînée derrière la balle, en pixels
+
         function drawBullets() {
             for (const bullet of bullets) {
+                //Traînée : une ligne qui part de la balle vers l'arrière
+                ctx.globalAlpha = 0.5;
+                ctx.strokeStyle = BULLET_COLOR;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(bullet.x, bullet.y);
+                ctx.lineTo(bullet.x - bullet.dirX * BULLET_TRAIL_LENGTH, bullet.y - bullet.dirY * BULLET_TRAIL_LENGTH);
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+
+                drawGlow(BULLET_COLOR, bullet.x, bullet.y, BULLET_SIZE * 3, 0.6);
                 drawCircle(BULLET_COLOR, BULLET_SIZE, 12, 0, 0, true, BULLET_SIZE + OUTLINE_WIDTH, OUTLINE_COLOR, { x: bullet.x, y: bullet.y });
             }
         }
@@ -1791,6 +2047,8 @@
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;
             bullets.length = 0;
+            particles.length = 0;
+            shockwaves.length = 0;
             enemySpawnTimer = 0;
             runTime = 0;
             fireTimer = 0;
@@ -1967,12 +2225,21 @@
         /////////////////////
         ////SOUNDS///////////  Sons créés directement par le navigateur (Web Audio), pas besoin de fichiers audio
         /////////////////////
-        const soundSettings = { volume: 0.5, isMuted: false };
+        //4 volumes réglables : général, interface (menus), effets du jeu, musique (de 0 à 1)
+        const soundSettings = { master: 0.6, ui: 0.8, sfx: 0.7, music: 0.5, isMuted: false };
+        const SOUND_CHANNELS = [
+            { key: "master", label: "Général" },
+            { key: "ui", label: "Interface" },
+            { key: "sfx", label: "Effets du jeu" },
+            { key: "music", label: "Musique" }
+        ];
         const SOUND_MIN_GAP = 0.04;      // secondes minimum entre 2 fois le même son (évite le bruit quand plein de balles touchent)
         let audioContext = null;         // le "moteur audio", créé au premier clic/touche (les navigateurs l'exigent)
-        let masterGain = null;           // le bouton de volume général
+        let masterGain = null;           // le volume général : tous les sons passent par lui
+        const channelGains = {};         // un volume par catégorie (ui, sfx, music), branchés sur masterGain
         const lastSoundTimes = {};
 
+        //Le chemin du son : son -> volume de sa catégorie -> volume général -> haut-parleurs
         function initAudio() {
             if (audioContext !== null) {
                 return;
@@ -1980,19 +2247,29 @@
             audioContext = new AudioContext();
             masterGain = audioContext.createGain();
             masterGain.connect(audioContext.destination); //destination = les haut-parleurs
+            for (const channel of ["ui", "sfx", "music"]) {
+                channelGains[channel] = audioContext.createGain();
+                channelGains[channel].connect(masterGain);
+            }
             applyVolume();
+            startMusic();
         }
 
         function applyVolume() {
-            if (masterGain !== null) {
-                masterGain.gain.value = soundSettings.isMuted ? 0 : soundSettings.volume;
+            if (masterGain === null) {
+                return;
+            }
+            masterGain.gain.value = soundSettings.isMuted ? 0 : soundSettings.master;
+            for (const channel of ["ui", "sfx", "music"]) {
+                channelGains[channel].gain.value = soundSettings[channel];
             }
         }
 
         //Joue une note : fréquence de départ -> fréquence d'arrivée (en Hz), pendant "duration" secondes
         //type = forme du son : "sine" (doux), "triangle", "square" (rétro), "sawtooth" (râpeux)
         //delay = attendre X secondes avant de la jouer (pour enchaîner plusieurs notes)
-        function playTone(startFrequency, endFrequency, duration, type, volume, delay = 0) {
+        //output = où envoyer le son (le volume de sa catégorie)
+        function playTone(startFrequency, endFrequency, duration, type, volume, delay, output) {
             const startTime = audioContext.currentTime + delay;
             const oscillator = audioContext.createOscillator(); //génère le son
             const gain = audioContext.createGain();             //règle son volume
@@ -2004,29 +2281,30 @@
             gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration); //le son s'éteint en douceur
 
             oscillator.connect(gain);
-            gain.connect(masterGain);
+            gain.connect(output);
             oscillator.start(startTime);
             oscillator.stop(startTime + duration);
         }
 
-        //La liste des sons du jeu : modifie les nombres pour changer les sons
+        //La liste des sons : category = "ui" (menus) ou "sfx" (jeu). Modifie les nombres pour changer les sons.
+        //play(out) reçoit la sortie de sa catégorie et la donne à playTone
         const SOUNDS = {
-            playerHit: function () { playTone(200, 60, 0.25, "square", 0.25); },
-            enemyHit: function () { playTone(700, 450, 0.05, "triangle", 0.06); },
-            enemyKill: function () { playTone(880, 1400, 0.1, "sine", 0.12); },
-            gameOver: function () { playTone(440, 110, 0.9, "sawtooth", 0.2); },
-            menuOpen: function () { playTone(440, 660, 0.12, "sine", 0.2); },
-            menuClose: function () { playTone(660, 440, 0.12, "sine", 0.2); },
-            buy: function () { playTone(660, 660, 0.08, "square", 0.12); playTone(990, 990, 0.12, "square", 0.12, 0.08); },
-            denied: function () { playTone(160, 120, 0.15, "sawtooth", 0.15); },
-            skip: function () { playTone(300, 900, 0.3, "sawtooth", 0.1); },
-            dodge: function () { playTone(1200, 500, 0.12, "sine", 0.12); },
-            shieldBlock: function () { playTone(500, 500, 0.06, "square", 0.15); playTone(250, 180, 0.2, "triangle", 0.2, 0.05); },
-            click: function () { playTone(1000, 1000, 0.03, "square", 0.06); }
+            playerHit: { category: "sfx", play: function (out) { playTone(200, 60, 0.25, "square", 0.25, 0, out); } },
+            enemyHit: { category: "sfx", play: function (out) { playTone(700, 450, 0.05, "triangle", 0.06, 0, out); } },
+            enemyKill: { category: "sfx", play: function (out) { playTone(880, 1400, 0.1, "sine", 0.12, 0, out); } },
+            gameOver: { category: "sfx", play: function (out) { playTone(440, 110, 0.9, "sawtooth", 0.2, 0, out); } },
+            dodge: { category: "sfx", play: function (out) { playTone(1200, 500, 0.12, "sine", 0.12, 0, out); } },
+            shieldBlock: { category: "sfx", play: function (out) { playTone(500, 500, 0.06, "square", 0.15, 0, out); playTone(250, 180, 0.2, "triangle", 0.2, 0.05, out); } },
+            skip: { category: "sfx", play: function (out) { playTone(300, 900, 0.3, "sawtooth", 0.1, 0, out); } },
+            menuOpen: { category: "ui", play: function (out) { playTone(440, 660, 0.12, "sine", 0.2, 0, out); } },
+            menuClose: { category: "ui", play: function (out) { playTone(660, 440, 0.12, "sine", 0.2, 0, out); } },
+            buy: { category: "ui", play: function (out) { playTone(660, 660, 0.08, "square", 0.12, 0, out); playTone(990, 990, 0.12, "square", 0.12, 0.08, out); } },
+            denied: { category: "ui", play: function (out) { playTone(160, 120, 0.15, "sawtooth", 0.15, 0, out); } },
+            click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } }
         };
 
         function playSound(name) {
-            if (audioContext === null || soundSettings.isMuted || soundSettings.volume === 0) {
+            if (audioContext === null || soundSettings.isMuted) {
                 return;
             }
             const now = audioContext.currentTime;
@@ -2034,7 +2312,8 @@
                 return;
             }
             lastSoundTimes[name] = now;
-            SOUNDS[name]();
+            const sound = SOUNDS[name];
+            sound.play(channelGains[sound.category]);
         }
 
         //Le navigateur n'autorise le son qu'après une action du joueur
@@ -2043,20 +2322,175 @@
 
 
         /////////////////////
+        ////MUSIC////////////  Musique douce générée en direct : des accords "nappes" + des petites notes qui scintillent
+        /////////////////////
+        const MUSIC_BPM = 66;                    // tempo (battements par minute)
+        const MUSIC_BEATS_PER_CHORD = 4;         // un accord dure 4 temps
+        //Les accords en notes MIDI (60 = do du milieu du piano, +1 = un demi-ton au-dessus)
+        const MUSIC_CHORDS = [
+            { bass: 48, notes: [60, 64, 67, 71] },   // Do maj7
+            { bass: 45, notes: [57, 60, 64, 67] },   // La m7
+            { bass: 41, notes: [53, 57, 60, 64] },   // Fa maj7
+            { bass: 43, notes: [55, 59, 62, 64] }    // Sol 6
+        ];
+        const MUSIC_MELODY_NOTES = [72, 74, 76, 79, 81, 84]; // gamme pentatonique de do : toujours jolie, jamais fausse
+        const MUSIC_MELODY_CHANCE = 0.35;        // chance qu'une petite note joue sur chaque demi-temps
+
+        let musicChordIndex = 0;
+        let nextChordTime = 0;
+        let musicTimer = null;
+        let musicFilter = null;                  // adoucit les nappes (coupe les aigus)
+        let musicEcho = null;                    // écho sur les petites notes
+
+        function midiToFrequency(note) {
+            return 440 * Math.pow(2, (note - 69) / 12); //69 = la 440 Hz ; chaque +12 = une octave au-dessus (fréquence x2)
+        }
+
+        function getChordDuration() {
+            return MUSIC_BEATS_PER_CHORD * 60 / MUSIC_BPM;
+        }
+
+        function startMusic() {
+            //Filtre doux pour les nappes
+            musicFilter = audioContext.createBiquadFilter();
+            musicFilter.type = "lowpass";
+            musicFilter.frequency.value = 1100;
+            musicFilter.connect(channelGains.music);
+
+            //Écho : le son repasse en boucle dans un délai, un peu moins fort à chaque fois
+            musicEcho = audioContext.createDelay(2);
+            musicEcho.delayTime.value = 60 / MUSIC_BPM * 0.75;
+            const echoFeedback = audioContext.createGain();
+            echoFeedback.gain.value = 0.35;
+            const echoVolume = audioContext.createGain();
+            echoVolume.gain.value = 0.4;
+            musicEcho.connect(echoFeedback);
+            echoFeedback.connect(musicEcho);
+            musicEcho.connect(echoVolume);
+            echoVolume.connect(channelGains.music);
+
+            nextChordTime = audioContext.currentTime + 0.2;
+            musicTimer = setInterval(scheduleMusic, 250); //toutes les 250 ms, on prépare la musique à venir
+        }
+
+        //On prépare toujours ~1 s de musique à l'avance, pour qu'elle ne saccade jamais
+        function scheduleMusic() {
+            while (nextChordTime < audioContext.currentTime + 1) {
+                scheduleChord(MUSIC_CHORDS[musicChordIndex], nextChordTime);
+                nextChordTime += getChordDuration();
+                musicChordIndex = (musicChordIndex + 1) % MUSIC_CHORDS.length; //% : revient à 0 après le dernier accord
+            }
+        }
+
+        function scheduleChord(chord, time) {
+            const duration = getChordDuration();
+            for (const note of chord.notes) {
+                playPadNote(midiToFrequency(note), time, duration, 0.035);
+            }
+            playPadNote(midiToFrequency(chord.bass), time, duration, 0.08);
+
+            //Petites notes "qui scintillent" sur les demi-temps, au hasard
+            const halfBeat = 60 / MUSIC_BPM / 2;
+            for (let i = 0; i < MUSIC_BEATS_PER_CHORD * 2; i++) {
+                if (Math.random() < MUSIC_MELODY_CHANCE) {
+                    playPluckNote(midiToFrequency(pickRandom(MUSIC_MELODY_NOTES)), time + i * halfBeat);
+                }
+            }
+        }
+
+        //Une note de nappe : monte doucement, tient, puis s'éteint doucement (un peu après l'accord suivant = fondu)
+        function playPadNote(frequency, time, duration, volume) {
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            oscillator.type = "triangle";
+            oscillator.frequency.value = frequency;
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(volume, time + 1.2);           //monte en 1.2 s
+            gain.gain.setValueAtTime(volume, time + duration);
+            gain.gain.linearRampToValueAtTime(0, time + duration + 1.2);     //s'éteint en 1.2 s
+            oscillator.connect(gain);
+            gain.connect(musicFilter);
+            oscillator.start(time);
+            oscillator.stop(time + duration + 1.3);
+        }
+
+        //Une petite note "pincée" : attaque nette, puis s'éteint (avec de l'écho)
+        function playPluckNote(frequency, time) {
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            oscillator.type = "sine";
+            oscillator.frequency.value = frequency;
+            gain.gain.setValueAtTime(0.0001, time);
+            gain.gain.exponentialRampToValueAtTime(0.05, time + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, time + 1.4);
+            oscillator.connect(gain);
+            gain.connect(channelGains.music);
+            gain.connect(musicEcho);
+            oscillator.start(time);
+            oscillator.stop(time + 1.5);
+        }
+
+
+        /////////////////////
         ////SETTINGS/////////
         /////////////////////
         const settingsPanel = document.getElementById("settingsPanel");
-        const volumeSlider = document.getElementById("volumeSlider");
-        const volumeValue = document.getElementById("volumeValue");
+        const volumeSliders = document.getElementById("volumeSliders");
         const muteCheckbox = document.getElementById("muteCheckbox");
+        const volumeInputs = {};    // le curseur de chaque catégorie
+        const volumeTexts = {};     // le "%" affiché à côté
+
+        //Crée une ligne "nom + curseur + %" par catégorie de SOUND_CHANNELS
+        function createVolumeSliders() {
+            for (const channel of SOUND_CHANNELS) {
+                const row = document.createElement("div");
+                row.className = "settingRow";
+
+                const label = document.createElement("label");
+                label.className = "volumeLabel";
+                label.textContent = channel.label;
+                label.htmlFor = "volume_" + channel.key;
+
+                const input = document.createElement("input");
+                input.type = "range";
+                input.id = "volume_" + channel.key;
+                input.min = 0;
+                input.max = 100;
+                input.step = 1;
+                //"input" = à chaque mouvement du curseur
+                input.addEventListener("input", function () {
+                    soundSettings[channel.key] = input.value / 100;
+                    applyVolume();
+                    renderSettings();
+                    saveSoundSettings();
+                    if (channel.key !== "music") {
+                        playSound(channel.key === "sfx" ? "enemyKill" : "click"); //petit son pour entendre le nouveau volume
+                    }
+                });
+
+                const value = document.createElement("span");
+                value.className = "volumeValue";
+
+                row.appendChild(label);
+                row.appendChild(input);
+                row.appendChild(value);
+                volumeSliders.appendChild(row);
+                volumeInputs[channel.key] = input;
+                volumeTexts[channel.key] = value;
+            }
+        }
 
         //Sauvegarde du son dans le navigateur (localStorage), pour le retrouver la prochaine fois
         function loadSoundSettings() {
             try {
                 const saved = JSON.parse(localStorage.getItem("soundSettings"));
                 if (saved !== null) {
-                    soundSettings.volume = saved.volume;
-                    soundSettings.isMuted = saved.isMuted;
+                    for (const channel of SOUND_CHANNELS) {
+                        if (typeof saved[channel.key] === "number") {
+                            soundSettings[channel.key] = saved[channel.key];
+                        }
+                    }
+                    soundSettings.isMuted = saved.isMuted === true;
                 }
             } catch (error) {
                 //localStorage indisponible (navigation privée...) : on garde les valeurs par défaut
@@ -2071,8 +2505,11 @@
         }
 
         function renderSettings() {
-            volumeSlider.value = Math.round(soundSettings.volume * 100);
-            volumeValue.textContent = Math.round(soundSettings.volume * 100) + "%";
+            for (const channel of SOUND_CHANNELS) {
+                const percent = Math.round(soundSettings[channel.key] * 100);
+                volumeInputs[channel.key].value = percent;
+                volumeTexts[channel.key].textContent = percent + "%";
+            }
             muteCheckbox.checked = soundSettings.isMuted;
         }
 
@@ -2107,15 +2544,6 @@
             }
         });
 
-        //"input" = à chaque mouvement du curseur
-        volumeSlider.addEventListener("input", function () {
-            soundSettings.volume = volumeSlider.value / 100;
-            applyVolume();
-            renderSettings();
-            saveSoundSettings();
-            playSound("click"); //petit son pour entendre le nouveau volume
-        });
-
         muteCheckbox.addEventListener("change", function () {
             soundSettings.isMuted = muteCheckbox.checked;
             applyVolume();
@@ -2124,6 +2552,7 @@
         });
 
         loadSoundSettings();
+        createVolumeSliders();
 
 
         /////////////////////
@@ -2135,16 +2564,20 @@
             computeStats();
             playerHealth = playerStats.maxHealth;
             createStars();
+            createBackground();
             createPlanets();
             requestAnimationFrame(gameUpdate);
         }
 
         const MAX_FRAME_TIME = 0.1;   // si le navigateur a "gelé" (onglet caché...), on ne rattrape pas plus que ça
         const MAX_STEP = 1 / 60;      // taille max d'un pas de simulation, en secondes
+        let frameTime = 0;            // durée réelle de la dernière image (pour le décor)
 
         function gameUpdate(currentTime) {
             const deltaTime = Math.min(MAX_FRAME_TIME, (currentTime - lastTime) / 1000); //DeltaTime en secondes
             lastTime = currentTime;
+            frameTime = deltaTime;
+            visualTime += deltaTime;
 
             //En x2 / x4, il passe 2 / 4 fois plus de temps de jeu à chaque image.
             //On le découpe en petits pas pour que les balles ne "sautent" pas par-dessus les ennemis.
@@ -2174,6 +2607,7 @@
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;
             updateShield(deltaTime);
+            updateEffects(deltaTime);
         }
 
         gameStart();
