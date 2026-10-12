@@ -99,6 +99,7 @@
             top: 12px;
             left: 50%;
             transform: translateX(-50%); /*centre la barre (donc le chrono) sur sa position*/
+            z-index: 1; /*le menu déroulant passe devant le message (toast)*/
             height: 46px;
             display: flex;
             align-items: center;
@@ -111,13 +112,45 @@
             pointer-events: none;
         }
 
-        #timeControls { /*boutons "passer le temps" + vitesse du jeu*/
+        #timeControls { /*bouton "temps" + son menu déroulant*/
             position: absolute; /*sorti du centrage : seul le chrono compte pour centrer la barre*/
             left: calc(100% + 14px); /*à 14px à droite du chrono*/
-            display: flex;
-            align-items: center;
-            gap: 8px;
             white-space: nowrap;
+        }
+
+        #timeMenuButton .arrow { /*petite flèche qui se retourne quand le menu est ouvert*/
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        #timeMenuButton.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        #timeMenu { /*le menu déroulant, sous le bouton*/
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0; /*aligné sur le bord droit du bouton : il s'ouvre vers la gauche*/
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            border: 1px solid #ff8a1f;
+            border-radius: 12px;
+            background-color: #0b0b2ef2;
+            text-align: left;
+        }
+
+        .timeMenuLabel {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaaacc;
+        }
+
+        #skipButtons {
+            display: flex;
+            gap: 6px;
         }
 
         .skipButton { /*bouton orange "passer le temps"*/
@@ -138,7 +171,7 @@
 
         .speedGroup { /*les 3 boutons de vitesse collés ensemble*/
             display: flex;
-            margin-left: 6px;
+            align-self: flex-start;
             border: 1px solid #ff8a1f;
             border-radius: 22px;
             overflow: hidden; /*les coins arrondis coupent aussi les boutons à l'intérieur*/
@@ -176,33 +209,17 @@
             opacity: 0;
         }
 
-        @media (max-width: 1100px) { /*écran moyen : les boutons passent sous le chrono, centrés*/
-            #topBar {
-                flex-direction: column;
-                height: auto;
-                gap: 8px;
-            }
-
-            #timeControls {
-                position: static;
-                flex-wrap: wrap; /*passe à la ligne si ça ne rentre pas*/
-                justify-content: center;
-                width: max-content;
-                max-width: calc(100vw - 24px);
-            }
-
-            #toast {
-                top: 116px;
-            }
-        }
-
         @media (max-width: 600px) { /*petit écran : on descend la barre sous l'or et l'XP pour ne pas les recouvrir*/
             #topBar {
                 top: 104px;
             }
 
             #toast {
-                top: 250px;
+                top: 164px;
+            }
+
+            #skipButtons {
+                flex-direction: column; /*sur téléphone, les boutons s'empilent*/
             }
         }
 
@@ -250,6 +267,7 @@
 
         .overlay { /*fond sombre qui recouvre tout l'écran*/
             position: fixed;
+            z-index: 2; /*devant le chrono et son menu*/
             inset: 0; /*= top: 0; right: 0; bottom: 0; left: 0;*/
             background-color: rgba(0, 0, 23, 0.85);
             display: flex;
@@ -476,7 +494,28 @@
             border-bottom: 1px solid #ffffff14;
         }
 
+        .statRow.statChanged { /*la ligne d'une stat qui vient d'augmenter s'illumine en vert*/
+            animation: statFlash 1.2s ease-out;
+        }
+
+        .statRow.statChanged .statValue {
+            animation: statPop 0.7s ease-out;
+        }
+
+        @keyframes statFlash {
+            0% { background-color: #4dff8855; }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes statPop {
+            0% { transform: scale(1.5); color: #4dff88; }
+            60% { color: #4dff88; }
+            100% { transform: scale(1); color: white; }
+        }
+
         .statValue {
+            display: inline-block; /*nécessaire pour que "scale" fonctionne*/
+            transform-origin: right center; /*grossit depuis la droite, là où est le texte*/
             font-weight: 600;
             font-variant-numeric: tabular-nums;
         }
@@ -546,8 +585,13 @@
     <div id="topBar">
         <span id="runTimeDisplay">0:00</span>
         <div id="timeControls">
-            <div id="skipButtons"></div>
-            <div id="speedButtons" class="speedGroup"></div>
+            <button id="timeMenuButton" class="skipButton" title="Passer / accélérer le temps"></button>
+            <div id="timeMenu" class="hidden">
+                <span class="timeMenuLabel">Passer le temps</span>
+                <div id="skipButtons"></div>
+                <span class="timeMenuLabel">Vitesse du jeu</span>
+                <div id="speedButtons" class="speedGroup"></div>
+            </div>
         </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
@@ -643,6 +687,7 @@
 
             drawGalaxy();
             drawStars();
+            drawRange();
             drawEnemies();
             drawBullets();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
@@ -676,6 +721,17 @@
 
             ctx.fillStyle = galaxyGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
+        //PORTÉE : un fin cercle rouge autour du joueur = jusqu'où il peut tirer
+        const RANGE_COLOR = "rgba(255, 70, 70, 0.45)";
+
+        function drawRange() {
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, playerStats.range, 0, Math.PI * 2);
+            ctx.strokeStyle = RANGE_COLOR;
+            ctx.lineWidth = 1;
+            ctx.stroke();
         }
 
         function drawStars() {
@@ -1064,10 +1120,44 @@
         function setGameSpeed(speed) {
             gameSpeed = speed;
             renderSpeedButtons();
+            updateTimeMenuButton();
             playSound("click");
         }
 
+        //MENU DÉROULANT : un seul bouton qui affiche/cache les options de temps
+        const timeMenuButton = document.getElementById("timeMenuButton");
+        const timeMenu = document.getElementById("timeMenu");
+        const timeControls = document.getElementById("timeControls");
+
+        //Le bouton affiche la vitesse actuelle, ex: "⏩ x2 ▾"
+        function updateTimeMenuButton() {
+            timeMenuButton.innerHTML = "⏩ x" + gameSpeed + " <span class='arrow'>▾</span>";
+            timeMenuButton.classList.toggle("open", !timeMenu.classList.contains("hidden")); //toggle(classe, vrai/faux) : ajoute ou enlève
+        }
+
+        function toggleTimeMenu() {
+            timeMenu.classList.toggle("hidden"); //toggle sans 2e paramètre : ajoute si absente, enlève si présente
+            updateTimeMenuButton();
+            playSound("click");
+        }
+
+        function closeTimeMenu() {
+            timeMenu.classList.add("hidden");
+            updateTimeMenuButton();
+        }
+
+        timeMenuButton.addEventListener("click", toggleTimeMenu);
+
+        //Un clic ailleurs sur la page ferme le menu.
+        //Les clics DANS le menu sont arrêtés ici (stopPropagation) : ils ne "remontent" pas jusqu'à document
+        timeControls.addEventListener("click", function (event) {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", closeTimeMenu);
+
         renderSpeedButtons();
+        updateTimeMenuButton();
 
         //TOAST : petit message qui s'affiche quelques secondes
         const TOAST_DURATION = 2.5;          // secondes
@@ -1534,7 +1624,6 @@
 
         function renderSkillTree() {
             const tree = currentTree;
-            renderStatsPanel(); //les stats changent quand on débloque une compétence
             treeXp.textContent = Math.floor(xp);
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
@@ -1598,6 +1687,7 @@
             refreshStats();
             updateHud();
             renderSkillTree();
+            renderStatsPanel(true); //anime les stats qui viennent d'augmenter
             showNodeInfo(node);
         }
 
@@ -1641,7 +1731,6 @@
         }
 
         function renderShop() {
-            renderStatsPanel(); //les stats changent quand on achète une amélioration
             shopGold.textContent = Math.floor(gold);
             shopItems.innerHTML = "";
 
@@ -1672,6 +1761,7 @@
             refreshStats();
             updateHud();
             renderShop();
+            renderStatsPanel(true); //anime les stats qui viennent d'augmenter
         }
 
         function restartGame() {
@@ -1810,15 +1900,32 @@
             ];
         }
 
-        function renderStatsPanel() {
+        //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
+        let lastStatValues = {};
+
+        //highlightChanges = true après un achat : les stats qui ont changé s'animent
+        function renderStatsPanel(highlightChanges = false) {
             let html = "";
+            const newStatValues = {};
             for (const category of getStatsCategories()) {
                 html += "<h3>" + category.title + "</h3>";
                 for (const row of category.rows) {
-                    html += "<div class='statRow'><span>" + row[0] + "</span><span class='statValue'>" + row[1] + "</span></div>";
+                    const label = row[0];
+                    const value = String(row[1]);
+                    const hasChanged = highlightChanges && lastStatValues[label] !== undefined && lastStatValues[label] !== value;
+                    const rowClass = hasChanged ? "statRow statChanged" : "statRow";
+                    html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
+                    newStatValues[label] = value;
                 }
             }
             statsContent.innerHTML = html;
+            lastStatValues = newStatValues;
+
+            //Si la stat changée est cachée (fenêtre qui défile), on la fait apparaître
+            const firstChanged = statsContent.querySelector(".statChanged");
+            if (firstChanged !== null) {
+                firstChanged.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }
         }
 
         function showStatsPanel() {
