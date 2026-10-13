@@ -1202,7 +1202,7 @@
         </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
-    <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences</div>
+    <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place dans l'orbite</div>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
     </button>
@@ -2320,13 +2320,51 @@
         const PLANET_DEPTH = 6;     // épaisseur des planètes, en pixels
         const PLANET_HOVER_LIFT = 4;
 
+        //ORDRE DES PLANÈTES : on peut faire glisser une planète le long de l'orbite pour changer sa place.
+        //Chaque planète a un "orbitOffset" : son angle sur l'orbite, par rapport à la rotation de l'orbite.
+        //Il glisse en douceur vers sa place (sa case), ce qui anime les changements d'ordre.
+        const PLANET_SLIDE_SMOOTHING = 0.15;   // vitesse à laquelle une planète glisse vers sa nouvelle place (0 à 1)
+        const PLANET_DRAG_THRESHOLD = 6;       // pixels à parcourir avant que ce soit un "glisser" et plus un clic
+        let draggedPlanet = null;              // la planète qu'on fait glisser (ou null)
+        let pressedPlanet = null;              // la planète sur laquelle on a appuyé (pas encore un glisser)
+        let pressStart = { x: 0, y: 0 };
+        let planetWasDragged = false;          // pour ne pas ouvrir l'arbre au moment où on lâche la planète
+
+        //Ramène un angle entre -π et π (ex : 350° devient -10°), pour toujours prendre le chemin le plus court
+        function wrapAngle(angle) {
+            return Math.atan2(Math.sin(angle), Math.cos(angle));
+        }
+
         function updatePlanetPositions() {
+            const step = Math.PI * 2 / planets.length; //écart entre deux planètes
             for (let i = 0; i < planets.length; i++) {
                 const planet = planets[i];
-                const angle = planetOrbitalRotation + Math.PI * 2 / planets.length * i;
+                const targetOffset = step * i;
+                if (planet.orbitOffset === undefined) {
+                    planet.orbitOffset = targetOffset; //nouvelle planète : elle commence directement à sa place
+                }
+                if (planet !== draggedPlanet) { //celle qu'on tient suit la souris, les autres glissent vers leur case
+                    planet.orbitOffset += wrapAngle(targetOffset - planet.orbitOffset) * PLANET_SLIDE_SMOOTHING;
+                }
+                const angle = planetOrbitalRotation + planet.orbitOffset;
 
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
+            }
+        }
+
+        //Pendant le glisser : la planète suit la souris, mais RESTE sur l'orbite (on ne garde que l'angle de la souris)
+        function dragPlanetTo(x, y) {
+            const mouseAngle = Math.atan2(y - center.y, x - center.x);
+            draggedPlanet.orbitOffset = mouseAngle - planetOrbitalRotation;
+            //Sa nouvelle case = la plus proche de cet angle. Si elle change, on la déplace dans la liste : les autres se poussent.
+            const step = Math.PI * 2 / planets.length;
+            const relativeAngle = (draggedPlanet.orbitOffset % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); //entre 0 et 2π
+            const newIndex = Math.round(relativeAngle / step) % planets.length;
+            const oldIndex = planets.indexOf(draggedPlanet);
+            if (newIndex !== oldIndex) {
+                planets.splice(oldIndex, 1);               //on la retire de sa place...
+                planets.splice(newIndex, 0, draggedPlanet); //...et on l'insère à la nouvelle (splice(i, 0, x) = insérer x à la place i)
             }
         }
 
@@ -2373,7 +2411,8 @@
         }
 
         canvas.addEventListener("click", function (event) {
-            if (isGameOver || isPaused) {
+            if (isGameOver || isPaused || planetWasDragged) {
+                planetWasDragged = false;
                 return;
             }
             const planet = findPlanetAt(event.offsetX, event.offsetY);
@@ -2382,12 +2421,45 @@
             }
         });
 
-        //Le curseur devient une main quand on survole une planète
-        canvas.addEventListener("mousemove", function (event) {
+        //"pointer" = souris OU doigt sur un écran tactile
+        canvas.addEventListener("pointerdown", function (event) {
+            if (isGameOver || isPaused) {
+                return;
+            }
+            pressedPlanet = findPlanetAt(event.offsetX, event.offsetY);
+            pressStart = { x: event.offsetX, y: event.offsetY };
+            planetWasDragged = false;
+        });
+
+        canvas.addEventListener("pointermove", function (event) {
+            //On a appuyé sur une planète et la souris a assez bougé : on commence à la faire glisser
+            if (pressedPlanet !== null && draggedPlanet === null && Math.hypot(event.offsetX - pressStart.x, event.offsetY - pressStart.y) > PLANET_DRAG_THRESHOLD) {
+                draggedPlanet = pressedPlanet;
+                canvas.setPointerCapture(event.pointerId); //on continue de recevoir les mouvements même si la souris sort du jeu
+            }
+            if (draggedPlanet !== null) {
+                dragPlanetTo(event.offsetX, event.offsetY);
+                hoveredPlanet = draggedPlanet;
+                canvas.style.cursor = "grabbing";
+                return;
+            }
+            //Le curseur devient une main quand on survole une planète
             const planet = findPlanetAt(event.offsetX, event.offsetY);
             hoveredPlanet = planet;
             canvas.style.cursor = planet !== null ? "pointer" : "default";
         });
+
+        function stopDraggingPlanet() {
+            if (draggedPlanet !== null) {
+                planetWasDragged = true; //le "click" qui suit le lâcher ne doit pas ouvrir l'arbre
+                playSound("buy");
+                draggedPlanet = null;
+            }
+            pressedPlanet = null;
+        }
+
+        canvas.addEventListener("pointerup", stopDraggingPlanet);
+        canvas.addEventListener("pointercancel", stopDraggingPlanet);
 
 
         /////////////
