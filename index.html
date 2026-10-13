@@ -6,7 +6,7 @@
     <title>Evangeline's Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <style>
         body { /*pré-réglages du body, là où se trouve le canvas du jeu*/
             margin: 0; /* pas de marge automatique*/
@@ -639,6 +639,126 @@
                 padding-right: 0;
             }
         }
+
+        /*////////////////////////////////////
+          ////STYLE "OUTHOLD" DE L'INTERFACE////  (ces règles passent par-dessus celles du dessus : supprime ce bloc pour revenir à l'ancien style)
+          ////////////////////////////////////*/
+        body {
+            background-color: #29233a;
+            font-family: "Nunito", "Rubik", sans-serif; /*police ronde et grasse*/
+        }
+
+        .hudRow { /*pastilles sombres et plates*/
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px 8px 12px;
+            background-color: #1c1828;
+        }
+
+        .hudValue {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        #xp {
+            color: #3fe0c5;
+        }
+
+        #settingsButton { /*bouton carré au contour blanc épais*/
+            width: 50px;
+            height: 50px;
+            padding: 9px;
+            border: 3px solid #e9e6f2;
+            border-radius: 10px;
+            background-color: transparent;
+        }
+
+        #settingsButton:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        #runTimeDisplay {
+            font-weight: 800;
+        }
+
+        .skipButton { /*bouton "en relief" : une ombre pleine en dessous donne l'épaisseur*/
+            border-radius: 10px;
+            box-shadow: 0 4px 0 #b4590b;
+        }
+
+        .skipButton:active { /*quand on appuie, le bouton "s'enfonce"*/
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #b4590b;
+        }
+
+        .speedGroup {
+            border-radius: 10px;
+        }
+
+        #timeMenu {
+            border: none;
+            border-radius: 12px;
+            background-color: #1c1828;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        #toast {
+            border-radius: 10px;
+            background-color: #1c1828;
+            font-weight: 700;
+        }
+
+        .overlay {
+            background-color: rgba(20, 16, 30, 0.8);
+            backdrop-filter: blur(3px);
+        }
+
+        .panel, #statsPanel { /*fenêtres sombres, éclairées par le haut, sans bordure*/
+            border: none;
+            border-radius: 14px;
+            background: radial-gradient(ellipse at 50% 0%, #2c2442, #15111f 70%);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .primaryButton { /*comme les boutons d'Outhold : contour blanc épais, fond transparent*/
+            border: 3px solid #e9e6f2;
+            border-radius: 10px;
+            background-color: transparent;
+            color: white;
+            font-weight: 800;
+        }
+
+        .primaryButton:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .shopItem, .skillNode { /*cartes et compétences "en relief"*/
+            border-radius: 12px;
+            background-color: #1c1828;
+            box-shadow: 0 4px 0 #100d18;
+        }
+
+        .shopItem {
+            border: none;
+        }
+
+        .shopItem:not(:disabled):hover {
+            background-color: #262036;
+        }
+
+        .skillNode {
+            border-width: 3px;
+            border-radius: 50%;
+        }
+
+        .skillNode.unlocked {
+            background-color: var(--tree-color);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .placeholder {
+            border-color: #ffffff33;
+        }
     </style>
 </head>
 <body>
@@ -760,9 +880,14 @@
                 ctx.translate(randomBetween(-strength, strength), randomBetween(-strength, strength)); //translate = décale le pinceau
             }
 
-            ctx.drawImage(backgroundCanvas, 0, 0); //le fond (dégradé + nébuleuses), dessiné une seule fois au démarrage
-            drawStars();
+            ctx.drawImage(backgroundCanvas, 0, 0); //le fond, dessiné une seule fois au démarrage
+            if (SPACE_BACKGROUND) {
+                drawStars();
+            }
+            updatePlanetPositions(); //avant les ombres : elles ont besoin de savoir où sont les planètes
             drawRange();
+            drawOrbit();
+            drawShadows();           //toutes les ombres d'abord, pour qu'elles passent SOUS tous les objets
             drawEnemies();
             drawBullets();
             drawEffects();
@@ -811,8 +936,15 @@
         function createBackground() {
             backgroundCanvas.width = canvas.width;
             backgroundCanvas.height = canvas.height;
+            shadowCanvas.width = canvas.width;
+            shadowCanvas.height = canvas.height;
             const bgCtx = backgroundCanvas.getContext("2d");
             const diagonal = Math.hypot(canvas.width, canvas.height);
+
+            if (!SPACE_BACKGROUND) {
+                createFlatBackground(bgCtx);
+                return;
+            }
 
             //1. Base : un dégradé rond, un peu plus clair au centre
             const baseGradient = bgCtx.createRadialGradient(center.x, center.y, 0, center.x, center.y, diagonal / 2);
@@ -844,6 +976,24 @@
             bgCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
+        //Fond façon Outhold : une couleur unie, avec un éclairage doux qui vient du haut
+        function createFlatBackground(bgCtx) {
+            bgCtx.fillStyle = BG_COLOR;
+            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, canvas.height * 0.9);
+            light.addColorStop(0, BG_LIGHT_COLOR);
+            light.addColorStop(1, "rgba(0, 0, 0, 0)");
+            bgCtx.fillStyle = light;
+            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const bottomShade = bgCtx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
+            bottomShade.addColorStop(0, "rgba(0, 0, 0, 0)");
+            bottomShade.addColorStop(1, "rgba(10, 8, 18, 0.35)");
+            bgCtx.fillStyle = bottomShade;
+            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
         //targetCtx = le canvas sur lequel dessiner (ici le fond caché)
         function drawGalaxy(targetCtx) {
             const galaxyGradient = targetCtx.createLinearGradient(0, 0, canvas.height, canvas.width);
@@ -856,7 +1006,7 @@
         }
 
         //PORTÉE : un fin cercle rouge autour du joueur = jusqu'où il peut tirer
-        const RANGE_COLOR = "rgba(255, 70, 70, 0.45)";
+        const RANGE_COLOR = "rgba(255, 110, 110, 0.4)";
 
         function drawRange() {
             ctx.beginPath();
@@ -1005,6 +1155,102 @@
                 ctx.lineWidth = 3;
                 ctx.stroke();
             }
+            ctx.globalAlpha = 1;
+        }
+
+
+        //////////////////////
+        ////STYLE "OUTHOLD"///  Formes plates avec une épaisseur + longues ombres en diagonale
+        //////////////////////
+        const SPACE_BACKGROUND = false;        // true = ancien fond spatial (étoiles, nébuleuses, voie lactée)
+        const BG_COLOR = "#29233a";            // fond violet-gris uni
+        const BG_LIGHT_COLOR = "#3e3656";      // éclairage doux qui vient du haut
+        const SHADOW_COLOR = "#120e1c";
+        const SHADOW_OPACITY = 0.55;
+        const SHADOW_ANGLE = Math.PI / 4;      // direction des ombres : vers le bas à droite (45°)
+        const SIDE_DARKNESS = 0.62;            // couleur de l'épaisseur = couleur de la forme assombrie
+
+        //Les ombres sont toutes dessinées dans un canvas caché, en couleur pleine, puis recopiées d'un coup
+        //en transparence : comme ça, deux ombres qui se croisent ne font pas une tache plus foncée.
+        const shadowCanvas = document.createElement("canvas");
+        const shadowCtx = shadowCanvas.getContext("2d");
+
+        //"Gélule" : un rond (x, y) étiré jusqu'à (x + dx, y + dy).
+        //Sert pour l'ombre d'un rond (étirée en diagonale) et pour son épaisseur (étirée vers le bas).
+        function fillStretchedCircle(targetCtx, x, y, radius, dx, dy, color) {
+            const angle = Math.atan2(dy, dx); //atan2 = l'angle de la direction (dx, dy)
+            targetCtx.beginPath();
+            targetCtx.arc(x, y, radius, angle + Math.PI / 2, angle + Math.PI * 1.5);        //moitié arrière du rond de départ
+            targetCtx.arc(x + dx, y + dy, radius, angle - Math.PI / 2, angle + Math.PI / 2); //moitié avant du rond d'arrivée
+            targetCtx.closePath();
+            targetCtx.fillStyle = color;
+            targetCtx.fill();
+        }
+
+        //Les points d'une forme régulière (count côtés), comme dans drawCircle
+        function getShapePoints(x, y, radius, count, rotation) {
+            const points = [];
+            for (let i = 0; i < count; i++) {
+                const angle = rotation - Math.PI / 2 + Math.PI * 2 / count * i;
+                points.push({ x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * radius });
+            }
+            return points;
+        }
+
+        function fillShape(targetCtx, points, dx, dy, color) {
+            targetCtx.beginPath();
+            for (const point of points) {
+                targetCtx.lineTo(point.x + dx, point.y + dy);
+            }
+            targetCtx.closePath();
+            targetCtx.fillStyle = color;
+            targetCtx.fill();
+        }
+
+        //Une forme étirée jusqu'à (dx, dy) : la forme décalée + un quadrilatère pour chaque côté qui relie les deux
+        function fillStretchedShape(targetCtx, points, dx, dy, color) {
+            fillShape(targetCtx, points, dx, dy, color);
+            targetCtx.fillStyle = color;
+            for (let i = 0; i < points.length; i++) {
+                const a = points[i];
+                const b = points[(i + 1) % points.length];
+                targetCtx.beginPath();
+                targetCtx.moveTo(a.x, a.y);
+                targetCtx.lineTo(b.x, b.y);
+                targetCtx.lineTo(b.x + dx, b.y + dy);
+                targetCtx.lineTo(a.x + dx, a.y + dy);
+                targetCtx.closePath();
+                targetCtx.fill();
+            }
+        }
+
+        //Le vecteur d'une ombre de longueur "length"
+        function shadowVector(length) {
+            return { x: Math.cos(SHADOW_ANGLE) * length, y: Math.sin(SHADOW_ANGLE) * length };
+        }
+
+        function drawShadows() {
+            shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
+
+            for (const enemy of enemies) {
+                const shadow = shadowVector(enemy.size * 2.2);
+                fillStretchedCircle(shadowCtx, enemy.x, enemy.y + getEnemyDepth(enemy), enemy.size, shadow.x, shadow.y, SHADOW_COLOR);
+            }
+            for (const bullet of bullets) {
+                const shadow = shadowVector(8);
+                fillStretchedCircle(shadowCtx, bullet.x, bullet.y + 2, BULLET_SIZE, shadow.x, shadow.y, SHADOW_COLOR);
+            }
+            for (const planet of planets) {
+                const shadow = shadowVector(30);
+                const points = getShapePoints(planet.x, planet.y + PLANET_DEPTH, planet.size, 4, 0);
+                fillStretchedShape(shadowCtx, points, shadow.x, shadow.y, SHADOW_COLOR);
+            }
+            //Ombre du cube : un rond à sa base, étiré loin
+            const playerShadow = shadowVector(80);
+            fillStretchedCircle(shadowCtx, center.x, center.y + CUBE_SIZE * 0.7, CUBE_SIZE * 1.25, playerShadow.x, playerShadow.y, SHADOW_COLOR);
+
+            ctx.globalAlpha = SHADOW_OPACITY;
+            ctx.drawImage(shadowCanvas, 0, 0);
             ctx.globalAlpha = 1;
         }
 
@@ -1185,16 +1431,73 @@
             playerHealth = Math.min(playerStats.maxHealth, playerHealth + amount); //jamais au-dessus de la vie max
         }
 
-        const PLAYER_GLOW_COLOR = "#ffe680";
+        const PLAYER_GLOW_COLOR = "#ffb347";
+
+        //LE JOUEUR : un cube en 3D (comme dans Outhold) qui tourne lentement sur lui-même
+        const CUBE_SIZE = PLAYER_RADIUS * 0.6;  // la moitié de la largeur du cube
+        const CUBE_TILT = 0.6;                  // inclinaison de la caméra (en radians) : on voit le dessus du cube
+        const CUBE_ROTATION_SPEED = 0.4;
+        const CUBE_TOP_COLOR = "#ffe95c";       // dessus jaune
+        const CUBE_SIDE_COLOR = "#ffb85c";      // côtés orange (plus ou moins foncés selon la lumière)
+
+        //Les 8 coins du cube : chaque coin vaut -1 ou +1 sur x, y et z.
+        //Numéro d'un coin = (x > 0 ? 4 : 0) + (y > 0 ? 2 : 0) + (z > 0 ? 1 : 0)
+        const CUBE_FACES = [
+            { corners: [0, 1, 5, 4], normal: { x: 0, y: -1, z: 0 }, isTop: true },  // dessus (y = -1, car y monte vers le bas)
+            { corners: [2, 3, 7, 6], normal: { x: 0, y: 1, z: 0 } },               // dessous
+            { corners: [0, 1, 3, 2], normal: { x: -1, y: 0, z: 0 } },              // gauche
+            { corners: [4, 5, 7, 6], normal: { x: 1, y: 0, z: 0 } },               // droite
+            { corners: [0, 4, 6, 2], normal: { x: 0, y: 0, z: -1 } },              // devant
+            { corners: [1, 5, 7, 3], normal: { x: 0, y: 0, z: 1 } }                // derrière
+        ];
+
+        //Tourne un point 3D autour de l'axe vertical (angle), puis l'incline vers la caméra (CUBE_TILT)
+        function rotateCubePoint(x, y, z, angle) {
+            const x1 = x * Math.cos(angle) + z * Math.sin(angle);
+            const z1 = -x * Math.sin(angle) + z * Math.cos(angle);
+            const y2 = y * Math.cos(CUBE_TILT) - z1 * Math.sin(CUBE_TILT);
+            const z2 = y * Math.sin(CUBE_TILT) + z1 * Math.cos(CUBE_TILT);
+            return { x: x1, y: y2, z: z2 };
+        }
+
+        function drawCube(cx, cy, isFlashing) {
+            const angle = playerRotation * CUBE_ROTATION_SPEED;
+
+            //Position à l'écran des 8 coins
+            const corners = [];
+            for (let i = 0; i < 8; i++) {
+                const x = (i & 4) ? 1 : -1; // & = "ET bit à bit" : teste si le numéro contient 4
+                const y = (i & 2) ? 1 : -1;
+                const z = (i & 1) ? 1 : -1;
+                const point = rotateCubePoint(x * CUBE_SIZE, y * CUBE_SIZE, z * CUBE_SIZE, angle);
+                corners.push({ x: cx + point.x, y: cy + point.y });
+            }
+
+            for (const face of CUBE_FACES) {
+                const normal = rotateCubePoint(face.normal.x, face.normal.y, face.normal.z, angle);
+                if (normal.z >= 0) {
+                    continue; //face tournée vers l'arrière : invisible
+                }
+                let color;
+                if (isFlashing) {
+                    color = face.isTop ? "#ffffff" : "#e6e6f0";
+                } else if (face.isTop) {
+                    color = CUBE_TOP_COLOR;
+                } else {
+                    //La lumière vient de la gauche : plus la face regarde à droite, plus elle est foncée
+                    color = darkenColor(CUBE_SIDE_COLOR, 0.82 - 0.18 * normal.x);
+                }
+                const points = face.corners.map(function (index) { return corners[index]; }); //map = transforme chaque élément
+                fillShape(ctx, points, 0, 0, color);
+            }
+        }
 
         function drawPlayer() {
-            //Aura qui "respire" doucement autour du joueur
-            const breathing = 0.5 + 0.15 * Math.sin(visualTime * 2);
-            drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 2.5, breathing);
+            //Lueur orange qui "respire" doucement autour du cube
+            const breathing = 0.7 + 0.2 * Math.sin(visualTime * 2);
+            drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 2.6, breathing);
 
-            const color = playerHitTimer > 0 ? "white" : "#ffe680";
-            //Pour un triangle, le contour doit être 2x plus grand pour avoir la même épaisseur sur les côtés que les cercles
-            drawCircle(color, PLAYER_RADIUS, 4, .1, -1, true, OUTLINE_WIDTH + 0.5, darkenColor("#ffe680", OUTLINE_DARKNESS)); //Centered shape is the player
+            drawCube(center.x, center.y, playerHitTimer > 0);
             drawPlayerHealth();
             drawShield();
         }
@@ -1207,24 +1510,23 @@
             ctx.beginPath();
             ctx.arc(center.x, center.y, PLAYER_RADIUS + 14, 0, Math.PI * 2); //arc(x, y, rayon, angle de début, angle de fin) : un cercle complet
             ctx.strokeStyle = SHIELD_COLOR;
-            ctx.lineWidth = 2;
-            ctx.shadowColor = SHIELD_COLOR;
-            ctx.shadowBlur = 10;
+            ctx.lineWidth = 3;
             ctx.stroke();
-            ctx.shadowBlur = 0;
         }
 
-        //HEALTH NUMBER (au centre du joueur)
+        //HEALTH NUMBER (sous le cube, comme le nombre sous le cube d'Outhold)
+        const HEALTH_TEXT_OFFSET_Y = 50;          // distance sous le centre du joueur
+
         function drawPlayerHealth() {
             const healthText = Math.floor(playerHealth); //pas de virgule : 9.9 -> 9 (la régénération continue de s'accumuler en dessous)
-            ctx.font = "bold 20px Rubik";
+            const y = center.y + HEALTH_TEXT_OFFSET_Y;
+            ctx.font = "800 22px Nunito";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = OUTLINE_COLOR;
-            ctx.strokeText(healthText, center.x, center.y); //contour du texte, pour qu'il reste lisible
-            ctx.fillStyle = "brown";
-            ctx.fillText(healthText, center.x, center.y);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+            ctx.fillText(healthText, center.x + 1, y + 2); //petite ombre sous le chiffre
+            ctx.fillStyle = "white";
+            ctx.fillText(healthText, center.x, y);
             ctx.textBaseline = "alphabetic"; //on remet la valeur par défaut pour les autres textes
         }
 
@@ -1269,7 +1571,7 @@
                     //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
                     name: tree.name,
                     color: tree.color,
-                    outlineColor: darkenColor(tree.color, OUTLINE_DARKNESS),
+                    sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
                     size: PLANET_SIZE,
                     tree: tree,
                     x: 0,
@@ -1278,26 +1580,39 @@
             }
         }
 
-        let hoveredPlanet = null;   // la planète sous la souris (elle brille plus fort)
+        let hoveredPlanet = null;   // la planète sous la souris (elle se soulève et brille)
+        const PLANET_DEPTH = 6;     // épaisseur des planètes, en pixels
+        const PLANET_HOVER_LIFT = 4;
 
-        function drawPlanets() {
-            //L'orbite : un cercle très discret
-            ctx.beginPath();
-            ctx.arc(center.x, center.y, PLANET_ORBIT_RADIUS, 0, Math.PI * 2);
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
+        function updatePlanetPositions() {
             for (let i = 0; i < planets.length; i++) {
                 const planet = planets[i];
                 const angle = planetOrbitalRotation + Math.PI * 2 / planets.length * i;
 
                 planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
                 planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
+            }
+        }
 
-                const glowStrength = planet === hoveredPlanet ? 1 : 0.4;
-                drawGlow(planet.color, planet.x, planet.y, planet.size * 2.4, glowStrength);
-                drawCircle(planet.color, planet.size, 4, 0, 0, true, OUTLINE_WIDTH, planet.outlineColor, { x: planet.x, y: planet.y });
+        //L'orbite : un cercle très discret
+        function drawOrbit() {
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, PLANET_ORBIT_RADIUS, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function drawPlanets() {
+            for (const planet of planets) {
+                const isHovered = planet === hoveredPlanet;
+                const lift = isHovered ? PLANET_HOVER_LIFT : 0; //la planète survolée se soulève un peu
+                if (isHovered) {
+                    drawGlow(planet.color, planet.x, planet.y, planet.size * 2.4, 0.8);
+                }
+                const points = getShapePoints(planet.x, planet.y - lift, planet.size, 4, 0);
+                fillStretchedShape(ctx, points, 0, PLANET_DEPTH + lift, planet.sideColor); //l'épaisseur (le côté foncé)
+                fillShape(ctx, points, 0, 0, planet.color);                                //le dessus
             }
         }
 
@@ -1491,7 +1806,6 @@
         const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
         const SPECIAL_MOVEMENT_TYPES = ["wave", "zigzag", "spiral"];
         const SPECIAL_OUTLINE_COLOR = "#ffe14d"; // contour jaune des ennemis à mouvement spécial
-        const SPECIAL_GLOW = 12;              // force de la lueur autour d'eux
         const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
         const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
         const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
@@ -1514,7 +1828,7 @@
                 type: type,
                 movement: Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight",
                 color: stats.color,
-                outlineColor: darkenColor(stats.color, OUTLINE_DARKNESS),
+                sideColor: darkenColor(stats.color, SIDE_DARKNESS),   // couleur de son épaisseur
                 speed: stats.speed,
                 size: size,
                 health: stats.health,
@@ -1577,27 +1891,32 @@
 
         const ENEMY_HIT_FLASH_DURATION = 0.08;
 
+        //Épaisseur d'un ennemi : proportionnelle à sa taille
+        function getEnemyDepth(enemy) {
+            return Math.max(2, enemy.size * 0.35);
+        }
+
         function drawEnemies() {
             for (const enemy of enemies) {
-                const location = { x: enemy.x, y: enemy.y };
-                const bodyColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
+                const depth = getEnemyDepth(enemy);
+                const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
 
-                if (enemy.movement === "straight") {
-                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2, 0.3);
-                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, OUTLINE_WIDTH, enemy.outlineColor, location);
-                } else {
-                    //Mouvement spécial : contour jaune un peu plus épais + lueur jaune
-                    drawGlow(SPECIAL_OUTLINE_COLOR, enemy.x, enemy.y, enemy.size + SPECIAL_GLOW * 2, 0.8);
-                    drawCircle(bodyColor, enemy.size, 30, 0, 0, true, OUTLINE_WIDTH + 1, SPECIAL_OUTLINE_COLOR, location);
-                }
-
-                //Petit reflet en haut à gauche : donne du volume (effet "bille")
-                ctx.globalAlpha = 0.35;
-                ctx.fillStyle = "white";
+                //1. L'épaisseur : le rond étiré vers le bas, en plus foncé
+                fillStretchedCircle(ctx, enemy.x, enemy.y, enemy.size, 0, depth, enemy.sideColor);
+                //2. Le dessus : un rond plat
                 ctx.beginPath();
-                ctx.arc(enemy.x - enemy.size * 0.35, enemy.y - enemy.size * 0.35, enemy.size * 0.3, 0, Math.PI * 2);
+                ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+                ctx.fillStyle = topColor;
                 ctx.fill();
-                ctx.globalAlpha = 1;
+
+                //Mouvement spécial : un anneau jaune autour de lui
+                if (enemy.movement !== "straight") {
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y + depth / 2, enemy.size + 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = SPECIAL_OUTLINE_COLOR;
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                }
             }
         }
 
@@ -1610,7 +1929,7 @@
         const BASE_BULLET_SPEED = 400;       // pixels par seconde (multiplié par playerStats.bulletSpeed)
         const BULLET_SIZE = 4;
         const BULLET_COLOR = "#fff6b0";
-        const BULLET_OUTLINE_COLOR = darkenColor(BULLET_COLOR, OUTLINE_DARKNESS);
+        const BULLET_SIDE_COLOR = darkenColor(BULLET_COLOR, SIDE_DARKNESS);
         let fireTimer = 0;
 
         //Renvoie les ennemis à portée, du plus proche au plus loin
@@ -1710,17 +2029,21 @@
         function drawBullets() {
             for (const bullet of bullets) {
                 //Traînée : une ligne qui part de la balle vers l'arrière
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.35;
                 ctx.strokeStyle = BULLET_COLOR;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
+                ctx.lineCap = "round"; //bouts de ligne arrondis
                 ctx.beginPath();
                 ctx.moveTo(bullet.x, bullet.y);
                 ctx.lineTo(bullet.x - bullet.dirX * BULLET_TRAIL_LENGTH, bullet.y - bullet.dirY * BULLET_TRAIL_LENGTH);
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
-                drawGlow(BULLET_COLOR, bullet.x, bullet.y, BULLET_SIZE * 3, 0.6);
-                drawCircle(BULLET_COLOR, BULLET_SIZE, 12, 0, 0, true, 1.5, BULLET_OUTLINE_COLOR, { x: bullet.x, y: bullet.y });
+                fillStretchedCircle(ctx, bullet.x, bullet.y, BULLET_SIZE, 0, 2, BULLET_SIDE_COLOR); //petite épaisseur
+                ctx.beginPath();
+                ctx.arc(bullet.x, bullet.y, BULLET_SIZE, 0, Math.PI * 2);
+                ctx.fillStyle = BULLET_COLOR;
+                ctx.fill();
             }
         }
 
