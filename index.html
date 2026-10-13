@@ -2402,6 +2402,81 @@
         const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
         const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
 
+        //VARIATIONS : chaque ennemi spécial tire au hasard son propre "style" de mouvement à son apparition,
+        //pour que deux zigzags (ou deux spirales) ne se ressemblent jamais
+        const ZIGZAG_STOP_AND_GO_CHANCE = 0.4;  // chance qu'un zigzag s'arrête à chaque virage puis reparte d'un coup
+        const SPIRAL_OVAL_MAX = 0.6;            // à quel point une spirale peut être ovale (0 = cercle parfait)
+
+        function createMovementStyle(movement) {
+            if (movement === "wave") {
+                return {
+                    amplitude: ENEMY_WAVE_AMPLITUDE * randomBetween(0.5, 1.6),  // vagues plus ou moins larges
+                    frequency: ENEMY_WAVE_FREQUENCY * randomBetween(0.5, 1.6),  // plus ou moins serrées
+                    phase: Math.random() * Math.PI * 2                          // ne commencent pas toutes pareil
+                };
+            }
+            if (movement === "zigzag") {
+                const stopAndGo = Math.random() < ZIGZAG_STOP_AND_GO_CHANCE;
+                return {
+                    amplitude: ENEMY_WAVE_AMPLITUDE * randomBetween(0.4, 1.7),   // zigzags plus ou moins longs
+                    legDuration: randomBetween(0.25, 1.1),                       // durée d'un trait : petit = zigzag serré
+                    irregularity: randomBetween(0, 0.6),                         // 0 = tous les traits pareils, plus = traits de longueurs différentes
+                    pause: stopAndGo ? randomBetween(0.3, 0.55) : 0,             // part de chaque trait passée à l'arrêt
+                    seed: Math.random() * 1000
+                };
+            }
+            if (movement === "spiral") {
+                return {
+                    direction: Math.random() < 0.5 ? 1 : -1,                     // 1 = sens des aiguilles d'une montre, -1 = l'autre sens
+                    speed: ENEMY_SPIRAL_SPEED * randomBetween(0.6, 1.5),
+                    oval: randomBetween(0, SPIRAL_OVAL_MAX),                     // spirale plus ou moins ovale
+                    tilt: Math.random() * Math.PI                                // dans quelle direction l'ovale est étiré
+                };
+            }
+            return null; //tout droit : pas de style
+        }
+
+        //Un nombre "au hasard" entre 0 et 1, mais toujours le même pour les mêmes valeurs (sert pour la longueur des traits du zigzag)
+        function seededRandom(value) {
+            const x = Math.sin(value * 12.9898) * 43758.5453;
+            return x - Math.floor(x); //garde seulement la partie après la virgule
+        }
+
+        //Calcule le décalage sur le côté (sideOffset) et la vitesse d'avance (speedFactor) d'un ennemi selon son mouvement
+        function getMovementStep(enemy, deltaTime) {
+            const style = enemy.style;
+            const result = { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
+            if (enemy.movement === "wave") {
+                result.sideOffset = Math.sin(enemy.time * style.frequency + style.phase) * style.amplitude;
+            } else if (enemy.movement === "zigzag") {
+                //Le zigzag est une suite de traits : chaque trait va d'un "coin" à l'autre, de chaque côté de la route
+                const leg = Math.floor(enemy.time / style.legDuration);           //numéro du trait en cours
+                let progress = (enemy.time % style.legDuration) / style.legDuration; //avancement dans ce trait (0 → 1)
+                const corner = function (index) { //position du coin numéro index : un coup à gauche, un coup à droite
+                    const length = 1 - style.irregularity + style.irregularity * 2 * seededRandom(index + style.seed);
+                    return (index % 2 === 0 ? -1 : 1) * style.amplitude * length;
+                };
+                if (style.pause > 0) {
+                    //Stop and go : immobile au début du trait, puis repart vite pour rattraper le temps perdu
+                    if (progress < style.pause) {
+                        progress = 0;
+                        result.speedFactor = 0.15;
+                    } else {
+                        progress = (progress - style.pause) / (1 - style.pause);
+                        progress = 1 - (1 - progress) * (1 - progress); //démarre vite puis ralentit à l'arrivée
+                        result.speedFactor = (1 - 0.15 * style.pause) / (1 - style.pause);
+                    }
+                }
+                result.sideOffset = corner(leg) + (corner(leg + 1) - corner(leg)) * progress;
+            } else if (enemy.movement === "spiral") {
+                //Plus ovale = tourne plus vite à certains endroits et s'éloigne/se rapproche un peu : ce n'est plus un cercle parfait
+                const ovalWave = Math.cos(2 * (enemy.angle - style.tilt));
+                enemy.angle += style.direction * style.speed * (1 + style.oval * ovalWave) * deltaTime;
+                result.radialOffset = style.oval * ENEMY_WAVE_AMPLITUDE * 1.5 * Math.sin(2 * (enemy.angle - style.tilt));
+            }
+            return result;
+        }
+
         function pickRandom(array) {
             return array[Math.floor(Math.random() * array.length)];
         }
@@ -2415,11 +2490,13 @@
             const stats = ENEMY_TYPES[type];
             const health = randomInt(stats.minHealth, stats.maxHealth);
             const size = getEnemyTargetSize(health);
-            const startDistance = Math.hypot(canvas.width, canvas.height) / 2 + size + ENEMY_WAVE_AMPLITUDE;
+            const startDistance = Math.hypot(canvas.width, canvas.height) / 2 + size + ENEMY_WAVE_AMPLITUDE * 2;
+            const movement = Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight";
 
             enemies.push({
                 type: type,
-                movement: Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight",
+                movement: movement,
+                style: createMovementStyle(movement), // les réglages au hasard de SON mouvement (null si tout droit)
                 color: stats.color,
                 sideColor: darkenColor(stats.color, SIDE_DARKNESS),   // couleur de son épaisseur
                 speed: stats.speed,
@@ -2561,7 +2638,8 @@
                 const enemy = enemies[i];
 
                 enemy.time += deltaTime;
-                enemy.distance -= enemy.speed * deltaTime;
+                const step = enemy.style ? getMovementStep(enemy, deltaTime) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
+                enemy.distance -= enemy.speed * step.speedFactor * deltaTime;
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
                     enemies.splice(i, 1);
@@ -2572,23 +2650,16 @@
                     continue;
                 }
 
-                let sideOffset = 0;
-
-                if (enemy.movement === "wave") {
-                    sideOffset = Math.sin(enemy.time * ENEMY_WAVE_FREQUENCY) * ENEMY_WAVE_AMPLITUDE;
-                } else if (enemy.movement === "zigzag") {
-                    sideOffset = Math.asin(Math.sin(enemy.time * ENEMY_WAVE_FREQUENCY)) / (Math.PI / 2) * ENEMY_WAVE_AMPLITUDE;
-                } else if (enemy.movement === "spiral") {
-                    enemy.angle += ENEMY_SPIRAL_SPEED * deltaTime;
-                }
-
-                sideOffset *= enemy.distance / enemy.startDistance;
+                //Les écarts diminuent en approchant du joueur, pour que l'ennemi finisse bien par le toucher
+                const fade = enemy.distance / enemy.startDistance;
+                const sideOffset = step.sideOffset * fade;
+                const distance = enemy.distance + step.radialOffset * fade;
 
                 const dirX = Math.cos(enemy.angle);
                 const dirY = Math.sin(enemy.angle);
 
-                enemy.x = center.x + dirX * enemy.distance - dirY * sideOffset;
-                enemy.y = center.y + dirY * enemy.distance + dirX * sideOffset;
+                enemy.x = center.x + dirX * distance - dirY * sideOffset;
+                enemy.y = center.y + dirY * distance + dirX * sideOffset;
             }
         }
 
