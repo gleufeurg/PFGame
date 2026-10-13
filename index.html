@@ -417,6 +417,10 @@
             stroke-width: 6;
         }
 
+        #treeLinks line {
+            stroke-width: 2 !important; /*constellation : des traits fins*/
+        }
+
         #treeLinks line.active {
             stroke: var(--tree-color);
         }
@@ -843,6 +847,94 @@
 
         .placeholder {
             border-color: var(--ui-line);
+        }
+
+        /*////////////////////////////////
+          ////COMPÉTENCES EN CONSTELLATION////  chaque compétence est une étoile, les plus importantes scintillent plus
+          ////////////////////////////////*/
+        .skillNode, .skillNode.notable, .skillNode.keystone, .skillNode.grand {
+            width: 64px;
+            height: 64px;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            color: var(--ui-text);
+            overflow: visible;
+        }
+
+        .skillNode .star { /*l'étoile : une forme à 4 branches découpée avec clip-path*/
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: var(--star-size);
+            height: var(--star-size);
+            transform: translate(-50%, -50%);
+            clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%); /*les 8 points de l'étoile*/
+            background-color: var(--ui-muted);
+        }
+
+        .skillNode { --star-size: 30px; }
+        .skillNode.notable { --star-size: 46px; }
+        .skillNode.keystone { --star-size: 62px; }
+        .skillNode.grand { --star-size: 84px; }
+
+        .skillNode.unlocked, .skillNode.available, .skillNode.locked { /*annule les anciens styles "bouton rond"*/
+            border: none;
+            background: transparent;
+            box-shadow: none;
+            opacity: 1;
+        }
+
+        .skillNode.locked .star {
+            opacity: 0.45;
+        }
+
+        .skillNode.available .star {
+            background-color: var(--tree-color);
+            opacity: 0.6;
+        }
+
+        .skillNode.unlocked .star {
+            background: radial-gradient(circle, #ffffff 0%, var(--tree-color) 45%); /*cœur blanc, comme une vraie étoile*/
+        }
+
+        .skillNode:hover .star {
+            opacity: 1;
+            filter: brightness(1.25);
+        }
+
+        /*SCINTILLEMENT : les grosses étoiles grandissent, tournent un peu et s'illuminent, en boucle*/
+        .skillNode.notable .star { animation: twinkle 2.4s ease-in-out infinite; }
+        .skillNode.keystone .star { animation: twinkle 1.8s ease-in-out infinite; }
+        .skillNode.grand .star { animation: twinkleBig 1.5s ease-in-out infinite; }
+
+        @keyframes twinkle {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: brightness(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15) rotate(10deg); filter: brightness(1.35); }
+        }
+
+        @keyframes twinkleBig {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: brightness(1); }
+            30% { transform: translate(-50%, -50%) scale(1.25) rotate(15deg); filter: brightness(1.5); }
+            60% { transform: translate(-50%, -50%) scale(0.95) rotate(5deg); filter: brightness(1.1); }
+        }
+
+        .skillNode .nodeLabel { /*le petit nom sous l'étoile*/
+            position: absolute;
+            left: 50%;
+            top: calc(50% + var(--star-size) / 2 + 2px);
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            color: var(--ui-muted);
+            pointer-events: none;
+        }
+
+        .skillNode.unlocked .nodeLabel {
+            color: var(--ui-text);
         }
     </style>
 </head>
@@ -1491,7 +1583,9 @@
             playerStats.damageVs = { water: 0, fire: 0, plant: 0, air: 0 }; //dégâts bonus contre chaque élément
 
             for (const item of SHOP_ITEMS) {
-                applyEffect(item.effect, item.level);
+                if (item.effect !== null) {
+                    applyEffect(item.effect, item.level);
+                }
             }
 
             for (const tree of SKILL_TREES) {
@@ -1793,18 +1887,35 @@
         // CRÉATION (une seule fois, au démarrage) : une planète par skill tree
         function createPlanets() {
             for (const tree of SKILL_TREES) {
-                planets.push({
-                    //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
-                    name: tree.name,
-                    color: tree.color,
-                    sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
-                    size: PLANET_SIZE,
-                    tree: tree,
-                    fireTimer: Math.random() * PLANET_FIRE_INTERVAL, //décalé au hasard : les planètes ne tirent pas toutes en même temps
-                    x: 0,
-                    y: 0
-                });
+                if (!tree.isLocked) {
+                    addPlanet(tree);
+                }
             }
+        }
+
+        function addPlanet(tree) {
+            planets.push({
+                //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
+                name: tree.name,
+                color: tree.color,
+                sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
+                size: PLANET_SIZE,
+                tree: tree,
+                fireTimer: Math.random() * PLANET_FIRE_INTERVAL, //décalé au hasard : les planètes ne tirent pas toutes en même temps
+                x: 0,
+                y: 0
+            });
+        }
+
+        //Une nouvelle divinité rejoint l'orbite (achetée dans le shop)
+        function unlockNextGod() {
+            const tree = SKILL_TREES.find(function (tree) { return tree.isLocked; });
+            if (tree === undefined) {
+                return;
+            }
+            tree.isLocked = false;
+            addPlanet(tree);
+            showToast("✨ " + tree.name + " rejoint l'orbite !");
         }
 
         let hoveredPlanet = null;   // la planète sous la souris (elle se soulève et brille)
@@ -2911,6 +3022,42 @@
                     ],
                     grand: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
                 }
+            },
+            //DIVINITÉ DE TEST : "locked: true" = elle n'est pas en orbite au début, il faut l'acheter dans le shop ("Nouvelle divinité").
+            //Pour ajouter un nouveau dieu plus tard : copie ce bloc, change son nom, sa couleur, sa forme et ses compétences.
+            {
+                name: "Artémis",
+                color: "#c7b8ff",
+                locked: true,
+                project: {
+                    title: "Projet 6",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                minorSkills: [
+                    { label: "POR", name: "Nymphe", description: "+10 de portée", effect: { stat: "range", value: 10 } },
+                    { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
+                    { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
+                ],
+                shape: "classic",        // la forme à 3 branches gardée de côté
+                skills: {
+                    start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
+                    notables: [
+                        { label: "VIT", name: "Callisto", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                        { label: "DMG", name: "Britomartis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "POR", name: "Aréthuse", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                        { label: "VEL", name: "Opis", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                        { label: "AIR", name: "Cyrène", description: "+2 dégâts contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 2 } },
+                        { label: "VIT", name: "Atalante", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                        { label: "DMG", name: "Procris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "POR", name: "Taygète", description: "+30 de portée", effect: { stat: "range", value: 30 } }
+                    ],
+                    keystones: [
+                        { label: "ORION", name: "Orion", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "ARC", name: "Hippolyte", description: "+80 de portée", effect: { stat: "range", value: 80 } },
+                        { label: "CERF", name: "Actéon", description: "+25% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.25 } }
+                    ],
+                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                }
             }
         ];
 
@@ -2960,6 +3107,17 @@
             return Math.round(role === "notable" ? cost * NOTABLE_COST_MULTIPLIER : cost);
         }
 
+        const CONSTELLATION_JITTER = 1.5;   // décalage max des petites étoiles, en % (0 = parfaitement aligné)
+
+        //Transforme un texte en un nombre entre 0 et 1, toujours le même pour le même texte (un "hasard" qui ne change pas)
+        function hashToUnit(text) {
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                hash = (hash * 31 + text.charCodeAt(i)) % 1000003; //charCodeAt = le numéro de la lettre
+            }
+            return (hash % 1000) / 1000;
+        }
+
         function createSkillTree(treeData) {
             const nodes = [];
             const minorCounts = {}; // combien de fois chaque petite compétence a déjà été utilisée (pour les numéroter I, II, III...)
@@ -2992,10 +3150,12 @@
                         effect: minor.effect
                     };
                 }
+                //Constellation : les petites étoiles sont un peu décalées (toujours de la même façon) pour un rendu moins "rangé"
+                const jitter = layout.role === "minor" ? CONSTELLATION_JITTER : 0;
                 nodes.push({
                     id: id,
-                    x: layout.x,
-                    y: layout.y,
+                    x: layout.x + (hashToUnit(treeData.name + id + "x") - 0.5) * 2 * jitter,
+                    y: layout.y + (hashToUnit(treeData.name + id + "y") - 0.5) * 2 * jitter,
                     cost: getSkillCost(layout.role, depths[id] || 0),
                     links: layout.links,
                     role: layout.role,
@@ -3018,7 +3178,7 @@
                 }
             }
 
-            return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
+            return { name: treeData.name, color: treeData.color, project: treeData.project, isLocked: treeData.locked === true, nodes: nodes };
         }
 
         const SKILL_TREES = [];
@@ -3117,7 +3277,15 @@
                 if (node.role === "notable" || node.role === "grand") {
                     button.classList.add(node.role); //"notable" ou "grand" : tailles différentes en CSS
                 }
-                button.textContent = node.label;
+                //Une étoile + son petit nom en dessous. Chaque étoile scintille avec un décalage différent.
+                const star = document.createElement("span");
+                star.className = "star";
+                star.style.animationDelay = (hashToUnit(node.id) * -3) + "s"; //délai négatif = l'animation a "déjà commencé"
+                const label = document.createElement("span");
+                label.className = "nodeLabel";
+                label.textContent = node.label;
+                button.appendChild(star);
+                button.appendChild(label);
                 button.style.left = node.x + "%";
                 button.style.top = node.y + "%";
                 button.addEventListener("mouseenter", function () { showNodeInfo(node); });
@@ -3299,7 +3467,9 @@
             { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 2 } },
             { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "damage", value: 1 } },
             { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.05 } },
-            { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } }
+            { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
+            //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
+            { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 150, costGrowth: 2, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
 
         const gameOverPanel = document.getElementById("gameOverPanel");
@@ -3345,6 +3515,9 @@
             playSound("buy");
             gold -= cost;
             item.level++;
+            if (item.unlocksGod) {
+                unlockNextGod();
+            }
             refreshStats();
             updateHud();
             renderShop();
