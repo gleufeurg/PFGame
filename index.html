@@ -12,7 +12,7 @@
             margin: 0; /* pas de marge automatique*/
             overflow: hidden; /*enlève les barres de défilement*/
             background-color: #00033e;
-            color: white;
+            color: var(--ui-text);
             font-family: "Rubik", sans-serif; /*"Rubik" possible car certains noms contiennent des espaces, ici pas nécessaire mais juste au cas ou*/
             text-align: center;
             font-size: 30px;
@@ -39,7 +39,7 @@
             gap: 10px;
             min-width: 110px;
             padding: 6px 14px 6px 10px;
-            border: 1px solid #ffffff33;
+            border: 1px solid var(--ui-line);
             border-radius: 20px;
             background-color: #0b0b2ecc;
         }
@@ -52,7 +52,7 @@
 
         .hudLabel {
             font-size: 12px;
-            color: #aaaacc;
+            color: var(--ui-muted);
             margin-left: auto; /*pousse le libellé tout à droite*/
         }
 
@@ -153,7 +153,7 @@
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #aaaacc;
+            color: var(--ui-muted);
         }
 
         #skipButtons {
@@ -237,7 +237,7 @@
             left: 0;
             right: 0;
             font-size: 14px;
-            color: #ffffff88;
+            color: var(--ui-muted);
             pointer-events: none;
         }
 
@@ -249,15 +249,15 @@
             width: 44px;
             height: 44px;
             padding: 8px;
-            border: 1px solid #ffffff55;
+            border: 1px solid var(--ui-line);
             border-radius: 50%;
             background-color: #0b0b2ecc;
-            color: white;
+            color: var(--ui-text);
             cursor: pointer;
         }
 
         #settingsButton:hover {
-            border-color: white;
+            border-color: var(--ui-text);
         }
 
         #settingsButton svg {
@@ -289,7 +289,7 @@
         .panel { /*la "fenêtre" au milieu de l'overlay*/
             background: linear-gradient(180deg, #16163f, #0b0b2e); /*léger dégradé vertical*/
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-            border: 1px solid #ffffff55;
+            border: 1px solid var(--ui-line);
             border-radius: 12px;
             padding: 24px;
             width: calc(100% - 32px);
@@ -307,11 +307,11 @@
             border: 1px dashed #ffffff66;
             border-radius: 8px;
             padding: 16px;
-            color: #aaaacc;
+            color: var(--ui-muted);
         }
 
         .primaryButton {
-            background-color: white;
+            background-color: var(--ui-text);
             color: #000017;
             border: none;
             border-radius: 8px;
@@ -329,7 +329,7 @@
 
         #projectArea { /*à gauche : la présentation du projet*/
             flex: 0 0 34%;
-            border-right: 1px solid #ffffff33;
+            border-right: 1px solid var(--ui-line);
             padding-right: 24px;
         }
 
@@ -396,10 +396,10 @@
         #treeZoomControls button {
             width: 38px;
             height: 38px;
-            border: 2px solid #e9e6f2;
+            border: 2px solid var(--ui-border);
             border-radius: 8px;
             background-color: var(--ui-surface);
-            color: white;
+            color: var(--ui-text);
             font-size: 20px;
             font-weight: 800;
             cursor: pointer;
@@ -413,7 +413,7 @@
         }
 
         #treeLinks line {
-            stroke: #ffffff33;
+            stroke: var(--ui-line);
             stroke-width: 6;
         }
 
@@ -429,7 +429,7 @@
             border-radius: 50%;
             border: 2px solid #555577;
             background-color: #151538;
-            color: white;
+            color: var(--ui-text);
             font-size: 15px;
             font-weight: 800;
             padding: 0;
@@ -462,7 +462,7 @@
 
         .skillNode.unlocked {
             background-color: var(--tree-color);
-            border-color: white;
+            border-color: var(--ui-text);
             color: #000017;
         }
 
@@ -497,7 +497,7 @@
             border-radius: 8px;
             padding: 12px;
             background-color: #151538;
-            color: white;
+            color: var(--ui-text);
             text-align: left;
             font-size: 14px;
             cursor: pointer;
@@ -577,7 +577,7 @@
             font-size: 15px;
             text-transform: uppercase; /*écrit en majuscules*/
             letter-spacing: 1px;
-            color: #aaaacc;
+            color: var(--ui-muted);
         }
 
         .statRow { /*une ligne : nom à gauche, valeur à droite*/
@@ -604,7 +604,7 @@
         @keyframes statPop {
             0% { transform: scale(1.5); color: #4dff88; }
             60% { color: #4dff88; }
-            100% { transform: scale(1); color: white; }
+            100% { transform: scale(1); color: var(--ui-text); }
         }
 
         .statValue {
@@ -673,10 +673,10 @@
         #themeSelect { /*liste déroulante des thèmes*/
             flex: 1;
             padding: 6px 10px;
-            border: 2px solid #ffffff55;
+            border: 2px solid var(--ui-line);
             border-radius: 8px;
             background-color: var(--ui-surface);
-            color: white;
+            color: var(--ui-text);
             font-family: inherit;
             font-size: 15px;
             font-weight: 700;
@@ -690,7 +690,7 @@
 
         .smallText {
             font-size: 13px;
-            color: #aaaacc;
+            color: var(--ui-muted);
         }
 
         @media (max-width: 700px) { /*petits écrans : le projet passe au-dessus de l'arbre*/
@@ -714,6 +714,10 @@
             --ui-relief: #121a24;         /*le "relief" sous les cartes*/
             --ui-panel: #1f2a39;          /*fond des fenêtres*/
             --ui-overlay: rgba(12, 17, 24, 0.6); /*voile derrière les menus*/
+            --ui-text: #ffffff;           /*texte*/
+            --ui-muted: #aaaacc;          /*texte secondaire (titres de catégories, aides...)*/
+            --ui-border: #e9e6f2;         /*contour des boutons*/
+            --ui-line: rgba(255, 255, 255, 0.25); /*lignes fines, liens de l'arbre*/
         }
 
         body {
@@ -741,7 +745,7 @@
             width: 50px;
             height: 50px;
             padding: 9px;
-            border: 3px solid #e9e6f2;
+            border: 3px solid var(--ui-border);
             border-radius: 10px;
             background-color: transparent;
         }
@@ -802,10 +806,10 @@
         }
 
         .primaryButton { /*comme les boutons d'Outhold : contour blanc épais, fond transparent*/
-            border: 3px solid #e9e6f2;
+            border: 3px solid var(--ui-border);
             border-radius: 10px;
             background-color: transparent;
-            color: white;
+            color: var(--ui-text);
             font-weight: 800;
         }
 
@@ -838,7 +842,7 @@
         }
 
         .placeholder {
-            border-color: #ffffff33;
+            border-color: var(--ui-line);
         }
     </style>
 </head>
@@ -1073,6 +1077,20 @@
             bgCtx.fillStyle = BG_COLOR;
             bgCtx.fillRect(0, 0, canvas.width, canvas.height);
 
+            //Thème "drapeau" : des bandes horizontales de couleur, assombries pour que le jeu reste lisible
+            const theme = THEMES[currentThemeKey];
+            if (theme.stripes !== undefined) {
+                const stripeHeight = canvas.height / theme.stripes.length;
+                theme.stripes.forEach(function (color, i) {
+                    bgCtx.fillStyle = color;
+                    bgCtx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
+                });
+                bgCtx.fillStyle = BG_COLOR;
+                bgCtx.globalAlpha = theme.stripesDim;
+                bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+                bgCtx.globalAlpha = 1;
+            }
+
             const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, canvas.height * 0.9);
             light.addColorStop(0, BG_LIGHT_COLOR);
             light.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -1261,26 +1279,68 @@
         const SPACE_BACKGROUND = false;        // true = ancien fond spatial (étoiles, nébuleuses, voie lactée)
         //THÈMES : chaque thème donne les couleurs du fond du jeu ET de l'interface (variables CSS --...).
         //Pour en créer un nouveau, copie un thème, change son nom et ses couleurs : il apparaîtra tout seul dans les Paramètres.
+        //THÈMES : chaque thème donne les couleurs du fond du jeu ET de l'interface (variables CSS --...).
+        //Pour en créer un nouveau, copie un thème, change son nom et ses couleurs : il apparaîtra tout seul dans les Paramètres.
+        //Options : stripes = des bandes de couleur horizontales en fond (drapeaux), stripesDim = à quel point on les assombrit
+        //(0 = couleurs vives, 1 = couleur du fond) pour que le jeu reste lisible, textColor / orbitColor = texte et orbite dans le jeu.
         const THEMES = {
             night: {
                 name: "Nuit (bleu)",
                 background: "#1a2330", backgroundLight: "#27384c", shadow: "#0a0f16",
-                ui: { "--bg": "#1a2330", "--ui-surface": "#253244", "--ui-surface-hover": "#2e3d52", "--ui-relief": "#121a24", "--ui-panel": "#1f2a39", "--ui-overlay": "rgba(12, 17, 24, 0.6)" }
+                ui: { "--bg": "#1a2330", "--ui-surface": "#253244", "--ui-surface-hover": "#2e3d52", "--ui-relief": "#121a24", "--ui-panel": "#1f2a39", "--ui-overlay": "rgba(12, 17, 24, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
             },
             slate: {
                 name: "Ardoise (gris)",
                 background: "#23262b", backgroundLight: "#33373e", shadow: "#0e0f11",
-                ui: { "--bg": "#23262b", "--ui-surface": "#2f3339", "--ui-surface-hover": "#393e45", "--ui-relief": "#17191c", "--ui-panel": "#2a2d32", "--ui-overlay": "rgba(16, 17, 19, 0.6)" }
+                ui: { "--bg": "#23262b", "--ui-surface": "#2f3339", "--ui-surface-hover": "#393e45", "--ui-relief": "#17191c", "--ui-panel": "#2a2d32", "--ui-overlay": "rgba(16, 17, 19, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
             },
             forest: {
                 name: "Lagon (vert-bleu)",
                 background: "#152628", backgroundLight: "#1f3a3c", shadow: "#071112",
-                ui: { "--bg": "#152628", "--ui-surface": "#1f3639", "--ui-surface-hover": "#284448", "--ui-relief": "#0c1819", "--ui-panel": "#1a2e30", "--ui-overlay": "rgba(8, 16, 17, 0.6)" }
+                ui: { "--bg": "#152628", "--ui-surface": "#1f3639", "--ui-surface-hover": "#284448", "--ui-relief": "#0c1819", "--ui-panel": "#1a2e30", "--ui-overlay": "rgba(8, 16, 17, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
             },
             dusk: {
-                name: "Crépuscule (violet)",
+                name: "Crépuscule (violet-gris)",
                 background: "#29233a", backgroundLight: "#3e3656", shadow: "#120e1c",
-                ui: { "--bg": "#29233a", "--ui-surface": "#3d3555", "--ui-surface-hover": "#4a4166", "--ui-relief": "#262036", "--ui-panel": "#352e4a", "--ui-overlay": "rgba(34, 28, 50, 0.6)" }
+                ui: { "--bg": "#29233a", "--ui-surface": "#3d3555", "--ui-surface-hover": "#4a4166", "--ui-relief": "#262036", "--ui-panel": "#352e4a", "--ui-overlay": "rgba(34, 28, 50, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            yellow: {
+                name: "Jaune",
+                background: "#3a3010", backgroundLight: "#625020", shadow: "#1a1404",
+                ui: { "--bg": "#3a3010", "--ui-surface": "#4d4017", "--ui-surface-hover": "#5c4d1d", "--ui-relief": "#241d07", "--ui-panel": "#433816", "--ui-overlay": "rgba(30, 24, 6, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            turquoise: {
+                name: "Turquoise",
+                background: "#0f3a3a", backgroundLight: "#17645e", shadow: "#041a1a",
+                ui: { "--bg": "#0f3a3a", "--ui-surface": "#165050", "--ui-surface-hover": "#1d6060", "--ui-relief": "#072424", "--ui-panel": "#134646", "--ui-overlay": "rgba(4, 24, 24, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            purple: {
+                name: "Violet",
+                background: "#2a1745", backgroundLight: "#47287a", shadow: "#110722",
+                ui: { "--bg": "#2a1745", "--ui-surface": "#3b2163", "--ui-surface-hover": "#472876", "--ui-relief": "#190c2e", "--ui-panel": "#331c57", "--ui-overlay": "rgba(20, 8, 36, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            white: {
+                name: "Blanc",
+                background: "#e6e9f0", backgroundLight: "#ffffff", shadow: "#9aa3b5",
+                textColor: "#1f2533", orbitColor: "rgba(31, 37, 51, 0.15)",
+                ui: { "--bg": "#e6e9f0", "--ui-surface": "#ffffff", "--ui-surface-hover": "#f0f2f7", "--ui-relief": "#c9cfdb", "--ui-panel": "#f7f8fb", "--ui-overlay": "rgba(220, 225, 235, 0.6)", "--ui-text": "#1f2533", "--ui-muted": "#6b7385", "--ui-border": "#1f2533", "--ui-line": "rgba(31, 37, 51, 0.25)" }
+            },
+            black: {
+                name: "Noir",
+                background: "#0a0a0c", backgroundLight: "#1a1a1f", shadow: "#000000",
+                ui: { "--bg": "#0a0a0c", "--ui-surface": "#1a1a1e", "--ui-surface-hover": "#24242a", "--ui-relief": "#000000", "--ui-panel": "#141417", "--ui-overlay": "rgba(0, 0, 0, 0.65)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            pride: {
+                name: "Arc-en-ciel (LGBT+)",
+                background: "#15151d", backgroundLight: "#15151d", shadow: "#050508",
+                stripes: ["#e40303", "#ff8c00", "#ffed00", "#008026", "#24408e", "#732982"], stripesDim: 0.6,
+                ui: { "--bg": "#15151d", "--ui-surface": "#22222d", "--ui-surface-hover": "#2c2c39", "--ui-relief": "#0d0d13", "--ui-panel": "#1c1c26", "--ui-overlay": "rgba(10, 10, 16, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
+            },
+            trans: {
+                name: "Transgenre",
+                background: "#1b1a24", backgroundLight: "#1b1a24", shadow: "#07070c",
+                stripes: ["#5bcefa", "#f5a9b8", "#ffffff", "#f5a9b8", "#5bcefa"], stripesDim: 0.6,
+                ui: { "--bg": "#1b1a24", "--ui-surface": "#262433", "--ui-surface-hover": "#302d40", "--ui-relief": "#100f17", "--ui-panel": "#211f2c", "--ui-overlay": "rgba(14, 13, 20, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)" }
             }
         };
         const DEFAULT_THEME = "night";
@@ -1288,6 +1348,8 @@
         let BG_COLOR = THEMES[DEFAULT_THEME].background;            // fond uni
         let BG_LIGHT_COLOR = THEMES[DEFAULT_THEME].backgroundLight; // éclairage doux qui vient du haut
         let SHADOW_COLOR = THEMES[DEFAULT_THEME].shadow;
+        let CANVAS_TEXT_COLOR = "white";                             // texte dans le jeu (vie, noms)
+        let ORBIT_COLOR = "rgba(255, 255, 255, 0.06)";               // cercle de l'orbite des planètes
 
         function applyTheme(key) {
             if (THEMES[key] === undefined) {
@@ -1298,6 +1360,8 @@
             BG_COLOR = theme.background;
             BG_LIGHT_COLOR = theme.backgroundLight;
             SHADOW_COLOR = theme.shadow;
+            CANVAS_TEXT_COLOR = theme.textColor || "white";          // || = "sinon" : blanc si le thème n'en précise pas
+            ORBIT_COLOR = theme.orbitColor || "rgba(255, 255, 255, 0.06)";
             //Change les variables CSS de l'interface
             for (const variableName of Object.keys(theme.ui)) {
                 document.documentElement.style.setProperty(variableName, theme.ui[variableName]); //documentElement = la balise <html>
@@ -1687,7 +1751,7 @@
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
             ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
             ctx.fillText(healthText, center.x + 1, y + 2); //petite ombre sous le chiffre
-            ctx.fillStyle = "white";
+            ctx.fillStyle = CANVAS_TEXT_COLOR;
             ctx.fillText(healthText, center.x, y);
             ctx.textBaseline = "alphabetic"; //on remet la valeur par défaut pour les autres textes
         }
@@ -1761,7 +1825,7 @@
         function drawOrbit() {
             ctx.beginPath();
             ctx.arc(center.x, center.y, PLANET_ORBIT_RADIUS, 0, Math.PI * 2);
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+            ctx.strokeStyle = ORBIT_COLOR;
             ctx.lineWidth = 2;
             ctx.stroke();
         }
@@ -1781,7 +1845,7 @@
                 if (isHovered) {
                     ctx.font = "800 15px Nunito";
                     ctx.textAlign = "center";
-                    ctx.fillStyle = "white";
+                    ctx.fillStyle = CANVAS_TEXT_COLOR;
                     //Du côté extérieur de l'orbite : au-dessus si la planète est en haut, en dessous si elle est en bas
                     const labelY = planet.y < center.y ? planet.y - planet.size - 14 : planet.y + planet.size + PLANET_DEPTH + 22;
                     ctx.fillText(planet.name, planet.x, labelY);
@@ -2254,7 +2318,7 @@
 
             ctx.font = "800 14px Nunito";
             ctx.textAlign = "center";
-            ctx.fillStyle = "white";
+            ctx.fillStyle = CANVAS_TEXT_COLOR;
             ctx.fillText(enemy.boss.name, enemy.x, y - 6);
         }
 
