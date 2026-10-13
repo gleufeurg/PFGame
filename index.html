@@ -1137,6 +1137,9 @@
             }
             for (const enemy of enemies) {
                 enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
+                //Rétrécit en douceur vers la taille qui correspond à sa vie actuelle
+                const targetSize = getEnemyTargetSize(enemy.health);
+                enemy.size += (targetSize - enemy.size) * Math.min(1, deltaTime * ENEMY_SHRINK_SPEED);
             }
             screenShakeTimer -= deltaTime;
         }
@@ -1245,9 +1248,9 @@
                 const points = getShapePoints(planet.x, planet.y + PLANET_DEPTH, planet.size, 4, 0);
                 fillStretchedShape(shadowCtx, points, shadow.x, shadow.y, SHADOW_COLOR);
             }
-            //Ombre du cube : un rond à sa base, étiré loin
+            //Ombre du joueur : un rond à sa base, étiré loin
             const playerShadow = shadowVector(80);
-            fillStretchedCircle(shadowCtx, center.x, center.y + CUBE_SIZE * 0.7, CUBE_SIZE * 1.25, playerShadow.x, playerShadow.y, SHADOW_COLOR);
+            fillStretchedCircle(shadowCtx, center.x, center.y + PLAYER_3D_HEIGHT, PLAYER_3D_SIZE * 0.85, playerShadow.x, playerShadow.y, SHADOW_COLOR);
 
             ctx.globalAlpha = SHADOW_OPACITY;
             ctx.drawImage(shadowCanvas, 0, 0);
@@ -1433,71 +1436,62 @@
 
         const PLAYER_GLOW_COLOR = "#ffb347";
 
-        //LE JOUEUR : un cube en 3D (comme dans Outhold) qui tourne lentement sur lui-même
-        const CUBE_SIZE = PLAYER_RADIUS * 0.6;  // la moitié de la largeur du cube
-        const CUBE_TILT = 0.6;                  // inclinaison de la caméra (en radians) : on voit le dessus du cube
-        const CUBE_ROTATION_SPEED = 0.4;
-        const CUBE_TOP_COLOR = "#ffe95c";       // dessus jaune
-        const CUBE_SIDE_COLOR = "#ffb85c";      // côtés orange (plus ou moins foncés selon la lumière)
+        //LE JOUEUR : un triangle en 3D (un "prisme" : un triangle avec une épaisseur) qui tourne lentement sur lui-même
+        const PLAYER_SIDES = 3;                 // 3 = triangle (4 = cube, 6 = hexagone...)
+        const PLAYER_3D_SIZE = PLAYER_RADIUS * 1.05;  // rayon du triangle (du centre jusqu'à une pointe)
+        const PLAYER_3D_HEIGHT = PLAYER_RADIUS * 0.35; // moitié de l'épaisseur
+        const PLAYER_TILT = 0.6;                // inclinaison de la caméra (en radians) : on voit le dessus
+        const PLAYER_3D_ROTATION_SPEED = 0.4;
+        const PLAYER_TOP_COLOR = "#ffe95c";     // dessus jaune
+        const PLAYER_SIDE_COLOR = "#ffb85c";    // côtés orange (plus ou moins foncés selon la lumière)
 
-        //Les 8 coins du cube : chaque coin vaut -1 ou +1 sur x, y et z.
-        //Numéro d'un coin = (x > 0 ? 4 : 0) + (y > 0 ? 2 : 0) + (z > 0 ? 1 : 0)
-        const CUBE_FACES = [
-            { corners: [0, 1, 5, 4], normal: { x: 0, y: -1, z: 0 }, isTop: true },  // dessus (y = -1, car y monte vers le bas)
-            { corners: [2, 3, 7, 6], normal: { x: 0, y: 1, z: 0 } },               // dessous
-            { corners: [0, 1, 3, 2], normal: { x: -1, y: 0, z: 0 } },              // gauche
-            { corners: [4, 5, 7, 6], normal: { x: 1, y: 0, z: 0 } },               // droite
-            { corners: [0, 4, 6, 2], normal: { x: 0, y: 0, z: -1 } },              // devant
-            { corners: [1, 5, 7, 3], normal: { x: 0, y: 0, z: 1 } }                // derrière
-        ];
-
-        //Tourne un point 3D autour de l'axe vertical (angle), puis l'incline vers la caméra (CUBE_TILT)
-        function rotateCubePoint(x, y, z, angle) {
+        //Tourne un point 3D autour de l'axe vertical (angle), puis l'incline vers la caméra (PLAYER_TILT)
+        function rotatePoint3D(x, y, z, angle) {
             const x1 = x * Math.cos(angle) + z * Math.sin(angle);
             const z1 = -x * Math.sin(angle) + z * Math.cos(angle);
-            const y2 = y * Math.cos(CUBE_TILT) - z1 * Math.sin(CUBE_TILT);
-            const z2 = y * Math.sin(CUBE_TILT) + z1 * Math.cos(CUBE_TILT);
+            const y2 = y * Math.cos(PLAYER_TILT) - z1 * Math.sin(PLAYER_TILT);
+            const z2 = y * Math.sin(PLAYER_TILT) + z1 * Math.cos(PLAYER_TILT);
             return { x: x1, y: y2, z: z2 };
         }
 
-        function drawCube(cx, cy, isFlashing) {
-            const angle = playerRotation * CUBE_ROTATION_SPEED;
+        function drawPlayerShape(cx, cy, isFlashing) {
+            const angle = playerRotation * PLAYER_3D_ROTATION_SPEED;
+            const sides = PLAYER_SIDES;
 
-            //Position à l'écran des 8 coins
-            const corners = [];
-            for (let i = 0; i < 8; i++) {
-                const x = (i & 4) ? 1 : -1; // & = "ET bit à bit" : teste si le numéro contient 4
-                const y = (i & 2) ? 1 : -1;
-                const z = (i & 1) ? 1 : -1;
-                const point = rotateCubePoint(x * CUBE_SIZE, y * CUBE_SIZE, z * CUBE_SIZE, angle);
-                corners.push({ x: cx + point.x, y: cy + point.y });
+            //Les coins du dessus et du dessous (y négatif = en haut, car y descend à l'écran)
+            const topCorners = [];
+            const bottomCorners = [];
+            for (let i = 0; i < sides; i++) {
+                const cornerAngle = Math.PI * 2 / sides * i;
+                const x = Math.cos(cornerAngle) * PLAYER_3D_SIZE;
+                const z = Math.sin(cornerAngle) * PLAYER_3D_SIZE;
+                const top = rotatePoint3D(x, -PLAYER_3D_HEIGHT, z, angle);
+                const bottom = rotatePoint3D(x, PLAYER_3D_HEIGHT, z, angle);
+                topCorners.push({ x: cx + top.x, y: cy + top.y });
+                bottomCorners.push({ x: cx + bottom.x, y: cy + bottom.y });
             }
 
-            for (const face of CUBE_FACES) {
-                const normal = rotateCubePoint(face.normal.x, face.normal.y, face.normal.z, angle);
+            //Les faces : chaque côté (un rectangle), puis le dessus (le triangle)
+            for (let i = 0; i < sides; i++) {
+                const next = (i + 1) % sides;
+                const middleAngle = Math.PI * 2 / sides * (i + 0.5);   // direction vers laquelle ce côté regarde
+                const normal = rotatePoint3D(Math.cos(middleAngle), 0, Math.sin(middleAngle), angle);
                 if (normal.z >= 0) {
-                    continue; //face tournée vers l'arrière : invisible
+                    continue; //côté tourné vers l'arrière : invisible
                 }
-                let color;
-                if (isFlashing) {
-                    color = face.isTop ? "#ffffff" : "#e6e6f0";
-                } else if (face.isTop) {
-                    color = CUBE_TOP_COLOR;
-                } else {
-                    //La lumière vient de la gauche : plus la face regarde à droite, plus elle est foncée
-                    color = darkenColor(CUBE_SIDE_COLOR, 0.82 - 0.18 * normal.x);
-                }
-                const points = face.corners.map(function (index) { return corners[index]; }); //map = transforme chaque élément
-                fillShape(ctx, points, 0, 0, color);
+                //La lumière vient de la gauche : plus le côté regarde à droite, plus il est foncé
+                const color = isFlashing ? "#e6e6f0" : darkenColor(PLAYER_SIDE_COLOR, 0.82 - 0.18 * normal.x);
+                fillShape(ctx, [topCorners[i], topCorners[next], bottomCorners[next], bottomCorners[i]], 0, 0, color);
             }
+            fillShape(ctx, topCorners, 0, 0, isFlashing ? "#ffffff" : PLAYER_TOP_COLOR);
         }
 
         function drawPlayer() {
-            //Lueur orange qui "respire" doucement autour du cube
+            //Lueur orange qui "respire" doucement autour du joueur
             const breathing = 0.7 + 0.2 * Math.sin(visualTime * 2);
             drawGlow(PLAYER_GLOW_COLOR, center.x, center.y, PLAYER_RADIUS * 2.6, breathing);
 
-            drawCube(center.x, center.y, playerHitTimer > 0);
+            drawPlayerShape(center.x, center.y, playerHitTimer > 0);
             drawPlayerHealth();
             drawShield();
         }
@@ -1514,7 +1508,7 @@
             ctx.stroke();
         }
 
-        //HEALTH NUMBER (sous le cube, comme le nombre sous le cube d'Outhold)
+        //HEALTH NUMBER (sous le joueur, comme le nombre sous le cube d'Outhold)
         const HEALTH_TEXT_OFFSET_Y = 50;          // distance sous le centre du joueur
 
         function drawPlayerHealth() {
@@ -1793,11 +1787,25 @@
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minSize: 9, maxSize: 15, health: 3, gold: 1, xp: 1 },
-            fire: { color: "#ff5533", speed: 90, minSize: 6, maxSize: 11, health: 2, gold: 1, xp: 1 },
-            plant: { color: "#55dd55", speed: 35, minSize: 11, maxSize: 20, health: 5, gold: 1, xp: 1 },
-            air: { color: "#e0f7ff", speed: 70, minSize: 5, maxSize: 9, health: 1, gold: 1, xp: 1 }
+            water: { color: "#4da6ff", speed: 50, minHealth: 2, maxHealth: 4, gold: 1, xp: 1 },
+            fire: { color: "#ff5533", speed: 90, minHealth: 1, maxHealth: 3, gold: 1, xp: 1 },
+            plant: { color: "#55dd55", speed: 35, minHealth: 4, maxHealth: 7, gold: 1, xp: 1 },
+            air: { color: "#e0f7ff", speed: 70, minHealth: 1, maxHealth: 2, gold: 1, xp: 1 }
         };
+
+        //TAILLE : plus un ennemi a de vie, plus il est gros (et il rétrécit quand on l'abîme)
+        const ENEMY_BASE_SIZE = 4;           // taille d'un ennemi à 0 PV
+        const ENEMY_SIZE_PER_HEALTH = 2.5;   // pixels de rayon en plus par point de vie
+        const ENEMY_SHRINK_SPEED = 10;       // vitesse à laquelle il rétrécit jusqu'à sa nouvelle taille
+
+        function getEnemyTargetSize(health) {
+            return ENEMY_BASE_SIZE + Math.max(0, health) * ENEMY_SIZE_PER_HEALTH;
+        }
+
+        //Nombre entier au hasard entre min et max (inclus)
+        function randomInt(min, max) {
+            return Math.floor(randomBetween(min, max + 1));
+        }
 
         //DÉGÂTS : un ennemi qui touche le joueur fait (ses PV restants / ENEMY_DAMAGE_DIVIDER) dégâts
         const ENEMY_DAMAGE_DIVIDER = 10;
@@ -1821,7 +1829,8 @@
         function spawnEnemy() {
             const type = pickRandom(Object.keys(ENEMY_TYPES));
             const stats = ENEMY_TYPES[type];
-            const size = randomBetween(stats.minSize, stats.maxSize);
+            const health = randomInt(stats.minHealth, stats.maxHealth);
+            const size = getEnemyTargetSize(health);
             const startDistance = Math.hypot(canvas.width, canvas.height) / 2 + size + ENEMY_WAVE_AMPLITUDE;
 
             enemies.push({
@@ -1831,7 +1840,7 @@
                 sideColor: darkenColor(stats.color, SIDE_DARKNESS),   // couleur de son épaisseur
                 speed: stats.speed,
                 size: size,
-                health: stats.health,
+                health: health,
                 gold: stats.gold,
                 xp: stats.xp,
                 angle: Math.random() * Math.PI * 2,
