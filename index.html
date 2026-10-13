@@ -345,6 +345,94 @@
             min-width: 0;
         }
 
+        #projectArea {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /*LIENS D'ORBITE : en bas à gauche de la fenêtre*/
+        #orbitLinkArea {
+            margin-top: auto; /*pousse le bloc tout en bas de la colonne*/
+            padding-top: 16px;
+        }
+
+        #orbitLinkArea h3 {
+            margin: 0 0 6px;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ui-accent);
+        }
+
+        .linkElement {
+            font-size: 14px;
+            color: var(--ui-muted);
+            margin-bottom: 10px;
+        }
+
+        .linkElement strong {
+            color: var(--tree-color);
+        }
+
+        .linkOptions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .linkOption {
+            padding: 7px 8px;
+            border-radius: 8px;
+            border: 2px solid var(--ui-line);
+            background: var(--ui-surface);
+            color: var(--ui-text);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .linkOption small {
+            display: block;
+            font-weight: 600;
+            color: var(--ui-muted);
+        }
+
+        .linkOption:hover {
+            background: var(--ui-surface-hover);
+        }
+
+        .linkOption.selected {
+            border-color: var(--tree-color);
+            box-shadow: inset 0 0 0 1px var(--tree-color);
+        }
+
+        .linkOption.none {
+            grid-column: 1 / -1; /*"Aucun" prend toute la largeur*/
+        }
+
+        .comboCard {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--ui-relief);
+            border-left: 4px solid var(--combo-color);
+            font-size: 13px;
+        }
+
+        .comboCard strong {
+            display: block;
+            font-size: 15px;
+            color: var(--combo-color);
+        }
+
+        .comboNone {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--ui-muted);
+        }
+
         #treeBonusArea { /*à droite : tout ce qu'on a débloqué dans CET arbre*/
             grid-area: bonus;
             border-left: 1px solid var(--ui-line);
@@ -1214,6 +1302,7 @@
             <section id="projectArea">
                 <h2 id="projectTitle"></h2>
                 <div id="projectContent" class="placeholder"></div>
+                <div id="orbitLinkArea"></div>
             </section>
             <section id="treeArea">
                 <div class="treeHeader">
@@ -2921,9 +3010,13 @@
             for (let i = enemies.length - 1; i >= 0; i--) {
                 const enemy = enemies[i];
 
-                enemy.time += deltaTime;
-                const step = enemy.style ? getMovementStep(enemy, deltaTime) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
-                enemy.distance -= enemy.speed * step.speedFactor * deltaTime;
+                const statusSpeed = updateEnemyStatus(enemy, deltaTime); //brûlure, ralenti, gelé
+                if (!enemies.includes(enemy)) {
+                    continue; //il vient de mourir de sa brûlure
+                }
+                enemy.time += deltaTime * statusSpeed; //gelé = son mouvement (zigzag...) s'arrête aussi
+                const step = enemy.style ? getMovementStep(enemy, deltaTime * statusSpeed) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
+                enemy.distance -= enemy.speed * step.speedFactor * statusSpeed * deltaTime;
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
                     enemies.splice(i, 1);
@@ -3000,6 +3093,15 @@
                     drawBossInfo(enemy);
                 }
 
+                //Statuts des combos : un anneau bleu glacé si gelé, bleu pâle si ralenti
+                if (enemy.freezeTimer > 0 || enemy.slowTimer > 0) {
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size + 3, 0, Math.PI * 2);
+                    ctx.strokeStyle = enemy.freezeTimer > 0 ? "#9be8ff" : "rgba(200, 230, 255, 0.6)";
+                    ctx.lineWidth = enemy.freezeTimer > 0 ? 3 : 1.5;
+                    ctx.stroke();
+                }
+
                 //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
                 if (SHOW_SPECIAL_RING && enemy.movement !== "straight") {
                     ctx.beginPath();
@@ -3036,7 +3138,8 @@
         }
 
         //Tire une balle de (x, y) vers "target". Par défaut : depuis le joueur, avec ses dégâts et sa couleur.
-        function shootAt(target, x = center.x, y = center.y, damage = playerStats.damage, color = BULLET_COLOR) {
+        //effects = les effets des combos d'orbite : [{ type: "explosion", power: 1 }, ...] (vide pour les tirs normaux)
+        function shootAt(target, x = center.x, y = center.y, damage = playerStats.damage, color = BULLET_COLOR, effects = [], ringColor = null) {
             bullets.push({
                 x: x,
                 y: y,
@@ -3045,14 +3148,36 @@
                 target: target,
                 damage: damage,
                 color: color,
-                sideColor: darkenColor(color, SIDE_DARKNESS)
+                sideColor: darkenColor(color, SIDE_DARKNESS),
+                effects: effects,
+                ringColor: ringColor,          // contour de la couleur de l'attribut emprunté (ou null)
+                pierceLeft: Math.round(COMBO_PIERCE_COUNT * getEffectPower(effects, "pierce")), // ennemis qu'elle peut encore traverser
+                alreadyHit: []                 // les ennemis déjà touchés (pour ne pas toucher 2 fois le même en traversant)
             });
         }
 
         function hitEnemy(enemy, index, bullet) {
-            enemy.health -= bullet.damage + playerStats.damageVs[enemy.type];
-            enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
+            let damage = bullet.damage + playerStats.damageVs[enemy.type];
+            //Combos d'orbite qui changent les dégâts du coup lui-même
+            const crit = getBulletEffect(bullet, "crit");
+            if (crit > 0 && Math.random() < COMBO_CRIT_CHANCE * crit) {
+                damage *= COMBO_CRIT_MULTIPLIER;
+                spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 14);
+            }
+            damage *= 1 + COMBO_DAMAGE_BOOST * getBulletEffect(bullet, "damageBoost");
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
+            applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
+            damageEnemy(enemy, damage, "enemyHit");
+        }
+
+        //Enlève des PV à un ennemi, et s'occupe de sa mort (récompenses, éclats, son). sound = son si il survit (ou null)
+        function damageEnemy(enemy, amount, sound) {
+            const index = enemies.indexOf(enemy); //indexOf = sa place dans la liste (-1 s'il n'y est plus)
+            if (index === -1) {
+                return; //déjà mort
+            }
+            enemy.health -= amount;
+            enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
 
             if (enemy.health <= 0) {
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
@@ -3064,8 +3189,8 @@
                 gainRewards(enemy.gold, enemy.xp);
                 healPlayer(playerStats.lifeOnKill);
                 playSound("enemyKill");
-            } else {
-                playSound("enemyHit");
+            } else if (sound !== null) {
+                playSound(sound);
             }
         }
 
@@ -3108,9 +3233,18 @@
                 let hasHit = false;
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
+                    if (bullet.alreadyHit.includes(enemy)) {
+                        continue;
+                    }
                     if (Math.hypot(enemy.x - bullet.x, enemy.y - bullet.y) <= enemy.size + BULLET_SIZE) {
                         hitEnemy(enemy, j, bullet);
-                        hasHit = true;
+                        bullet.alreadyHit.push(enemy);
+                        if (bullet.pierceLeft > 0) {
+                            bullet.pierceLeft--; //elle traverse : elle continue tout droit au lieu de disparaître
+                            bullet.target = null;
+                        } else {
+                            hasHit = true;
+                        }
                         break;
                     }
                 }
@@ -3145,10 +3279,242 @@
                     }
                 }
                 if (closestEnemy !== null) {
-                    shootAt(closestEnemy, planet.x, planet.y, PLANET_DAMAGE, planet.color);
+                    const combos = getPlanetCombos(planet);
+                    const effects = [];
+                    for (const item of combos) {
+                        for (const type of item.combo.effects) {
+                            effects.push({ type: type, power: item.strength });
+                        }
+                    }
+                    const ringColor = combos.length > 0 ? ATTRIBUTES[combos[0].attribute].color : null;
+                    shootAt(closestEnemy, planet.x, planet.y, PLANET_DAMAGE, planet.color, effects, ringColor);
                     planet.fireTimer = 0;
                 }
             }
+        }
+
+        //////////////////////////
+        ////COMBOS D'ORBITE///////  Chaque dieu a un attribut. Une planète peut "se lier" à ses voisines dans l'orbite
+        //////////////////////////  (gauche, droite, les deux, ou celle d'en face) : ses tirs empruntent leur attribut,
+        //et le mélange [son attribut + l'attribut emprunté] donne un COMBO qui ajoute des effets à ses balles.
+        const ATTRIBUTES = {
+            fire: { name: "Feu", icon: "🔥", color: "#ff7a45" },
+            water: { name: "Eau", icon: "💧", color: "#4da6ff" },
+            plant: { name: "Plante", icon: "🌿", color: "#55dd55" },
+            air: { name: "Vent", icon: "🌪️", color: "#e0f7ff" },
+            light: { name: "Lumière", icon: "☀️", color: "#ffd84d" },
+            moon: { name: "Lune", icon: "🌙", color: "#c7b8ff" },
+            aegis: { name: "Égide", icon: "🛡️", color: "#e8b07a" }
+        };
+
+        //Les options de lien. strength = force des effets (les deux = plus de combos mais chacun plus faible,
+        //en face = un seul combo mais plus fort, car la planète est loin)
+        const LINK_MODES = {
+            none: { name: "Aucun", strength: 0 },
+            left: { name: "Gauche", strength: 1 },
+            right: { name: "Droite", strength: 1 },
+            both: { name: "Les deux", strength: 0.65 },
+            opposite: { name: "En face", strength: 1.4 }
+        };
+
+        //LES COMBOS : la clé = les 2 attributs dans l'ordre alphabétique, reliés par "+" (voir getComboKey)
+        //effects = ce que font les balles (voir applyComboEffects). Tous les combos possibles sont là (7 attributs = 21 combos).
+        const COMBOS = {
+            "air+fire": { name: "Explosion", description: "les balles explosent et blessent les ennemis autour", effects: ["explosion"] },
+            "fire+water": { name: "Vapeur", description: "un nuage de vapeur ralentit les ennemis autour de l'impact", effects: ["slowArea"] },
+            "fire+plant": { name: "Feu de forêt", description: "les ennemis touchés brûlent pendant 3 s", effects: ["burn"] },
+            "fire+light": { name: "Éruption solaire", description: "les balles brûlent et traversent un ennemi", effects: ["burn", "pierce"] },
+            "fire+moon": { name: "Flèche ardente", description: "chance de coup critique (x3), et les ennemis brûlent", effects: ["crit", "burn"] },
+            "aegis+fire": { name: "Forge", description: "+50% de dégâts", effects: ["damageBoost"] },
+            "air+water": { name: "Gel", description: "les ennemis touchés sont gelés sur place", effects: ["freeze"] },
+            "plant+water": { name: "Floraison", description: "chaque coup te soigne un peu", effects: ["heal"] },
+            "light+water": { name: "Arc-en-ciel", description: "chaque coup rapporte un peu d'or (le trésor au pied de l'arc-en-ciel)", effects: ["gold"] },
+            "moon+water": { name: "Marée", description: "les ennemis touchés sont repoussés en arrière", effects: ["knockback"] },
+            "aegis+water": { name: "Rempart d'écume", description: "les ennemis touchés sont ralentis", effects: ["slow"] },
+            "air+plant": { name: "Pollen", description: "les balles éclatent en 2 graines qui visent d'autres ennemis", effects: ["split"] },
+            "light+plant": { name: "Photosynthèse", description: "chaque coup rapporte un peu d'XP", effects: ["xp"] },
+            "moon+plant": { name: "Racines", description: "les ennemis touchés sont enracinés un court instant", effects: ["root"] },
+            "aegis+plant": { name: "Mur d'épines", description: "les ennemis touchés sont repoussés et ralentis", effects: ["knockback", "slow"] },
+            "air+light": { name: "Éclair", description: "la foudre rebondit sur un autre ennemi proche", effects: ["chain"] },
+            "air+moon": { name: "Flèche du vent", description: "les balles traversent les ennemis", effects: ["pierce"] },
+            "aegis+air": { name: "Bourrasque", description: "les ennemis touchés sont fortement repoussés", effects: ["knockback", "knockback"] },
+            "light+moon": { name: "Éclipse", description: "grande chance de coup critique (x3)", effects: ["crit", "crit"] },
+            "aegis+light": { name: "Aveuglement", description: "les ennemis touchés sont ralentis et subissent un critique de temps en temps", effects: ["slow", "crit"] },
+            "aegis+moon": { name: "Chouette", description: "les balles rebondissent sur un autre ennemi", effects: ["chain"] }
+        };
+
+        //Réglages des effets (pour un combo de force 1)
+        const COMBO_EXPLOSION_RADIUS = 70;      // pixels
+        const COMBO_EXPLOSION_DAMAGE = 0.8;     // x les dégâts de la balle, pour chaque ennemi autour
+        const COMBO_BURN_DURATION = 3;          // secondes
+        const COMBO_BURN_DPS = 0.6;             // dégâts par seconde (x les dégâts de la balle)
+        const COMBO_SLOW_DURATION = 2;
+        const COMBO_SLOW_FACTOR = 0.45;         // vitesse des ennemis ralentis (45%)
+        const COMBO_FREEZE_DURATION = 1.2;      // gelé = immobile
+        const COMBO_ROOT_DURATION = 0.6;
+        const COMBO_KNOCKBACK = 30;             // pixels de recul
+        const COMBO_HEAL = 0.08;                // PV rendus par coup
+        const COMBO_GOLD = 0.15;                // or par coup
+        const COMBO_XP = 0.15;                  // XP par coup
+        const COMBO_CRIT_CHANCE = 0.2;          // chance de critique
+        const COMBO_CRIT_MULTIPLIER = 3;
+        const COMBO_DAMAGE_BOOST = 0.5;         // +50%
+        const COMBO_PIERCE_COUNT = 1;           // ennemis traversés
+        const COMBO_CHAIN_RANGE = 160;          // distance max du rebond
+        const COMBO_CHAIN_DAMAGE = 0.7;
+        const COMBO_SPLIT_DAMAGE = 0.5;
+
+        function getComboKey(attributeA, attributeB) {
+            return [attributeA, attributeB].sort().join("+"); //sort = range dans l'ordre alphabétique, join = colle avec "+"
+        }
+
+        //Les planètes auxquelles cette planète est liée, selon son option (gauche, droite...)
+        function getLinkedPlanets(planet) {
+            const count = planets.length;
+            const index = planets.indexOf(planet);
+            if (count < 2 || index === -1) {
+                return [];
+            }
+            const left = planets[(index - 1 + count) % count];   // % = reste de la division : après la dernière, on revient à la 1re
+            const right = planets[(index + 1) % count];
+            const opposite = planets[(index + Math.floor(count / 2)) % count];
+            const mode = planet.tree.linkMode;
+            let linked = [];
+            if (mode === "left") linked = [left];
+            if (mode === "right") linked = [right];
+            if (mode === "both") linked = [left, right];
+            if (mode === "opposite") linked = [opposite];
+            return linked.filter(function (other, i) { return other !== planet && linked.indexOf(other) === i; }); //sans doublon
+        }
+
+        //Les combos actifs d'une planète : [{ attribute, partner, combo, strength }]
+        function getPlanetCombos(planet) {
+            const result = [];
+            for (const partner of getLinkedPlanets(planet)) {
+                const attribute = partner.tree.element;
+                if (attribute === planet.tree.element) {
+                    continue; //même attribut : pas de combo
+                }
+                const combo = COMBOS[getComboKey(planet.tree.element, attribute)];
+                result.push({ attribute: attribute, partner: partner, combo: combo, strength: LINK_MODES[planet.tree.linkMode].strength });
+            }
+            return result;
+        }
+
+        //Force totale d'un effet dans une liste d'effets (0 si absent)
+        function getEffectPower(effects, type) {
+            let power = 0;
+            for (const effect of effects) {
+                if (effect.type === type) {
+                    power += effect.power;
+                }
+            }
+            return power;
+        }
+
+        function getBulletEffect(bullet, type) {
+            return bullet.effects ? getEffectPower(bullet.effects, type) : 0;
+        }
+
+        //L'ennemi le plus proche de (x, y), sauf ceux de la liste "except", à moins de maxDistance
+        function findNearestEnemy(x, y, maxDistance, except) {
+            let nearest = null;
+            let nearestDistance = maxDistance;
+            for (const enemy of enemies) {
+                const distance = Math.hypot(enemy.x - x, enemy.y - y);
+                if (distance < nearestDistance && !except.includes(enemy)) {
+                    nearest = enemy;
+                    nearestDistance = distance;
+                }
+            }
+            return nearest;
+        }
+
+        //Applique les effets des combos quand une balle touche un ennemi
+        function applyComboEffects(enemy, bullet) {
+            if (!bullet.effects || bullet.effects.length === 0) {
+                return;
+            }
+            const power = function (type) { return getBulletEffect(bullet, type); };
+
+            if (power("explosion") > 0) {
+                const radius = COMBO_EXPLOSION_RADIUS * Math.sqrt(power("explosion"));
+                spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.fire.color, radius);
+                spawnParticles(enemy.x, enemy.y, ATTRIBUTES.fire.color, 10, 260);
+                for (const other of enemies.slice()) { //slice() = une copie : la liste peut changer si des ennemis meurent
+                    if (other !== enemy && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= radius + other.size) {
+                        damageEnemy(other, bullet.damage * COMBO_EXPLOSION_DAMAGE * power("explosion"), null);
+                    }
+                }
+            }
+            if (power("slowArea") > 0) {
+                spawnShockwave(enemy.x, enemy.y, "#d8eefc", COMBO_EXPLOSION_RADIUS);
+                for (const other of enemies) {
+                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
+                        other.slowTimer = Math.max(other.slowTimer || 0, COMBO_SLOW_DURATION * power("slowArea"));
+                    }
+                }
+            }
+            if (power("burn") > 0) {
+                enemy.burnTimer = COMBO_BURN_DURATION;
+                enemy.burnDps = Math.max(enemy.burnDps || 0, bullet.damage * COMBO_BURN_DPS * power("burn"));
+            }
+            if (power("slow") > 0) {
+                enemy.slowTimer = Math.max(enemy.slowTimer || 0, COMBO_SLOW_DURATION * power("slow"));
+            }
+            if (power("freeze") > 0) {
+                enemy.freezeTimer = Math.max(enemy.freezeTimer || 0, COMBO_FREEZE_DURATION * power("freeze"));
+            }
+            if (power("root") > 0) {
+                enemy.freezeTimer = Math.max(enemy.freezeTimer || 0, COMBO_ROOT_DURATION * power("root"));
+            }
+            if (power("knockback") > 0) {
+                enemy.distance = Math.min(enemy.startDistance, enemy.distance + COMBO_KNOCKBACK * power("knockback"));
+            }
+            if (power("heal") > 0) {
+                healPlayer(COMBO_HEAL * power("heal"));
+            }
+            if (power("gold") > 0 || power("xp") > 0) {
+                gainRewards(COMBO_GOLD * power("gold"), COMBO_XP * power("xp"));
+            }
+            if (power("chain") > 0) {
+                const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE, bullet.alreadyHit.concat([enemy]));
+                if (next !== null) {
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE * power("chain"), bullet.color, [], ATTRIBUTES.light.color);
+                }
+            }
+            if (power("split") > 0) {
+                let except = bullet.alreadyHit.concat([enemy]);
+                for (let i = 0; i < 2; i++) {
+                    const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE * 1.5, except);
+                    if (next === null) {
+                        break;
+                    }
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE * power("split"), ATTRIBUTES.plant.color);
+                    except = except.concat([next]);
+                }
+            }
+        }
+
+        //Les statuts des ennemis (brûlure, ralenti, gelé) : appelé à chaque image. Renvoie la vitesse (1 = normale)
+        function updateEnemyStatus(enemy, deltaTime) {
+            let speedFactor = 1;
+            if (enemy.slowTimer > 0) {
+                enemy.slowTimer -= deltaTime;
+                speedFactor = COMBO_SLOW_FACTOR;
+            }
+            if (enemy.freezeTimer > 0) {
+                enemy.freezeTimer -= deltaTime;
+                speedFactor = 0;
+            }
+            if (enemy.burnTimer > 0) {
+                enemy.burnTimer -= deltaTime;
+                if (Math.random() < deltaTime * 8) {
+                    spawnParticles(enemy.x, enemy.y - enemy.size / 2, ATTRIBUTES.fire.color, 1, 40); //petites flammes
+                }
+                damageEnemy(enemy, enemy.burnDps * deltaTime, null);
+            }
+            return speedFactor;
         }
 
         const BULLET_TRAIL_LENGTH = 12;   // longueur de la traînée derrière la balle, en pixels
@@ -3171,6 +3537,11 @@
                 ctx.arc(bullet.x, bullet.y, BULLET_SIZE, 0, Math.PI * 2);
                 ctx.fillStyle = bullet.color;
                 ctx.fill();
+                if (bullet.ringColor !== null) { //balle avec un combo : contour de la couleur de l'attribut emprunté
+                    ctx.strokeStyle = bullet.ringColor;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
             }
         }
 
@@ -3445,6 +3816,7 @@
         const SKILL_TREES_DATA = [
             {
                 name: "Vulcain",
+                element: "fire",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#ff7a45",
                 project: {
                     title: "Projet 1",
@@ -3478,6 +3850,7 @@
             },
             {
                 name: "Poséidon",
+                element: "water",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#4da6ff",
                 project: {
                     title: "Projet 2",
@@ -3511,6 +3884,7 @@
             },
             {
                 name: "Déméter",
+                element: "plant",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#55dd55",
                 project: {
                     title: "Projet 3",
@@ -3544,6 +3918,7 @@
             },
             {
                 name: "Éole",
+                element: "air",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#e0f7ff",
                 project: {
                     title: "Projet 4",
@@ -3577,6 +3952,7 @@
             },
             {
                 name: "Hélios",
+                element: "light",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#ffd84d",
                 project: {
                     title: "Projet 5",
@@ -3612,6 +3988,7 @@
             //Pour ajouter un nouveau dieu plus tard : copie ce bloc, change son nom, sa couleur, sa forme et ses compétences.
             {
                 name: "Artémis",
+                element: "moon",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#c7b8ff",
                 locked: true,
                 project: {
@@ -3647,6 +4024,7 @@
             //ATHÉNA : 2e divinité à acheter dans le shop (après Artémis). Sagesse et stratégie : défense, XP et un peu d'attaque.
             {
                 name: "Athéna",
+                element: "aegis",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#e8b07a",
                 locked: true,
                 project: {
@@ -3799,7 +4177,7 @@
             }
 
             warnCrossingLinks(treeData.name, nodes);
-            return { name: treeData.name, color: treeData.color, project: treeData.project, isLocked: treeData.locked === true, nodes: nodes };
+            return { name: treeData.name, color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: treeData.locked === true, nodes: nodes };
         }
 
         //VÉRIFICATION : prévient dans la console (F12) si deux liens d'un arbre se croisent, pour corriger la forme
@@ -3867,6 +4245,7 @@
         const treeNodes = document.getElementById("treeNodes");
         const nodeInfo = document.getElementById("nodeInfo");
         const treeBonusArea = document.getElementById("treeBonusArea");
+        const orbitLinkArea = document.getElementById("orbitLinkArea");
         let currentTree = null;
 
         function openSkillTree(tree) {
@@ -3877,6 +4256,7 @@
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
             treeTitle.textContent = tree.name;
+            renderOrbitLinks(tree);
             showNodeInfoHint();
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
@@ -3958,6 +4338,55 @@
                 line.appendChild(createElementWithText("span", "", row[0]));
                 line.appendChild(createElementWithText("span", "statValue", row[1]));
                 treeBonusArea.appendChild(line);
+            }
+        }
+
+        //LIENS D'ORBITE : choisir à quelle(s) voisine(s) la planète emprunte son attribut, et voir les combos obtenus
+        function renderOrbitLinks(tree) {
+            const planet = planets.find(function (other) { return other.tree === tree; });
+            orbitLinkArea.textContent = "";
+            if (planet === undefined) {
+                return;
+            }
+            orbitLinkArea.appendChild(createElementWithText("h3", "", "Liens d'orbite"));
+            const own = ATTRIBUTES[tree.element];
+            const element = createElementWithText("div", "linkElement", "Attribut de " + tree.name + " : ");
+            element.appendChild(createElementWithText("strong", "", own.icon + " " + own.name));
+            orbitLinkArea.appendChild(element);
+
+            //Les 5 boutons. Sous chaque option : les planètes concernées, pour savoir tout de suite ce qu'on va emprunter
+            const options = createElementWithText("div", "linkOptions", "");
+            const savedMode = tree.linkMode;
+            for (const mode of Object.keys(LINK_MODES)) {
+                tree.linkMode = mode; //on essaie chaque option pour savoir quelles planètes elle donnerait
+                const partners = getLinkedPlanets(planet).map(function (other) { return ATTRIBUTES[other.tree.element].icon + " " + other.name; });
+                const button = createElementWithText("button", "linkOption" + (mode === savedMode ? " selected" : "") + (mode === "none" ? " none" : ""), LINK_MODES[mode].name);
+                if (mode !== "none") {
+                    button.appendChild(createElementWithText("small", "", partners.length > 0 ? partners.join(" + ") : "—"));
+                }
+                button.addEventListener("click", function () {
+                    tree.linkMode = mode;
+                    playSound("buy");
+                    renderOrbitLinks(tree);
+                });
+                options.appendChild(button);
+            }
+            tree.linkMode = savedMode;
+            orbitLinkArea.appendChild(options);
+
+            //Le résultat : les combos actifs
+            const combos = getPlanetCombos(planet);
+            if (combos.length === 0) {
+                const reason = tree.linkMode === "none" ? "Choisis un lien pour créer un combo." : "Même attribut : pas de combo.";
+                orbitLinkArea.appendChild(createElementWithText("div", "comboNone", reason));
+            }
+            for (const item of combos) {
+                const card = createElementWithText("div", "comboCard", "");
+                card.style.setProperty("--combo-color", ATTRIBUTES[item.attribute].color);
+                const strength = item.strength === 1 ? "" : " (force x" + item.strength + ")";
+                card.appendChild(createElementWithText("strong", "", own.icon + " + " + ATTRIBUTES[item.attribute].icon + "  " + item.combo.name));
+                card.appendChild(document.createTextNode(item.combo.description + strength)); //createTextNode = un simple morceau de texte
+                orbitLinkArea.appendChild(card);
             }
         }
 
