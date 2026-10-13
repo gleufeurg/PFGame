@@ -417,6 +417,11 @@
             stroke-width: 6;
         }
 
+        #treeLinks line.silhouette { /*le "dessin" de la forme, derrière les liens*/
+            stroke-width: 90;
+            stroke-linecap: round; /*bouts arrondis : les traits se fondent en une seule forme*/
+        }
+
         #treeLinks line.active {
             stroke: var(--tree-color);
         }
@@ -436,10 +441,24 @@
             cursor: pointer;
         }
 
+        .skillNode.notable { /*compétence importante*/
+            width: 86px;
+            height: 86px;
+            font-size: 16px;
+            border-width: 4px;
+        }
+
         .skillNode.keystone { /*compétence majeure, au bout d'une branche*/
             width: 100px;
             height: 100px;
             font-size: 18px;
+        }
+
+        .skillNode.grand { /*LA plus puissante de l'arbre*/
+            width: 130px;
+            height: 130px;
+            font-size: 20px;
+            border-width: 5px;
         }
 
         .skillNode.available {
@@ -1216,7 +1235,8 @@
             for (const enemy of enemies) {
                 enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
                 //Rétrécit en douceur vers la taille qui correspond à sa vie actuelle
-                const targetSize = getEnemyTargetSize(enemy.health);
+                //Super ennemi : il rétrécit jusqu'à 60% de sa taille quand sa vie baisse
+                const targetSize = enemy.isBoss ? enemy.boss.size * (0.6 + 0.4 * Math.max(0, enemy.health) / enemy.maxHealth) : getEnemyTargetSize(enemy.health);
                 enemy.size += (targetSize - enemy.size) * Math.min(1, deltaTime * ENEMY_SHRINK_SPEED);
             }
             screenShakeTimer -= deltaTime;
@@ -1844,13 +1864,14 @@
                     remaining -= timeUntilNextSpawn;
                     runTime += timeUntilNextSpawn;
                     enemySpawnTimer = 0;
-                    spawnEnemy();
+                    spawnNextEnemy();
                     spawnedCount++;
                 }
             }
 
             playSound("skip");
             showToast("⏩ +" + seconds + " s : " + spawnedCount + " ennemis arrivent !");
+            checkBossSchedule(); //un super ennemi dont l'heure est passée pendant le saut arrive aussitôt (son annonce remplace le message)
         }
 
         //Crée un bouton orange par option de TIME_SKIP_OPTIONS
@@ -1990,6 +2011,17 @@
 
         //Les points de la forme d'un ennemi (null pour un rond, dessiné avec arc)
         function getEnemyShapePoints(enemy, x, y) {
+            if (enemy.isBoss) {
+                //Super ennemi : une forme hérissée de "sides" pointes, qui tourne lentement
+                const points = [];
+                const count = enemy.boss.sides * 2;
+                for (let i = 0; i < count; i++) {
+                    const radius = i % 2 === 0 ? enemy.size : enemy.size * 0.72;
+                    const angle = enemy.time * 0.5 - Math.PI / 2 + Math.PI * 2 / count * i;
+                    points.push({ x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * radius });
+                }
+                return points;
+            }
             const shape = MOVEMENT_SHAPES[enemy.movement];
             if (shape === "triangle") {
                 const towardPlayer = Math.atan2(center.y - enemy.y, center.x - enemy.x);
@@ -2049,14 +2081,124 @@
             });
         }
 
+        /////////////////////
+        ////SUPER ENNEMIS////  Des monstres de la mythologie grecque, un par minute
+        /////////////////////
+        //time = moment de leur 1ère apparition (en secondes). Tant qu'un super ennemi n'a jamais été vaincu, il revient à ce moment-là
+        //à chaque partie. Une fois vaincu, il ne revient plus à heure fixe, mais peut apparaître au hasard parmi les ennemis normaux.
+        //element = son élément (pour les bonus de dégâts des skill trees), sides = nombre de pointes de sa forme
+        const BOSSES = [
+            { id: "cerbere", name: "Cerbère", time: 60, element: "fire", color: "#ff3b2f", health: 40, size: 34, speed: 26, sides: 3, gold: 15, xp: 15 },
+            { id: "hydre", name: "Hydre de Lerne", time: 120, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 23, sides: 9, gold: 25, xp: 25 },
+            { id: "meduse", name: "Méduse", time: 180, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 21, sides: 6, gold: 40, xp: 40 },
+            { id: "typhon", name: "Typhon", time: 240, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 24, sides: 4, gold: 60, xp: 60 },
+            { id: "chimere", name: "Chimère", time: 300, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 22, sides: 5, gold: 90, xp: 90 },
+            { id: "charybde", name: "Charybde", time: 360, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 19, sides: 8, gold: 130, xp: 130 },
+            { id: "python", name: "Python", time: 420, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 18, sides: 7, gold: 180, xp: 180 },
+            { id: "cronos", name: "Cronos", time: 480, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 16, sides: 12, gold: 260, xp: 260 }
+        ];
+        //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie
+        const BOSS_RANDOM_CHANCE_START = 0.001;     // 0.1% au début
+        const BOSS_RANDOM_CHANCE_PER_SECOND = 0.00002; // +0.002% par seconde de jeu (≈ 0.7% à 5 minutes)
+
+        const defeatedBossIds = new Set();          // Set = une liste sans doublons (les super ennemis déjà vaincus, toutes parties confondues)
+        const bossesSpawnedThisRun = new Set();     // ceux déjà apparus à leur heure pendant cette partie
+
+        function loadDefeatedBosses() {
+            try {
+                const saved = JSON.parse(localStorage.getItem("defeatedBosses"));
+                if (Array.isArray(saved)) {
+                    for (const id of saved) {
+                        defeatedBossIds.add(id);
+                    }
+                }
+            } catch (error) {
+            }
+        }
+
+        function saveDefeatedBosses() {
+            try {
+                localStorage.setItem("defeatedBosses", JSON.stringify([...defeatedBossIds])); //[...set] = transforme le Set en tableau
+            } catch (error) {
+            }
+        }
+
+        function spawnBoss(boss) {
+            const startDistance = Math.hypot(canvas.width, canvas.height) / 2 + boss.size + ENEMY_WAVE_AMPLITUDE;
+            enemies.push({
+                isBoss: true,
+                boss: boss,
+                type: boss.element,
+                movement: "straight",
+                color: boss.color,
+                sideColor: darkenColor(boss.color, SIDE_DARKNESS),
+                speed: boss.speed,
+                size: boss.size,
+                health: boss.health,
+                maxHealth: boss.health,
+                gold: boss.gold,
+                xp: boss.xp,
+                angle: Math.random() * Math.PI * 2,
+                distance: startDistance,
+                startDistance: startDistance,
+                time: 0,
+                hitTimer: 0,
+                x: 0,
+                y: 0
+            });
+        }
+
+        //Fait apparaître les super ennemis jamais vaincus quand leur heure est arrivée
+        function checkBossSchedule() {
+            for (const boss of BOSSES) {
+                if (!defeatedBossIds.has(boss.id) && !bossesSpawnedThisRun.has(boss.id) && runTime >= boss.time) {
+                    bossesSpawnedThisRun.add(boss.id);
+                    spawnBoss(boss);
+                    showToast("⚠️ " + boss.name + " arrive !");
+                    playSound("bossArrive");
+                }
+            }
+        }
+
+        //Le prochain ennemi : en général un normal, parfois un super ennemi déjà vaincu
+        function spawnNextEnemy() {
+            const chance = BOSS_RANDOM_CHANCE_START + runTime * BOSS_RANDOM_CHANCE_PER_SECOND;
+            if (defeatedBossIds.size > 0 && Math.random() < chance) {
+                const defeatedBosses = BOSSES.filter(function (boss) { return defeatedBossIds.has(boss.id); });
+                spawnBoss(pickRandom(defeatedBosses));
+            } else {
+                spawnEnemy();
+            }
+        }
+
+        function onBossDefeated(enemy) {
+            spawnParticles(enemy.x, enemy.y, enemy.color, 60, 380);
+            spawnShockwave(enemy.x, enemy.y, enemy.color, enemy.size * 4);
+            screenShakeTimer = SCREEN_SHAKE_DURATION;
+            if (!defeatedBossIds.has(enemy.boss.id)) {
+                defeatedBossIds.add(enemy.boss.id);
+                saveDefeatedBosses();
+                showToast("🏆 " + enemy.boss.name + " vaincu ! Il pourra revenir parmi les ennemis…");
+                playSound("bossDefeated");
+            }
+        }
+
+        //Le prochain super ennemi encore jamais vaincu (ou null)
+        function getNextBoss() {
+            return BOSSES.find(function (boss) { return !defeatedBossIds.has(boss.id); }) || null;
+        }
+
+        loadDefeatedBosses();
+
         function updateEnemies(deltaTime) {
             //SPAWN
             runTime += deltaTime;
             enemySpawnTimer += deltaTime;
             if (enemySpawnTimer >= getEnemySpawnInterval()) {
-                spawnEnemy();
+                spawnNextEnemy();
                 enemySpawnTimer = 0;
             }
+            checkBossSchedule();
 
             //MOVE
             for (let i = enemies.length - 1; i >= 0; i--) {
@@ -2101,11 +2243,34 @@
             return Math.max(2, enemy.size * 0.35);
         }
 
+        //Nom + barre de vie au-dessus d'un super ennemi
+        const BOSS_BAR_HEIGHT = 7;
+
+        function drawBossInfo(enemy) {
+            const width = enemy.boss.size * 2;
+            const x = enemy.x - width / 2;
+            const y = enemy.y - enemy.size - 20;
+            const healthPercent = Math.max(0, enemy.health) / enemy.maxHealth;
+
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(x, y, width, BOSS_BAR_HEIGHT);
+            ctx.fillStyle = enemy.color;
+            ctx.fillRect(x, y, width * healthPercent, BOSS_BAR_HEIGHT);
+
+            ctx.font = "800 14px Nunito";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "white";
+            ctx.fillText(enemy.boss.name, enemy.x, y - 6);
+        }
+
         function drawEnemies() {
             for (const enemy of enemies) {
                 const depth = getEnemyDepth(enemy);
                 const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
 
+                if (enemy.isBoss) {
+                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.2, 0.9);
+                }
                 const shapePoints = getEnemyShapePoints(enemy, enemy.x, enemy.y);
                 if (shapePoints === null) {
                     //ROND : 1. l'épaisseur (le rond étiré vers le bas, en plus foncé), 2. le dessus
@@ -2118,6 +2283,10 @@
                     //AUTRES FORMES : même principe avec des points
                     fillStretchedShape(ctx, shapePoints, 0, depth, enemy.sideColor);
                     fillShape(ctx, shapePoints, 0, 0, topColor);
+                }
+
+                if (enemy.isBoss) {
+                    drawBossInfo(enemy);
                 }
 
                 //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
@@ -2177,6 +2346,9 @@
             if (enemy.health <= 0) {
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
                 enemies.splice(index, 1);
+                if (enemy.isBoss) {
+                    onBossDefeated(enemy);
+                }
                 killsThisRun++;
                 gainRewards(enemy.gold, enemy.xp);
                 healPlayer(playerStats.lifeOnKill);
@@ -2301,57 +2473,205 @@
         //Les liens marchent DANS LES DEUX SENS : une compétence est débloquable dès qu'UNE de ses voisines est débloquée
         //(comme dans Path of Exile : on peut arriver par n'importe quel chemin). Il suffit d'écrire chaque lien une seule fois.
         //start: true = point de départ de l'arbre (débloquable sans voisine).
-        //37 compétences par arbre : 3 grandes branches (a, b, c) qui finissent chacune par une keystone,
-        //des ponts entre les branches (ab, bc, m), des petits groupes sur les côtés (l, r),
-        //et une couronne en haut (t) qui mène à la GRANDE keystone (T), la plus chère.
-        const TREE_LAYOUT = {
-            root: { x: 50, y: 95, cost: 5, links: [], start: true },
+        //FORMES DES ARBRES : chaque arbre a son propre dessin. Une forme = une fonction qui place les compétences.
+        //Chaque compétence a un "rôle" :
+        //  "start"    = point de départ (débloquable sans voisine)
+        //  "minor"    = petite compétence (prise dans minorSkills, à tour de rôle)
+        //  "notable"  = compétence importante (prise dans skills.notables, dans l'ordre)
+        //  "keystone" = compétence majeure (prise dans skills.keystones)
+        //  "grand"    = LA plus puissante (skills.grand)
+        //x et y sont en % de l'arbre. links = les compétences reliées (les liens marchent dans les deux sens).
+        //Le coût est calculé tout seul : plus une compétence est loin du départ, plus elle est chère.
 
-            a1: { x: 40, y: 89, cost: 10, links: ["root"] },
-            a2: { x: 31, y: 83, cost: 15, links: ["a1"] },
-            a3: { x: 24, y: 75, cost: 20, links: ["a2"] },
-            a4: { x: 18, y: 65, cost: 25, links: ["a3"] },
-            a5: { x: 13, y: 54, cost: 30, links: ["a4"] },
-            aK: { x: 10, y: 42, cost: 60, links: ["a5", "ab2"], keystone: true },
+        //Petit outil pour construire une forme : add() pose une compétence, chain() en pose plusieurs reliées à la suite
+        function createLayoutBuilder() {
+            const layout = {};
+            return {
+                layout: layout,
+                add: function (id, x, y, links = [], role = "minor") {
+                    layout[id] = { x: x, y: y, links: links, role: role };
+                    return id;
+                },
+                //points = [[x, y], [x, y, "notable"], ...] : chaque point est relié au précédent. Renvoie l'id du dernier.
+                chain: function (fromId, prefix, points) {
+                    let previousId = fromId;
+                    points.forEach(function (point, index) { //forEach = pour chaque élément (avec son numéro)
+                        const id = prefix + (index + 1);
+                        layout[id] = { x: point[0], y: point[1], links: previousId === null ? [] : [previousId], role: point[2] || "minor" };
+                        previousId = id;
+                    });
+                    return previousId;
+                }
+            };
+        }
 
-            b1: { x: 50, y: 86, cost: 10, links: ["root"] },
-            b2: { x: 50, y: 77, cost: 15, links: ["b1"] },
-            b3: { x: 50, y: 68, cost: 20, links: ["b2"] },
-            b4: { x: 50, y: 59, cost: 25, links: ["b3"] },
-            b5: { x: 50, y: 50, cost: 30, links: ["b4"] },
-            bK: { x: 50, y: 40, cost: 60, links: ["b5"], keystone: true },
+        //Position sur un cercle autour de (cx, cy) : angle en degrés (0 = droite, -90 = haut), rayon en %
+        function polar(cx, cy, angleDegrees, radius) {
+            const angle = angleDegrees * Math.PI / 180;
+            return [cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius];
+        }
 
-            c1: { x: 60, y: 89, cost: 10, links: ["root"] },
-            c2: { x: 69, y: 83, cost: 15, links: ["c1"] },
-            c3: { x: 76, y: 75, cost: 20, links: ["c2"] },
-            c4: { x: 82, y: 65, cost: 25, links: ["c3"] },
-            c5: { x: 87, y: 54, cost: 30, links: ["c4"] },
-            cK: { x: 90, y: 42, cost: 60, links: ["c5", "bc2"], keystone: true },
+        const TREE_SHAPES = {
+            //FLEUR (Déméter) : une tige avec deux feuilles, un cœur, et 5 pétales autour
+            flower: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 96, [], "start");
+                b.chain("start", "stem", [[50, 89], [50, 82, "notable"], [50, 75], [50, 68, "notable"], [50, 61]]);
+                b.chain("stem2", "leafL", [[41, 85], [33, 86], [25, 83, "keystone"]]);
+                b.chain("stem3", "leafR", [[59, 78], [67, 79], [75, 76, "keystone"]]);
+                b.add("heart", 50, 38, ["stem5"], "notable");
+                const petalAngles = [-90, -18, 54, 126, 198];
+                const tipRoles = ["grand", "notable", "keystone", "notable", "notable"];
+                petalAngles.forEach(function (angle, i) {
+                    const base = polar(50, 38, angle, 9);
+                    const sideL = polar(50, 38, angle - 17, 19);
+                    const sideR = polar(50, 38, angle + 17, 19);
+                    const tip = polar(50, 38, angle, 30);
+                    b.add("petal" + i + "base", base[0], base[1], ["heart"]);
+                    b.add("petal" + i + "L", sideL[0], sideL[1], ["petal" + i + "base"], i === 0 ? "notable" : "minor");
+                    b.add("petal" + i + "R", sideR[0], sideR[1], ["petal" + i + "base"], i === 0 ? "notable" : "minor");
+                    b.add("petal" + i + "tip", tip[0], tip[1], ["petal" + i + "L", "petal" + i + "R"], tipRoles[i]);
+                });
+                //Les pétales voisins se touchent : on peut passer de l'un à l'autre
+                petalAngles.forEach(function (angle, i) {
+                    b.layout["petal" + i + "R"].links.push("petal" + ((i + 1) % petalAngles.length) + "L");
+                });
+                return b.layout;
+            },
 
-            m1: { x: 41, y: 79, cost: 15, links: ["a2", "b2"] },
-            m2: { x: 59, y: 79, cost: 15, links: ["b2", "c2"] },
-            ab1: { x: 37, y: 69, cost: 30, links: ["a3", "b3"] },
-            ab2: { x: 29, y: 54, cost: 35, links: ["ab1", "a5"] },
-            ab3: { x: 38, y: 45, cost: 35, links: ["ab2", "b5"] },
-            bc1: { x: 63, y: 69, cost: 30, links: ["b3", "c3"] },
-            bc2: { x: 71, y: 54, cost: 35, links: ["bc1", "c5"] },
-            bc3: { x: 62, y: 45, cost: 35, links: ["bc2", "b5"] },
+            //TRIDENT (Poséidon) : un manche, une garde, 3 pointes, et des vagues en bas
+            trident: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 96, [], "start");
+                b.chain("start", "shaft", [[50, 89], [50, 82, "notable"], [50, 75], [50, 68, "notable"], [50, 61], [50, 54]]);
+                b.add("guard", 50, 46, ["shaft6"], "notable");
+                b.chain("guard", "guardL", [[40, 46], [30, 46, "notable"]]);
+                b.chain("guard", "guardR", [[60, 46], [70, 46]]);
+                b.chain("guardL2", "prongL", [[28, 38], [28, 30, "notable"], [28, 22], [28, 14, "keystone"]]);
+                b.chain("guardR2", "prongR", [[72, 38], [72, 30, "notable"], [72, 22], [72, 14, "keystone"]]);
+                b.chain("guard", "prongC", [[50, 38], [50, 30, "notable"], [50, 22], [50, 14], [50, 6, "grand"]]);
+                b.add("barbL", 20, 21, ["prongL4"]);
+                b.add("barbR", 80, 21, ["prongR4"]);
+                b.chain("shaft1", "waveL", [[42, 92], [35, 88], [28, 92], [21, 88, "keystone"]]);
+                b.chain("shaft1", "waveR", [[58, 92], [65, 88], [72, 92], [79, 88, "notable"]]);
+                return b.layout;
+            },
 
-            l1: { x: 15, y: 86, cost: 15, links: ["a2"] },
-            l2: { x: 6, y: 75, cost: 20, links: ["l1"] },
-            r1: { x: 85, y: 86, cost: 15, links: ["c2"] },
-            r2: { x: 94, y: 75, cost: 20, links: ["r1"] },
+            //FLAMME (Vulcain) : une grande flamme centrale qui ondule, deux flammes sur les côtés et deux petites à l'intérieur
+            flame: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 96, [], "start");
+                b.chain("start", "baseL", [[40, 92], [31, 86, "notable"]]);
+                b.chain("start", "baseR", [[60, 92], [69, 86]]);
+                b.chain("start", "center", [[50, 88], [47, 80, "notable"], [52, 72], [48, 64], [53, 56, "notable"], [49, 48], [52, 40], [48, 32, "notable"], [51, 24], [49, 16], [50, 7, "grand"]]);
+                b.chain("baseL2", "left", [[25, 78], [21, 70, "notable"], [22, 61], [26, 52], [24, 43], [28, 35, "keystone"]]);
+                b.chain("baseR2", "right", [[75, 78], [79, 69, "notable"], [78, 60], [74, 51], [77, 42], [73, 33, "keystone"]]);
+                b.chain("center4", "innerL", [[40, 58], [36, 50, "notable"], [38, 42, "keystone"]]);
+                b.chain("center5", "innerR", [[61, 50], [64, 43, "notable"]]);
+                return b.layout;
+            },
 
-            t1: { x: 14, y: 28, cost: 40, links: ["aK"] },
-            t2: { x: 30, y: 21, cost: 45, links: ["t1"] },
-            t3: { x: 50, y: 27, cost: 40, links: ["bK"] },
-            t4: { x: 70, y: 21, cost: 45, links: ["t5"] },
-            t5: { x: 86, y: 28, cost: 40, links: ["cK"] },
-            T: { x: 50, y: 9, cost: 120, links: ["t2", "t3", "t4"], keystone: true }
+            //SOLEIL (Hélios) : le départ au centre, un anneau, et 8 rayons (4 longs, 4 courts)
+            sun: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 50, [], "start");
+                for (let i = 0; i < 8; i++) {
+                    const angle = -90 + i * 45;
+                    const ring = polar(50, 50, angle, 9);
+                    b.add("ring" + i, ring[0], ring[1], ["start"], i % 2 === 0 ? "notable" : "minor");
+                }
+                for (let i = 0; i < 8; i++) {
+                    b.layout["ring" + i].links.push("ring" + ((i + 1) % 8)); //l'anneau fait le tour
+                    const angle = -90 + i * 45;
+                    const isLong = i % 2 === 0;
+                    const rayPoints = [polar(50, 50, angle, 18), polar(50, 50, angle, 27), polar(50, 50, angle, 36)];
+                    if (isLong) {
+                        rayPoints.push(polar(50, 50, angle, i === 0 ? 44 : 43));
+                        rayPoints[3].push(i === 0 ? "grand" : "keystone");
+                    } else {
+                        rayPoints[2].push("notable");
+                    }
+                    b.chain("ring" + i, "ray" + i + "_", rayPoints);
+                }
+                return b.layout;
+            },
+
+            //GALAXIE (Ouranos) : le départ au centre, 3 bras en spirale reliés entre eux
+            galaxy: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 50, [], "start");
+                for (let arm = 0; arm < 3; arm++) {
+                    const points = [];
+                    for (let k = 1; k <= 11; k++) {
+                        const angle = -90 + arm * 120 + k * 13; //chaque point tourne un peu plus : ça fait une spirale
+                        const point = polar(50, 50, angle, 7 + k * 3.4);
+                        if (k === 11) {
+                            point.push(arm === 0 ? "grand" : "keystone");
+                        } else if (arm === 0 && k === 7) {
+                            point.push("keystone");
+                        } else if (k === 3 || k === 6 || (arm > 0 && k === 9)) {
+                            point.push("notable");
+                        }
+                        points.push(point);
+                    }
+                    b.chain("start", "arm" + arm + "_", points);
+                }
+                //Un petit anneau au cœur de la galaxie relie les 3 bras
+                for (let arm = 0; arm < 3; arm++) {
+                    b.layout["arm" + arm + "_2"].links.push("arm" + ((arm + 1) % 3) + "_2");
+                }
+                return b.layout;
+            },
+
+            //CLASSIQUE (l'ancienne forme, gardée pour un futur arbre) : 3 branches, des ponts, une couronne en haut
+            classic: function () {
+                const b = createLayoutBuilder();
+                b.add("root", 50, 95, [], "start");
+                b.add("a1", 40, 89, ["root"], "notable");
+                b.add("a2", 31, 83, ["a1"], "minor");
+                b.add("a3", 24, 75, ["a2"], "notable");
+                b.add("a4", 18, 65, ["a3"], "minor");
+                b.add("a5", 13, 54, ["a4"], "minor");
+                b.add("aK", 10, 42, ["a5", "ab2"], "keystone");
+                b.add("b1", 50, 86, ["root"], "notable");
+                b.add("b2", 50, 77, ["b1"], "minor");
+                b.add("b3", 50, 68, ["b2"], "notable");
+                b.add("b4", 50, 59, ["b3"], "minor");
+                b.add("b5", 50, 50, ["b4"], "minor");
+                b.add("bK", 50, 40, ["b5"], "keystone");
+                b.add("c1", 60, 89, ["root"], "notable");
+                b.add("c2", 69, 83, ["c1"], "minor");
+                b.add("c3", 76, 75, ["c2"], "notable");
+                b.add("c4", 82, 65, ["c3"], "minor");
+                b.add("c5", 87, 54, ["c4"], "minor");
+                b.add("cK", 90, 42, ["c5", "bc2"], "keystone");
+                b.add("m1", 41, 79, ["a2", "b2"], "minor");
+                b.add("m2", 59, 79, ["b2", "c2"], "minor");
+                b.add("ab1", 37, 69, ["a3", "b3"], "notable");
+                b.add("ab2", 29, 54, ["ab1", "a5"], "minor");
+                b.add("ab3", 38, 45, ["ab2", "b5"], "minor");
+                b.add("bc1", 63, 69, ["b3", "c3"], "notable");
+                b.add("bc2", 71, 54, ["bc1", "c5"], "minor");
+                b.add("bc3", 62, 45, ["bc2", "b5"], "minor");
+                b.add("l1", 15, 86, ["a2"], "minor");
+                b.add("l2", 6, 75, ["l1"], "minor");
+                b.add("r1", 85, 86, ["c2"], "minor");
+                b.add("r2", 94, 75, ["r1"], "minor");
+                b.add("t1", 14, 28, ["aK"], "minor");
+                b.add("t2", 30, 21, ["t1"], "minor");
+                b.add("t3", 50, 27, ["bK"], "minor");
+                b.add("t4", 70, 21, ["t5"], "minor");
+                b.add("t5", 86, 28, ["cK"], "minor");
+                b.add("T", 50, 9, ["t2", "t3", "t4"], "grand");
+                return b.layout;
+            }
         };
 
         //Le contenu de chaque arbre : 1 arbre = 1 planète = 1 projet.
         //label = texte court dans le rond ; effect = ce que la compétence améliore (voir BASE_STATS)
+        //FOND D'UN ARBRE (background) : top / bottom = dégradé de haut en bas, glowColor = halo de couleur
+        //centré en (glowX %, glowY %), silhouetteOpacity = opacité du "dessin" de la forme derrière les compétences (0 = invisible),
+        //stars = petites étoiles en fond (true / false)
         const SKILL_TREES_DATA = [
             {
                 name: "Vulcain",
@@ -2365,20 +2685,26 @@
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
+                shape: "flame",            // forme de l'arbre : flame, trident, flower, sun, galaxy ou classic
+                background: { top: "#2a1610", bottom: "#120907", glowColor: "rgba(255, 122, 69, 0.28)", glowX: 50, glowY: 80, silhouetteOpacity: 0.12, stars: false }, // fond de l'arbre (voir l'explication au-dessus de SKILL_TREES_DATA)
                 skills: {
-                    root: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    a1: { label: "FEU", name: "Prométhée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                    a3: { label: "FEU", name: "Kédalion", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
-                    aK: { label: "BRAISE", name: "Brontès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                    b1: { label: "VIT", name: "Stéropès", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    b3: { label: "VIT", name: "Argès", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    bK: { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "POR", name: "Aglaé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    c3: { label: "VEL", name: "Talos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                    cK: { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } },
-                    ab1: { label: "DMG", name: "Kratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    bc1: { label: "VIT", name: "Bia", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    T: { label: "SOLEIL", name: "Héphaïstos", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                    start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    notables: [
+                        { label: "FEU", name: "Prométhée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                        { label: "FEU", name: "Kédalion", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                        { label: "VIT", name: "Stéropès", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                        { label: "VIT", name: "Argès", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                        { label: "POR", name: "Aglaé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                        { label: "VEL", name: "Talos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                        { label: "DMG", name: "Kratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "VIT", name: "Bia", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                    ],
+                    keystones: [
+                        { label: "BRAISE", name: "Brontès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                        { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } }
+                    ],
+                    grand: { label: "SOLEIL", name: "Héphaïstos", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
                 }
             },
             {
@@ -2393,20 +2719,26 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
+                shape: "trident",            // forme de l'arbre : flame, trident, flower, sun, galaxy ou classic
+                background: { top: "#0b2236", bottom: "#05101b", glowColor: "rgba(77, 166, 255, 0.25)", glowX: 50, glowY: 20, silhouetteOpacity: 0.12, stars: false }, // fond de l'arbre (voir l'explication au-dessus de SKILL_TREES_DATA)
                 skills: {
-                    root: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                    a1: { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                    a3: { label: "REG", name: "Galatée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                    aK: { label: "OCÉAN", name: "Amphitrite", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
-                    b1: { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
-                    b3: { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
-                    bK: { label: "ABYSS", name: "Céto", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
-                    c1: { label: "EAU", name: "Glaucos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                    c3: { label: "EAU", name: "Leucothée", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
-                    cK: { label: "VAGUE", name: "Triton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    ab1: { label: "VIE", name: "Palémon", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
-                    bc1: { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
-                    T: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : +10 PV max", effect: { stat: "maxHealth", value: 10 } }
+                    start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    notables: [
+                        { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "REG", name: "Galatée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                        { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
+                        { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
+                        { label: "EAU", name: "Glaucos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                        { label: "EAU", name: "Leucothée", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                        { label: "VIE", name: "Palémon", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                        { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } }
+                    ],
+                    keystones: [
+                        { label: "OCÉAN", name: "Amphitrite", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
+                        { label: "ABYSS", name: "Céto", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
+                        { label: "VAGUE", name: "Triton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    ],
+                    grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : +10 PV max", effect: { stat: "maxHealth", value: 10 } }
                 }
             },
             {
@@ -2421,20 +2753,26 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
+                shape: "flower",            // forme de l'arbre : flame, trident, flower, sun, galaxy ou classic
+                background: { top: "#12281a", bottom: "#08140c", glowColor: "rgba(85, 221, 85, 0.22)", glowX: 50, glowY: 38, silhouetteOpacity: 0.12, stars: false }, // fond de l'arbre (voir l'explication au-dessus de SKILL_TREES_DATA)
                 skills: {
-                    root: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
-                    a1: { label: "XP", name: "Thallo", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                    a3: { label: "XP", name: "Auxo", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
-                    aK: { label: "ARBRE", name: "Karpos", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
-                    b1: { label: "REG", name: "Chloris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                    b3: { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                    bK: { label: "SYMB", name: "Triptolème", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
-                    c1: { label: "PLA", name: "Iasion", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
-                    c3: { label: "PLA", name: "Eubouleus", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
-                    cK: { label: "FORÊT", name: "Pan", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                    ab1: { label: "XP", name: "Carpo", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
-                    bc1: { label: "PV", name: "Anthée", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } },
-                    T: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } }
+                    start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                    notables: [
+                        { label: "XP", name: "Thallo", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                        { label: "XP", name: "Auxo", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                        { label: "REG", name: "Chloris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
+                        { label: "PLA", name: "Iasion", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
+                        { label: "PLA", name: "Eubouleus", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
+                        { label: "XP", name: "Carpo", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
+                        { label: "PV", name: "Anthée", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } }
+                    ],
+                    keystones: [
+                        { label: "ARBRE", name: "Karpos", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
+                        { label: "SYMB", name: "Triptolème", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
+                        { label: "FORÊT", name: "Pan", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                    ],
+                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } }
                 }
             },
             {
@@ -2449,20 +2787,26 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
+                shape: "sun",            // forme de l'arbre : flame, trident, flower, sun, galaxy ou classic
+                background: { top: "#2c2510", bottom: "#141007", glowColor: "rgba(255, 233, 92, 0.3)", glowX: 50, glowY: 50, silhouetteOpacity: 0.1, stars: false }, // fond de l'arbre (voir l'explication au-dessus de SKILL_TREES_DATA)
                 skills: {
-                    root: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    a1: { label: "POR", name: "Éos", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    a3: { label: "POR", name: "Héméra", description: "+50 de portée", effect: { stat: "range", value: 50 } },
-                    aK: { label: "ŒIL", name: "Séléné", description: "+100 de portée", effect: { stat: "range", value: 100 } },
-                    b1: { label: "VEL", name: "Iris", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                    b3: { label: "VIT", name: "Borée", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    bK: { label: "x2", name: "Phaéton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "AIR", name: "Notos", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
-                    c3: { label: "AIR", name: "Euros", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
-                    cK: { label: "OURAG", name: "Astraïos", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
-                    ab1: { label: "VEL", name: "Phosphoros", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
-                    bc1: { label: "VIT", name: "Hespéros", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    T: { label: "ŒIL", name: "Éole", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    notables: [
+                        { label: "POR", name: "Éos", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                        { label: "POR", name: "Héméra", description: "+50 de portée", effect: { stat: "range", value: 50 } },
+                        { label: "VEL", name: "Iris", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                        { label: "VIT", name: "Borée", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                        { label: "AIR", name: "Notos", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
+                        { label: "AIR", name: "Euros", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
+                        { label: "VEL", name: "Phosphoros", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
+                        { label: "VIT", name: "Hespéros", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                    ],
+                    keystones: [
+                        { label: "ŒIL", name: "Séléné", description: "+100 de portée", effect: { stat: "range", value: 100 } },
+                        { label: "x2", name: "Phaéton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                        { label: "OURAG", name: "Astraïos", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } }
+                    ],
+                    grand: { label: "ŒIL", name: "Éole", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
                 }
             },
             {
@@ -2477,35 +2821,97 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
+                shape: "galaxy",            // forme de l'arbre : flame, trident, flower, sun, galaxy ou classic
+                background: { top: "#191538", bottom: "#090817", glowColor: "rgba(170, 150, 255, 0.25)", glowX: 50, glowY: 50, silhouetteOpacity: 0.1, stars: true }, // fond de l'arbre (voir l'explication au-dessus de SKILL_TREES_DATA)
                 skills: {
-                    root: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                    a1: { label: "OR", name: "Kairos", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
-                    a3: { label: "OR", name: "Eutychia", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
-                    aK: { label: "TRÉSOR", name: "Ploutos", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
-                    b1: { label: "XP", name: "Coéos", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                    b3: { label: "XP", name: "Mnémosyne", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
-                    bK: { label: "NOVA", name: "Astéria", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "DMG", name: "Hypérion", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    c3: { label: "AIR", name: "Astrée", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
-                    cK: { label: "TROU", name: "Érébos", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } },
-                    ab1: { label: "OR", name: "Agathodaïmon", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                    bc1: { label: "DMG", name: "Théia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    T: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
+                    start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    notables: [
+                        { label: "OR", name: "Kairos", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
+                        { label: "OR", name: "Eutychia", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
+                        { label: "XP", name: "Coéos", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                        { label: "XP", name: "Mnémosyne", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                        { label: "DMG", name: "Hypérion", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "AIR", name: "Astrée", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
+                        { label: "OR", name: "Agathodaïmon", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                        { label: "DMG", name: "Théia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } }
+                    ],
+                    keystones: [
+                        { label: "TRÉSOR", name: "Ploutos", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
+                        { label: "NOVA", name: "Astéria", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                        { label: "TROU", name: "Érébos", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                    ],
+                    grand: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
                 }
             }
         ];
 
-        //Assemble la forme (TREE_LAYOUT) et le contenu (skills) de chaque arbre
-        const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+        //Assemble la forme (TREE_SHAPES) et le contenu (skills) de chaque arbre
+        const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
+
+        //COÛTS (en XP) : coût de base + un supplément par "pas" depuis le départ
+        const SKILL_COST_BASE = 5;
+        const SKILL_COST_PER_STEP = 4;
+        const NOTABLE_COST_MULTIPLIER = 1.5;
+        const KEYSTONE_COST = 60;            // + 2 par pas
+        const GRAND_COST = 150;
+
+        //Distance (en nombre de liens) de chaque compétence jusqu'au départ : on avance "par vagues" depuis le départ
+        function computeDepths(layout) {
+            const neighbors = {};
+            for (const id of Object.keys(layout)) {
+                neighbors[id] = neighbors[id] || [];
+                for (const linkedId of layout[id].links) {
+                    neighbors[id].push(linkedId);
+                    neighbors[linkedId] = neighbors[linkedId] || [];
+                    neighbors[linkedId].push(id);
+                }
+            }
+            const depths = {};
+            let wave = Object.keys(layout).filter(function (id) { return layout[id].role === "start"; }); //filter = garde ceux qui correspondent
+            let depth = 0;
+            while (wave.length > 0) {
+                const nextWave = [];
+                for (const id of wave) {
+                    if (depths[id] === undefined) {
+                        depths[id] = depth;
+                        nextWave.push(...neighbors[id]); //... = "étale" le tableau : ajoute tous ses éléments
+                    }
+                }
+                wave = nextWave;
+                depth++;
+            }
+            return depths;
+        }
+
+        function getSkillCost(role, depth) {
+            if (role === "start") return SKILL_COST_BASE;
+            if (role === "grand") return GRAND_COST;
+            if (role === "keystone") return KEYSTONE_COST + depth * 2;
+            const cost = SKILL_COST_BASE + depth * SKILL_COST_PER_STEP;
+            return Math.round(role === "notable" ? cost * NOTABLE_COST_MULTIPLIER : cost);
+        }
 
         function createSkillTree(treeData) {
             const nodes = [];
             const minorCounts = {}; // combien de fois chaque petite compétence a déjà été utilisée (pour les numéroter I, II, III...)
             let minorIndex = 0;
-            for (const id of Object.keys(TREE_LAYOUT)) {
-                const layout = TREE_LAYOUT[id];
-                let skill = treeData.skills[id];
-                //Pas de compétence écrite pour cette place ? On prend la petite compétence suivante de minorSkills (à tour de rôle)
+            const treeLayout = TREE_SHAPES[treeData.shape]();
+            const depths = computeDepths(treeLayout);
+            const used = { notable: 0, keystone: 0 }; // combien de notables / keystones ont déjà été placées
+            for (const id of Object.keys(treeLayout)) {
+                const layout = treeLayout[id];
+                //On choisit la compétence selon le rôle de la place
+                let skill = undefined;
+                if (layout.role === "start") {
+                    skill = treeData.skills.start;
+                } else if (layout.role === "grand") {
+                    skill = treeData.skills.grand;
+                } else if (layout.role === "notable") {
+                    skill = treeData.skills.notables[used.notable++]; //++ après : on lit la case, PUIS on ajoute 1
+                } else if (layout.role === "keystone") {
+                    skill = treeData.skills.keystones[used.keystone++];
+                }
+                //Pas (ou plus) de compétence écrite pour cette place ? On prend la petite compétence suivante de minorSkills
                 if (skill === undefined) {
                     const minor = treeData.minorSkills[minorIndex % treeData.minorSkills.length];
                     minorIndex++;
@@ -2521,11 +2927,12 @@
                     id: id,
                     x: layout.x,
                     y: layout.y,
-                    cost: layout.cost,
+                    cost: getSkillCost(layout.role, depths[id] || 0),
                     links: layout.links,
-                    isStart: layout.start === true,
+                    role: layout.role,
+                    isStart: layout.role === "start",
                     neighbors: [], //rempli juste après : toutes les compétences reliées, dans les deux sens
-                    isKeystone: layout.keystone === true,
+                    isKeystone: layout.role === "keystone" || layout.role === "grand",
                     label: skill.label,
                     name: skill.name,
                     description: skill.description,
@@ -2542,12 +2949,21 @@
                 }
             }
 
-            return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
+            return { name: treeData.name, color: treeData.color, project: treeData.project, background: treeData.background, nodes: nodes };
         }
 
         const SKILL_TREES = [];
         for (const treeData of SKILL_TREES_DATA) {
             SKILL_TREES.push(createSkillTree(treeData));
+        }
+
+        //Hasard "fixe" : donne toujours la même suite de nombres pour la même graine (seed). Utile pour placer des étoiles.
+        function seededRandom(seed) {
+            let value = seed;
+            return function () {
+                value = (value * 16807) % 2147483647;
+                return (value - 1) / 2147483646;
+            };
         }
 
         function findNode(tree, id) {
@@ -2615,6 +3031,40 @@
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
 
+            //FOND de l'arbre : dégradé + halo (sur treeWorld, donc il bouge et zoome avec l'arbre)
+            const bg = tree.background;
+            treeWorld.style.background = "radial-gradient(circle at " + bg.glowX + "% " + bg.glowY + "%, " + bg.glowColor + ", transparent 55%), " +
+                "linear-gradient(" + bg.top + ", " + bg.bottom + ")";
+
+            //ÉTOILES (option) : toujours au même endroit grâce à un hasard "fixe" (seededRandom)
+            if (bg.stars) {
+                const random = seededRandom(42);
+                for (let i = 0; i < 120; i++) {
+                    const star = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    star.setAttribute("cx", random() * 100 + "%");
+                    star.setAttribute("cy", random() * 100 + "%");
+                    star.setAttribute("r", 1 + random() * 2.5);
+                    star.setAttribute("fill", "rgba(255, 255, 255, " + (0.2 + random() * 0.5) + ")");
+                    treeLinks.appendChild(star);
+                }
+            }
+
+            //SILHOUETTE : les liens redessinés en très épais et transparents = le "dessin" de la forme (fleur, trident...)
+            for (const node of tree.nodes) {
+                for (const linkedId of node.links) {
+                    const other = findNode(tree, linkedId);
+                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    line.setAttribute("x1", other.x + "%");
+                    line.setAttribute("y1", other.y + "%");
+                    line.setAttribute("x2", node.x + "%");
+                    line.setAttribute("y2", node.y + "%");
+                    line.setAttribute("class", "silhouette");
+                    line.style.stroke = tree.color;
+                    line.style.opacity = bg.silhouetteOpacity;
+                    treeLinks.appendChild(line);
+                }
+            }
+
             //LIENS entre les compétences (lignes SVG)
             for (const node of tree.nodes) {
                 for (const linkedId of node.links) {
@@ -2637,6 +3087,9 @@
                 button.className = "skillNode " + getNodeState(tree, node);
                 if (node.isKeystone) {
                     button.classList.add("keystone");
+                }
+                if (node.role === "notable" || node.role === "grand") {
+                    button.classList.add(node.role); //"notable" ou "grand" : tailles différentes en CSS
                 }
                 button.textContent = node.label;
                 button.style.left = node.x + "%";
@@ -2716,7 +3169,8 @@
             const start = currentTree.nodes.find(function (node) { return node.isStart; });
             treeZoom = TREE_START_ZOOM;
             treePanX = treeCanvas.clientWidth / 2 - start.x / 100 * treeWorldWidth * treeZoom;
-            treePanY = treeCanvas.clientHeight * 0.85 - start.y / 100 * treeWorldHeight * treeZoom;
+            const startViewY = start.y > 80 ? 0.85 : 0.5; //départ en bas de l'arbre -> en bas de la fenêtre, sinon au milieu
+            treePanY = treeCanvas.clientHeight * startViewY - start.y / 100 * treeWorldHeight * treeZoom;
             applyTreeTransform();
         }
 
@@ -2887,6 +3341,7 @@
             isShieldReady = false;
             shieldTimer = SHIELD_COOLDOWN;
             killsThisRun = 0;
+            bossesSpawnedThisRun.clear(); //clear = vide le Set
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
             hideStatsPanel();
@@ -3006,7 +3461,9 @@
                         ["Record d'ennemis tués", bestKills],
                         ["Temps (partie)", formatTime(runTime)],
                         ["Meilleur temps", formatTime(bestTime)],
-                        ["Apparition", "1 toutes les " + formatNumber(getEnemySpawnInterval()) + " s"]
+                        ["Apparition", "1 toutes les " + formatNumber(getEnemySpawnInterval()) + " s"],
+                        ["Super ennemis vaincus", defeatedBossIds.size + " / " + BOSSES.length],
+                        ["Prochain super ennemi", getNextBoss() === null ? "Tous vaincus !" : getNextBoss().name + " (" + formatTime(getNextBoss().time) + ")"]
                     ]
                 }
             ];
@@ -3127,6 +3584,8 @@
             gameOver: { category: "sfx", play: function (out) { playTone(440, 110, 0.9, "sawtooth", 0.2, 0, out); } },
             dodge: { category: "sfx", play: function (out) { playTone(1200, 500, 0.12, "sine", 0.12, 0, out); } },
             shieldBlock: { category: "sfx", play: function (out) { playTone(500, 500, 0.06, "square", 0.15, 0, out); playTone(250, 180, 0.2, "triangle", 0.2, 0.05, out); } },
+            bossArrive: { category: "sfx", play: function (out) { playTone(90, 55, 1.2, "sawtooth", 0.25, 0, out); playTone(180, 110, 1.2, "square", 0.08, 0.1, out); } },
+            bossDefeated: { category: "sfx", play: function (out) { playTone(523, 523, 0.15, "square", 0.15, 0, out); playTone(659, 659, 0.15, "square", 0.15, 0.15, out); playTone(784, 784, 0.15, "square", 0.15, 0.3, out); playTone(1047, 1047, 0.4, "square", 0.15, 0.45, out); } },
             skip: { category: "sfx", play: function (out) { playTone(300, 900, 0.3, "sawtooth", 0.1, 0, out); } },
             menuOpen: { category: "ui", play: function (out) { playTone(440, 660, 0.12, "sine", 0.2, 0, out); } },
             menuClose: { category: "ui", play: function (out) { playTone(660, 440, 0.12, "sine", 0.2, 0, out); } },
