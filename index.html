@@ -3295,7 +3295,7 @@
 
         //////////////////////////
         ////COMBOS D'ORBITE///////  Chaque dieu a un attribut. Une planète peut "se lier" à ses voisines dans l'orbite
-        //////////////////////////  (gauche, droite, les deux, ou celle d'en face) : ses tirs empruntent leur attribut,
+        //////////////////////////  (gauche, droite, les deux côtés, ou l'opposée) : ses tirs empruntent leur attribut,
         //et le mélange [son attribut + l'attribut emprunté] donne un COMBO qui ajoute des effets à ses balles.
         const ATTRIBUTES = {
             fire: { name: "Feu", icon: "🔥", color: "#ff7a45" },
@@ -3307,14 +3307,14 @@
             aegis: { name: "Égide", icon: "🛡️", color: "#e8b07a" }
         };
 
-        //Les options de lien. strength = force des effets (les deux = plus de combos mais chacun plus faible,
-        //en face = un seul combo mais plus fort, car la planète est loin)
+        //Les options de lien. strength = force des effets (les deux côtés = plus de combos mais chacun plus faible,
+        //opposé = un seul combo mais plus fort, car la planète est loin)
         const LINK_MODES = {
             none: { name: "Aucun", strength: 0 },
             left: { name: "Gauche", strength: 1 },
             right: { name: "Droite", strength: 1 },
-            both: { name: "Les deux", strength: 0.65 },
-            opposite: { name: "En face", strength: 1.4 }
+            both: { name: "Les deux côtés", strength: 0.65 },
+            opposite: { name: "Opposé", strength: 1.4 }
         };
 
         //LES COMBOS : la clé = les 2 attributs dans l'ordre alphabétique, reliés par "+" (voir getComboKey)
