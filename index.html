@@ -2355,147 +2355,142 @@
         const SKILL_TREES_DATA = [
             {
                 name: "Vulcain",
-                theme: "Pyro",
                 color: "#ff7a45",
                 project: {
                     title: "Projet 1",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "DMG", name: "Tison", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "VIT", name: "Étincelle vive", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
-                    { label: "FEU", name: "Chaleur", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
+                    { label: "DMG", name: "Dactyle", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
+                    { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
+                    { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
                 skills: {
-                    root: { label: "DMG", name: "Étincelle", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    a1: { label: "FEU", name: "Brûlure ciblée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                    a3: { label: "FEU", name: "Maître des flammes", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
-                    aK: { label: "BRAISE", name: "Cœur de braise", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                    b1: { label: "VIT", name: "Gâchette chaude", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    b3: { label: "VIT", name: "Rafale", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    bK: { label: "x2", name: "Double canon", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "POR", name: "Longue mèche", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    c3: { label: "VEL", name: "Projectiles ardents", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                    cK: { label: "MÉTÉO", name: "Météore", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } },
-                    ab1: { label: "DMG", name: "Fournaise", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    bc1: { label: "VIT", name: "Combustion", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    T: { label: "SOLEIL", name: "Supernova ardente", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                    root: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    a1: { label: "FEU", name: "Prométhée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                    a3: { label: "FEU", name: "Kédalion", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                    aK: { label: "BRAISE", name: "Brontès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                    b1: { label: "VIT", name: "Stéropès", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    b3: { label: "VIT", name: "Argès", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    bK: { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "POR", name: "Aglaé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                    c3: { label: "VEL", name: "Talos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                    cK: { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } },
+                    ab1: { label: "DMG", name: "Kratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    bc1: { label: "VIT", name: "Bia", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    T: { label: "SOLEIL", name: "Héphaïstos", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
                 }
             },
             {
                 name: "Poséidon",
-                theme: "Hydro",
                 color: "#4da6ff",
                 project: {
                     title: "Projet 2",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "PV", name: "Goutte", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "REG", name: "Bruine", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
-                    { label: "ESQ", name: "Reflet", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
+                    { label: "PV", name: "Néréide", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
+                    { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
+                    { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
                 skills: {
-                    root: { label: "PV", name: "Source", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                    a1: { label: "REG", name: "Ruisseau", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                    a3: { label: "REG", name: "Marée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                    aK: { label: "OCÉAN", name: "Océan", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
-                    b1: { label: "ESQ", name: "Écume", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
-                    b3: { label: "BOUC", name: "Carapace", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
-                    bK: { label: "ABYSS", name: "Abysses", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
-                    c1: { label: "EAU", name: "Vapeur", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                    c3: { label: "EAU", name: "Torrent", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
-                    cK: { label: "VAGUE", name: "Raz-de-marée", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    ab1: { label: "VIE", name: "Soif", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
-                    bc1: { label: "PV", name: "Profondeurs", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
-                    T: { label: "MER", name: "Cœur de l'océan", description: "GRANDE KEYSTONE : +10 PV max", effect: { stat: "maxHealth", value: 10 } }
+                    root: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    a1: { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                    a3: { label: "REG", name: "Galatée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                    aK: { label: "OCÉAN", name: "Amphitrite", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
+                    b1: { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
+                    b3: { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
+                    bK: { label: "ABYSS", name: "Céto", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
+                    c1: { label: "EAU", name: "Glaucos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                    c3: { label: "EAU", name: "Leucothée", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                    cK: { label: "VAGUE", name: "Triton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    ab1: { label: "VIE", name: "Palémon", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                    bc1: { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
+                    T: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : +10 PV max", effect: { stat: "maxHealth", value: 10 } }
                 }
             },
             {
                 name: "Déméter",
-                theme: "Flore",
                 color: "#55dd55",
                 project: {
                     title: "Projet 3",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "VIE", name: "Bourgeon", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } },
-                    { label: "XP", name: "Graine", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
-                    { label: "PLA", name: "Épine", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
+                    { label: "VIE", name: "Dryade", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } },
+                    { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
+                    { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
                 skills: {
-                    root: { label: "VIE", name: "Racines", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
-                    a1: { label: "XP", name: "Photosynthèse", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                    a3: { label: "XP", name: "Floraison", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
-                    aK: { label: "ARBRE", name: "Arbre-monde", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
-                    b1: { label: "REG", name: "Sève", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                    b3: { label: "VIE", name: "Ronces", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                    bK: { label: "SYMB", name: "Symbiose", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
-                    c1: { label: "PLA", name: "Épines", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
-                    c3: { label: "PLA", name: "Lianes", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
-                    cK: { label: "FORÊT", name: "Forêt vorace", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                    ab1: { label: "XP", name: "Pollen", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
-                    bc1: { label: "PV", name: "Écorce", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } },
+                    root: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                    a1: { label: "XP", name: "Thallo", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                    a3: { label: "XP", name: "Auxo", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                    aK: { label: "ARBRE", name: "Karpos", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
+                    b1: { label: "REG", name: "Chloris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                    b3: { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
+                    bK: { label: "SYMB", name: "Triptolème", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
+                    c1: { label: "PLA", name: "Iasion", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
+                    c3: { label: "PLA", name: "Eubouleus", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
+                    cK: { label: "FORÊT", name: "Pan", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                    ab1: { label: "XP", name: "Carpo", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
+                    bc1: { label: "PV", name: "Anthée", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } },
                     T: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } }
                 }
             },
             {
                 name: "Hélios",
-                theme: "Aéro",
                 color: "#e0f7ff",
                 project: {
                     title: "Projet 4",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "POR", name: "Souffle", description: "+15 de portée", effect: { stat: "range", value: 15 } },
-                    { label: "VEL", name: "Courant d'air", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
-                    { label: "VIT", name: "Zéphyr", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
+                    { label: "POR", name: "Aura", description: "+15 de portée", effect: { stat: "range", value: 15 } },
+                    { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
+                    { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
                 skills: {
-                    root: { label: "VIT", name: "Brise", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    a1: { label: "POR", name: "Horizon", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    a3: { label: "POR", name: "Ciel ouvert", description: "+50 de portée", effect: { stat: "range", value: 50 } },
-                    aK: { label: "ŒIL", name: "Œil du cyclone", description: "+100 de portée", effect: { stat: "range", value: 100 } },
-                    b1: { label: "VEL", name: "Courant", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                    b3: { label: "VIT", name: "Bourrasque", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    bK: { label: "x2", name: "Tempête", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "AIR", name: "Cisaille", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
-                    c3: { label: "AIR", name: "Tornade", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
-                    cK: { label: "OURAG", name: "Ouragan", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
-                    ab1: { label: "VEL", name: "Jet stream", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
-                    bc1: { label: "VIT", name: "Rafales", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                    T: { label: "ŒIL", name: "Œil de la tempête", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    root: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    a1: { label: "POR", name: "Éos", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                    a3: { label: "POR", name: "Héméra", description: "+50 de portée", effect: { stat: "range", value: 50 } },
+                    aK: { label: "ŒIL", name: "Séléné", description: "+100 de portée", effect: { stat: "range", value: 100 } },
+                    b1: { label: "VEL", name: "Iris", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                    b3: { label: "VIT", name: "Borée", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    bK: { label: "x2", name: "Phaéton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "AIR", name: "Notos", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
+                    c3: { label: "AIR", name: "Euros", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
+                    cK: { label: "OURAG", name: "Astraïos", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
+                    ab1: { label: "VEL", name: "Phosphoros", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
+                    bc1: { label: "VIT", name: "Hespéros", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    T: { label: "ŒIL", name: "Éole", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
                 }
             },
             {
                 name: "Ouranos",
-                theme: "Cosmos",
                 color: "#ffd84d",
                 project: {
                     title: "Projet 5",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "OR", name: "Poussière d'or", description: "+5% d'or gagné", effect: { stat: "goldMultiplier", value: 0.05 } },
-                    { label: "XP", name: "Astre", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
-                    { label: "DMG", name: "Gravité", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
+                    { label: "OR", name: "Pléiade", description: "+5% d'or gagné", effect: { stat: "goldMultiplier", value: 0.05 } },
+                    { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
+                    { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
                 skills: {
-                    root: { label: "OR", name: "Poussière d'étoile", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                    a1: { label: "OR", name: "Comète", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
-                    a3: { label: "OR", name: "Pluie d'or", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
-                    aK: { label: "TRÉSOR", name: "Trésor stellaire", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
-                    b1: { label: "XP", name: "Constellation", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                    b3: { label: "XP", name: "Nébuleuse", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
-                    bK: { label: "NOVA", name: "Supernova", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                    c1: { label: "DMG", name: "Gravité", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    c3: { label: "AIR", name: "Étoile filante", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
-                    cK: { label: "TROU", name: "Trou noir", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } },
-                    ab1: { label: "OR", name: "Alignement", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                    bc1: { label: "DMG", name: "Orbite", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                    T: { label: "BANG", name: "Big Bang", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
+                    root: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    a1: { label: "OR", name: "Kairos", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
+                    a3: { label: "OR", name: "Eutychia", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
+                    aK: { label: "TRÉSOR", name: "Ploutos", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
+                    b1: { label: "XP", name: "Coéos", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
+                    b3: { label: "XP", name: "Mnémosyne", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                    bK: { label: "NOVA", name: "Astéria", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
+                    c1: { label: "DMG", name: "Hypérion", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    c3: { label: "AIR", name: "Astrée", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
+                    cK: { label: "TROU", name: "Érébos", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } },
+                    ab1: { label: "OR", name: "Agathodaïmon", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    bc1: { label: "DMG", name: "Théia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    T: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
                 }
             }
         ];
@@ -2547,7 +2542,7 @@
                 }
             }
 
-            return { name: treeData.name, theme: treeData.theme, color: treeData.color, project: treeData.project, nodes: nodes };
+            return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
         }
 
         const SKILL_TREES = [];
@@ -2598,7 +2593,7 @@
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
-            treeTitle.textContent = tree.name + " · " + tree.theme; //ex : "Vulcain · Pyro"
+            treeTitle.textContent = tree.name;
             nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
