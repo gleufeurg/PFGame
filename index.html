@@ -2733,9 +2733,9 @@
         //FORMES : chaque type de mouvement a sa forme, pour le reconnaître d'un coup d'œil
         const MOVEMENT_SHAPES = {
             straight: "circle",   // tout droit = rond
-            zigzag: "triangle",   // zigzag = triangle (pointe vers le joueur)
+            zigzag: "triangle",   // zigzag = triangle (pointe dans la direction où il va)
             wave: "star",         // ondulé = étoile (qui tourne)
-            spiral: "square"      // spirale = carré (qui tourne)
+            spiral: "hexagon"     // spirale = hexagone (qui tourne)
         };
 
         //Les points de la forme d'un ennemi (null pour un rond, dessiné avec arc)
@@ -2753,11 +2753,12 @@
             }
             const shape = MOVEMENT_SHAPES[enemy.movement];
             if (shape === "triangle") {
-                const towardPlayer = Math.atan2(center.y - enemy.y, center.x - enemy.x);
-                return getShapePoints(x, y, enemy.size * 1.3, 3, towardPlayer + Math.PI / 2); //une pointe dirigée vers le joueur
+                //La pointe suit la direction dans laquelle il avance (heading), calculée à chaque image dans updateEnemyHeading
+                const heading = enemy.heading !== undefined ? enemy.heading : Math.atan2(center.y - enemy.y, center.x - enemy.x);
+                return getShapePoints(x, y, enemy.size * 1.3, 3, heading + Math.PI / 2);
             }
-            if (shape === "square") {
-                return getShapePoints(x, y, enemy.size * 1.15, 4, enemy.time * 1.5);
+            if (shape === "hexagon") {
+                return getShapePoints(x, y, enemy.size * 1.15, 6, enemy.time * 1.5);
             }
             if (shape === "star") {
                 //Étoile à 5 branches : 10 points, alternativement loin (branche) et près (creux) du centre
@@ -2813,6 +2814,25 @@
         function seededRandom(value) {
             const x = Math.sin(value * 12.9898) * 43758.5453;
             return x - Math.floor(x); //garde seulement la partie après la virgule
+        }
+
+        //DIRECTION : vers où l'ennemi avance, d'après son déplacement depuis l'image précédente (dx, dy).
+        //Elle tourne en douceur, et ne change pas quand il est presque à l'arrêt (stop and go, gelé).
+        const ENEMY_TURN_SMOOTHING = 0.25;   // vitesse à laquelle il se tourne (0 à 1)
+
+        function updateEnemyHeading(enemy, dx, dy) {
+            if (!enemy.hasPosition) {
+                enemy.hasPosition = true; //1re image : il n'avait pas encore de vraie position, le déplacement ne veut rien dire
+                return;
+            }
+            if (Math.hypot(dx, dy) < 0.05) {
+                return; //presque immobile : on garde sa direction
+            }
+            const target = Math.atan2(dy, dx);
+            if (enemy.heading === undefined) {
+                enemy.heading = target;
+            }
+            enemy.heading += wrapAngle(target - enemy.heading) * ENEMY_TURN_SMOOTHING;
         }
 
         //Calcule le décalage sur le côté (sideOffset) et la vitesse d'avance (speedFactor) d'un ennemi selon son mouvement
@@ -3036,8 +3056,11 @@
                 const dirX = Math.cos(enemy.angle);
                 const dirY = Math.sin(enemy.angle);
 
-                enemy.x = center.x + dirX * distance - dirY * sideOffset;
-                enemy.y = center.y + dirY * distance + dirX * sideOffset;
+                const newX = center.x + dirX * distance - dirY * sideOffset;
+                const newY = center.y + dirY * distance + dirX * sideOffset;
+                updateEnemyHeading(enemy, newX - enemy.x, newY - enemy.y);
+                enemy.x = newX;
+                enemy.y = newY;
             }
         }
 
