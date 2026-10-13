@@ -474,10 +474,84 @@
             opacity: 0.4;
         }
 
+        /*CARTE DE DESCRIPTION d'une compétence (sous l'arbre)*/
         #nodeInfo {
-            min-height: 48px;
+            min-height: 112px;
             margin: 0;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            background: var(--ui-surface);
+            border-left: 5px solid var(--tree-color);
+            display: grid;
+            grid-template-columns: 1fr auto; /*à gauche le texte, à droite les pastilles coût / état*/
+            gap: 6px 16px;
+            align-items: center;
         }
+
+        #nodeInfo.empty { /*rien de survolé : juste une petite aide*/
+            display: flex;
+            color: var(--ui-muted);
+            border-left-color: var(--ui-line);
+        }
+
+        .infoTitle {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .infoName {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--tree-color);
+        }
+
+        .infoRole { /*petite étiquette : Notable, Keystone...*/
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--tree-color);
+            color: var(--tree-color);
+        }
+
+        .infoRole.big { background: var(--tree-color); color: #0d0d14; } /*keystones : étiquette pleine*/
+
+        .infoEffect { /*ce que fait la compétence : le plus visible*/
+            grid-column: 1;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ui-text);
+        }
+
+        .infoChips {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .infoChip {
+            font-size: 14px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+            background: var(--ui-relief);
+            color: var(--ui-text);
+        }
+
+        .infoChip.cost { color: #6fe3ff; }
+        .infoChip.cost.tooExpensive { color: #ff6b6b; }
+        .infoChip.ok { background: #2f8f4e; color: #ffffff; }
+        .infoChip.ready { background: var(--tree-color); color: #0d0d14; }
+        .infoChip.blocked { color: var(--ui-muted); }
 
         /*GAME OVER + SHOP*/
         #gameOverPanel .panel {
@@ -1048,7 +1122,7 @@
                         <button id="treeZoomFit" title="Voir tout l'arbre">⤢</button>
                     </div>
                 </div>
-                <p id="nodeInfo"></p>
+                <div id="nodeInfo"></div>
             </section>
         </div>
     </div>
@@ -3619,7 +3693,7 @@
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
             treeTitle.textContent = tree.name;
-            nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
+            showNodeInfoHint();
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
             showStatsPanel();
@@ -3686,19 +3760,51 @@
             }
         }
 
+        //Petite aide quand aucune compétence n'est survolée
+        function showNodeInfoHint() {
+            nodeInfo.className = "empty";
+            nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
+        }
+
+        const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
+
+        //Crée un élément avec une classe et un texte (plus court que 3 lignes à chaque fois)
+        function createElementWithText(tag, className, text) {
+            const element = document.createElement(tag);
+            element.className = className;
+            element.textContent = text;
+            return element;
+        }
+
+        //Carte de description : nom + rôle en haut, effet en gros, et à droite le coût et l'état
         function showNodeInfo(node) {
             const state = getNodeState(currentTree, node);
-            let status = "";
+            nodeInfo.className = "";
+            nodeInfo.textContent = ""; //vide la carte avant de la remplir
+
+            const title = createElementWithText("div", "infoTitle", "");
+            title.appendChild(createElementWithText("span", "infoName", node.name));
+            const isBig = node.role === "keystone" || node.role === "grand";
+            title.appendChild(createElementWithText("span", "infoRole" + (isBig ? " big" : ""), ROLE_NAMES[node.role]));
+            nodeInfo.appendChild(title);
+
+            //L'effet, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
+            nodeInfo.appendChild(createElementWithText("div", "infoEffect", node.description.replace("GRANDE KEYSTONE : ", "")));
+
+            const chips = createElementWithText("div", "infoChips", "");
             if (state === "unlocked") {
-                status = "✔ Débloquée";
-            } else if (state === "locked") {
-                status = "🔒 Débloque d'abord une compétence reliée";
-            } else if (xp < node.cost) {
-                status = "Pas assez d'XP";
+                chips.appendChild(createElementWithText("span", "infoChip ok", "✔ Débloquée"));
             } else {
-                status = "Clique pour débloquer";
+                chips.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
+                if (state === "locked") {
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 Débloque une voisine d'abord"));
+                } else if (xp < node.cost) {
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", "Pas assez d'XP"));
+                } else {
+                    chips.appendChild(createElementWithText("span", "infoChip ready", "Clique pour débloquer"));
+                }
             }
-            nodeInfo.textContent = node.name + " : " + node.description + " | Coût : " + node.cost + " XP | " + status;
+            nodeInfo.appendChild(chips);
         }
 
         function unlockNode(node) {
