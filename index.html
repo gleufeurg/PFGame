@@ -1231,19 +1231,17 @@
             bgCtx.fillStyle = BG_COLOR;
             bgCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-            //Thème "drapeau" : des bandes horizontales de couleur, assombries pour que le jeu reste lisible
-            const theme = THEMES[currentThemeKey];
-            if (theme.stripes !== undefined) {
-                const stripeHeight = canvas.height / theme.stripes.length;
-                theme.stripes.forEach(function (color, i) {
+            //Thème "drapeau" : des bandes horizontales de couleur, en transparence pour que le jeu reste lisible.
+            //Pendant le cycle des thèmes, il peut y avoir 2 drapeaux à la fois (l'un s'efface, l'autre apparaît).
+            for (const layer of BG_STRIPE_LAYERS) {
+                const stripeHeight = canvas.height / layer.colors.length;
+                bgCtx.globalAlpha = layer.opacity;
+                layer.colors.forEach(function (color, i) {
                     bgCtx.fillStyle = color;
                     bgCtx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
                 });
-                bgCtx.fillStyle = BG_COLOR;
-                bgCtx.globalAlpha = theme.stripesDim;
-                bgCtx.fillRect(0, 0, canvas.width, canvas.height);
-                bgCtx.globalAlpha = 1;
             }
+            bgCtx.globalAlpha = 1;
 
             const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, canvas.height * 0.9);
             light.addColorStop(0, BG_LIGHT_COLOR);
@@ -1592,12 +1590,20 @@
         let themeCycleStart = 0;
         let lastCycleBlend = "";
 
-        //Les thèmes du cycle : tous sauf les drapeaux (bandes difficiles à mélanger) et le blanc (trop de différence avec les thèmes sombres)
+        //Les thèmes du cycle : tous les thèmes (sauf le cycle lui-même), dans l'ordre de la liste
         function getCycleThemes() {
-            return Object.keys(THEMES).filter(function (key) { //filter = garde seulement ceux qui répondent "true"
-                const theme = THEMES[key];
-                return !theme.cycle && theme.stripes === undefined && key !== "white";
-            });
+            return Object.keys(THEMES).filter(function (key) { return !THEMES[key].cycle; }); //filter = garde seulement ceux qui répondent "true"
+        }
+
+        //Les bandes de drapeau d'un thème, sous forme de "calques" : [{ colors: [...], opacity: 0.4 }] (vide si pas de drapeau)
+        function getStripeLayers(theme) {
+            if (theme.stripeLayers !== undefined) {
+                return theme.stripeLayers; //thème déjà mélangé par le cycle
+            }
+            if (theme.stripes === undefined) {
+                return [];
+            }
+            return [{ colors: theme.stripes, opacity: 1 - theme.stripesDim }];
         }
 
         function updateThemeCycle() {
@@ -1635,21 +1641,32 @@
             for (const variableName of Object.keys(themeA.ui)) {
                 ui[variableName] = mixThemeValue(themeA.ui[variableName], themeB.ui[variableName], t);
             }
+            //Les drapeaux : les bandes du 1er thème s'effacent pendant que celles du 2e apparaissent
+            const stripeLayers = [];
+            getStripeLayers(themeA).forEach(function (layer) { stripeLayers.push({ colors: layer.colors, opacity: layer.opacity * (1 - t) }); });
+            getStripeLayers(themeB).forEach(function (layer) { stripeLayers.push({ colors: layer.colors, opacity: layer.opacity * t }); });
             return {
                 background: mixHex(themeA.background, themeB.background, t),
                 backgroundLight: mixHex(themeA.backgroundLight, themeB.backgroundLight, t),
                 shadow: mixHex(themeA.shadow, themeB.shadow, t),
+                textColor: mixHex(themeA.textColor || "#ffffff", themeB.textColor || "#ffffff", t),  //le texte passe en douceur au foncé (thème Blanc)
+                orbitColor: mixThemeValue(themeA.orbitColor || DEFAULT_ORBIT_COLOR, themeB.orbitColor || DEFAULT_ORBIT_COLOR, t),
+                stripeLayers: stripeLayers,
                 ui: ui
             };
         }
 
         //Applique les couleurs d'un thème (ou d'un mélange de deux thèmes) au jeu et à l'interface
+        const DEFAULT_ORBIT_COLOR = "rgba(255, 255, 255, 0.06)";
+        let BG_STRIPE_LAYERS = [];             // les bandes de drapeau à dessiner dans le fond
+
         function setThemeColors(theme) {
             BG_COLOR = theme.background;
             BG_LIGHT_COLOR = theme.backgroundLight;
             SHADOW_COLOR = theme.shadow;
             CANVAS_TEXT_COLOR = theme.textColor || "white";          // || = "sinon" : blanc si le thème n'en précise pas
-            ORBIT_COLOR = theme.orbitColor || "rgba(255, 255, 255, 0.06)";
+            ORBIT_COLOR = theme.orbitColor || DEFAULT_ORBIT_COLOR;
+            BG_STRIPE_LAYERS = getStripeLayers(theme);
             //Change les variables CSS de l'interface
             for (const variableName of Object.keys(theme.ui)) {
                 document.documentElement.style.setProperty(variableName, theme.ui[variableName]); //documentElement = la balise <html>
