@@ -64,15 +64,24 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | ☀️ Lumière + 🌙 Lune | **Éclipse** | grande chance de coup critique (x3) |
 | 🛡️ Égide + 🌙 Lune | **Chouette** | les balles rebondissent sur un autre ennemi |
 
-### Quand Artémis est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Artémis intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🔥 Feu + 🌙 Lune | **Météore** | un météore s'écrase sur un autre ennemi au hasard (x3 dégâts) |
-| 🌙 Lune + 💧 Eau | **Abysses** | un tourbillon attire les ennemis autour vers l'impact |
-| 🌙 Lune + 🌿 Plante | **Sylve** | enracine tous les ennemis autour de l'impact |
-| 🌪️ Vent + 🌙 Lune | **Comète** | les balles traversent les ennemis et peuvent faire un critique |
-| ☀️ Lumière + 🌙 Lune | **Étoile** | critiques, et achève les ennemis presque morts (moins de 20% de vie) |
-| 🛡️ Égide + 🌙 Lune | **Nuit** | l'ennemi subit +50% de dégâts et est achevé s'il est presque mort |
+| 🛡️ Égide + 🌪️ Vent + 🌙 Lune | **Vol de la chouette** | les ennemis touchés perdent le nord et repartent en arrière, et la balle les traverse |
+| 🛡️ Égide + 🔥 Feu + 🌙 Lune | **Comète de fer** | un météore s'écrase sur un autre ennemi, et les ennemis presque morts sont achevés |
+| 🛡️ Égide + ☀️ Lumière + 🌙 Lune | **Pétrification** | le regard de Méduse : l'ennemi est changé en pierre (gelé) et subit +50% de dégâts |
+| 🛡️ Égide + 🌙 Lune + 🌿 Plante | **Forêt hantée** | les ennemis touchés sont empoisonnés et repartent en arrière, apeurés |
+| 🛡️ Égide + 🌙 Lune + 💧 Eau | **Marée noire** | chance de renvoyer l'ennemi au bord de l'écran, et il est ralenti |
+| 🌪️ Vent + 🔥 Feu + 🌙 Lune | **Pluie de météores** | deux météores s'écrasent sur d'autres ennemis |
+| 🌪️ Vent + ☀️ Lumière + 🌙 Lune | **Aurore** | la lumière rebondit sur 3 ennemis, avec des critiques, et les éblouit (ils reculent) |
+| 🌪️ Vent + 🌙 Lune + 🌿 Plante | **Feuilles mortes** | un écho frappe l'ennemi une 2e fois, et la balle éclate en graines |
+| 🌪️ Vent + 🌙 Lune + 💧 Eau | **Marée montante** | chance de renvoyer l'ennemi au bord de l'écran, et repousse tout autour |
+| 🔥 Feu + ☀️ Lumière + 🌙 Lune | **Éclipse** | braises au sol, critiques, et achève les ennemis presque morts |
+| 🔥 Feu + 🌙 Lune + 🌿 Plante | **Feu follet** | les ennemis touchés brûlent et repartent en arrière, envoûtés |
+| 🔥 Feu + 🌙 Lune + 💧 Eau | **Abîme** | un trou noir aspire les ennemis autour et les broie pendant 2 s |
+| ☀️ Lumière + 🌙 Lune + 🌿 Plante | **Jardin lunaire** | enracine autour, et un écho frappe l'ennemi une 2e fois |
+| ☀️ Lumière + 🌙 Lune + 💧 Eau | **Marée lunaire** | un tourbillon attire les ennemis et gèle la cible |
+| 🌙 Lune + 🌿 Plante + 💧 Eau | **Kraken** | un tourbillon attire les ennemis, les enracine et les empoisonne |

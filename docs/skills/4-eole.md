@@ -65,15 +65,24 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🌪️ Vent + 🌙 Lune | **Flèche du vent** | les balles traversent les ennemis |
 | 🛡️ Égide + 🌪️ Vent | **Bourrasque** | les ennemis touchés sont fortement repoussés |
 
-### Quand Éole est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Éole intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🌪️ Vent + 🔥 Feu | **Tempête de feu** | grosse explosion qui fait brûler tous les ennemis touchés |
-| 🌪️ Vent + 💧 Eau | **Blizzard** | gèle tous les ennemis autour de l'impact |
-| 🌪️ Vent + 🌿 Plante | **Spores** | poison qui se propage, et la balle éclate en graines |
-| 🌪️ Vent + ☀️ Lumière | **Orage** | la foudre rebondit sur 3 ennemis proches |
-| 🌪️ Vent + 🌙 Lune | **Comète** | les balles traversent les ennemis et peuvent faire un critique |
-| 🛡️ Égide + 🌪️ Vent | **Cyclone** | repousse tous les ennemis autour de l'impact |
+| 🛡️ Égide + 🌪️ Vent + 🔥 Feu | **Fournaise** | explosion, et 6 éclats de feu partent dans toutes les directions |
+| 🛡️ Égide + 🌪️ Vent + ☀️ Lumière | **Jugement** | la foudre rebondit sur 3 ennemis et repousse tout autour de l'impact |
+| 🛡️ Égide + 🌪️ Vent + 🌙 Lune | **Vol de la chouette** | les ennemis touchés perdent le nord et repartent en arrière, et la balle les traverse |
+| 🛡️ Égide + 🌪️ Vent + 🌿 Plante | **Rempart de ronces** | enracine et repousse tous les ennemis autour de l'impact |
+| 🛡️ Égide + 🌪️ Vent + 💧 Eau | **Mur de tempête** | gèle et repousse tous les ennemis autour de l'impact |
+| 🌪️ Vent + 🔥 Feu + ☀️ Lumière | **Supernova** | une étoile explose : 6 éclats dans toutes les directions et tout brûle autour |
+| 🌪️ Vent + 🔥 Feu + 🌙 Lune | **Pluie de météores** | deux météores s'écrasent sur d'autres ennemis |
+| 🌪️ Vent + 🔥 Feu + 🌿 Plante | **Feu de prairie** | laisse des braises au sol et la balle éclate en graines |
+| 🌪️ Vent + 🔥 Feu + 💧 Eau | **Ouragan de vapeur** | un tourbillon attire les ennemis puis explose |
+| 🌪️ Vent + ☀️ Lumière + 🌙 Lune | **Aurore** | la lumière rebondit sur 3 ennemis, avec des critiques, et les éblouit (ils reculent) |
+| 🌪️ Vent + ☀️ Lumière + 🌿 Plante | **Pollinisation** | la balle éclate en 3 graines, et chaque coup te soigne |
+| 🌪️ Vent + ☀️ Lumière + 💧 Eau | **Orage** | la foudre rebondit sur 3 ennemis et gèle la cible |
+| 🌪️ Vent + 🌙 Lune + 🌿 Plante | **Feuilles mortes** | un écho frappe l'ennemi une 2e fois, et la balle éclate en graines |
+| 🌪️ Vent + 🌙 Lune + 💧 Eau | **Marée montante** | chance de renvoyer l'ennemi au bord de l'écran, et repousse tout autour |
+| 🌪️ Vent + 🌿 Plante + 💧 Eau | **Mousson** | une flaque toxique reste au sol, et ralentit autour de l'impact |

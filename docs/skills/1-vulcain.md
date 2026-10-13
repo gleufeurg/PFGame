@@ -63,17 +63,26 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🔥 Feu + 🌿 Plante | **Feu de forêt** | les ennemis touchés brûlent pendant 3 s |
 | 🔥 Feu + ☀️ Lumière | **Éruption solaire** | les balles brûlent et traversent un ennemi |
 | 🔥 Feu + 🌙 Lune | **Flèche ardente** | chance de coup critique (x3), et les ennemis brûlent |
-| 🛡️ Égide + 🔥 Feu | **Forge** | +50% de dégâts |
+| 🛡️ Égide + 🔥 Feu | **Forge** | les balles laissent des braises au sol qui brûlent les ennemis qui passent dessus |
 
-### Quand Vulcain est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Vulcain intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🔥 Feu + 💧 Eau | **Brume** | un nuage ralentit les ennemis autour, et ils subissent +50% de dégâts |
-| 🔥 Feu + 🌿 Plante | **Cendre** | poison : l'ennemi perd des PV, et s'il meurt le poison saute sur ses voisins |
-| 🌪️ Vent + 🔥 Feu | **Tempête de feu** | grosse explosion qui fait brûler tous les ennemis touchés |
-| 🔥 Feu + ☀️ Lumière | **Plasma** | les balles traversent 2 ennemis et font +50% de dégâts |
-| 🔥 Feu + 🌙 Lune | **Météore** | un météore s'écrase sur un autre ennemi au hasard (x3 dégâts) |
-| 🛡️ Égide + 🔥 Feu | **Magma** | explosion qui repousse tous les ennemis autour |
+| 🛡️ Égide + 🌪️ Vent + 🔥 Feu | **Fournaise** | explosion, et 6 éclats de feu partent dans toutes les directions |
+| 🛡️ Égide + 🔥 Feu + ☀️ Lumière | **Forge solaire** | laisse des braises au sol, et les ennemis touchés subissent +50% de dégâts |
+| 🛡️ Égide + 🔥 Feu + 🌙 Lune | **Comète de fer** | un météore s'écrase sur un autre ennemi, et les ennemis presque morts sont achevés |
+| 🛡️ Égide + 🔥 Feu + 🌿 Plante | **Bûcher** | tout brûle autour de l'impact, et une graine explosive reste au sol |
+| 🛡️ Égide + 🔥 Feu + 💧 Eau | **Geyser** | explosion de vapeur qui ralentit autour, et recharge ton bouclier |
+| 🌪️ Vent + 🔥 Feu + ☀️ Lumière | **Supernova** | une étoile explose : 6 éclats dans toutes les directions et tout brûle autour |
+| 🌪️ Vent + 🔥 Feu + 🌙 Lune | **Pluie de météores** | deux météores s'écrasent sur d'autres ennemis |
+| 🌪️ Vent + 🔥 Feu + 🌿 Plante | **Feu de prairie** | laisse des braises au sol et la balle éclate en graines |
+| 🌪️ Vent + 🔥 Feu + 💧 Eau | **Ouragan de vapeur** | un tourbillon attire les ennemis puis explose |
+| 🔥 Feu + ☀️ Lumière + 🌙 Lune | **Éclipse** | braises au sol, critiques, et achève les ennemis presque morts |
+| 🔥 Feu + ☀️ Lumière + 🌿 Plante | **Phénix** | l'ennemi brûle, un écho le frappe une 2e fois, et chaque coup te soigne |
+| 🔥 Feu + ☀️ Lumière + 💧 Eau | **Prisme de feu** | la balle se divise en 3 rayons qui rebondissent encore une fois |
+| 🔥 Feu + 🌙 Lune + 🌿 Plante | **Feu follet** | les ennemis touchés brûlent et repartent en arrière, envoûtés |
+| 🔥 Feu + 🌙 Lune + 💧 Eau | **Abîme** | un trou noir aspire les ennemis autour et les broie pendant 2 s |
+| 🔥 Feu + 🌿 Plante + 💧 Eau | **Volcan de boue** | une graine explosive reste au sol, et ralentit autour de l'impact |

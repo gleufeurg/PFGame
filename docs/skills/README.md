@@ -16,7 +16,7 @@ Ce dossier est généré à partir des données du jeu (`index.html`). Il récap
 
 ## Les combos
 
-Voir [0-combos.md](0-combos.md) : 21 combos et 21 fusions.
+Voir [0-combos.md](0-combos.md) : 21 combos et 35 fusions.
 
 ## Le shop (améliorations permanentes)
 

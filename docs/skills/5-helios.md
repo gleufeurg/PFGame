@@ -59,21 +59,30 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Combo | Nom | Effet |
 |---|---|---|
 | 🔥 Feu + ☀️ Lumière | **Éruption solaire** | les balles brûlent et traversent un ennemi |
-| ☀️ Lumière + 💧 Eau | **Arc-en-ciel** | chaque coup rapporte un peu d'or (le trésor au pied de l'arc-en-ciel) |
-| ☀️ Lumière + 🌿 Plante | **Photosynthèse** | chaque coup rapporte un peu d'XP |
+| ☀️ Lumière + 💧 Eau | **Arc-en-ciel** | la balle se divise en 3 rayons qui visent d'autres ennemis |
+| ☀️ Lumière + 🌿 Plante | **Photosynthèse** | la balle plante une graine au sol, qui explose quand un ennemi passe dessus |
 | 🌪️ Vent + ☀️ Lumière | **Éclair** | la foudre rebondit sur un autre ennemi proche |
 | ☀️ Lumière + 🌙 Lune | **Éclipse** | grande chance de coup critique (x3) |
 | 🛡️ Égide + ☀️ Lumière | **Aveuglement** | les ennemis touchés sont ralentis et subissent un critique de temps en temps |
 
-### Quand Hélios est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Hélios intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🔥 Feu + ☀️ Lumière | **Plasma** | les balles traversent 2 ennemis et font +50% de dégâts |
-| ☀️ Lumière + 💧 Eau | **Prisme** | la balle se divise en 3 rayons vers d'autres ennemis |
-| ☀️ Lumière + 🌿 Plante | **Sève dorée** | chaque coup rapporte de l'or ET de l'XP |
-| 🌪️ Vent + ☀️ Lumière | **Orage** | la foudre rebondit sur 3 ennemis proches |
-| ☀️ Lumière + 🌙 Lune | **Étoile** | critiques, et achève les ennemis presque morts (moins de 20% de vie) |
-| 🛡️ Égide + ☀️ Lumière | **Auréole** | chaque coup te soigne, et l'ennemi subit +50% de dégâts |
+| 🛡️ Égide + 🌪️ Vent + ☀️ Lumière | **Jugement** | la foudre rebondit sur 3 ennemis et repousse tout autour de l'impact |
+| 🛡️ Égide + 🔥 Feu + ☀️ Lumière | **Forge solaire** | laisse des braises au sol, et les ennemis touchés subissent +50% de dégâts |
+| 🛡️ Égide + ☀️ Lumière + 🌙 Lune | **Pétrification** | le regard de Méduse : l'ennemi est changé en pierre (gelé) et subit +50% de dégâts |
+| 🛡️ Égide + ☀️ Lumière + 🌿 Plante | **Sanctuaire** | chaque coup te soigne et enracine les ennemis autour |
+| 🛡️ Égide + ☀️ Lumière + 💧 Eau | **Bouclier miroir** | la balle se reflète en 3 rayons, et recharge ton bouclier |
+| 🌪️ Vent + 🔥 Feu + ☀️ Lumière | **Supernova** | une étoile explose : 6 éclats dans toutes les directions et tout brûle autour |
+| 🌪️ Vent + ☀️ Lumière + 🌙 Lune | **Aurore** | la lumière rebondit sur 3 ennemis, avec des critiques, et les éblouit (ils reculent) |
+| 🌪️ Vent + ☀️ Lumière + 🌿 Plante | **Pollinisation** | la balle éclate en 3 graines, et chaque coup te soigne |
+| 🌪️ Vent + ☀️ Lumière + 💧 Eau | **Orage** | la foudre rebondit sur 3 ennemis et gèle la cible |
+| 🔥 Feu + ☀️ Lumière + 🌙 Lune | **Éclipse** | braises au sol, critiques, et achève les ennemis presque morts |
+| 🔥 Feu + ☀️ Lumière + 🌿 Plante | **Phénix** | l'ennemi brûle, un écho le frappe une 2e fois, et chaque coup te soigne |
+| 🔥 Feu + ☀️ Lumière + 💧 Eau | **Prisme de feu** | la balle se divise en 3 rayons qui rebondissent encore une fois |
+| ☀️ Lumière + 🌙 Lune + 🌿 Plante | **Jardin lunaire** | enracine autour, et un écho frappe l'ennemi une 2e fois |
+| ☀️ Lumière + 🌙 Lune + 💧 Eau | **Marée lunaire** | un tourbillon attire les ennemis et gèle la cible |
+| ☀️ Lumière + 🌿 Plante + 💧 Eau | **Source sacrée** | chaque coup te soigne, et un écho frappe l'ennemi une 2e fois |

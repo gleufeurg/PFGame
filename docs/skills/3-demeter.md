@@ -61,19 +61,28 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🔥 Feu + 🌿 Plante | **Feu de forêt** | les ennemis touchés brûlent pendant 3 s |
 | 🌿 Plante + 💧 Eau | **Floraison** | chaque coup te soigne un peu |
 | 🌪️ Vent + 🌿 Plante | **Pollen** | les balles éclatent en 2 graines qui visent d'autres ennemis |
-| ☀️ Lumière + 🌿 Plante | **Photosynthèse** | chaque coup rapporte un peu d'XP |
+| ☀️ Lumière + 🌿 Plante | **Photosynthèse** | la balle plante une graine au sol, qui explose quand un ennemi passe dessus |
 | 🌙 Lune + 🌿 Plante | **Racines** | les ennemis touchés sont enracinés un court instant |
 | 🛡️ Égide + 🌿 Plante | **Mur d'épines** | les ennemis touchés sont repoussés et ralentis |
 
-### Quand Déméter est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Déméter intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🔥 Feu + 🌿 Plante | **Cendre** | poison : l'ennemi perd des PV, et s'il meurt le poison saute sur ses voisins |
-| 🌿 Plante + 💧 Eau | **Marais** | un marais toxique ralentit et empoisonne autour de l'impact |
-| 🌪️ Vent + 🌿 Plante | **Spores** | poison qui se propage, et la balle éclate en graines |
-| ☀️ Lumière + 🌿 Plante | **Sève dorée** | chaque coup rapporte de l'or ET de l'XP |
-| 🌙 Lune + 🌿 Plante | **Sylve** | enracine tous les ennemis autour de l'impact |
-| 🛡️ Égide + 🌿 Plante | **Chêne** | recharge ton bouclier plus vite et repousse l'ennemi |
+| 🛡️ Égide + 🌪️ Vent + 🌿 Plante | **Rempart de ronces** | enracine et repousse tous les ennemis autour de l'impact |
+| 🛡️ Égide + 🔥 Feu + 🌿 Plante | **Bûcher** | tout brûle autour de l'impact, et une graine explosive reste au sol |
+| 🛡️ Égide + ☀️ Lumière + 🌿 Plante | **Sanctuaire** | chaque coup te soigne et enracine les ennemis autour |
+| 🛡️ Égide + 🌙 Lune + 🌿 Plante | **Forêt hantée** | les ennemis touchés sont empoisonnés et repartent en arrière, apeurés |
+| 🛡️ Égide + 🌿 Plante + 💧 Eau | **Corail** | chaque coup te soigne, recharge ton bouclier et ralentit autour |
+| 🌪️ Vent + 🔥 Feu + 🌿 Plante | **Feu de prairie** | laisse des braises au sol et la balle éclate en graines |
+| 🌪️ Vent + ☀️ Lumière + 🌿 Plante | **Pollinisation** | la balle éclate en 3 graines, et chaque coup te soigne |
+| 🌪️ Vent + 🌙 Lune + 🌿 Plante | **Feuilles mortes** | un écho frappe l'ennemi une 2e fois, et la balle éclate en graines |
+| 🌪️ Vent + 🌿 Plante + 💧 Eau | **Mousson** | une flaque toxique reste au sol, et ralentit autour de l'impact |
+| 🔥 Feu + ☀️ Lumière + 🌿 Plante | **Phénix** | l'ennemi brûle, un écho le frappe une 2e fois, et chaque coup te soigne |
+| 🔥 Feu + 🌙 Lune + 🌿 Plante | **Feu follet** | les ennemis touchés brûlent et repartent en arrière, envoûtés |
+| 🔥 Feu + 🌿 Plante + 💧 Eau | **Volcan de boue** | une graine explosive reste au sol, et ralentit autour de l'impact |
+| ☀️ Lumière + 🌙 Lune + 🌿 Plante | **Jardin lunaire** | enracine autour, et un écho frappe l'ennemi une 2e fois |
+| ☀️ Lumière + 🌿 Plante + 💧 Eau | **Source sacrée** | chaque coup te soigne, et un écho frappe l'ennemi une 2e fois |
+| 🌙 Lune + 🌿 Plante + 💧 Eau | **Kraken** | un tourbillon attire les ennemis, les enracine et les empoisonne |

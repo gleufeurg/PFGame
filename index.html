@@ -1412,6 +1412,7 @@
             drawRange();
             drawOrbit();
             drawShadows();           //toutes les ombres d'abord, pour qu'elles passent SOUS tous les objets
+            drawHazards();           //ce qui est au sol (braises, graines...) passe sous les ennemis
             drawEnemies();
             drawBullets();
             drawEffects();
@@ -3035,9 +3036,11 @@
                 if (!enemies.includes(enemy)) {
                     continue; //il vient de mourir de sa brûlure
                 }
-                enemy.time += deltaTime * statusSpeed; //gelé = son mouvement (zigzag...) s'arrête aussi
-                const step = enemy.style ? getMovementStep(enemy, deltaTime * statusSpeed) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
+                const moveTime = deltaTime * Math.abs(statusSpeed); //abs = sans le signe : un ennemi qui recule continue son zigzag
+                enemy.time += moveTime; //gelé = son mouvement (zigzag...) s'arrête aussi
+                const step = enemy.style ? getMovementStep(enemy, moveTime) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
                 enemy.distance -= enemy.speed * step.speedFactor * statusSpeed * deltaTime;
+                enemy.distance = Math.min(enemy.distance, enemy.startDistance); //il ne recule pas plus loin que son point de départ
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
                     enemies.splice(i, 1);
@@ -3191,6 +3194,15 @@
             });
         }
 
+        //Une balle qui part tout droit dans une direction (angle), sans cible. except = ennemis qu'elle ne peut pas toucher
+        function shootInDirection(x, y, angle, damage, color, except) {
+            shootAt(null, x, y, damage, color);
+            const bullet = bullets[bullets.length - 1];
+            bullet.dirX = Math.cos(angle);
+            bullet.dirY = Math.sin(angle);
+            bullet.alreadyHit = except.slice();
+        }
+
         function hitEnemy(enemy, index, bullet) {
             let damage = bullet.damage + playerStats.damageVs[enemy.type];
             //Combos d'orbite qui changent les dégâts du coup lui-même
@@ -3199,7 +3211,6 @@
                 damage *= COMBO_CRIT_MULTIPLIER;
                 spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 14);
             }
-            damage *= 1 + COMBO_DAMAGE_BOOST * getBulletEffect(bullet, "damageBoost");
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
             applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
             damageEnemy(enemy, damage, "enemyHit");
@@ -3354,12 +3365,12 @@
         };
 
         //Les options de lien. strength = force des effets (opposé = plus fort, car la planète est loin).
-        //"Les deux côtés" ne donne pas 2 attributs : les attributs des 2 voisines fusionnent en UN attribut unique.
+        //"Les deux côtés" ne donne pas 2 attributs : le dieu et ses 2 voisines fusionnent en UN attribut unique (3 éléments).
         const LINK_MODES = {
             none: { name: "Aucun", strength: 0 },
             left: { name: "Gauche", strength: 1 },
             right: { name: "Droite", strength: 1 },
-            both: { name: "Les deux côtés", strength: 1 },       // les 2 voisines FUSIONNENT en un attribut unique (voir FUSIONS)
+            both: { name: "Les deux côtés", strength: 1 },       // le dieu et ses 2 voisines FUSIONNENT en un attribut unique (voir FUSIONS)
             opposite: { name: "Opposé", strength: 1.4 }
         };
 
@@ -3371,14 +3382,14 @@
             "fire+plant": { name: "Feu de forêt", description: "les ennemis touchés brûlent pendant 3 s", effects: ["burn"] },
             "fire+light": { name: "Éruption solaire", description: "les balles brûlent et traversent un ennemi", effects: ["burn", "pierce"] },
             "fire+moon": { name: "Flèche ardente", description: "chance de coup critique (x3), et les ennemis brûlent", effects: ["crit", "burn"] },
-            "aegis+fire": { name: "Forge", description: "+50% de dégâts", effects: ["damageBoost"] },
+            "aegis+fire": { name: "Forge", description: "les balles laissent des braises au sol qui brûlent les ennemis qui passent dessus", effects: ["fireZone"] },
             "air+water": { name: "Gel", description: "les ennemis touchés sont gelés sur place", effects: ["freeze"] },
             "plant+water": { name: "Floraison", description: "chaque coup te soigne un peu", effects: ["heal"] },
-            "light+water": { name: "Arc-en-ciel", description: "chaque coup rapporte un peu d'or (le trésor au pied de l'arc-en-ciel)", effects: ["gold"] },
+            "light+water": { name: "Arc-en-ciel", description: "la balle se divise en 3 rayons qui visent d'autres ennemis", effects: ["split", "split3"] },
             "moon+water": { name: "Marée", description: "les ennemis touchés sont repoussés en arrière", effects: ["knockback"] },
             "aegis+water": { name: "Rempart d'écume", description: "les ennemis touchés sont ralentis", effects: ["slow"] },
             "air+plant": { name: "Pollen", description: "les balles éclatent en 2 graines qui visent d'autres ennemis", effects: ["split"] },
-            "light+plant": { name: "Photosynthèse", description: "chaque coup rapporte un peu d'XP", effects: ["xp"] },
+            "light+plant": { name: "Photosynthèse", description: "la balle plante une graine au sol, qui explose quand un ennemi passe dessus", effects: ["mine"] },
             "moon+plant": { name: "Racines", description: "les ennemis touchés sont enracinés un court instant", effects: ["root"] },
             "aegis+plant": { name: "Mur d'épines", description: "les ennemis touchés sont repoussés et ralentis", effects: ["knockback", "slow"] },
             "air+light": { name: "Éclair", description: "la foudre rebondit sur un autre ennemi proche", effects: ["chain"] },
@@ -3389,30 +3400,45 @@
             "aegis+moon": { name: "Chouette", description: "les balles rebondissent sur un autre ennemi", effects: ["chain"] }
         };
 
-        //LES FUSIONS ("Les deux côtés") : les attributs des 2 voisines fusionnent en un attribut unique, avec son propre effet.
-        //La clé = les 2 attributs des VOISINES (pas celui de la planète elle-même), dans l'ordre alphabétique.
+        //LES FUSIONS ("Les deux côtés") : les attributs du dieu ET de ses 2 voisines fusionnent en un attribut unique.
+        //Pas de statistiques ici : chaque fusion donne un EFFET particulier.
+        //La clé = les 3 attributs dans l'ordre alphabétique, reliés par "+" (7 attributs = 35 fusions possibles).
         const FUSIONS = {
-            "fire+water": { name: "Brume", description: "un nuage ralentit les ennemis autour, et ils subissent +50% de dégâts", effects: ["slowArea", "weaken"] },
-            "fire+plant": { name: "Cendre", description: "poison : l'ennemi perd des PV, et s'il meurt le poison saute sur ses voisins", effects: ["poison"] },
-            "air+fire": { name: "Tempête de feu", description: "grosse explosion qui fait brûler tous les ennemis touchés", effects: ["explosion", "explosion", "burnArea"] },
-            "fire+light": { name: "Plasma", description: "les balles traversent 2 ennemis et font +50% de dégâts", effects: ["pierce", "pierce", "damageBoost"] },
-            "fire+moon": { name: "Météore", description: "un météore s'écrase sur un autre ennemi au hasard (x3 dégâts)", effects: ["meteor"] },
-            "aegis+fire": { name: "Magma", description: "explosion qui repousse tous les ennemis autour", effects: ["explosion", "knockbackArea"] },
-            "plant+water": { name: "Marais", description: "un marais toxique ralentit et empoisonne autour de l'impact", effects: ["slowArea", "poison"] },
-            "air+water": { name: "Blizzard", description: "gèle tous les ennemis autour de l'impact", effects: ["freezeArea"] },
-            "light+water": { name: "Prisme", description: "la balle se divise en 3 rayons vers d'autres ennemis", effects: ["split", "split3"] },
-            "moon+water": { name: "Abysses", description: "un tourbillon attire les ennemis autour vers l'impact", effects: ["vortex"] },
-            "aegis+water": { name: "Corail", description: "chaque coup te soigne et recharge ton bouclier plus vite", effects: ["heal", "shieldCharge"] },
-            "air+plant": { name: "Spores", description: "poison qui se propage, et la balle éclate en graines", effects: ["poison", "split"] },
-            "light+plant": { name: "Sève dorée", description: "chaque coup rapporte de l'or ET de l'XP", effects: ["gold", "xp"] },
-            "moon+plant": { name: "Sylve", description: "enracine tous les ennemis autour de l'impact", effects: ["rootArea"] },
-            "aegis+plant": { name: "Chêne", description: "recharge ton bouclier plus vite et repousse l'ennemi", effects: ["shieldCharge", "knockback"] },
-            "air+light": { name: "Orage", description: "la foudre rebondit sur 3 ennemis proches", effects: ["chain", "chain3"] },
-            "air+moon": { name: "Comète", description: "les balles traversent les ennemis et peuvent faire un critique", effects: ["pierce", "crit"] },
-            "aegis+air": { name: "Cyclone", description: "repousse tous les ennemis autour de l'impact", effects: ["knockbackArea", "knockbackArea"] },
-            "light+moon": { name: "Étoile", description: "critiques, et achève les ennemis presque morts (moins de 20% de vie)", effects: ["crit", "execute"] },
-            "aegis+light": { name: "Auréole", description: "chaque coup te soigne, et l'ennemi subit +50% de dégâts", effects: ["heal", "weaken"] },
-            "aegis+moon": { name: "Nuit", description: "l'ennemi subit +50% de dégâts et est achevé s'il est presque mort", effects: ["weaken", "execute"] }
+            "aegis+air+fire": { name: "Fournaise", description: "explosion, et 6 éclats de feu partent dans toutes les directions", effects: ["explosion", "nova"] },
+            "aegis+air+light": { name: "Jugement", description: "la foudre rebondit sur 3 ennemis et repousse tout autour de l'impact", effects: ["chain", "chain3", "knockbackArea"] },
+            "aegis+air+moon": { name: "Vol de la chouette", description: "les ennemis touchés perdent le nord et repartent en arrière, et la balle les traverse", effects: ["confuse", "pierce"] },
+            "aegis+air+plant": { name: "Rempart de ronces", description: "enracine et repousse tous les ennemis autour de l'impact", effects: ["rootArea", "knockbackArea"] },
+            "aegis+air+water": { name: "Mur de tempête", description: "gèle et repousse tous les ennemis autour de l'impact", effects: ["freezeArea", "knockbackArea"] },
+            "aegis+fire+light": { name: "Forge solaire", description: "laisse des braises au sol, et les ennemis touchés subissent +50% de dégâts", effects: ["fireZone", "weaken"] },
+            "aegis+fire+moon": { name: "Comète de fer", description: "un météore s'écrase sur un autre ennemi, et les ennemis presque morts sont achevés", effects: ["meteor", "execute"] },
+            "aegis+fire+plant": { name: "Bûcher", description: "tout brûle autour de l'impact, et une graine explosive reste au sol", effects: ["burnArea", "mine"] },
+            "aegis+fire+water": { name: "Geyser", description: "explosion de vapeur qui ralentit autour, et recharge ton bouclier", effects: ["explosion", "slowArea", "shieldCharge"] },
+            "aegis+light+moon": { name: "Pétrification", description: "le regard de Méduse : l'ennemi est changé en pierre (gelé) et subit +50% de dégâts", effects: ["freeze", "weaken"] },
+            "aegis+light+plant": { name: "Sanctuaire", description: "chaque coup te soigne et enracine les ennemis autour", effects: ["heal", "rootArea"] },
+            "aegis+light+water": { name: "Bouclier miroir", description: "la balle se reflète en 3 rayons, et recharge ton bouclier", effects: ["split", "split3", "shieldCharge"] },
+            "aegis+moon+plant": { name: "Forêt hantée", description: "les ennemis touchés sont empoisonnés et repartent en arrière, apeurés", effects: ["confuse", "poison"] },
+            "aegis+moon+water": { name: "Marée noire", description: "chance de renvoyer l'ennemi au bord de l'écran, et il est ralenti", effects: ["rewind", "slow"] },
+            "aegis+plant+water": { name: "Corail", description: "chaque coup te soigne, recharge ton bouclier et ralentit autour", effects: ["heal", "shieldCharge", "slowArea"] },
+            "air+fire+light": { name: "Supernova", description: "une étoile explose : 6 éclats dans toutes les directions et tout brûle autour", effects: ["nova", "burnArea"] },
+            "air+fire+moon": { name: "Pluie de météores", description: "deux météores s'écrasent sur d'autres ennemis", effects: ["meteor", "meteor"] },
+            "air+fire+plant": { name: "Feu de prairie", description: "laisse des braises au sol et la balle éclate en graines", effects: ["fireZone", "split"] },
+            "air+fire+water": { name: "Ouragan de vapeur", description: "un tourbillon attire les ennemis puis explose", effects: ["vortex", "explosion"] },
+            "air+light+moon": { name: "Aurore", description: "la lumière rebondit sur 3 ennemis, avec des critiques, et les éblouit (ils reculent)", effects: ["chain", "chain3", "crit", "confuse"] },
+            "air+light+plant": { name: "Pollinisation", description: "la balle éclate en 3 graines, et chaque coup te soigne", effects: ["split", "split3", "heal"] },
+            "air+light+water": { name: "Orage", description: "la foudre rebondit sur 3 ennemis et gèle la cible", effects: ["chain", "chain3", "freeze"] },
+            "air+moon+plant": { name: "Feuilles mortes", description: "un écho frappe l'ennemi une 2e fois, et la balle éclate en graines", effects: ["echo", "split"] },
+            "air+moon+water": { name: "Marée montante", description: "chance de renvoyer l'ennemi au bord de l'écran, et repousse tout autour", effects: ["rewind", "knockbackArea"] },
+            "air+plant+water": { name: "Mousson", description: "une flaque toxique reste au sol, et ralentit autour de l'impact", effects: ["poisonZone", "slowArea"] },
+            "fire+light+moon": { name: "Éclipse", description: "braises au sol, critiques, et achève les ennemis presque morts", effects: ["fireZone", "crit", "execute"] },
+            "fire+light+plant": { name: "Phénix", description: "l'ennemi brûle, un écho le frappe une 2e fois, et chaque coup te soigne", effects: ["burn", "echo", "heal"] },
+            "fire+light+water": { name: "Prisme de feu", description: "la balle se divise en 3 rayons qui rebondissent encore une fois", effects: ["split", "split3", "chain"] },
+            "fire+moon+plant": { name: "Feu follet", description: "les ennemis touchés brûlent et repartent en arrière, envoûtés", effects: ["burn", "confuse"] },
+            "fire+moon+water": { name: "Abîme", description: "un trou noir aspire les ennemis autour et les broie pendant 2 s", effects: ["blackhole"] },
+            "fire+plant+water": { name: "Volcan de boue", description: "une graine explosive reste au sol, et ralentit autour de l'impact", effects: ["mine", "slowArea"] },
+            "light+moon+plant": { name: "Jardin lunaire", description: "enracine autour, et un écho frappe l'ennemi une 2e fois", effects: ["rootArea", "echo"] },
+            "light+moon+water": { name: "Marée lunaire", description: "un tourbillon attire les ennemis et gèle la cible", effects: ["vortex", "freeze"] },
+            "light+plant+water": { name: "Source sacrée", description: "chaque coup te soigne, et un écho frappe l'ennemi une 2e fois", effects: ["heal", "echo"] },
+            "moon+plant+water": { name: "Kraken", description: "un tourbillon attire les ennemis, les enracine et les empoisonne", effects: ["vortex", "rootArea", "poison"] }
         };
 
         //Réglages des effets (pour un combo de force 1)
@@ -3427,11 +3453,8 @@
         const COMBO_FREEZE_AREA_DURATION = 0.7; // gel de zone (Blizzard) : plus court, car il touche beaucoup d'ennemis
         const COMBO_KNOCKBACK = 30;             // pixels de recul
         const COMBO_HEAL = 0.08;                // PV rendus par coup
-        const COMBO_GOLD = 0.15;                // or par coup
-        const COMBO_XP = 0.15;                  // XP par coup
         const COMBO_CRIT_CHANCE = 0.2;          // chance de critique
         const COMBO_CRIT_MULTIPLIER = 3;
-        const COMBO_DAMAGE_BOOST = 0.5;         // +50%
         const COMBO_PIERCE_COUNT = 1;           // ennemis traversés
         const COMBO_CHAIN_RANGE = 160;          // distance max du rebond
         const COMBO_CHAIN_DAMAGE = 0.7;
@@ -3446,17 +3469,35 @@
         const COMBO_VORTEX_PULL = 0.6;          // 0 = n'attire pas, 1 = colle tout le monde sur l'impact
         const COMBO_SHIELD_CHARGE = 0.6;        // secondes de recharge du bouclier gagnées par coup
         const COMBO_EXECUTE_THRESHOLD = 0.2;    // achève sous 20% de vie (pas les super ennemis)
+        const COMBO_ZONE_DURATION = 3;          // braises / flaque toxique au sol
+        const COMBO_ZONE_RADIUS = 45;
+        const COMBO_MINE_DURATION = 6;          // graine explosive : disparaît si personne ne marche dessus
+        const COMBO_MINE_DAMAGE = 2.5;          // x les dégâts de la balle
+        const COMBO_NOVA_COUNT = 6;             // éclats qui partent dans toutes les directions
+        const COMBO_NOVA_DAMAGE = 0.6;
+        const COMBO_ECHO_DELAY = 0.5;           // l'écho frappe une 2e fois après 0.5 s
+        const COMBO_CONFUSE_DURATION = 1.5;     // l'ennemi repart en arrière
+        const COMBO_REWIND_CHANCE = 0.25;       // chance de renvoyer l'ennemi au bord de l'écran
+        const COMBO_BLACKHOLE_DURATION = 2;
+        const COMBO_BLACKHOLE_RADIUS = 150;
+
+        //Ce qui reste au sol après un tir : braises, flaque toxique, graine explosive, trou noir
+        const hazards = [];
+        //Les échos : un 2e coup qui arrive un peu plus tard
+        const echoes = [];
 
         //Couleur d'un combo : celle de l'attribut emprunté, ou le mélange des 2 pour une fusion
         function getComboColor(item) {
             if (item.fusion) {
-                return mixHex(ATTRIBUTES[item.fusion[0]].color, ATTRIBUTES[item.fusion[1]].color, 0.5);
+                const twoMixed = mixHex(ATTRIBUTES[item.fusion[0]].color, ATTRIBUTES[item.fusion[1]].color, 0.5);
+                return mixHex(twoMixed, ATTRIBUTES[item.fusion[2]].color, 0.33); //les 3 couleurs à parts égales
             }
             return ATTRIBUTES[item.attribute].color;
         }
 
-        function getComboKey(attributeA, attributeB) {
-            return [attributeA, attributeB].sort().join("+"); //sort = range dans l'ordre alphabétique, join = colle avec "+"
+        //...attributes = on accepte 2 OU 3 attributs (ils arrivent tous dans le tableau "attributes")
+        function getComboKey(...attributes) {
+            return attributes.sort().join("+"); //sort = range dans l'ordre alphabétique, join = colle avec "+"
         }
 
         //Les planètes auxquelles cette planète est liée, selon son option (gauche, droite...)
@@ -3482,10 +3523,10 @@
         function getPlanetCombos(planet) {
             const result = [];
             const linked = getLinkedPlanets(planet);
-            //LES DEUX CÔTÉS : les 2 voisines fusionnent en un attribut unique (un seul effet, pas deux)
+            //LES DEUX CÔTÉS : le dieu et ses 2 voisines fusionnent en un attribut unique (un seul effet spécial)
             if (planet.tree.linkMode === "both" && linked.length === 2) {
-                const attributes = [linked[0].tree.element, linked[1].tree.element];
-                const fusion = FUSIONS[getComboKey(attributes[0], attributes[1])];
+                const attributes = [planet.tree.element, linked[0].tree.element, linked[1].tree.element];
+                const fusion = FUSIONS[getComboKey(...attributes)];
                 result.push({ attribute: attributes[0], fusion: attributes, partner: linked[0], combo: fusion, strength: LINK_MODES.both.strength });
                 return result;
             }
@@ -3573,9 +3614,6 @@
             if (power("heal") > 0) {
                 healPlayer(COMBO_HEAL * power("heal"));
             }
-            if (power("gold") > 0 || power("xp") > 0) {
-                gainRewards(COMBO_GOLD * power("gold"), COMBO_XP * power("xp"));
-            }
             if (power("chain") > 0) {
                 const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE, bullet.alreadyHit.concat([enemy]));
                 if (next !== null) {
@@ -3649,6 +3687,35 @@
                     damageEnemy(target, bullet.damage * COMBO_METEOR_DAMAGE * power("meteor"), "enemyHit");
                 }
             }
+            if (power("fireZone") > 0) {
+                hazards.push({ type: "fire", x: enemy.x, y: enemy.y, radius: COMBO_ZONE_RADIUS, timer: COMBO_ZONE_DURATION, dps: bullet.damage * COMBO_BURN_DPS, color: ATTRIBUTES.fire.color });
+            }
+            if (power("poisonZone") > 0) {
+                hazards.push({ type: "poison", x: enemy.x, y: enemy.y, radius: COMBO_ZONE_RADIUS * 1.3, timer: COMBO_ZONE_DURATION, dps: bullet.damage * COMBO_POISON_DPS, color: "#9be22d" });
+            }
+            if (power("mine") > 0) {
+                hazards.push({ type: "mine", x: enemy.x, y: enemy.y, radius: 14, timer: COMBO_MINE_DURATION, damage: bullet.damage * COMBO_MINE_DAMAGE, color: ATTRIBUTES.plant.color });
+            }
+            if (power("blackhole") > 0) {
+                hazards.push({ type: "blackhole", x: enemy.x, y: enemy.y, radius: COMBO_BLACKHOLE_RADIUS, timer: COMBO_BLACKHOLE_DURATION, dps: bullet.damage * 1.5, color: "#7a4dff" });
+            }
+            if (power("nova") > 0) {
+                //6 éclats tout droit, dans toutes les directions (sans cible)
+                for (let i = 0; i < COMBO_NOVA_COUNT; i++) {
+                    const angle = Math.PI * 2 / COMBO_NOVA_COUNT * i;
+                    shootInDirection(enemy.x, enemy.y, angle, bullet.damage * COMBO_NOVA_DAMAGE, ATTRIBUTES.fire.color, [enemy]);
+                }
+            }
+            if (power("echo") > 0) {
+                echoes.push({ enemy: enemy, damage: bullet.damage, timer: COMBO_ECHO_DELAY, color: bullet.ringColor || bullet.color });
+            }
+            if (power("confuse") > 0 && !enemy.isBoss) {
+                enemy.confuseTimer = COMBO_CONFUSE_DURATION * power("confuse");
+            }
+            if (power("rewind") > 0 && !enemy.isBoss && Math.random() < COMBO_REWIND_CHANCE * power("rewind")) {
+                spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.moon.color, enemy.size + 20);
+                enemy.distance = enemy.startDistance * 0.85; //renvoyé au bord de l'écran
+            }
             if (power("shieldCharge") > 0 && playerStats.shield > 0) {
                 shieldTimer += COMBO_SHIELD_CHARGE * power("shieldCharge");
             }
@@ -3663,6 +3730,104 @@
                     except = except.concat([next]);
                 }
             }
+        }
+
+        //Braises, flaques, graines et trous noirs au sol, et les échos : appelé à chaque image
+        function updateHazards(deltaTime) {
+            for (let i = hazards.length - 1; i >= 0; i--) {
+                const hazard = hazards[i];
+                hazard.timer -= deltaTime;
+                let isUsed = false;
+                for (const enemy of enemies.slice()) {
+                    const distance = Math.hypot(enemy.x - hazard.x, enemy.y - hazard.y);
+                    if (distance > hazard.radius + enemy.size) {
+                        continue;
+                    }
+                    if (hazard.type === "fire") {
+                        enemy.burnTimer = Math.max(enemy.burnTimer || 0, 0.5);
+                        enemy.burnDps = Math.max(enemy.burnDps || 0, hazard.dps);
+                    } else if (hazard.type === "poison") {
+                        poisonEnemy(enemy, hazard.dps);
+                        enemy.slowTimer = Math.max(enemy.slowTimer || 0, 0.3);
+                    } else if (hazard.type === "mine") {
+                        isUsed = true; //quelqu'un a marché sur la graine : elle explose
+                    } else if (hazard.type === "blackhole") {
+                        //Aspire vers le centre du trou noir : on rapproche la distance et l'angle de l'ennemi de ceux du trou
+                        const holeDistance = Math.hypot(hazard.x - center.x, hazard.y - center.y);
+                        const holeAngle = Math.atan2(hazard.y - center.y, hazard.x - center.x);
+                        const pull = Math.min(1, 2.5 * deltaTime);
+                        enemy.distance += (holeDistance - enemy.distance) * pull;
+                        enemy.angle += wrapAngle(holeAngle - enemy.angle) * pull;
+                        damageEnemy(enemy, hazard.dps * deltaTime, null);
+                    }
+                }
+                if (isUsed) {
+                    spawnShockwave(hazard.x, hazard.y, hazard.color, COMBO_EXPLOSION_RADIUS);
+                    spawnParticles(hazard.x, hazard.y, hazard.color, 12, 240);
+                    for (const enemy of enemies.slice()) {
+                        if (Math.hypot(enemy.x - hazard.x, enemy.y - hazard.y) <= COMBO_EXPLOSION_RADIUS + enemy.size) {
+                            damageEnemy(enemy, hazard.damage, null);
+                        }
+                    }
+                }
+                if (isUsed || hazard.timer <= 0) {
+                    hazards.splice(i, 1);
+                }
+            }
+            for (let i = echoes.length - 1; i >= 0; i--) {
+                const echo = echoes[i];
+                echo.timer -= deltaTime;
+                if (echo.timer <= 0) {
+                    if (enemies.includes(echo.enemy)) {
+                        spawnShockwave(echo.enemy.x, echo.enemy.y, echo.color, echo.enemy.size + 12);
+                        damageEnemy(echo.enemy, echo.damage, "enemyHit");
+                    }
+                    echoes.splice(i, 1);
+                }
+            }
+        }
+
+        function drawHazards() {
+            for (const hazard of hazards) {
+                const fadeOut = Math.min(1, hazard.timer / 0.5); //s'efface pendant la dernière demi-seconde
+                if (hazard.type === "mine") {
+                    //Une petite graine qui palpite
+                    const pulse = 1 + 0.15 * Math.sin(hazard.timer * 10);
+                    ctx.globalAlpha = fadeOut;
+                    ctx.beginPath();
+                    ctx.arc(hazard.x, hazard.y, 6 * pulse, 0, Math.PI * 2);
+                    ctx.fillStyle = hazard.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "#1a3d1a";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else if (hazard.type === "blackhole") {
+                    //Un disque sombre entouré d'un anneau violet qui tourne
+                    ctx.globalAlpha = 0.85 * fadeOut;
+                    ctx.beginPath();
+                    ctx.arc(hazard.x, hazard.y, 22, 0, Math.PI * 2);
+                    ctx.fillStyle = "#0b0614";
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(hazard.x, hazard.y, 30, hazard.timer * 6, hazard.timer * 6 + Math.PI * 1.4);
+                    ctx.strokeStyle = hazard.color;
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                    ctx.globalAlpha = 0.08 * fadeOut;
+                    ctx.beginPath();
+                    ctx.arc(hazard.x, hazard.y, hazard.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = hazard.color;
+                    ctx.fill();
+                } else {
+                    //Braises ou flaque : un disque transparent de sa couleur
+                    ctx.globalAlpha = 0.28 * fadeOut;
+                    ctx.beginPath();
+                    ctx.arc(hazard.x, hazard.y, hazard.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = hazard.color;
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
         }
 
         function poisonEnemy(enemy, dps) {
@@ -3707,6 +3872,10 @@
             if (enemy.freezeTimer > 0) {
                 enemy.freezeTimer -= deltaTime;
                 speedFactor = 0;
+            }
+            if (enemy.confuseTimer > 0 && !(enemy.freezeTimer > 0)) {
+                enemy.confuseTimer -= deltaTime;
+                speedFactor = -0.6; //négatif = il recule
             }
             if (enemy.burnTimer > 0) {
                 enemy.burnTimer -= deltaTime;
@@ -4586,7 +4755,7 @@
                 card.style.setProperty("--combo-color", getComboColor(item));
                 const strength = item.strength === 1 ? "" : " (force x" + item.strength + ")";
                 const title = item.fusion
-                    ? "Fusion " + ATTRIBUTES[item.fusion[0]].icon + " + " + ATTRIBUTES[item.fusion[1]].icon + " → " + item.combo.name
+                    ? "Fusion " + item.fusion.map(function (key) { return ATTRIBUTES[key].icon; }).join(" + ") + " → " + item.combo.name
                     : own.icon + " + " + ATTRIBUTES[item.attribute].icon + "  " + item.combo.name;
                 card.appendChild(createElementWithText("strong", "", title));
                 card.appendChild(document.createTextNode(item.combo.description + strength)); //createTextNode = un simple morceau de texte
@@ -4913,6 +5082,8 @@
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;
             bullets.length = 0;
+            hazards.length = 0;
+            echoes.length = 0;
             particles.length = 0;
             for (const planet of planets) {
                 planet.fireTimer = Math.random() * PLANET_FIRE_INTERVAL;
@@ -5543,6 +5714,7 @@
 
             updateEnemies(deltaTime);
             updateBullets(deltaTime);
+            updateHazards(deltaTime);
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;
             updateShield(deltaTime);

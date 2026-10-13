@@ -61,19 +61,28 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🔥 Feu + 💧 Eau | **Vapeur** | un nuage de vapeur ralentit les ennemis autour de l'impact |
 | 🌪️ Vent + 💧 Eau | **Gel** | les ennemis touchés sont gelés sur place |
 | 🌿 Plante + 💧 Eau | **Floraison** | chaque coup te soigne un peu |
-| ☀️ Lumière + 💧 Eau | **Arc-en-ciel** | chaque coup rapporte un peu d'or (le trésor au pied de l'arc-en-ciel) |
+| ☀️ Lumière + 💧 Eau | **Arc-en-ciel** | la balle se divise en 3 rayons qui visent d'autres ennemis |
 | 🌙 Lune + 💧 Eau | **Marée** | les ennemis touchés sont repoussés en arrière |
 | 🛡️ Égide + 💧 Eau | **Rempart d'écume** | les ennemis touchés sont ralentis |
 
-### Quand Poséidon est une des deux voisines d'une planète en « Les deux côtés »
+### Fusions « Les deux côtés » où Poséidon intervient
 
-Son attribut fusionne avec celui de l'autre voisine :
+Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
 | Fusion | Nom | Effet |
 |---|---|---|
-| 🔥 Feu + 💧 Eau | **Brume** | un nuage ralentit les ennemis autour, et ils subissent +50% de dégâts |
-| 🌿 Plante + 💧 Eau | **Marais** | un marais toxique ralentit et empoisonne autour de l'impact |
-| 🌪️ Vent + 💧 Eau | **Blizzard** | gèle tous les ennemis autour de l'impact |
-| ☀️ Lumière + 💧 Eau | **Prisme** | la balle se divise en 3 rayons vers d'autres ennemis |
-| 🌙 Lune + 💧 Eau | **Abysses** | un tourbillon attire les ennemis autour vers l'impact |
-| 🛡️ Égide + 💧 Eau | **Corail** | chaque coup te soigne et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🌪️ Vent + 💧 Eau | **Mur de tempête** | gèle et repousse tous les ennemis autour de l'impact |
+| 🛡️ Égide + 🔥 Feu + 💧 Eau | **Geyser** | explosion de vapeur qui ralentit autour, et recharge ton bouclier |
+| 🛡️ Égide + ☀️ Lumière + 💧 Eau | **Bouclier miroir** | la balle se reflète en 3 rayons, et recharge ton bouclier |
+| 🛡️ Égide + 🌙 Lune + 💧 Eau | **Marée noire** | chance de renvoyer l'ennemi au bord de l'écran, et il est ralenti |
+| 🛡️ Égide + 🌿 Plante + 💧 Eau | **Corail** | chaque coup te soigne, recharge ton bouclier et ralentit autour |
+| 🌪️ Vent + 🔥 Feu + 💧 Eau | **Ouragan de vapeur** | un tourbillon attire les ennemis puis explose |
+| 🌪️ Vent + ☀️ Lumière + 💧 Eau | **Orage** | la foudre rebondit sur 3 ennemis et gèle la cible |
+| 🌪️ Vent + 🌙 Lune + 💧 Eau | **Marée montante** | chance de renvoyer l'ennemi au bord de l'écran, et repousse tout autour |
+| 🌪️ Vent + 🌿 Plante + 💧 Eau | **Mousson** | une flaque toxique reste au sol, et ralentit autour de l'impact |
+| 🔥 Feu + ☀️ Lumière + 💧 Eau | **Prisme de feu** | la balle se divise en 3 rayons qui rebondissent encore une fois |
+| 🔥 Feu + 🌙 Lune + 💧 Eau | **Abîme** | un trou noir aspire les ennemis autour et les broie pendant 2 s |
+| 🔥 Feu + 🌿 Plante + 💧 Eau | **Volcan de boue** | une graine explosive reste au sol, et ralentit autour de l'impact |
+| ☀️ Lumière + 🌙 Lune + 💧 Eau | **Marée lunaire** | un tourbillon attire les ennemis et gèle la cible |
+| ☀️ Lumière + 🌿 Plante + 💧 Eau | **Source sacrée** | chaque coup te soigne, et un écho frappe l'ennemi une 2e fois |
+| 🌙 Lune + 🌿 Plante + 💧 Eau | **Kraken** | un tourbillon attire les ennemis, les enracine et les empoisonne |
