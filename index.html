@@ -643,6 +643,15 @@
         /*////////////////////////////////////
           ////STYLE "OUTHOLD" DE L'INTERFACE////  (ces règles passent par-dessus celles du dessus : supprime ce bloc pour revenir à l'ancien style)
           ////////////////////////////////////*/
+        :root { /*les couleurs de l'interface, à un seul endroit : modifie-les ici pour tout éclaircir / assombrir*/
+            --ui-surface: #3d3555;        /*pastilles, cartes du shop, compétences, menu du temps*/
+            --ui-surface-hover: #4a4166;  /*carte survolée*/
+            --ui-relief: #262036;         /*le "relief" sous les cartes*/
+            --ui-panel-top: #4b4268;      /*haut des fenêtres (plus clair : la lumière vient du haut)*/
+            --ui-panel-bottom: #312a46;   /*bas des fenêtres*/
+            --ui-overlay: rgba(34, 28, 50, 0.6); /*voile derrière les menus*/
+        }
+
         body {
             background-color: #29233a;
             font-family: "Nunito", "Rubik", sans-serif; /*police ronde et grasse*/
@@ -652,7 +661,7 @@
             border: none;
             border-radius: 12px;
             padding: 8px 16px 8px 12px;
-            background-color: #1c1828;
+            background-color: var(--ui-surface);
         }
 
         .hudValue {
@@ -695,28 +704,36 @@
             border-radius: 10px;
         }
 
+        .speedButton {
+            background-color: var(--ui-surface);
+        }
+
+        .speedButton.active {
+            background-color: #ff8a1f;
+        }
+
         #timeMenu {
             border: none;
             border-radius: 12px;
-            background-color: #1c1828;
+            background-color: var(--ui-surface);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
 
         #toast {
             border-radius: 10px;
-            background-color: #1c1828;
+            background-color: var(--ui-surface);
             font-weight: 700;
         }
 
         .overlay {
-            background-color: rgba(20, 16, 30, 0.8);
+            background-color: var(--ui-overlay);
             backdrop-filter: blur(3px);
         }
 
         .panel, #statsPanel { /*fenêtres sombres, éclairées par le haut, sans bordure*/
             border: none;
             border-radius: 14px;
-            background: radial-gradient(ellipse at 50% 0%, #2c2442, #15111f 70%);
+            background: radial-gradient(ellipse at 50% 0%, var(--ui-panel-top), var(--ui-panel-bottom) 75%);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
         }
 
@@ -734,8 +751,8 @@
 
         .shopItem, .skillNode { /*cartes et compétences "en relief"*/
             border-radius: 12px;
-            background-color: #1c1828;
-            box-shadow: 0 4px 0 #100d18;
+            background-color: var(--ui-surface);
+            box-shadow: 0 4px 0 var(--ui-relief);
         }
 
         .shopItem {
@@ -743,7 +760,7 @@
         }
 
         .shopItem:not(:disabled):hover {
-            background-color: #262036;
+            background-color: var(--ui-surface-hover);
         }
 
         .skillNode {
