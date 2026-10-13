@@ -913,86 +913,77 @@
             border: 1px solid var(--ui-accent-glow);
         }
 
-        /*/////////////////////////////
-          ////COMPÉTENCES EN TUILES////  hexagones (octogones pour les keystones), avec un reflet qui passe sur les grosses
-          /////////////////////////////*/
+        /*//////////////////////////////
+          ////COMPÉTENCES EN ÉTOILES////  des étoiles fixes (pas d'animation), avec une bordure et un remplissage selon l'état
+          //////////////////////////////*/
         .skillNode, .skillNode.notable, .skillNode.keystone, .skillNode.grand,
         .skillNode.unlocked, .skillNode.available, .skillNode.locked {
-            width: var(--node-size);
-            height: var(--node-size);
+            width: var(--star-size);
+            height: var(--star-size);
             padding: 0;
             border: none;
             border-radius: 0;
+            background: transparent;
             box-shadow: none;
             opacity: 1;
-            overflow: hidden;
-            background: var(--node-edge);   /*le fond du bouton = la "bordure" (l'intérieur est dessiné par ::before)*/
-            clip-path: var(--node-shape);    /*clip-path découpe le bouton selon une forme*/
+            overflow: visible;
             color: var(--ui-text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .skillNode { --node-size: 54px; --node-shape: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%); } /*hexagone*/
-        .skillNode.notable { --node-size: 68px; }
-        .skillNode.keystone { --node-size: 84px; --node-shape: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); } /*octogone*/
-        .skillNode.grand { --node-size: 108px; }
+        .skillNode { --star-size: 34px; }
+        .skillNode.notable { --star-size: 50px; }
+        .skillNode.keystone { --star-size: 66px; }
+        .skillNode.grand { --star-size: 90px; }
 
-        .skillNode::before { /*l'intérieur de la tuile, un peu plus petit : il laisse voir la "bordure"*/
+        .skillNode .star { /*l'étoile : une forme à 4 branches découpée avec clip-path. Son fond = la bordure*/
+            position: absolute;
+            inset: 0;
+            clip-path: var(--star-shape);
+            background: var(--node-edge);
+            transition: filter 0.15s;
+        }
+
+        .skillNode .star::before { /*l'intérieur de l'étoile, un peu plus petit : il laisse voir la bordure*/
             content: "";
             position: absolute;
             inset: 3px;
-            clip-path: var(--node-shape);
+            clip-path: var(--star-shape);
             background: var(--node-fill);
         }
 
-        .skillNode.grand::before {
-            inset: 6px;
-        }
+        .skillNode.grand .star::before { inset: 5px; }
 
-        .skillNode .nodeLabel {
-            position: relative; /*au-dessus de ::before*/
-            z-index: 1;
-            font-size: 12px;
-            font-weight: 800;
-            pointer-events: none;
-        }
-
-        .skillNode.notable .nodeLabel { font-size: 14px; }
-        .skillNode.keystone .nodeLabel { font-size: 16px; }
-        .skillNode.grand .nodeLabel { font-size: 18px; }
+        .skillNode { --star-shape: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%); }
 
         /*Les 3 états*/
-        .skillNode.locked { --node-edge: var(--ui-line); --node-fill: var(--ui-surface); opacity: 0.6; }
+        .skillNode.locked { --node-edge: var(--ui-muted); --node-fill: var(--ui-surface); }
+        .skillNode.locked .star { opacity: 0.55; }
         .skillNode.available { --node-edge: var(--tree-color); --node-fill: var(--ui-surface); }
-        .skillNode.unlocked { --node-edge: rgba(255, 255, 255, 0.85); --node-fill: var(--tree-color); color: #0d0d14; }
+        .skillNode.unlocked { --node-edge: rgba(255, 255, 255, 0.9); --node-fill: radial-gradient(circle, #ffffff 0%, var(--tree-color) 40%); } /*cœur blanc, comme une vraie étoile*/
 
         .skillNode:hover {
-            transform: translate(-50%, -50%) scale(1.08);
-            filter: brightness(1.15);
+            transform: translate(-50%, -50%) scale(1.1);
         }
 
-        /*SCINTILLEMENT : un reflet de lumière balaie les grosses compétences, de temps en temps*/
-        .skillNode.notable::after, .skillNode.keystone::after, .skillNode.grand::after {
-            content: "";
+        .skillNode:hover .star {
+            filter: brightness(1.25);
+        }
+
+        .skillNode .nodeLabel { /*le petit nom sous l'étoile*/
             position: absolute;
-            inset: 0;
-            z-index: 2;
+            left: 50%;
+            top: calc(100% + 2px);
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            color: var(--ui-muted);
             pointer-events: none;
-            background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
-            background-size: 300% 100%;
-            animation: shimmer 4s ease-in-out infinite;
-            animation-delay: var(--shimmer-delay);
         }
 
-        .skillNode.keystone::after { animation-duration: 3.2s; }
-        .skillNode.grand::after { animation-duration: 2.4s; }
-
-        @keyframes shimmer {
-            0% { background-position: 100% 0; }    /*reflet hors de la tuile, à droite*/
-            45%, 100% { background-position: 0% 0; } /*il traverse, puis attend avant de recommencer*/
-        }
+        .skillNode.notable .nodeLabel { font-size: 13px; }
+        .skillNode.keystone .nodeLabel, .skillNode.grand .nodeLabel { font-size: 15px; color: var(--ui-text); }
+        .skillNode.unlocked .nodeLabel { color: var(--ui-text); }
 
         #treeLinks line {
             stroke-width: 4 !important;
@@ -2747,125 +2738,127 @@
         }
 
         const TREE_SHAPES = {
-            //VOLCAN (Vulcain) : la base, les deux pentes, la cheminée, le cratère, le panache qui jaillit et des gerbes de lave
-            volcano: function () {
+            //FLAMME (Vulcain) : le contour arrondi en bas, la grande pointe, une 2e pointe à droite, et la langue de feu à l'intérieur
+            fire: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 95, [], "start");
-                b.chain("start", "baseL", [[40, 95], [30, 95], [20, 95, "keystone"]]);
-                b.chain("start", "baseR", [[60, 95], [70, 95], [80, 95, "notable"]]);
-                b.chain("baseL3", "slopeL", [[24, 83], [28, 71, "notable"], [33, 59], [38, 47]]);
-                b.chain("baseR3", "slopeR", [[76, 83], [72, 71, "notable"], [67, 59], [62, 47]]);
-                b.chain("start", "vent", [[50, 85], [50, 75, "notable"], [50, 65], [50, 55]]);
-                b.add("craterL", 44, 49, ["slopeL4", "vent4"]);
-                b.add("craterR", 56, 49, ["slopeR4", "vent4"]);
-                b.chain("vent4", "plume", [[50, 42], [48, 33, "notable"], [52, 24], [50, 13, "grand"]]);
-                b.chain("plume1", "lavaL", [[41, 34], [33, 25, "keystone"]]);
-                b.chain("plume1", "lavaR", [[59, 33, "notable"], [67, 24, "keystone"]]);
-                b.add("ashL", 42, 17, ["plume3"], "notable");
-                b.add("ashR", 58, 16, ["plume3"], "notable");
+                b.add("start", 50, 78, [], "start");
+                b.add("bottom", 50, 88, ["start"]);
+                //Le bas arrondi : un demi-cercle de chaque côté
+                b.chain("bottom", "arcL", [polar(50, 66, 120, 22).concat("notable"), polar(50, 66, 150, 22), polar(50, 66, 180, 22)]);
+                b.chain("bottom", "arcR", [polar(50, 66, 60, 22).concat("notable"), polar(50, 66, 30, 22), polar(50, 66, 0, 22).concat("notable")]);
+                //Le bord gauche monte jusqu'à la grande pointe
+                b.chain("arcL3", "edgeL", [[29, 54, "notable"], [32, 43], [37, 32, "keystone"], [43, 22], [48, 14, "notable"], [53, 6, "grand"]]);
+                //Le bord droit redescend, creuse un peu, puis remonte en une 2e pointe
+                b.chain("edgeL6", "edgeR", [[57, 17], [61, 29], [64, 40, "notable"], [70, 33], [75, 25, "keystone"], [77, 37], [76, 48, "notable"], [74, 57]]);
+                b.layout["edgeR8"].links.push("arcR3");
+                //La langue de feu au milieu : une courbe en S
+                b.chain("start", "tongue", [[45, 70], [43, 60], [46, 50, "notable"], [51, 42], [55, 34, "keystone"]]);
+                b.layout["tongue5"].links.push("edgeR2");
+                //Une petite flamme intérieure à droite
+                b.chain("start", "inner", [[56, 70], [60, 60], [61, 50]]);
+                b.layout["inner3"].links.push("edgeR3");
                 return b.layout;
             },
 
-            //ANCRE (Poséidon) : les bras recourbés en bas, la tige, la barre, et l'anneau en haut
-            anchor: function () {
+            //VAGUES (Poséidon) : deux rangées de vagues comme sur le dessin. Chaque ligne monte jusqu'à une crête,
+            //qui s'enroule en "C" vers l'arrière, puis repart vers la crête suivante.
+            //Les points sont pris sur l'image d'origine (en pixels) puis convertis en % avec toPercent.
+            waves: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 88, [], "start");
-                b.chain("start", "armL", [[42, 88], [34, 85], [28, 79, "notable"], [24, 71], [20, 63, "keystone"]]);
-                b.chain("start", "armR", [[58, 88], [66, 85], [72, 79, "notable"], [76, 71], [80, 63, "keystone"]]);
-                b.chain("start", "shaft", [[50, 80], [50, 72, "notable"], [50, 64], [50, 56, "notable"], [50, 48], [50, 40], [50, 32, "notable"], [50, 25]]);
-                b.chain("shaft7", "stockL", [[40, 32], [30, 32, "keystone"]]);
-                b.chain("shaft7", "stockR", [[60, 32], [70, 32, "notable"]]);
-                const ringPoints = [[150], [210, "notable"], [270, "grand"], [330, "notable"], [30]].map(function (item) {
-                    const point = polar(50, 15, item[0], 8);
-                    if (item[1]) {
-                        point.push(item[1]);
-                    }
-                    return point;
-                });
-                b.chain("shaft8", "ring", ringPoints);
-                b.layout["ring5"].links.push("shaft8"); //l'anneau se referme
+                const toPercent = function (point) { return [5 + point[0] * 0.183, 22 + point[1] * 0.2, point[2]]; };
+                //Rangée du haut : le "C" de la 1re vague, la longue montée, puis la 2e crête et son "C"
+                b.chain(null, "top", [
+                    [185, 78, "keystone"], [150, 80], [124, 100, "notable"], [115, 128], [127, 152], [158, 163],
+                    [203, 150], [247, 124, "notable"], [290, 96], [334, 74],
+                    [372, 74, "grand"], [395, 96], [362, 104], [343, 126, "notable"], [348, 150]
+                ].map(toPercent));
+                //Rangée du bas : la traîne, 1re crête et son "C", la montée, 2e crête et son "C"
+                b.chain(null, "low", [
+                    [40, 262, "start"], [85, 252], [125, 232], [160, 205, "notable"], [196, 184], [234, 175, "notable"],
+                    [266, 190, "keystone"], [234, 198], [212, 220], [216, 246, "notable"], [250, 260],
+                    [292, 246], [330, 216], [366, 188, "notable"], [404, 166], [442, 164, "notable"],
+                    [466, 184, "keystone"], [432, 192], [410, 214], [408, 240], [426, 258]
+                ].map(toPercent));
+                //Les deux rangées se touchent, comme sur le dessin
+                b.layout["top7"].links.push("low5");
+                b.layout["top15"].links.push("low14");
                 return b.layout;
             },
 
-            //ÉPI DE BLÉ (Déméter) : une tige, des grains de chaque côté, et deux feuilles en bas
-            wheat: function () {
+            //FLEUR (Déméter) : 8 pétales pointus qui tournent un peu autour du cœur, comme un tourbillon
+            flower: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 96, [], "start");
-                const stalkY = [89, 82, 75, 68, 61, 54, 47, 40, 33, 26, 19];
-                let previous = "start";
-                stalkY.forEach(function (y, i) {
-                    b.add("stalk" + y, 50, y, [previous], y === 89 || y === 75 ? "notable" : "minor");
-                    previous = "stalk" + y;
-                });
-                b.add("ear", 50, 10, [previous], "grand");
-                //Les grains : un de chaque côté à chaque étage, et un 2e grain plus loin un étage sur deux
-                const grainRoles = { "L61": "notable", "R47": "notable", "L33": "notable", "R19": "notable", "outerL54": "notable", "outerR40": "notable", "outerL26": "keystone" };
-                [61, 54, 47, 40, 33, 26, 19].forEach(function (y, i) {
-                    b.add("L" + y, 43, y - 3, ["stalk" + y], grainRoles["L" + y]);
-                    b.add("R" + y, 57, y - 3, ["stalk" + y], grainRoles["R" + y]);
-                    if (i % 2 === 1) {
-                        b.add("outerL" + y, 37, y - 7, ["L" + y], grainRoles["outerL" + y]);
-                        b.add("outerR" + y, 63, y - 7, ["R" + y], grainRoles["outerR" + y]);
-                    }
-                });
-                b.chain("stalk82", "leafL", [[42, 80], [34, 75], [28, 68, "keystone"]]);
-                b.chain("stalk75", "leafR", [[58, 72], [66, 66], [72, 58, "keystone"]]);
+                b.add("start", 50, 50, [], "start");
+                const tipRoles = ["grand", "notable", "keystone", "notable", "keystone", "notable", "keystone", "notable"];
+                for (let k = 0; k < 8; k++) {
+                    const a = -120 + k * 45; //angle de la base du pétale (le 1er pétale pointe vers le haut)
+                    const base = b.add("ring" + k, ...polar(50, 50, a, 11), k === 0 ? ["start"] : (k % 2 === 0 ? ["start", "ring" + (k - 1)] : ["ring" + (k - 1)]), k % 2 === 1 ? "notable" : "minor");
+                    //Bord "aller" du pétale : du cœur jusqu'à la pointe, en tournant
+                    const pointsOut = [1 / 3, 2 / 3].map(function (t) {
+                        return polar(50, 50, a + 25 * t - 20 * Math.sin(Math.PI * t), 11 + 29 * t);
+                    });
+                    pointsOut.push(polar(50, 50, a + 25, 42).concat(tipRoles[k]));
+                    const tip = b.chain(base, "petal" + k + "out", pointsOut);
+                    //Bord "retour" : de la pointe jusqu'au cœur, de l'autre côté, ce qui donne la largeur du pétale
+                    const last = b.chain(tip, "petal" + k + "back", [1 / 3, 2 / 3].map(function (s) {
+                        return polar(50, 50, a + 25 - 25 * s + 20 * Math.sin(Math.PI * s), 40 - 29 * s);
+                    }));
+                    b.layout[last].links.push(base);
+                }
+                b.layout["ring0"].links.push("ring7"); //le cœur se referme
                 return b.layout;
             },
 
-            //RAFALES DE VENT (Éole) : trois coups de vent qui ondulent et finissent en boucle
+            //VENT (Éole) : trois souffles qui ondulent puis s'enroulent en spirale vers le haut
             wind: function () {
                 const b = createLayoutBuilder();
-                //Une rafale : une ligne qui ondule de gauche à droite, puis une boucle autour de (curlX, curlY)
-                function gust(prefix, fromId, y, xs, curlX, curlY, roles) {
-                    const points = xs.map(function (x) { return [x, y + Math.sin(x / 7) * 2]; });
-                    [60, 0, -60, -120, -180].forEach(function (angle) {
-                        points.push(polar(curlX, curlY, angle, 6));
+                //Un souffle : une ligne qui ondule (xs), puis une spirale autour de (cx, cy) qui rétrécit
+                function gust(prefix, fromId, xs, cx, cy, radius, roles) {
+                    const points = xs.map(function (x) { return [x, cy + radius + Math.sin((x - cx) / 6) * 2.5]; });
+                    [90, 45, 0, -45, -90, -135, -180, -225, -270].forEach(function (angle, i) {
+                        points.push(polar(cx, cy, angle, radius * (1 - i * 0.07)));
                     });
                     Object.keys(roles).forEach(function (index) {
                         points[index].push(roles[index]);
                     });
                     return b.chain(fromId, prefix, points);
                 }
-                b.add("start", 12, 55, [], "start");
-                gust("mid", "start", 55, [22, 32, 42, 52, 62, 72], 80, 49, { 2: "notable", 4: "notable", 10: "grand" });
-                gust("top", null, 30, [12, 22, 32, 42, 52, 62], 70, 24, { 0: "keystone", 2: "notable", 4: "notable", 8: "notable", 10: "keystone" });
-                gust("low", null, 80, [12, 22, 32, 42, 52], 60, 74, { 1: "notable", 3: "notable", 7: "notable", 9: "keystone" });
-                b.layout["top3"].links.push("mid2");   //les rafales se rejoignent : on peut passer de l'une à l'autre
-                b.layout["low4"].links.push("mid3");
+                b.add("start", 8, 54, [], "start");
+                gust("mid", "start", [17, 26, 35, 44, 53, 62, 70], 82, 40, 12, { 2: "notable", 5: "notable", 10: "notable", 15: "grand" });
+                gust("top", null, [14, 23, 32, 41, 50, 58], 68, 22, 10, { 0: "keystone", 3: "notable", 9: "notable", 14: "keystone" });
+                gust("low", null, [22, 31, 40, 48], 60, 62, 9, { 1: "notable", 3: "notable", 7: "notable", 12: "keystone" });
+                b.layout["top3"].links.push("mid3");   //les souffles se rejoignent : on peut passer de l'un à l'autre
+                b.layout["low2"].links.push("mid3");
+                b.layout["low4"].links.push("mid6");
                 return b.layout;
             },
 
-            //SOLEIL LEVANT (Hélios) : l'horizon, le soleil qui se lève, ses rayons, et son reflet sur l'eau
-            sunrise: function () {
+            //SOLEIL (Hélios) : un cœur en anneau, une couronne, et 12 rayons ondulés comme des flammes
+            sun: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 70, [], "start");
-                b.chain("start", "horizonL", [[41, 70], [32, 70], [23, 70], [14, 70, "keystone"]]);
-                b.chain("start", "horizonR", [[59, 70], [68, 70], [77, 70], [86, 70, "keystone"]]);
-                const arcAngles = [210, 240, 270, 300, 330];
-                b.chain("horizonL2", "sun", arcAngles.map(function (angle) {
-                    const point = polar(50, 70, angle, 18);
-                    if (angle === 270) {
-                        point.push("notable");
+                b.add("start", 50, 50, [], "start");
+                for (let i = 0; i < 6; i++) {
+                    b.add("core" + i, ...polar(50, 50, -90 + i * 60, 6), i === 0 ? ["start"] : (i === 3 ? ["start", "core" + (i - 1)] : ["core" + (i - 1)]), i === 1 || i === 4 ? "notable" : "minor");
+                }
+                b.layout["core0"].links.push("core5");
+                const tipRoles = { 0: "grand", 4: "keystone", 6: "keystone", 8: "keystone", 1: "notable", 2: "notable", 5: "notable", 7: "notable", 10: "notable", 11: "notable" };
+                for (let j = 0; j < 12; j++) {
+                    const a = -90 + j * 30;
+                    const links = j === 0 ? [] : ["crown" + (j - 1)];
+                    if (j % 4 === 0) { //la couronne est reliée au cœur à 3 endroits
+                        links.push("core" + (j / 2));
                     }
-                    return point;
-                }));
-                b.layout["sun5"].links.push("horizonR2");
-                const rayEndRoles = { 210: "notable", 240: "notable", 300: "notable", 330: "keystone" };
-                arcAngles.forEach(function (angle, i) {
-                    const ray = [polar(50, 70, angle, 28), polar(50, 70, angle, 38)];
-                    if (angle === 270) {
-                        ray.push(polar(50, 70, angle, 52));
-                        ray[2].push("grand");
-                    } else {
-                        ray[1].push(rayEndRoles[angle]);
+                    b.add("crown" + j, ...polar(50, 50, a, 13), links);
+                    //Le rayon ondule : un coup à droite, un coup à gauche, puis la pointe (les rayons pairs sont plus longs)
+                    const ray = j % 2 === 0
+                        ? [polar(50, 50, a + 6, 21), polar(50, 50, a - 4, 29), polar(50, 50, a + 7, 38)]
+                        : [polar(50, 50, a + 7, 20), polar(50, 50, a - 2, 28)];
+                    if (tipRoles[j]) {
+                        ray[ray.length - 1].push(tipRoles[j]);
                     }
-                    b.chain("sun" + (i + 1), "ray" + angle + "_", ray);
-                });
-                b.add("reflectL", 44, 78, ["start"]);
-                b.add("reflectR", 56, 78, ["start"]);
-                b.add("reflectL2", 47, 87, ["reflectL"], "notable");
-                b.add("reflectR2", 53, 87, ["reflectR"], "notable");
+                    b.chain("crown" + j, "ray" + j + "_", ray);
+                }
+                b.layout["crown0"].links.push("crown11");
                 return b.layout;
             },
 
@@ -2947,7 +2940,7 @@
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
-                shape: "volcano",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
+                shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -2980,7 +2973,7 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
-                shape: "anchor",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
+                shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
                 skills: {
                     start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
@@ -3013,7 +3006,7 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
-                shape: "wheat",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
+                shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
                 skills: {
                     start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
                     notables: [
@@ -3046,7 +3039,7 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
-                shape: "wind",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
+                shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                     notables: [
@@ -3079,7 +3072,7 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
-                shape: "sunrise",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
+                shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
                 skills: {
                     start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
                     notables: [
@@ -3115,7 +3108,7 @@
                     { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
                 ],
-                shape: "bow",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic (la forme à 3 branches gardée de côté)
+                shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic (la forme à 3 branches gardée de côté)
                 skills: {
                     start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     notables: [
@@ -3354,12 +3347,14 @@
                 if (node.role === "notable" || node.role === "grand") {
                     button.classList.add(node.role); //"notable" ou "grand" : tailles différentes en CSS
                 }
-                //Le petit nom dans la tuile. Les grosses compétences ont un reflet qui passe, chacune à son rythme.
+                //Une étoile + son petit nom en dessous
+                const star = document.createElement("span");
+                star.className = "star";
                 const label = document.createElement("span");
                 label.className = "nodeLabel";
                 label.textContent = node.label;
+                button.appendChild(star);
                 button.appendChild(label);
-                button.style.setProperty("--shimmer-delay", (hashToUnit(node.id) * -4) + "s"); //délai négatif = l'animation a "déjà commencé"
                 button.style.left = node.x + "%";
                 button.style.top = node.y + "%";
                 button.addEventListener("mouseenter", function () { showNodeInfo(node); });
