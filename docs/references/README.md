@@ -10,6 +10,7 @@ Images de référence pour les formes des skill trees, et les choix de style val
 | Éole | souffles de vent qui finissent en spirale | `eole-vent.png` |
 | Hélios | soleil avec un anneau au centre et des rayons ondulés | `helios-soleil.png` |
 | Artémis | arc et flèche (pas d'image) | |
+| Athéna | couronne de laurier (deux branches en arc) | `athena-laurier.png` |
 
 ## Style des skill trees
 

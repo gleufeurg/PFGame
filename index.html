@@ -1427,6 +1427,55 @@
         //Pour en créer un nouveau, copie un thème, change son nom et ses couleurs : il apparaîtra tout seul dans les Paramètres.
         //Options : stripes = des bandes de couleur horizontales en fond (drapeaux), stripesDim = à quel point on les assombrit
         //(0 = couleurs vives, 1 = couleur du fond) pour que le jeu reste lisible, textColor / orbitColor = texte et orbite dans le jeu.
+        //Mélange deux couleurs "#rrggbb" (t = 0 : la 1re, t = 1 : la 2e) et renvoie une couleur "#rrggbb"
+        function mixHex(colorA, colorB, t) {
+            let result = "#";
+            for (let start = 1; start < 7; start += 2) {
+                const a = parseInt(colorA.slice(start, start + 2), 16);
+                const b = parseInt(colorB.slice(start, start + 2), 16);
+                result += Math.round(a + (b - a) * t).toString(16).padStart(2, "0"); //toString(16) = écrit en hexadécimal, padStart = ajoute un 0 devant si besoin
+            }
+            return result;
+        }
+
+        //Fabrique un thème complet à partir de 2 couleurs seulement : le fond et l'accent.
+        //Toutes les autres couleurs (cartes, texte, titres...) sont calculées en mélangeant ces deux-là avec du blanc ou du noir.
+        //stripes (facultatif) = les couleurs d'un drapeau, en bandes dans le fond.
+        function createTheme(name, background, accent, stripes) {
+            const theme = {
+                name: name,
+                background: background,
+                backgroundLight: mixHex(background, "#ffffff", 0.1),
+                shadow: mixHex(background, "#000000", 0.6),
+                ui: {
+                    "--bg": background,
+                    "--ui-surface": mixHex(background, "#ffffff", 0.07),
+                    "--ui-surface-hover": mixHex(background, "#ffffff", 0.12),
+                    "--ui-relief": mixHex(background, "#000000", 0.35),
+                    "--ui-panel": mixHex(background, "#ffffff", 0.035),
+                    "--ui-overlay": hexToRgba(mixHex(background, "#000000", 0.4), 0.6),
+                    "--ui-text": mixHex(accent, "#ffffff", 0.92),
+                    "--ui-muted": mixHex(mixHex(accent, "#ffffff", 0.5), background, 0.3),
+                    "--ui-border": "#e9e6f2",
+                    "--ui-line": "rgba(255, 255, 255, 0.25)",
+                    "--ui-accent": accent,
+                    "--ui-accent-hover": mixHex(accent, "#ffffff", 0.3),
+                    "--ui-accent-dark": mixHex(accent, "#000000", 0.35),
+                    "--ui-accent-text": mixHex(accent, "#000000", 0.88),
+                    "--ui-accent-soft": hexToRgba(accent, 0.1),
+                    "--ui-accent-glow": hexToRgba(accent, 0.45),
+                    "--ui-panel-edge": "linear-gradient(" + hexToRgba(accent, 0.35) + ", " + hexToRgba(accent, 0.05) + ")",
+                    "--ui-heading": mixHex(accent, "#ffffff", 0.6)
+                }
+            };
+            if (stripes !== undefined) {
+                theme.stripes = stripes;
+                theme.stripesDim = 0.6;
+                theme.ui["--ui-panel-edge"] = "linear-gradient(90deg, " + stripes.join(", ") + ")"; //join = colle les couleurs avec ", " entre elles
+            }
+            return theme;
+        }
+
         const THEMES = {
             night: {
                 name: "Nuit (bleu)",
@@ -1474,6 +1523,11 @@
                 background: "#0a0a0c", backgroundLight: "#1a1a1f", shadow: "#000000",
                 ui: { "--bg": "#0a0a0c", "--ui-surface": "#1a1a1e", "--ui-surface-hover": "#24242a", "--ui-relief": "#000000", "--ui-panel": "#141417", "--ui-overlay": "rgba(0, 0, 0, 0.65)", "--ui-text": "#f2f2f2", "--ui-muted": "#9a9aa3", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#e8e8ee", "--ui-accent-hover": "#ffffff", "--ui-accent-dark": "#7a7a85", "--ui-accent-text": "#000000", "--ui-accent-soft": "rgba(232, 232, 238, 0.1)", "--ui-accent-glow": "rgba(232, 232, 238, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(232, 232, 238, 0.35), rgba(232, 232, 238, 0.05))", "--ui-heading": "#ffffff" }
             },
+            red: createTheme("Rouge", "#2b1416", "#ff5c5c"),
+            crimson: createTheme("Pourpre", "#2a1022", "#e0407f"),
+            scarlet: createTheme("Écarlate", "#331009", "#ff4422"),
+            blue: createTheme("Bleu", "#173a66", "#6cc4ff"),
+            navy: createTheme("Bleu foncé", "#0a1228", "#4f7dff"),
             pride: {
                 name: "Arc-en-ciel (LGBT+)",
                 background: "#15151d", backgroundLight: "#15151d", shadow: "#050508",
@@ -1485,7 +1539,12 @@
                 background: "#1b1a24", backgroundLight: "#1b1a24", shadow: "#07070c",
                 stripes: ["#5bcefa", "#f5a9b8", "#ffffff", "#f5a9b8", "#5bcefa"], stripesDim: 0.6,
                 ui: { "--bg": "#1b1a24", "--ui-surface": "#262433", "--ui-surface-hover": "#302d40", "--ui-relief": "#100f17", "--ui-panel": "#211f2c", "--ui-overlay": "rgba(14, 13, 20, 0.6)", "--ui-text": "#fdf3f7", "--ui-muted": "#b9b3c9", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#5bcefa", "--ui-accent-hover": "#8fdcfb", "--ui-accent-dark": "#2a8fbd", "--ui-accent-text": "#04202c", "--ui-accent-soft": "rgba(91, 206, 250, 0.1)", "--ui-accent-glow": "rgba(91, 206, 250, 0.45)", "--ui-panel-edge": "linear-gradient(90deg, #5bcefa, #f5a9b8, #ffffff, #f5a9b8, #5bcefa)", "--ui-heading": "#bfe9fb" }
-            }
+            },
+            nonbinary: createTheme("Non binaire", "#1a1820", "#b47ee0", ["#fcf434", "#ffffff", "#9c59d1", "#2c2c2c"]),
+            asexual: createTheme("Asexuel", "#151316", "#b05cd6", ["#000000", "#a3a3a3", "#ffffff", "#800080"]),
+            lesbian: createTheme("Lesbien", "#1e1517", "#ef7627", ["#d52d00", "#ef7627", "#ff9a56", "#ffffff", "#d162a4", "#b55690", "#a30262"]),
+            gay: createTheme("Gay", "#121d1d", "#26ceaa", ["#078d70", "#26ceaa", "#98e8c1", "#ffffff", "#7bade2", "#5049cc", "#3d1a78"]),
+            cycle: { name: "Cycle des thèmes", cycle: true } //passe tout seul d'un thème à l'autre, en fondu
         };
         const DEFAULT_THEME = "night";
         let currentThemeKey = DEFAULT_THEME;
@@ -1499,8 +1558,83 @@
             if (THEMES[key] === undefined) {
                 key = DEFAULT_THEME;
             }
-            const theme = THEMES[key];
             currentThemeKey = key;
+            try {
+                localStorage.setItem("theme", key);
+            } catch (error) {
+            }
+            clearInterval(themeCycleInterval); //arrête le cycle s'il tournait
+            if (THEMES[key].cycle) {
+                themeCycleStart = performance.now();
+                lastCycleBlend = "";
+                updateThemeCycle();
+                themeCycleInterval = setInterval(updateThemeCycle, 1000 / THEME_CYCLE_FPS); //setInterval = relance la fonction en boucle, toutes les X millisecondes
+                return;
+            }
+            setThemeColors(THEMES[key]);
+        }
+
+        //CYCLE DES THÈMES : reste THEME_CYCLE_HOLD secondes sur un thème, puis glisse vers le suivant en THEME_CYCLE_FADE secondes
+        const THEME_CYCLE_HOLD = 8;
+        const THEME_CYCLE_FADE = 3;
+        const THEME_CYCLE_FPS = 20;            // nombre de mises à jour par seconde pendant un fondu
+        let themeCycleInterval = null;
+        let themeCycleStart = 0;
+        let lastCycleBlend = "";
+
+        //Les thèmes du cycle : tous sauf les drapeaux (bandes difficiles à mélanger) et le blanc (trop de différence avec les thèmes sombres)
+        function getCycleThemes() {
+            return Object.keys(THEMES).filter(function (key) { //filter = garde seulement ceux qui répondent "true"
+                const theme = THEMES[key];
+                return !theme.cycle && theme.stripes === undefined && key !== "white";
+            });
+        }
+
+        function updateThemeCycle() {
+            const keys = getCycleThemes();
+            const period = THEME_CYCLE_HOLD + THEME_CYCLE_FADE;
+            const elapsed = (performance.now() - themeCycleStart) / 1000;
+            const index = Math.floor(elapsed / period) % keys.length;
+            const local = elapsed % period;
+            let t = Math.max(0, (local - THEME_CYCLE_HOLD) / THEME_CYCLE_FADE);
+            t = t * t * (3 - 2 * t); //démarre et finit en douceur
+            const blendId = index + ":" + t.toFixed(3);
+            if (blendId === lastCycleBlend) {
+                return; //rien n'a changé (on est en pause sur un thème) : inutile de tout redessiner
+            }
+            lastCycleBlend = blendId;
+            setThemeColors(blendThemes(THEMES[keys[index]], THEMES[keys[(index + 1) % keys.length]], t));
+        }
+
+        //Mélange une valeur de thème : les couleurs "#..." et "rgba(...)" se mélangent, le reste (dégradés) change à mi-chemin
+        function mixThemeValue(a, b, t) {
+            if (a[0] === "#" && b[0] === "#") {
+                return mixHex(a, b, t);
+            }
+            const rgbaA = a.match(/[\d.]+/g); //match = trouve tous les nombres dans le texte
+            const rgbaB = b.match(/[\d.]+/g);
+            if (a.startsWith("rgba") && b.startsWith("rgba")) {
+                const mixed = rgbaA.map(function (value, i) { return Number(value) + (Number(rgbaB[i]) - Number(value)) * t; });
+                return "rgba(" + Math.round(mixed[0]) + ", " + Math.round(mixed[1]) + ", " + Math.round(mixed[2]) + ", " + mixed[3].toFixed(2) + ")";
+            }
+            return t < 0.5 ? a : b;
+        }
+
+        function blendThemes(themeA, themeB, t) {
+            const ui = {};
+            for (const variableName of Object.keys(themeA.ui)) {
+                ui[variableName] = mixThemeValue(themeA.ui[variableName], themeB.ui[variableName], t);
+            }
+            return {
+                background: mixHex(themeA.background, themeB.background, t),
+                backgroundLight: mixHex(themeA.backgroundLight, themeB.backgroundLight, t),
+                shadow: mixHex(themeA.shadow, themeB.shadow, t),
+                ui: ui
+            };
+        }
+
+        //Applique les couleurs d'un thème (ou d'un mélange de deux thèmes) au jeu et à l'interface
+        function setThemeColors(theme) {
             BG_COLOR = theme.background;
             BG_LIGHT_COLOR = theme.backgroundLight;
             SHADOW_COLOR = theme.shadow;
@@ -1511,10 +1645,6 @@
                 document.documentElement.style.setProperty(variableName, theme.ui[variableName]); //documentElement = la balise <html>
             }
             createBackground(); //le fond du jeu est redessiné avec les nouvelles couleurs
-            try {
-                localStorage.setItem("theme", key);
-            } catch (error) {
-            }
         }
         const SHADOW_OPACITY = 0.55;
         const SHADOW_ANGLE = Math.PI / 4;      // direction des ombres : vers le bas à droite (45°)
@@ -2315,11 +2445,11 @@
         //element = son élément (pour les bonus de dégâts des skill trees), sides = nombre de pointes de sa forme
         const BOSSES = [
             { id: "cerbere", name: "Cerbère", time: 60, element: "fire", color: "#ff3b2f", health: 40, size: 34, speed: 12, sides: 3, gold: 15, xp: 15 },
-            { id: "hydre", name: "Hydre de Lerne", time: 120, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 11, sides: 9, gold: 25, xp: 25 },
-            { id: "meduse", name: "Méduse", time: 180, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 10, sides: 6, gold: 40, xp: 40 },
+            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 120, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 11, sides: 9, gold: 25, xp: 25 },
+            { id: "meduse", feminine: true, name: "Méduse", time: 180, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 10, sides: 6, gold: 40, xp: 40 },
             { id: "typhon", name: "Typhon", time: 240, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 10, sides: 4, gold: 60, xp: 60 },
-            { id: "chimere", name: "Chimère", time: 300, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 9, sides: 5, gold: 90, xp: 90 },
-            { id: "charybde", name: "Charybde", time: 360, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 9, sides: 8, gold: 130, xp: 130 },
+            { id: "chimere", feminine: true, name: "Chimère", time: 300, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 9, sides: 5, gold: 90, xp: 90 },
+            { id: "charybde", feminine: true, name: "Charybde", time: 360, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 9, sides: 8, gold: 130, xp: 130 },
             { id: "python", name: "Python", time: 420, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 8, sides: 7, gold: 180, xp: 180 },
             { id: "cronos", name: "Cronos", time: 480, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 8, sides: 12, gold: 260, xp: 260 }
         ];
@@ -2404,7 +2534,7 @@
             if (!defeatedBossIds.has(enemy.boss.id)) {
                 defeatedBossIds.add(enemy.boss.id);
                 saveDefeatedBosses();
-                showToast("🏆 " + enemy.boss.name + " vaincu ! Il pourra revenir parmi les ennemis…");
+                showToast("🏆 " + enemy.boss.name + (enemy.boss.feminine ? " est vaincue !" : " est vaincu !"));
                 playSound("bossDefeated");
             }
         }
@@ -2862,6 +2992,29 @@
                 return b.layout;
             },
 
+            //COURONNE DE LAURIER (Athéna) : deux branches qui montent en arc depuis le bas, avec une feuille de chaque côté de la tige
+            laurel: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 88, [], "start");
+                const stemAngles = [105, 122, 139, 156, 173, 190, 207, 224];
+                //side = -1 (gauche) ou 1 (droite) : la branche de droite est le reflet de celle de gauche (x devient 100 - x)
+                function branch(prefix, side, roles) {
+                    const mirror = function (point) { return side < 0 ? point : [100 - point[0], point[1]]; };
+                    let previous = "start";
+                    stemAngles.forEach(function (angle, i) {
+                        const stem = b.add(prefix + "stem" + i, ...mirror(polar(50, 44, angle, 38)), [previous], roles["stem" + i]);
+                        //Deux feuilles par étage, un peu plus haut que la tige : elles "pointent" vers le bout de la branche
+                        b.add(prefix + "out" + i, ...mirror(polar(50, 44, angle + 9, 46)), [stem], roles["out" + i]);
+                        b.add(prefix + "in" + i, ...mirror(polar(50, 44, angle + 9, 30)), [stem], roles["in" + i]);
+                        previous = stem;
+                    });
+                    b.add(prefix + "tip", ...mirror(polar(50, 44, 238, 38)), [previous], roles.tip);
+                }
+                branch("L", -1, { out1: "notable", out4: "notable", in6: "notable", out7: "notable", stem5: "keystone", tip: "grand" });
+                branch("R", 1, { out2: "notable", out5: "notable", in3: "notable", out7: "notable", stem5: "keystone", tip: "keystone" });
+                return b.layout;
+            },
+
             //ARC ET FLÈCHE (Artémis) : la corde, l'arc courbé, et la flèche qui le traverse
             bow: function () {
                 const b = createLayoutBuilder();
@@ -2940,7 +3093,7 @@
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
-                shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
+                shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -2973,7 +3126,7 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
-                shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
+                shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
                 skills: {
                     start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
@@ -3006,7 +3159,7 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
-                shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
+                shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
                 skills: {
                     start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
                     notables: [
@@ -3039,7 +3192,7 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
-                shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
+                shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                     notables: [
@@ -3072,7 +3225,7 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
-                shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic
+                shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
                 skills: {
                     start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
                     notables: [
@@ -3108,7 +3261,7 @@
                     { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
                 ],
-                shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow ou classic (la forme à 3 branches gardée de côté)
+                shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic (la forme à 3 branches gardée de côté)
                 skills: {
                     start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     notables: [
@@ -3127,6 +3280,41 @@
                         { label: "CERF", name: "Actéon", description: "+25% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.25 } }
                     ],
                     grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                }
+            },
+            //ATHÉNA : 2e divinité à acheter dans le shop (après Artémis). Sagesse et stratégie : défense, XP et un peu d'attaque.
+            {
+                name: "Athéna",
+                color: "#e8b07a",
+                locked: true,
+                project: {
+                    title: "Projet 7",
+                    html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
+                },
+                minorSkills: [
+                    { label: "PV", name: "Nikè", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
+                    { label: "ESQ", name: "Aglaure", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } },
+                    { label: "XP", name: "Hersé", description: "+4% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.04 } }
+                ],
+                shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel ou classic
+                skills: {
+                    start: { label: "SAG", name: "Métis", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
+                    notables: [
+                        { label: "DMG", name: "Érichthonios", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "PV", name: "Pandrosos", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                        { label: "VIT", name: "Arachné", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                        { label: "ESQ", name: "Tritonis", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "DMG", name: "Bia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                        { label: "VIT", name: "Zélos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                        { label: "REG", name: "Hygie", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "XP", name: "Aidôs", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } }
+                    ],
+                    keystones: [
+                        { label: "ÉGIDE", name: "Égide", description: "+8% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.08 } },
+                        { label: "LANCE", name: "Promachos", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "CHOU", name: "Glaucopis", description: "+60 de portée (les yeux de la chouette)", effect: { stat: "range", value: 60 } }
+                    ],
+                    grand: { label: "PARTH", name: "Parthénos", description: "GRANDE KEYSTONE : +100% d'XP gagnée", effect: { stat: "xpMultiplier", value: 1 } }
                 }
             }
         ];
