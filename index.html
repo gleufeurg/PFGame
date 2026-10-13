@@ -1712,6 +1712,10 @@
         }
 
         function damagePlayer(amount) {
+            //0. Code de triche "achille" : invincible
+            if (isCheatInvincible) {
+                return;
+            }
             //1. Esquive : Math.random() < 0.1 arrive 1 fois sur 10
             if (Math.random() < playerStats.dodgeChance) {
                 playSound("dodge");
@@ -1868,8 +1872,8 @@
 
         function gainRewards(goldAmount, xpAmount) {
             //On garde les virgules (ex: 1.1 or par ennemi avec +10%) pour que les petits bonus comptent quand même
-            gold += goldAmount * playerStats.goldMultiplier;
-            xp += xpAmount * playerStats.xpMultiplier;
+            gold += goldAmount * playerStats.goldMultiplier * cheatRewardMultiplier;
+            xp += xpAmount * playerStats.xpMultiplier * cheatRewardMultiplier;
             updateHud();
         }
 
@@ -3815,6 +3819,52 @@
             const sound = SOUNDS[name];
             sound.play(channelGains[sound.category]);
         }
+
+        /////////////////////
+        ////CODES DE TRICHE//  Pour tester le jeu plus vite : tape le mot au clavier pendant la partie (pas besoin de valider)
+        /////////////////////
+        //(aucun code ne contient "r" ou "t", qui sont déjà des raccourcis du jeu)
+        let cheatRewardMultiplier = 1;   // "midas" : or et XP x10
+        let isCheatInvincible = false;   // "achille" : on ne prend plus de dégâts
+        let typedLetters = "";           // les dernières lettres tapées
+
+        const CHEAT_CODES = {
+            zeus: function () {          // +1000 or et +1000 XP
+                gold += 1000;
+                xp += 1000;
+                updateHud();
+                return "+1000 or et +1000 XP";
+            },
+            midas: function () {         // or et XP gagnés x10 (retaper pour désactiver)
+                cheatRewardMultiplier = cheatRewardMultiplier === 1 ? 10 : 1;
+                return "Or et XP x" + cheatRewardMultiplier;
+            },
+            achille: function () {       // invincible (retaper pour désactiver)
+                isCheatInvincible = !isCheatInvincible;
+                return isCheatInvincible ? "Invincible !" : "Invincibilité désactivée";
+            },
+            olympe: function () {        // toutes les divinités rejoignent l'orbite
+                while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) { //some = "au moins un"
+                    unlockNextGod();
+                }
+                return "Toutes les divinités sont en orbite";
+            }
+        };
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key.length !== 1) {
+                return; //on ignore les touches spéciales (Échap, flèches...)
+            }
+            typedLetters = (typedLetters + event.key.toLowerCase()).slice(-12); //on garde seulement les 12 dernières lettres
+            for (const code of Object.keys(CHEAT_CODES)) {
+                if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
+                    const message = CHEAT_CODES[code]();
+                    showToast("🎮 Code « " + code + " » : " + message);
+                    playSound("buy");
+                    typedLetters = "";
+                }
+            }
+        });
 
         //Le navigateur n'autorise le son qu'après une action du joueur
         document.addEventListener("pointerdown", initAudio);
