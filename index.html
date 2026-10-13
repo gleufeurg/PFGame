@@ -322,23 +322,127 @@
         }
 
         /*SKILL TREE*/
+        /*3 colonnes : le projet à gauche, l'arbre au milieu, les bonus de cet arbre à droite.
+          grid-template-areas = on dessine la disposition avec des noms de zones*/
+        #skillTreePanel {
+            justify-content: flex-start; /*la fenêtre se cale à gauche*/
+            padding-left: 16px;
+        }
+
         #skillTreePanel .panel {
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(200px, 22%) minmax(0, 1fr) minmax(220px, 24%);
+            grid-template-areas: "project tree bonus";
             gap: 24px;
+            max-width: none;
+            width: 100%;
         }
 
         #projectArea { /*à gauche : la présentation du projet*/
-            flex: 0 0 34%;
+            grid-area: project;
             border-right: 1px solid var(--ui-line);
             padding-right: 24px;
+            min-width: 0;
+        }
+
+        #treeBonusArea { /*à droite : tout ce qu'on a débloqué dans CET arbre*/
+            grid-area: bonus;
+            border-left: 1px solid var(--ui-line);
+            padding-left: 24px;
+            min-width: 0;
+        }
+
+        @media (max-width: 1350px) { /*moins de place : les bonus passent sous le projet*/
+            #skillTreePanel .panel {
+                grid-template-columns: minmax(220px, 30%) minmax(0, 1fr);
+                grid-template-areas: "project tree" "bonus tree";
+                grid-template-rows: auto 1fr;
+            }
+
+            #treeBonusArea {
+                border-left: none;
+                padding-left: 0;
+                border-right: 1px solid var(--ui-line);
+                padding-right: 24px;
+            }
+        }
+
+        #treeBonusArea h2 {
+            margin: 0 0 4px;
+            color: var(--tree-color);
+        }
+
+        .bonusProgress {
+            color: var(--ui-muted);
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .bonusBar { /*barre de progression : compétences débloquées / total*/
+            height: 6px;
+            border-radius: 3px;
+            background: var(--ui-relief);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .bonusBar span {
+            display: block;
+            height: 100%;
+            background: var(--tree-color);
+        }
+
+        #treeBonusArea h3 {
+            margin: 16px 0 8px;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ui-accent);
+        }
+
+        .bonusPower { /*un pouvoir (keystone débloquée)*/
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            background: var(--ui-surface);
+            border-left: 4px solid var(--tree-color);
+        }
+
+        .bonusPower strong {
+            display: block;
+            color: var(--tree-color);
+        }
+
+        .bonusPower span {
+            font-size: 14px;
+        }
+
+        .bonusStat {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--ui-line);
+            font-size: 15px;
+        }
+
+        .bonusStat .statValue {
+            font-weight: 800;
+            color: var(--tree-color);
+            white-space: nowrap;
+        }
+
+        .bonusEmpty {
+            color: var(--ui-muted);
+            font-size: 14px;
         }
 
         #projectContent {
             min-height: 240px;
         }
 
-        #treeArea { /*à droite : l'arbre*/
-            flex: 1;
+        #treeArea { /*au milieu : l'arbre*/
+            grid-area: tree;
             display: flex;
             flex-direction: column;
             min-width: 0;
@@ -773,7 +877,13 @@
 
         @media (max-width: 700px) { /*petits écrans : le projet passe au-dessus de l'arbre*/
             #skillTreePanel .panel {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+                grid-template-areas: "project" "tree" "bonus";
+            }
+
+            #treeBonusArea {
+                border-right: none;
+                padding-right: 0;
             }
 
             #projectArea {
@@ -1124,6 +1234,7 @@
                 </div>
                 <div id="nodeInfo"></div>
             </section>
+            <section id="treeBonusArea"></section>
         </div>
     </div>
 
@@ -3683,6 +3794,7 @@
         const treeLinks = document.getElementById("treeLinks");
         const treeNodes = document.getElementById("treeNodes");
         const nodeInfo = document.getElementById("nodeInfo");
+        const treeBonusArea = document.getElementById("treeBonusArea");
         let currentTree = null;
 
         function openSkillTree(tree) {
@@ -3708,8 +3820,78 @@
             playSound("menuClose");
         }
 
+        //Comment écrire chaque bonus. value = le total de toutes les compétences débloquées pour cette stat
+        const BONUS_FORMATS = {
+            maxHealth: function (value) { return ["PV max", "+" + formatNumber(value)]; },
+            regen: function (value) { return ["Régénération", "+" + formatNumber(value) + " PV/s"]; },
+            lifeOnKill: function (value) { return ["Vie par ennemi tué", "+" + formatNumber(value)]; },
+            damage: function (value) { return ["Dégâts par balle", "+" + formatNumber(value)]; },
+            attackSpeed: function (value) { return ["Vitesse d'attaque", "+" + formatNumber(value * 100) + "%"]; },
+            bulletCount: function (value) { return ["Balles par tir", "+" + formatNumber(value)]; },
+            range: function (value) { return ["Portée", "+" + formatNumber(value) + " px"]; },
+            bulletSpeed: function (value) { return ["Vitesse des balles", "+" + formatNumber(value * 100) + "%"]; },
+            dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
+            shield: function () { return ["Bouclier", "Oui"]; },
+            goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
+            xpMultiplier: function (value) { return ["XP gagnée", "+" + formatNumber(value * 100) + "%"]; }
+        };
+
+        //COLONNE DE DROITE : tout ce que cet arbre nous apporte (progression, pouvoirs, total des stats)
+        function renderTreeBonus(tree) {
+            treeBonusArea.textContent = "";
+            treeBonusArea.appendChild(createElementWithText("h2", "", "Bonus de " + tree.name));
+
+            const unlockedNodes = tree.nodes.filter(function (node) { return node.unlocked; });
+            const spentXp = unlockedNodes.reduce(function (total, node) { return total + node.cost; }, 0); //reduce = additionne tout
+            const progress = createElementWithText("div", "bonusProgress", unlockedNodes.length + " / " + tree.nodes.length + " compétences · " + spentXp + " XP investis");
+            const bar = createElementWithText("div", "bonusBar", "");
+            const fill = document.createElement("span");
+            fill.style.width = (unlockedNodes.length / tree.nodes.length * 100) + "%";
+            bar.appendChild(fill);
+            progress.appendChild(bar);
+            treeBonusArea.appendChild(progress);
+
+            if (unlockedNodes.length === 0) {
+                treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", "Aucune compétence débloquée pour l'instant. Commence par l'étoile de départ !"));
+                return;
+            }
+
+            //POUVOIRS : les keystones et la grande keystone débloquées, avec leur nom
+            const powers = unlockedNodes.filter(function (node) { return node.isKeystone; });
+            if (powers.length > 0) {
+                treeBonusArea.appendChild(createElementWithText("h3", "", "Pouvoirs"));
+                for (const node of powers) {
+                    const power = createElementWithText("div", "bonusPower", "");
+                    power.appendChild(createElementWithText("strong", "", node.name + (node.role === "grand" ? " ★" : "")));
+                    power.appendChild(createElementWithText("span", "", node.description.replace("GRANDE KEYSTONE : ", "")));
+                    treeBonusArea.appendChild(power);
+                }
+            }
+
+            //STATS : on additionne les effets de toutes les compétences débloquées, stat par stat
+            const totals = {};
+            for (const node of unlockedNodes) {
+                const key = node.effect.stat === "damageVs" ? "damageVs_" + node.effect.element : node.effect.stat;
+                totals[key] = (totals[key] || 0) + node.effect.value;
+            }
+            treeBonusArea.appendChild(createElementWithText("h3", "", "Stats"));
+            for (const key of Object.keys(totals)) {
+                let row;
+                if (key.startsWith("damageVs_")) {
+                    row = ["Dégâts vs " + ELEMENT_NAMES[key.slice(9)], "+" + formatNumber(totals[key])]; //slice(9) = le texte après "damageVs_"
+                } else {
+                    row = BONUS_FORMATS[key](totals[key]);
+                }
+                const line = createElementWithText("div", "bonusStat", "");
+                line.appendChild(createElementWithText("span", "", row[0]));
+                line.appendChild(createElementWithText("span", "statValue", row[1]));
+                treeBonusArea.appendChild(line);
+            }
+        }
+
         function renderSkillTree() {
             const tree = currentTree;
+            renderTreeBonus(tree);
             treeXp.textContent = Math.floor(xp);
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
