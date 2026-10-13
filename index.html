@@ -719,6 +719,7 @@
             --ui-panel: #1f2a39;          /*fond des fenêtres*/
             --ui-overlay: rgba(12, 17, 24, 0.6); /*voile derrière les menus*/
             --ui-text: #ffffff;           /*texte*/
+            --ui-heading: #ffd2a8;        /*titres (légèrement teintés par le thème)*/
             --ui-muted: #aaaacc;          /*texte secondaire (titres de catégories, aides...)*/
             --ui-border: #e9e6f2;         /*contour des boutons*/
             --ui-line: rgba(255, 255, 255, 0.25); /*lignes fines, liens de l'arbre*/
@@ -859,92 +860,142 @@
             border-color: var(--ui-line);
         }
 
-        /*////////////////////////////////
-          ////COMPÉTENCES EN CONSTELLATION////  chaque compétence est une étoile, les plus importantes scintillent plus
-          ////////////////////////////////*/
-        .skillNode, .skillNode.notable, .skillNode.keystone, .skillNode.grand {
-            width: 64px;
-            height: 64px;
+        /*BOUTONS ET TEXTES AUX COULEURS DU THÈME*/
+        .panel h1, .panel h2, #statsPanel h2 {
+            color: var(--ui-heading); /*titres légèrement teintés*/
+        }
+
+        #statsPanel h3 {
+            color: var(--ui-accent);
+            opacity: 0.85;
+        }
+
+        .panel .treeHeader h2 {
+            color: var(--tree-color); /*le titre d'un skill tree garde la couleur de son dieu*/
+        }
+
+        .primaryButton {
+            border-color: var(--ui-accent);
+            color: var(--ui-heading);
+        }
+
+        .primaryButton:hover {
+            background-color: var(--ui-accent-soft);
+        }
+
+        #settingsButton {
+            border-color: var(--ui-accent);
+            color: var(--ui-accent);
+        }
+
+        #treeZoomControls button {
+            border-color: var(--ui-accent);
+            color: var(--ui-accent);
+        }
+
+        #themeSelect {
+            border-color: var(--ui-accent);
+        }
+
+        .shopItem {
+            border-left: 4px solid var(--ui-accent); /*petite bande de couleur à gauche des cartes*/
+        }
+
+        .shopItem:disabled {
+            border-left-color: var(--ui-line);
+        }
+
+        .hudRow {
+            box-shadow: inset 3px 0 0 var(--ui-accent); /*fin trait d'accent à gauche des pastilles*/
+        }
+
+        #toast {
+            border: 1px solid var(--ui-accent-glow);
+        }
+
+        /*/////////////////////////////
+          ////COMPÉTENCES EN TUILES////  hexagones (octogones pour les keystones), avec un reflet qui passe sur les grosses
+          /////////////////////////////*/
+        .skillNode, .skillNode.notable, .skillNode.keystone, .skillNode.grand,
+        .skillNode.unlocked, .skillNode.available, .skillNode.locked {
+            width: var(--node-size);
+            height: var(--node-size);
             padding: 0;
             border: none;
             border-radius: 0;
-            background: transparent;
             box-shadow: none;
+            opacity: 1;
+            overflow: hidden;
+            background: var(--node-edge);   /*le fond du bouton = la "bordure" (l'intérieur est dessiné par ::before)*/
+            clip-path: var(--node-shape);    /*clip-path découpe le bouton selon une forme*/
             color: var(--ui-text);
-            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .skillNode .star { /*l'étoile : une forme à 4 branches découpée avec clip-path*/
+        .skillNode { --node-size: 54px; --node-shape: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%); } /*hexagone*/
+        .skillNode.notable { --node-size: 68px; }
+        .skillNode.keystone { --node-size: 84px; --node-shape: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); } /*octogone*/
+        .skillNode.grand { --node-size: 108px; }
+
+        .skillNode::before { /*l'intérieur de la tuile, un peu plus petit : il laisse voir la "bordure"*/
+            content: "";
             position: absolute;
-            left: 50%;
-            top: 50%;
-            width: var(--star-size);
-            height: var(--star-size);
-            transform: translate(-50%, -50%);
-            clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%); /*les 8 points de l'étoile*/
-            background-color: var(--ui-muted);
+            inset: 3px;
+            clip-path: var(--node-shape);
+            background: var(--node-fill);
         }
 
-        .skillNode { --star-size: 30px; }
-        .skillNode.notable { --star-size: 46px; }
-        .skillNode.keystone { --star-size: 62px; }
-        .skillNode.grand { --star-size: 84px; }
-
-        .skillNode.unlocked, .skillNode.available, .skillNode.locked { /*annule les anciens styles "bouton rond"*/
-            border: none;
-            background: transparent;
-            box-shadow: none;
-            opacity: 1;
+        .skillNode.grand::before {
+            inset: 6px;
         }
 
-        .skillNode.locked .star {
-            opacity: 0.45;
-        }
-
-        .skillNode.available .star {
-            background-color: var(--tree-color);
-            opacity: 0.6;
-        }
-
-        .skillNode.unlocked .star {
-            background: radial-gradient(circle, #ffffff 0%, var(--tree-color) 45%); /*cœur blanc, comme une vraie étoile*/
-        }
-
-        .skillNode:hover .star {
-            opacity: 1;
-            filter: brightness(1.25);
-        }
-
-        /*SCINTILLEMENT : les grosses étoiles grandissent, tournent un peu et s'illuminent, en boucle*/
-        .skillNode.notable .star { animation: twinkle 2.4s ease-in-out infinite; }
-        .skillNode.keystone .star { animation: twinkle 1.8s ease-in-out infinite; }
-        .skillNode.grand .star { animation: twinkleBig 1.5s ease-in-out infinite; }
-
-        @keyframes twinkle {
-            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: brightness(1); }
-            50% { transform: translate(-50%, -50%) scale(1.15) rotate(10deg); filter: brightness(1.35); }
-        }
-
-        @keyframes twinkleBig {
-            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); filter: brightness(1); }
-            30% { transform: translate(-50%, -50%) scale(1.25) rotate(15deg); filter: brightness(1.5); }
-            60% { transform: translate(-50%, -50%) scale(0.95) rotate(5deg); filter: brightness(1.1); }
-        }
-
-        .skillNode .nodeLabel { /*le petit nom sous l'étoile*/
-            position: absolute;
-            left: 50%;
-            top: calc(50% + var(--star-size) / 2 + 2px);
-            transform: translateX(-50%);
+        .skillNode .nodeLabel {
+            position: relative; /*au-dessus de ::before*/
+            z-index: 1;
             font-size: 12px;
             font-weight: 800;
-            white-space: nowrap;
-            color: var(--ui-muted);
             pointer-events: none;
         }
 
-        .skillNode.unlocked .nodeLabel {
-            color: var(--ui-text);
+        .skillNode.notable .nodeLabel { font-size: 14px; }
+        .skillNode.keystone .nodeLabel { font-size: 16px; }
+        .skillNode.grand .nodeLabel { font-size: 18px; }
+
+        /*Les 3 états*/
+        .skillNode.locked { --node-edge: var(--ui-line); --node-fill: var(--ui-surface); opacity: 0.6; }
+        .skillNode.available { --node-edge: var(--tree-color); --node-fill: var(--ui-surface); }
+        .skillNode.unlocked { --node-edge: rgba(255, 255, 255, 0.85); --node-fill: var(--tree-color); color: #0d0d14; }
+
+        .skillNode:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            filter: brightness(1.15);
+        }
+
+        /*SCINTILLEMENT : un reflet de lumière balaie les grosses compétences, de temps en temps*/
+        .skillNode.notable::after, .skillNode.keystone::after, .skillNode.grand::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+            background-size: 300% 100%;
+            animation: shimmer 4s ease-in-out infinite;
+            animation-delay: var(--shimmer-delay);
+        }
+
+        .skillNode.keystone::after { animation-duration: 3.2s; }
+        .skillNode.grand::after { animation-duration: 2.4s; }
+
+        @keyframes shimmer {
+            0% { background-position: 100% 0; }    /*reflet hors de la tuile, à droite*/
+            45%, 100% { background-position: 0% 0; } /*il traverse, puis attend avant de recommencer*/
+        }
+
+        #treeLinks line {
+            stroke-width: 4 !important;
         }
     </style>
 </head>
@@ -1389,60 +1440,60 @@
             night: {
                 name: "Nuit (bleu)",
                 background: "#1a2330", backgroundLight: "#27384c", shadow: "#0a0f16",
-                ui: { "--bg": "#1a2330", "--ui-surface": "#253244", "--ui-surface-hover": "#2e3d52", "--ui-relief": "#121a24", "--ui-panel": "#1f2a39", "--ui-overlay": "rgba(12, 17, 24, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ff8a1f", "--ui-accent-hover": "#ffa54d", "--ui-accent-dark": "#b4590b", "--ui-accent-text": "#1a0a00", "--ui-accent-soft": "rgba(255, 138, 31, 0.1)", "--ui-accent-glow": "rgba(255, 138, 31, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(255, 138, 31, 0.35), rgba(255, 138, 31, 0.05))" }
+                ui: { "--bg": "#1a2330", "--ui-surface": "#253244", "--ui-surface-hover": "#2e3d52", "--ui-relief": "#121a24", "--ui-panel": "#1f2a39", "--ui-overlay": "rgba(12, 17, 24, 0.6)", "--ui-text": "#eef4ff", "--ui-muted": "#9fb0c8", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ff8a1f", "--ui-accent-hover": "#ffa54d", "--ui-accent-dark": "#b4590b", "--ui-accent-text": "#1a0a00", "--ui-accent-soft": "rgba(255, 138, 31, 0.1)", "--ui-accent-glow": "rgba(255, 138, 31, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(255, 138, 31, 0.35), rgba(255, 138, 31, 0.05))", "--ui-heading": "#ffd2a8" }
             },
             slate: {
                 name: "Ardoise (gris)",
                 background: "#23262b", backgroundLight: "#33373e", shadow: "#0e0f11",
-                ui: { "--bg": "#23262b", "--ui-surface": "#2f3339", "--ui-surface-hover": "#393e45", "--ui-relief": "#17191c", "--ui-panel": "#2a2d32", "--ui-overlay": "rgba(16, 17, 19, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#8fb8de", "--ui-accent-hover": "#b0cdea", "--ui-accent-dark": "#4f7aa3", "--ui-accent-text": "#0f1a24", "--ui-accent-soft": "rgba(143, 184, 222, 0.1)", "--ui-accent-glow": "rgba(143, 184, 222, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(143, 184, 222, 0.35), rgba(143, 184, 222, 0.05))" }
+                ui: { "--bg": "#23262b", "--ui-surface": "#2f3339", "--ui-surface-hover": "#393e45", "--ui-relief": "#17191c", "--ui-panel": "#2a2d32", "--ui-overlay": "rgba(16, 17, 19, 0.6)", "--ui-text": "#f0f3f7", "--ui-muted": "#a3adb8", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#8fb8de", "--ui-accent-hover": "#b0cdea", "--ui-accent-dark": "#4f7aa3", "--ui-accent-text": "#0f1a24", "--ui-accent-soft": "rgba(143, 184, 222, 0.1)", "--ui-accent-glow": "rgba(143, 184, 222, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(143, 184, 222, 0.35), rgba(143, 184, 222, 0.05))", "--ui-heading": "#d6e6f5" }
             },
             forest: {
                 name: "Lagon (vert-bleu)",
                 background: "#152628", backgroundLight: "#1f3a3c", shadow: "#071112",
-                ui: { "--bg": "#152628", "--ui-surface": "#1f3639", "--ui-surface-hover": "#284448", "--ui-relief": "#0c1819", "--ui-panel": "#1a2e30", "--ui-overlay": "rgba(8, 16, 17, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#3fe0c5", "--ui-accent-hover": "#7ff0dc", "--ui-accent-dark": "#1f8f7c", "--ui-accent-text": "#062420", "--ui-accent-soft": "rgba(63, 224, 197, 0.1)", "--ui-accent-glow": "rgba(63, 224, 197, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(63, 224, 197, 0.35), rgba(63, 224, 197, 0.05))" }
+                ui: { "--bg": "#152628", "--ui-surface": "#1f3639", "--ui-surface-hover": "#284448", "--ui-relief": "#0c1819", "--ui-panel": "#1a2e30", "--ui-overlay": "rgba(8, 16, 17, 0.6)", "--ui-text": "#eafffb", "--ui-muted": "#9cc4bf", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#3fe0c5", "--ui-accent-hover": "#7ff0dc", "--ui-accent-dark": "#1f8f7c", "--ui-accent-text": "#062420", "--ui-accent-soft": "rgba(63, 224, 197, 0.1)", "--ui-accent-glow": "rgba(63, 224, 197, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(63, 224, 197, 0.35), rgba(63, 224, 197, 0.05))", "--ui-heading": "#b9f5ea" }
             },
             dusk: {
                 name: "Crépuscule (violet-gris)",
                 background: "#29233a", backgroundLight: "#3e3656", shadow: "#120e1c",
-                ui: { "--bg": "#29233a", "--ui-surface": "#3d3555", "--ui-surface-hover": "#4a4166", "--ui-relief": "#262036", "--ui-panel": "#352e4a", "--ui-overlay": "rgba(34, 28, 50, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#b48cff", "--ui-accent-hover": "#cdb0ff", "--ui-accent-dark": "#7650c2", "--ui-accent-text": "#1a0f30", "--ui-accent-soft": "rgba(180, 140, 255, 0.1)", "--ui-accent-glow": "rgba(180, 140, 255, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(180, 140, 255, 0.35), rgba(180, 140, 255, 0.05))" }
+                ui: { "--bg": "#29233a", "--ui-surface": "#3d3555", "--ui-surface-hover": "#4a4166", "--ui-relief": "#262036", "--ui-panel": "#352e4a", "--ui-overlay": "rgba(34, 28, 50, 0.6)", "--ui-text": "#f4efff", "--ui-muted": "#b3a8cc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#b48cff", "--ui-accent-hover": "#cdb0ff", "--ui-accent-dark": "#7650c2", "--ui-accent-text": "#1a0f30", "--ui-accent-soft": "rgba(180, 140, 255, 0.1)", "--ui-accent-glow": "rgba(180, 140, 255, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(180, 140, 255, 0.35), rgba(180, 140, 255, 0.05))", "--ui-heading": "#e3d4ff" }
             },
             yellow: {
                 name: "Jaune",
                 background: "#3a3010", backgroundLight: "#625020", shadow: "#1a1404",
-                ui: { "--bg": "#3a3010", "--ui-surface": "#4d4017", "--ui-surface-hover": "#5c4d1d", "--ui-relief": "#241d07", "--ui-panel": "#433816", "--ui-overlay": "rgba(30, 24, 6, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ffd84d", "--ui-accent-hover": "#ffe680", "--ui-accent-dark": "#b8911a", "--ui-accent-text": "#2a2004", "--ui-accent-soft": "rgba(255, 216, 77, 0.1)", "--ui-accent-glow": "rgba(255, 216, 77, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(255, 216, 77, 0.35), rgba(255, 216, 77, 0.05))" }
+                ui: { "--bg": "#3a3010", "--ui-surface": "#4d4017", "--ui-surface-hover": "#5c4d1d", "--ui-relief": "#241d07", "--ui-panel": "#433816", "--ui-overlay": "rgba(30, 24, 6, 0.6)", "--ui-text": "#fff9e6", "--ui-muted": "#cbbd8a", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ffd84d", "--ui-accent-hover": "#ffe680", "--ui-accent-dark": "#b8911a", "--ui-accent-text": "#2a2004", "--ui-accent-soft": "rgba(255, 216, 77, 0.1)", "--ui-accent-glow": "rgba(255, 216, 77, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(255, 216, 77, 0.35), rgba(255, 216, 77, 0.05))", "--ui-heading": "#ffeaa0" }
             },
             turquoise: {
                 name: "Turquoise",
                 background: "#0f3a3a", backgroundLight: "#17645e", shadow: "#041a1a",
-                ui: { "--bg": "#0f3a3a", "--ui-surface": "#165050", "--ui-surface-hover": "#1d6060", "--ui-relief": "#072424", "--ui-panel": "#134646", "--ui-overlay": "rgba(4, 24, 24, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#3fe0c5", "--ui-accent-hover": "#7ff0dc", "--ui-accent-dark": "#1f8f7c", "--ui-accent-text": "#062420", "--ui-accent-soft": "rgba(63, 224, 197, 0.1)", "--ui-accent-glow": "rgba(63, 224, 197, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(63, 224, 197, 0.35), rgba(63, 224, 197, 0.05))" }
+                ui: { "--bg": "#0f3a3a", "--ui-surface": "#165050", "--ui-surface-hover": "#1d6060", "--ui-relief": "#072424", "--ui-panel": "#134646", "--ui-overlay": "rgba(4, 24, 24, 0.6)", "--ui-text": "#eafffb", "--ui-muted": "#93c9c1", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#3fe0c5", "--ui-accent-hover": "#7ff0dc", "--ui-accent-dark": "#1f8f7c", "--ui-accent-text": "#062420", "--ui-accent-soft": "rgba(63, 224, 197, 0.1)", "--ui-accent-glow": "rgba(63, 224, 197, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(63, 224, 197, 0.35), rgba(63, 224, 197, 0.05))", "--ui-heading": "#b9f5ea" }
             },
             purple: {
                 name: "Violet",
                 background: "#2a1745", backgroundLight: "#47287a", shadow: "#110722",
-                ui: { "--bg": "#2a1745", "--ui-surface": "#3b2163", "--ui-surface-hover": "#472876", "--ui-relief": "#190c2e", "--ui-panel": "#331c57", "--ui-overlay": "rgba(20, 8, 36, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#c77dff", "--ui-accent-hover": "#d9a3ff", "--ui-accent-dark": "#8a3fc7", "--ui-accent-text": "#1d0933", "--ui-accent-soft": "rgba(199, 125, 255, 0.1)", "--ui-accent-glow": "rgba(199, 125, 255, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(199, 125, 255, 0.35), rgba(199, 125, 255, 0.05))" }
+                ui: { "--bg": "#2a1745", "--ui-surface": "#3b2163", "--ui-surface-hover": "#472876", "--ui-relief": "#190c2e", "--ui-panel": "#331c57", "--ui-overlay": "rgba(20, 8, 36, 0.6)", "--ui-text": "#f7efff", "--ui-muted": "#bba5d6", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#c77dff", "--ui-accent-hover": "#d9a3ff", "--ui-accent-dark": "#8a3fc7", "--ui-accent-text": "#1d0933", "--ui-accent-soft": "rgba(199, 125, 255, 0.1)", "--ui-accent-glow": "rgba(199, 125, 255, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(199, 125, 255, 0.35), rgba(199, 125, 255, 0.05))", "--ui-heading": "#e6c8ff" }
             },
             white: {
                 name: "Blanc",
                 background: "#e6e9f0", backgroundLight: "#ffffff", shadow: "#9aa3b5",
                 textColor: "#1f2533", orbitColor: "rgba(31, 37, 51, 0.15)",
-                ui: { "--bg": "#e6e9f0", "--ui-surface": "#ffffff", "--ui-surface-hover": "#f0f2f7", "--ui-relief": "#c9cfdb", "--ui-panel": "#f7f8fb", "--ui-overlay": "rgba(220, 225, 235, 0.6)", "--ui-text": "#1f2533", "--ui-muted": "#6b7385", "--ui-border": "#1f2533", "--ui-line": "rgba(31, 37, 51, 0.25)", "--ui-accent": "#3b82f6", "--ui-accent-hover": "#60a5fa", "--ui-accent-dark": "#1e4fb8", "--ui-accent-text": "#ffffff", "--ui-accent-soft": "rgba(59, 130, 246, 0.1)", "--ui-accent-glow": "rgba(59, 130, 246, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.05))" }
+                ui: { "--bg": "#e6e9f0", "--ui-surface": "#ffffff", "--ui-surface-hover": "#f0f2f7", "--ui-relief": "#c9cfdb", "--ui-panel": "#f7f8fb", "--ui-overlay": "rgba(220, 225, 235, 0.6)", "--ui-text": "#1f2533", "--ui-muted": "#6b7385", "--ui-border": "#1f2533", "--ui-line": "rgba(31, 37, 51, 0.25)", "--ui-accent": "#3b82f6", "--ui-accent-hover": "#60a5fa", "--ui-accent-dark": "#1e4fb8", "--ui-accent-text": "#ffffff", "--ui-accent-soft": "rgba(59, 130, 246, 0.1)", "--ui-accent-glow": "rgba(59, 130, 246, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.05))", "--ui-heading": "#1e4fb8" }
             },
             black: {
                 name: "Noir",
                 background: "#0a0a0c", backgroundLight: "#1a1a1f", shadow: "#000000",
-                ui: { "--bg": "#0a0a0c", "--ui-surface": "#1a1a1e", "--ui-surface-hover": "#24242a", "--ui-relief": "#000000", "--ui-panel": "#141417", "--ui-overlay": "rgba(0, 0, 0, 0.65)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#e8e8ee", "--ui-accent-hover": "#ffffff", "--ui-accent-dark": "#7a7a85", "--ui-accent-text": "#000000", "--ui-accent-soft": "rgba(232, 232, 238, 0.1)", "--ui-accent-glow": "rgba(232, 232, 238, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(232, 232, 238, 0.35), rgba(232, 232, 238, 0.05))" }
+                ui: { "--bg": "#0a0a0c", "--ui-surface": "#1a1a1e", "--ui-surface-hover": "#24242a", "--ui-relief": "#000000", "--ui-panel": "#141417", "--ui-overlay": "rgba(0, 0, 0, 0.65)", "--ui-text": "#f2f2f2", "--ui-muted": "#9a9aa3", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#e8e8ee", "--ui-accent-hover": "#ffffff", "--ui-accent-dark": "#7a7a85", "--ui-accent-text": "#000000", "--ui-accent-soft": "rgba(232, 232, 238, 0.1)", "--ui-accent-glow": "rgba(232, 232, 238, 0.45)", "--ui-panel-edge": "linear-gradient(rgba(232, 232, 238, 0.35), rgba(232, 232, 238, 0.05))", "--ui-heading": "#ffffff" }
             },
             pride: {
                 name: "Arc-en-ciel (LGBT+)",
                 background: "#15151d", backgroundLight: "#15151d", shadow: "#050508",
                 stripes: ["#e40303", "#ff8c00", "#ffed00", "#008026", "#24408e", "#732982"], stripesDim: 0.6,
-                ui: { "--bg": "#15151d", "--ui-surface": "#22222d", "--ui-surface-hover": "#2c2c39", "--ui-relief": "#0d0d13", "--ui-panel": "#1c1c26", "--ui-overlay": "rgba(10, 10, 16, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ff8c00", "--ui-accent-hover": "#ffad4d", "--ui-accent-dark": "#b35f00", "--ui-accent-text": "#1a0d00", "--ui-accent-soft": "rgba(255, 140, 0, 0.1)", "--ui-accent-glow": "rgba(255, 140, 0, 0.45)", "--ui-panel-edge": "linear-gradient(90deg, #e40303, #ff8c00, #ffed00, #008026, #24408e, #732982)" }
+                ui: { "--bg": "#15151d", "--ui-surface": "#22222d", "--ui-surface-hover": "#2c2c39", "--ui-relief": "#0d0d13", "--ui-panel": "#1c1c26", "--ui-overlay": "rgba(10, 10, 16, 0.6)", "--ui-text": "#fffaf3", "--ui-muted": "#b8b0c8", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#ff8c00", "--ui-accent-hover": "#ffad4d", "--ui-accent-dark": "#b35f00", "--ui-accent-text": "#1a0d00", "--ui-accent-soft": "rgba(255, 140, 0, 0.1)", "--ui-accent-glow": "rgba(255, 140, 0, 0.45)", "--ui-panel-edge": "linear-gradient(90deg, #e40303, #ff8c00, #ffed00, #008026, #24408e, #732982)", "--ui-heading": "#ffd08a" }
             },
             trans: {
                 name: "Transgenre",
                 background: "#1b1a24", backgroundLight: "#1b1a24", shadow: "#07070c",
                 stripes: ["#5bcefa", "#f5a9b8", "#ffffff", "#f5a9b8", "#5bcefa"], stripesDim: 0.6,
-                ui: { "--bg": "#1b1a24", "--ui-surface": "#262433", "--ui-surface-hover": "#302d40", "--ui-relief": "#100f17", "--ui-panel": "#211f2c", "--ui-overlay": "rgba(14, 13, 20, 0.6)", "--ui-text": "#ffffff", "--ui-muted": "#aaaacc", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#5bcefa", "--ui-accent-hover": "#8fdcfb", "--ui-accent-dark": "#2a8fbd", "--ui-accent-text": "#04202c", "--ui-accent-soft": "rgba(91, 206, 250, 0.1)", "--ui-accent-glow": "rgba(91, 206, 250, 0.45)", "--ui-panel-edge": "linear-gradient(90deg, #5bcefa, #f5a9b8, #ffffff, #f5a9b8, #5bcefa)" }
+                ui: { "--bg": "#1b1a24", "--ui-surface": "#262433", "--ui-surface-hover": "#302d40", "--ui-relief": "#100f17", "--ui-panel": "#211f2c", "--ui-overlay": "rgba(14, 13, 20, 0.6)", "--ui-text": "#fdf3f7", "--ui-muted": "#b9b3c9", "--ui-border": "#e9e6f2", "--ui-line": "rgba(255, 255, 255, 0.25)", "--ui-accent": "#5bcefa", "--ui-accent-hover": "#8fdcfb", "--ui-accent-dark": "#2a8fbd", "--ui-accent-text": "#04202c", "--ui-accent-soft": "rgba(91, 206, 250, 0.1)", "--ui-accent-glow": "rgba(91, 206, 250, 0.45)", "--ui-panel-edge": "linear-gradient(90deg, #5bcefa, #f5a9b8, #ffffff, #f5a9b8, #5bcefa)", "--ui-heading": "#bfe9fb" }
             }
         };
         const DEFAULT_THEME = "night";
@@ -2696,132 +2747,144 @@
         }
 
         const TREE_SHAPES = {
-            //FLEUR (Déméter) : une tige avec deux feuilles, un cœur, et 5 pétales autour
-            flower: function () {
+            //VOLCAN (Vulcain) : la base, les deux pentes, la cheminée, le cratère, le panache qui jaillit et des gerbes de lave
+            volcano: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 96, [], "start");
-                b.chain("start", "stem", [[50, 89], [50, 82, "notable"], [50, 75], [50, 68, "notable"], [50, 61]]);
-                b.chain("stem2", "leafL", [[41, 85], [33, 86], [25, 83, "keystone"]]);
-                b.chain("stem3", "leafR", [[59, 78], [67, 79], [75, 76, "keystone"]]);
-                b.add("heart", 50, 38, ["stem5"], "notable");
-                const petalAngles = [-90, -18, 54, 126, 198];
-                const tipRoles = ["grand", "notable", "keystone", "notable", "notable"];
-                petalAngles.forEach(function (angle, i) {
-                    const base = polar(50, 38, angle, 9);
-                    const sideL = polar(50, 38, angle - 17, 19);
-                    const sideR = polar(50, 38, angle + 17, 19);
-                    const tip = polar(50, 38, angle, 30);
-                    b.add("petal" + i + "base", base[0], base[1], ["heart"]);
-                    b.add("petal" + i + "L", sideL[0], sideL[1], ["petal" + i + "base"], i === 0 ? "notable" : "minor");
-                    b.add("petal" + i + "R", sideR[0], sideR[1], ["petal" + i + "base"], i === 0 ? "notable" : "minor");
-                    b.add("petal" + i + "tip", tip[0], tip[1], ["petal" + i + "L", "petal" + i + "R"], tipRoles[i]);
-                });
-                //Les pétales voisins se touchent : on peut passer de l'un à l'autre
-                petalAngles.forEach(function (angle, i) {
-                    b.layout["petal" + i + "R"].links.push("petal" + ((i + 1) % petalAngles.length) + "L");
-                });
+                b.add("start", 50, 95, [], "start");
+                b.chain("start", "baseL", [[40, 95], [30, 95], [20, 95, "keystone"]]);
+                b.chain("start", "baseR", [[60, 95], [70, 95], [80, 95, "notable"]]);
+                b.chain("baseL3", "slopeL", [[24, 83], [28, 71, "notable"], [33, 59], [38, 47]]);
+                b.chain("baseR3", "slopeR", [[76, 83], [72, 71, "notable"], [67, 59], [62, 47]]);
+                b.chain("start", "vent", [[50, 85], [50, 75, "notable"], [50, 65], [50, 55]]);
+                b.add("craterL", 44, 49, ["slopeL4", "vent4"]);
+                b.add("craterR", 56, 49, ["slopeR4", "vent4"]);
+                b.chain("vent4", "plume", [[50, 42], [48, 33, "notable"], [52, 24], [50, 13, "grand"]]);
+                b.chain("plume1", "lavaL", [[41, 34], [33, 25, "keystone"]]);
+                b.chain("plume1", "lavaR", [[59, 33, "notable"], [67, 24, "keystone"]]);
+                b.add("ashL", 42, 17, ["plume3"], "notable");
+                b.add("ashR", 58, 16, ["plume3"], "notable");
                 return b.layout;
             },
 
-            //VAGUES (Poséidon) : 3 rangées de vagues reliées entre elles, et l'écume tout en haut
-            waves: function () {
+            //ANCRE (Poséidon) : les bras recourbés en bas, la tige, la barre, et l'anneau en haut
+            anchor: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 88, [], "start");
+                b.chain("start", "armL", [[42, 88], [34, 85], [28, 79, "notable"], [24, 71], [20, 63, "keystone"]]);
+                b.chain("start", "armR", [[58, 88], [66, 85], [72, 79, "notable"], [76, 71], [80, 63, "keystone"]]);
+                b.chain("start", "shaft", [[50, 80], [50, 72, "notable"], [50, 64], [50, 56, "notable"], [50, 48], [50, 40], [50, 32, "notable"], [50, 25]]);
+                b.chain("shaft7", "stockL", [[40, 32], [30, 32, "keystone"]]);
+                b.chain("shaft7", "stockR", [[60, 32], [70, 32, "notable"]]);
+                const ringPoints = [[150], [210, "notable"], [270, "grand"], [330, "notable"], [30]].map(function (item) {
+                    const point = polar(50, 15, item[0], 8);
+                    if (item[1]) {
+                        point.push(item[1]);
+                    }
+                    return point;
+                });
+                b.chain("shaft8", "ring", ringPoints);
+                b.layout["ring5"].links.push("shaft8"); //l'anneau se referme
+                return b.layout;
+            },
+
+            //ÉPI DE BLÉ (Déméter) : une tige, des grains de chaque côté, et deux feuilles en bas
+            wheat: function () {
                 const b = createLayoutBuilder();
                 b.add("start", 50, 96, [], "start");
-                const rows = [
-                    { y: 80, phase: 0, roles: { 0: "notable", 2: "notable", 8: "notable" } },
-                    { y: 56, phase: 2, roles: { 0: "keystone", 4: "notable", 6: "notable", 8: "keystone" } },
-                    { y: 32, phase: 4, roles: { 0: "notable", 2: "notable", 8: "keystone" } }
-                ];
-                rows.forEach(function (row, r) {
-                    for (let i = 0; i < 9; i++) {
-                        const x = 10 + i * 10;
-                        const y = row.y + Math.sin(i * 0.9 + row.phase) * 5; //le sinus fait onduler la rangée
-                        b.add("wave" + r + "_" + i, x, y, i === 0 ? [] : ["wave" + r + "_" + (i - 1)], row.roles[i] || "minor");
+                const stalkY = [89, 82, 75, 68, 61, 54, 47, 40, 33, 26, 19];
+                let previous = "start";
+                stalkY.forEach(function (y, i) {
+                    b.add("stalk" + y, 50, y, [previous], y === 89 || y === 75 ? "notable" : "minor");
+                    previous = "stalk" + y;
+                });
+                b.add("ear", 50, 10, [previous], "grand");
+                //Les grains : un de chaque côté à chaque étage, et un 2e grain plus loin un étage sur deux
+                const grainRoles = { "L61": "notable", "R47": "notable", "L33": "notable", "R19": "notable", "outerL54": "notable", "outerR40": "notable", "outerL26": "keystone" };
+                [61, 54, 47, 40, 33, 26, 19].forEach(function (y, i) {
+                    b.add("L" + y, 43, y - 3, ["stalk" + y], grainRoles["L" + y]);
+                    b.add("R" + y, 57, y - 3, ["stalk" + y], grainRoles["R" + y]);
+                    if (i % 2 === 1) {
+                        b.add("outerL" + y, 37, y - 7, ["L" + y], grainRoles["outerL" + y]);
+                        b.add("outerR" + y, 63, y - 7, ["R" + y], grainRoles["outerR" + y]);
                     }
                 });
-                //Les passages entre les rangées
-                b.layout["wave0_4"].links.push("start");
-                b.layout["wave1_1"].links.push("wave0_1");
-                b.layout["wave1_7"].links.push("wave0_7");
-                b.layout["wave2_4"].links.push("wave1_4");
-                //L'écume au sommet
-                b.add("foamL", 40, 18, ["wave2_3"]);
-                b.add("foamR", 60, 18, ["wave2_5"]);
-                b.add("crest", 50, 8, ["foamL", "foamR"], "grand");
+                b.chain("stalk82", "leafL", [[42, 80], [34, 75], [28, 68, "keystone"]]);
+                b.chain("stalk75", "leafR", [[58, 72], [66, 66], [72, 58, "keystone"]]);
                 return b.layout;
             },
 
-            //FEU DE BOIS (Vulcain) : deux bûches croisées, et au-dessus une grande flamme en forme de goutte avec une petite flamme dedans
-            campfire: function () {
+            //RAFALES DE VENT (Éole) : trois coups de vent qui ondulent et finissent en boucle
+            wind: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 85, [], "start"); //le croisement des bûches
-                //Bûche 1 : de bas-gauche (22, 95) à haut-droite (78, 74). Bûche 2 : de bas-droite (78, 95) à haut-gauche (22, 74)
-                b.chain("start", "log1low", [[41, 88], [31, 92], [22, 95, "keystone"]]);
-                b.chain("start", "log1high", [[59, 81], [69, 77], [78, 74, "notable"]]);
-                b.chain("start", "log2low", [[59, 88], [69, 92], [78, 95, "keystone"]]);
-                b.chain("start", "log2high", [[41, 81], [31, 77], [22, 74, "notable"]]);
-                //Grande flamme : on fait le tour de la goutte, de la base gauche jusqu'à la pointe puis jusqu'à la base droite
-                b.chain("log2high2", "outer", [
-                    [34, 71], [28, 62], [27, 52, "notable"], [31, 42], [38, 32, "notable"], [45, 22],
-                    [50, 11, "grand"],
-                    [55, 22], [62, 32, "notable"], [69, 42], [73, 52, "notable"], [72, 62], [66, 71]
-                ]);
-                b.layout["outer13"].links.push("log1high2");
-                //Petite flamme à l'intérieur
-                b.chain("start", "inner", [[42, 74], [38, 64], [39, 54, "notable"], [44, 44], [50, 35, "keystone"], [56, 44], [61, 54, "notable"], [62, 64], [58, 74]]);
-                b.layout["inner9"].links.push("start");
-                return b.layout;
-            },
-
-            //SOLEIL (Hélios) : le départ au centre, un anneau, et 8 rayons (4 longs, 4 courts)
-            sun: function () {
-                const b = createLayoutBuilder();
-                b.add("start", 50, 50, [], "start");
-                for (let i = 0; i < 8; i++) {
-                    const angle = -90 + i * 45;
-                    const ring = polar(50, 50, angle, 9);
-                    b.add("ring" + i, ring[0], ring[1], ["start"], i % 2 === 0 ? "notable" : "minor");
+                //Une rafale : une ligne qui ondule de gauche à droite, puis une boucle autour de (curlX, curlY)
+                function gust(prefix, fromId, y, xs, curlX, curlY, roles) {
+                    const points = xs.map(function (x) { return [x, y + Math.sin(x / 7) * 2]; });
+                    [60, 0, -60, -120, -180].forEach(function (angle) {
+                        points.push(polar(curlX, curlY, angle, 6));
+                    });
+                    Object.keys(roles).forEach(function (index) {
+                        points[index].push(roles[index]);
+                    });
+                    return b.chain(fromId, prefix, points);
                 }
-                for (let i = 0; i < 8; i++) {
-                    b.layout["ring" + i].links.push("ring" + ((i + 1) % 8)); //l'anneau fait le tour
-                    const angle = -90 + i * 45;
-                    const isLong = i % 2 === 0;
-                    const rayPoints = [polar(50, 50, angle, 18), polar(50, 50, angle, 27), polar(50, 50, angle, 36)];
-                    if (isLong) {
-                        rayPoints.push(polar(50, 50, angle, i === 0 ? 44 : 43));
-                        rayPoints[3].push(i === 0 ? "grand" : "keystone");
+                b.add("start", 12, 55, [], "start");
+                gust("mid", "start", 55, [22, 32, 42, 52, 62, 72], 80, 49, { 2: "notable", 4: "notable", 10: "grand" });
+                gust("top", null, 30, [12, 22, 32, 42, 52, 62], 70, 24, { 0: "keystone", 2: "notable", 4: "notable", 8: "notable", 10: "keystone" });
+                gust("low", null, 80, [12, 22, 32, 42, 52], 60, 74, { 1: "notable", 3: "notable", 7: "notable", 9: "keystone" });
+                b.layout["top3"].links.push("mid2");   //les rafales se rejoignent : on peut passer de l'une à l'autre
+                b.layout["low4"].links.push("mid3");
+                return b.layout;
+            },
+
+            //SOLEIL LEVANT (Hélios) : l'horizon, le soleil qui se lève, ses rayons, et son reflet sur l'eau
+            sunrise: function () {
+                const b = createLayoutBuilder();
+                b.add("start", 50, 70, [], "start");
+                b.chain("start", "horizonL", [[41, 70], [32, 70], [23, 70], [14, 70, "keystone"]]);
+                b.chain("start", "horizonR", [[59, 70], [68, 70], [77, 70], [86, 70, "keystone"]]);
+                const arcAngles = [210, 240, 270, 300, 330];
+                b.chain("horizonL2", "sun", arcAngles.map(function (angle) {
+                    const point = polar(50, 70, angle, 18);
+                    if (angle === 270) {
+                        point.push("notable");
+                    }
+                    return point;
+                }));
+                b.layout["sun5"].links.push("horizonR2");
+                const rayEndRoles = { 210: "notable", 240: "notable", 300: "notable", 330: "keystone" };
+                arcAngles.forEach(function (angle, i) {
+                    const ray = [polar(50, 70, angle, 28), polar(50, 70, angle, 38)];
+                    if (angle === 270) {
+                        ray.push(polar(50, 70, angle, 52));
+                        ray[2].push("grand");
                     } else {
-                        rayPoints[2].push("notable");
+                        ray[1].push(rayEndRoles[angle]);
                     }
-                    b.chain("ring" + i, "ray" + i + "_", rayPoints);
-                }
+                    b.chain("sun" + (i + 1), "ray" + angle + "_", ray);
+                });
+                b.add("reflectL", 44, 78, ["start"]);
+                b.add("reflectR", 56, 78, ["start"]);
+                b.add("reflectL2", 47, 87, ["reflectL"], "notable");
+                b.add("reflectR2", 53, 87, ["reflectR"], "notable");
                 return b.layout;
             },
 
-            //TOURBILLON (Éole) : le départ au centre, 3 bras en spirale, comme un tourbillon de vent
-            spiral: function () {
+            //ARC ET FLÈCHE (Artémis) : la corde, l'arc courbé, et la flèche qui le traverse
+            bow: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 50, [], "start");
-                for (let arm = 0; arm < 3; arm++) {
-                    const points = [];
-                    for (let k = 1; k <= 11; k++) {
-                        const angle = -90 + arm * 120 + k * 13; //chaque point tourne un peu plus : ça fait une spirale
-                        const point = polar(50, 50, angle, 7 + k * 3.4);
-                        if (k === 11) {
-                            point.push(arm === 0 ? "grand" : "keystone");
-                        } else if (arm === 0 && k === 7) {
-                            point.push("keystone");
-                        } else if (k === 3 || k === 6 || (arm > 0 && k === 9)) {
-                            point.push("notable");
-                        }
-                        points.push(point);
-                    }
-                    b.chain("start", "arm" + arm + "_", points);
-                }
-                //Un petit anneau au cœur du tourbillon relie les 3 bras
-                for (let arm = 0; arm < 3; arm++) {
-                    b.layout["arm" + arm + "_2"].links.push("arm" + ((arm + 1) % 3) + "_2");
-                }
+                b.add("start", 26, 50, [], "start"); //l'encoche de la flèche, sur la corde
+                b.add("stringTop", 33, 31, ["start"], "notable");
+                b.add("stringBottom", 33, 69, ["start"], "notable");
+                b.add("tipTop", 40, 12, ["stringTop"], "keystone");
+                b.chain("tipTop", "limb", [[52, 18], [60, 28, "notable"], [64, 40], [65, 50], [64, 60], [60, 72, "notable"], [52, 82]]);
+                b.add("tipBottom", 40, 88, ["limb7", "stringBottom"], "keystone");
+                b.chain("start", "arrow", [[36, 50], [46, 50, "notable"], [56, 50]]);
+                b.layout["limb4"].links.push("arrow3"); //la flèche passe par le milieu de l'arc
+                b.chain("limb4", "arrowFront", [[74, 50, "notable"], [82, 50], [90, 50, "grand"]]);
+                b.add("barbTop", 85, 44, ["arrowFront3"], "keystone");
+                b.add("barbBottom", 85, 56, ["arrowFront3"], "notable");
+                b.add("fletchTop", 20, 45, ["start"]);
+                b.add("fletchBottom", 20, 55, ["start"]);
                 return b.layout;
             },
 
@@ -2884,7 +2947,7 @@
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
-                shape: "campfire",            // forme de l'arbre : campfire, waves, flower, sun, spiral ou classic
+                shape: "volcano",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -2917,7 +2980,7 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
-                shape: "waves",            // forme de l'arbre : campfire, waves, flower, sun, spiral ou classic
+                shape: "anchor",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
                 skills: {
                     start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
@@ -2950,7 +3013,7 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
-                shape: "flower",            // forme de l'arbre : campfire, waves, flower, sun, spiral ou classic
+                shape: "wheat",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
                 skills: {
                     start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
                     notables: [
@@ -2983,7 +3046,7 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
-                shape: "spiral",            // forme de l'arbre : campfire, waves, flower, sun, spiral ou classic
+                shape: "wind",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                     notables: [
@@ -3016,7 +3079,7 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
-                shape: "sun",            // forme de l'arbre : campfire, waves, flower, sun, spiral ou classic
+                shape: "sunrise",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic
                 skills: {
                     start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
                     notables: [
@@ -3052,7 +3115,7 @@
                     { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
                 ],
-                shape: "classic",        // la forme à 3 branches gardée de côté
+                shape: "bow",            // forme de l'arbre : volcano, anchor, wheat, wind, sunrise, bow ou classic (la forme à 3 branches gardée de côté)
                 skills: {
                     start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     notables: [
@@ -3121,7 +3184,7 @@
             return Math.round(role === "notable" ? cost * NOTABLE_COST_MULTIPLIER : cost);
         }
 
-        const CONSTELLATION_JITTER = 1.5;   // décalage max des petites étoiles, en % (0 = parfaitement aligné)
+        const CONSTELLATION_JITTER = 0;     // décalage au hasard des petites compétences, en % (0 = parfaitement aligné, 1.5 = plus "naturel")
 
         //Transforme un texte en un nombre entre 0 et 1, toujours le même pour le même texte (un "hasard" qui ne change pas)
         function hashToUnit(text) {
@@ -3291,15 +3354,12 @@
                 if (node.role === "notable" || node.role === "grand") {
                     button.classList.add(node.role); //"notable" ou "grand" : tailles différentes en CSS
                 }
-                //Une étoile + son petit nom en dessous. Chaque étoile scintille avec un décalage différent.
-                const star = document.createElement("span");
-                star.className = "star";
-                star.style.animationDelay = (hashToUnit(node.id) * -3) + "s"; //délai négatif = l'animation a "déjà commencé"
+                //Le petit nom dans la tuile. Les grosses compétences ont un reflet qui passe, chacune à son rythme.
                 const label = document.createElement("span");
                 label.className = "nodeLabel";
                 label.textContent = node.label;
-                button.appendChild(star);
                 button.appendChild(label);
+                button.style.setProperty("--shimmer-delay", (hashToUnit(node.id) * -4) + "s"); //délai négatif = l'animation a "déjà commencé"
                 button.style.left = node.x + "%";
                 button.style.top = node.y + "%";
                 button.addEventListener("mouseenter", function () { showNodeInfo(node); });
