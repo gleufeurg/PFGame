@@ -1250,7 +1250,7 @@
             }
             //Ombre du joueur : un rond à sa base, étiré loin
             const playerShadow = shadowVector(80);
-            fillStretchedCircle(shadowCtx, center.x, center.y + PLAYER_3D_HEIGHT, PLAYER_3D_SIZE * 0.85, playerShadow.x, playerShadow.y, SHADOW_COLOR);
+            fillStretchedCircle(shadowCtx, center.x, center.y, PLAYER_3D_SIZE * 0.6, playerShadow.x, playerShadow.y, SHADOW_COLOR);
 
             ctx.globalAlpha = SHADOW_OPACITY;
             ctx.drawImage(shadowCanvas, 0, 0);
@@ -1436,14 +1436,15 @@
 
         const PLAYER_GLOW_COLOR = "#ffb347";
 
-        //LE JOUEUR : un triangle en 3D (un "prisme" : un triangle avec une épaisseur) qui tourne lentement sur lui-même
-        const PLAYER_SIDES = 3;                 // 3 = triangle (4 = cube, 6 = hexagone...)
-        const PLAYER_3D_SIZE = PLAYER_RADIUS * 1.05;  // rayon du triangle (du centre jusqu'à une pointe)
-        const PLAYER_3D_HEIGHT = PLAYER_RADIUS * 0.35; // moitié de l'épaisseur
-        const PLAYER_TILT = 0.6;                // inclinaison de la caméra (en radians) : on voit le dessus
+        //LE JOUEUR : une pyramide à base triangulaire, vue du dessus, qui tourne lentement sur elle-même
+        const PLAYER_SIDES = 3;                       // nombre de côtés de la base (3 = triangle, 4 = pyramide carrée...)
+        const PLAYER_3D_SIZE = PLAYER_RADIUS * 1.1;   // rayon de la base (du centre jusqu'à un coin)
+        const PLAYER_3D_HEIGHT = PLAYER_RADIUS * 0.9; // hauteur de la pointe
+        const PLAYER_TILT = 1.25;                     // inclinaison de la caméra : 1.57 (= PI/2) = pile au-dessus, moins = un peu de côté
         const PLAYER_3D_ROTATION_SPEED = 0.4;
-        const PLAYER_TOP_COLOR = "#ffe95c";     // dessus jaune
-        const PLAYER_SIDE_COLOR = "#ffb85c";    // côtés orange (plus ou moins foncés selon la lumière)
+        const PLAYER_LIGHT_COLOR = "#ffe95c";         // couleur d'une face bien éclairée (jaune)
+        const PLAYER_DARK_COLOR = "#e8873e";          // couleur d'une face dans l'ombre (orange)
+        const PLAYER_LIGHT_DIRECTION = normalize3D({ x: -0.6, y: -0.7, z: -0.5 }); // la lumière vient d'en haut à gauche
 
         //Tourne un point 3D autour de l'axe vertical (angle), puis l'incline vers la caméra (PLAYER_TILT)
         function rotatePoint3D(x, y, z, angle) {
@@ -1454,36 +1455,59 @@
             return { x: x1, y: y2, z: z2 };
         }
 
+        //Petites fonctions de 3D : soustraction, produit vectoriel, produit scalaire, longueur ramenée à 1
+        function subtract3D(a, b) { return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z }; }
+        function cross3D(a, b) { return { x: a.y * b.z - a.z * b.y, y: a.z * b.x - a.x * b.z, z: a.x * b.y - a.y * b.x }; } //perpendiculaire aux deux
+        function dot3D(a, b) { return a.x * b.x + a.y * b.y + a.z * b.z; }  //"à quel point a et b vont dans le même sens"
+        function normalize3D(v) {
+            const length = Math.hypot(v.x, v.y, v.z);
+            return { x: v.x / length, y: v.y / length, z: v.z / length };
+        }
+
+        //Mélange deux couleurs "#rrggbb" : t = 0 -> colorA, t = 1 -> colorB
+        function mixColor(colorA, colorB, t) {
+            const mix = function (start) {
+                const a = parseInt(colorA.slice(start, start + 2), 16);
+                const b = parseInt(colorB.slice(start, start + 2), 16);
+                return Math.round(a + (b - a) * t);
+            };
+            return "rgb(" + mix(1) + ", " + mix(3) + ", " + mix(5) + ")";
+        }
+
         function drawPlayerShape(cx, cy, isFlashing) {
             const angle = playerRotation * PLAYER_3D_ROTATION_SPEED;
-            const sides = PLAYER_SIDES;
 
-            //Les coins du dessus et du dessous (y négatif = en haut, car y descend à l'écran)
-            const topCorners = [];
-            const bottomCorners = [];
-            for (let i = 0; i < sides; i++) {
-                const cornerAngle = Math.PI * 2 / sides * i;
-                const x = Math.cos(cornerAngle) * PLAYER_3D_SIZE;
-                const z = Math.sin(cornerAngle) * PLAYER_3D_SIZE;
-                const top = rotatePoint3D(x, -PLAYER_3D_HEIGHT, z, angle);
-                const bottom = rotatePoint3D(x, PLAYER_3D_HEIGHT, z, angle);
-                topCorners.push({ x: cx + top.x, y: cy + top.y });
-                bottomCorners.push({ x: cx + bottom.x, y: cy + bottom.y });
+            //La pointe (en haut, y négatif) et les coins de la base (au sol)
+            const apex = rotatePoint3D(0, -PLAYER_3D_HEIGHT, 0, angle);
+            const base = [];
+            for (let i = 0; i < PLAYER_SIDES; i++) {
+                const cornerAngle = Math.PI * 2 / PLAYER_SIDES * i;
+                base.push(rotatePoint3D(Math.cos(cornerAngle) * PLAYER_3D_SIZE, 0, Math.sin(cornerAngle) * PLAYER_3D_SIZE, angle));
             }
+            const middle = rotatePoint3D(0, -PLAYER_3D_HEIGHT / 3, 0, angle); //un point à l'intérieur de la pyramide
 
-            //Les faces : chaque côté (un rectangle), puis le dessus (le triangle)
-            for (let i = 0; i < sides; i++) {
-                const next = (i + 1) % sides;
-                const middleAngle = Math.PI * 2 / sides * (i + 0.5);   // direction vers laquelle ce côté regarde
-                const normal = rotatePoint3D(Math.cos(middleAngle), 0, Math.sin(middleAngle), angle);
-                if (normal.z >= 0) {
-                    continue; //côté tourné vers l'arrière : invisible
+            //Chaque face = un triangle : la pointe + 2 coins voisins de la base
+            for (let i = 0; i < PLAYER_SIDES; i++) {
+                const cornerA = base[i];
+                const cornerB = base[(i + 1) % PLAYER_SIDES];
+
+                //La "normale" = la direction vers laquelle la face regarde
+                let normal = normalize3D(cross3D(subtract3D(cornerA, apex), subtract3D(cornerB, apex)));
+                const faceCenter = { x: (apex.x + cornerA.x + cornerB.x) / 3, y: (apex.y + cornerA.y + cornerB.y) / 3, z: (apex.z + cornerA.z + cornerB.z) / 3 };
+                if (dot3D(normal, subtract3D(faceCenter, middle)) < 0) {
+                    normal = { x: -normal.x, y: -normal.y, z: -normal.z }; //on la retourne pour qu'elle regarde vers l'extérieur
                 }
-                //La lumière vient de la gauche : plus le côté regarde à droite, plus il est foncé
-                const color = isFlashing ? "#e6e6f0" : darkenColor(PLAYER_SIDE_COLOR, 0.82 - 0.18 * normal.x);
-                fillShape(ctx, [topCorners[i], topCorners[next], bottomCorners[next], bottomCorners[i]], 0, 0, color);
+                if (normal.z >= 0) {
+                    continue; //face tournée vers l'arrière : invisible
+                }
+
+                //Plus la face regarde vers la lumière, plus elle est jaune ; sinon elle tire vers l'orange
+                const light = Math.max(0, dot3D(normal, PLAYER_LIGHT_DIRECTION));
+                const color = isFlashing ? mixColor("#c8c8d8", "#ffffff", light) : mixColor(PLAYER_DARK_COLOR, PLAYER_LIGHT_COLOR, light);
+
+                const points = [apex, cornerA, cornerB].map(function (point) { return { x: cx + point.x, y: cy + point.y }; }); //map = transforme chaque élément
+                fillShape(ctx, points, 0, 0, color);
             }
-            fillShape(ctx, topCorners, 0, 0, isFlashing ? "#ffffff" : PLAYER_TOP_COLOR);
         }
 
         function drawPlayer() {
