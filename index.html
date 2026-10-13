@@ -1361,7 +1361,12 @@
 
             for (const enemy of enemies) {
                 const shadow = shadowVector(enemy.size * 2.2);
-                fillStretchedCircle(shadowCtx, enemy.x, enemy.y + getEnemyDepth(enemy), enemy.size, shadow.x, shadow.y, SHADOW_COLOR);
+                const shapePoints = getEnemyShapePoints(enemy, enemy.x, enemy.y + getEnemyDepth(enemy));
+                if (shapePoints === null) {
+                    fillStretchedCircle(shadowCtx, enemy.x, enemy.y + getEnemyDepth(enemy), enemy.size, shadow.x, shadow.y, SHADOW_COLOR);
+                } else {
+                    fillStretchedShape(shadowCtx, shapePoints, shadow.x, shadow.y, SHADOW_COLOR);
+                }
             }
             for (const bullet of bullets) {
                 const shadow = shadowVector(8);
@@ -1716,6 +1721,7 @@
                     sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
                     size: PLANET_SIZE,
                     tree: tree,
+                    fireTimer: Math.random() * PLANET_FIRE_INTERVAL, //décalé au hasard : les planètes ne tirent pas toutes en même temps
                     x: 0,
                     y: 0
                 });
@@ -1755,6 +1761,16 @@
                 const points = getShapePoints(planet.x, planet.y - lift, planet.size, 4, 0);
                 fillStretchedShape(ctx, points, 0, PLANET_DEPTH + lift, planet.sideColor); //l'épaisseur (le côté foncé)
                 fillShape(ctx, points, 0, 0, planet.color);                                //le dessus
+
+                //Son nom au-dessus d'elle quand on la survole
+                if (isHovered) {
+                    ctx.font = "800 15px Nunito";
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = "white";
+                    //Du côté extérieur de l'orbite : au-dessus si la planète est en haut, en dessous si elle est en bas
+                    const labelY = planet.y < center.y ? planet.y - planet.size - 14 : planet.y + planet.size + PLANET_DEPTH + 22;
+                    ctx.fillText(planet.name, planet.x, labelY);
+                }
             }
         }
 
@@ -1962,6 +1978,38 @@
         const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
         const SPECIAL_MOVEMENT_TYPES = ["wave", "zigzag", "spiral"];
         const SPECIAL_OUTLINE_COLOR = "#ffe14d"; // contour jaune des ennemis à mouvement spécial
+        const SHOW_SPECIAL_RING = false;      // true = anneau jaune en plus autour des ennemis à mouvement spécial
+
+        //FORMES : chaque type de mouvement a sa forme, pour le reconnaître d'un coup d'œil
+        const MOVEMENT_SHAPES = {
+            straight: "circle",   // tout droit = rond
+            zigzag: "triangle",   // zigzag = triangle (pointe vers le joueur)
+            wave: "star",         // ondulé = étoile (qui tourne)
+            spiral: "square"      // spirale = carré (qui tourne)
+        };
+
+        //Les points de la forme d'un ennemi (null pour un rond, dessiné avec arc)
+        function getEnemyShapePoints(enemy, x, y) {
+            const shape = MOVEMENT_SHAPES[enemy.movement];
+            if (shape === "triangle") {
+                const towardPlayer = Math.atan2(center.y - enemy.y, center.x - enemy.x);
+                return getShapePoints(x, y, enemy.size * 1.3, 3, towardPlayer + Math.PI / 2); //une pointe dirigée vers le joueur
+            }
+            if (shape === "square") {
+                return getShapePoints(x, y, enemy.size * 1.15, 4, enemy.time * 1.5);
+            }
+            if (shape === "star") {
+                //Étoile à 5 branches : 10 points, alternativement loin (branche) et près (creux) du centre
+                const points = [];
+                for (let i = 0; i < 10; i++) {
+                    const radius = i % 2 === 0 ? enemy.size * 1.35 : enemy.size * 0.65;
+                    const angle = enemy.time * 1.2 - Math.PI / 2 + Math.PI * 2 / 10 * i;
+                    points.push({ x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * radius });
+                }
+                return points;
+            }
+            return null; //rond
+        }
         const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
         const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
         const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
@@ -2058,16 +2106,22 @@
                 const depth = getEnemyDepth(enemy);
                 const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
 
-                //1. L'épaisseur : le rond étiré vers le bas, en plus foncé
-                fillStretchedCircle(ctx, enemy.x, enemy.y, enemy.size, 0, depth, enemy.sideColor);
-                //2. Le dessus : un rond plat
-                ctx.beginPath();
-                ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
-                ctx.fillStyle = topColor;
-                ctx.fill();
+                const shapePoints = getEnemyShapePoints(enemy, enemy.x, enemy.y);
+                if (shapePoints === null) {
+                    //ROND : 1. l'épaisseur (le rond étiré vers le bas, en plus foncé), 2. le dessus
+                    fillStretchedCircle(ctx, enemy.x, enemy.y, enemy.size, 0, depth, enemy.sideColor);
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+                    ctx.fillStyle = topColor;
+                    ctx.fill();
+                } else {
+                    //AUTRES FORMES : même principe avec des points
+                    fillStretchedShape(ctx, shapePoints, 0, depth, enemy.sideColor);
+                    fillShape(ctx, shapePoints, 0, 0, topColor);
+                }
 
-                //Mouvement spécial : un anneau jaune autour de lui
-                if (enemy.movement !== "straight") {
+                //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
+                if (SHOW_SPECIAL_RING && enemy.movement !== "straight") {
                     ctx.beginPath();
                     ctx.arc(enemy.x, enemy.y + depth / 2, enemy.size + 4, 0, Math.PI * 2);
                     ctx.strokeStyle = SPECIAL_OUTLINE_COLOR;
@@ -2086,7 +2140,6 @@
         const BASE_BULLET_SPEED = 400;       // pixels par seconde (multiplié par playerStats.bulletSpeed)
         const BULLET_SIZE = 4;
         const BULLET_COLOR = "#fff6b0";
-        const BULLET_SIDE_COLOR = darkenColor(BULLET_COLOR, SIDE_DARKNESS);
         let fireTimer = 0;
 
         //Renvoie les ennemis à portée, du plus proche au plus loin
@@ -2102,20 +2155,24 @@
             return inRange;
         }
 
-        function shootAt(target) {
+        //Tire une balle de (x, y) vers "target". Par défaut : depuis le joueur, avec ses dégâts et sa couleur.
+        function shootAt(target, x = center.x, y = center.y, damage = playerStats.damage, color = BULLET_COLOR) {
             bullets.push({
-                x: center.x,
-                y: center.y,
+                x: x,
+                y: y,
                 dirX: 0,
                 dirY: 0,
-                target: target
+                target: target,
+                damage: damage,
+                color: color,
+                sideColor: darkenColor(color, SIDE_DARKNESS)
             });
         }
 
-        function hitEnemy(enemy, index) {
-            enemy.health -= playerStats.damage + playerStats.damageVs[enemy.type];
+        function hitEnemy(enemy, index, bullet) {
+            enemy.health -= bullet.damage + playerStats.damageVs[enemy.type];
             enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
-            spawnParticles(enemy.x, enemy.y, BULLET_COLOR, 3, 120);
+            spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
 
             if (enemy.health <= 0) {
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
@@ -2142,6 +2199,8 @@
                 }
             }
 
+            updatePlanetShooting(deltaTime);
+
             //MOVE & HIT
             const maxDistance = Math.hypot(canvas.width, canvas.height) / 2;
             const bulletSpeed = BASE_BULLET_SPEED * playerStats.bulletSpeed;
@@ -2167,7 +2226,7 @@
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
                     if (Math.hypot(enemy.x - bullet.x, enemy.y - bullet.y) <= enemy.size + BULLET_SIZE) {
-                        hitEnemy(enemy, j);
+                        hitEnemy(enemy, j, bullet);
                         hasHit = true;
                         break;
                     }
@@ -2181,13 +2240,41 @@
             }
         }
 
+        //LES PLANÈTES TIRENT AUSSI : lentement, chacune sur l'ennemi le plus proche d'elle, avec des balles de sa couleur
+        const PLANET_FIRE_INTERVAL = 1;      // un tir par seconde
+        const PLANET_DAMAGE = 1;
+        const PLANET_RANGE = 250;            // distance max (depuis la planète) pour viser
+
+        function updatePlanetShooting(deltaTime) {
+            for (const planet of planets) {
+                planet.fireTimer += deltaTime;
+                if (planet.fireTimer < PLANET_FIRE_INTERVAL) {
+                    continue;
+                }
+                //L'ennemi le plus proche de cette planète
+                let closestEnemy = null;
+                let closestDistance = PLANET_RANGE;
+                for (const enemy of enemies) {
+                    const distance = Math.hypot(enemy.x - planet.x, enemy.y - planet.y);
+                    if (distance < closestDistance) {
+                        closestEnemy = enemy;
+                        closestDistance = distance;
+                    }
+                }
+                if (closestEnemy !== null) {
+                    shootAt(closestEnemy, planet.x, planet.y, PLANET_DAMAGE, planet.color);
+                    planet.fireTimer = 0;
+                }
+            }
+        }
+
         const BULLET_TRAIL_LENGTH = 12;   // longueur de la traînée derrière la balle, en pixels
 
         function drawBullets() {
             for (const bullet of bullets) {
                 //Traînée : une ligne qui part de la balle vers l'arrière
                 ctx.globalAlpha = 0.35;
-                ctx.strokeStyle = BULLET_COLOR;
+                ctx.strokeStyle = bullet.color;
                 ctx.lineWidth = 3;
                 ctx.lineCap = "round"; //bouts de ligne arrondis
                 ctx.beginPath();
@@ -2196,10 +2283,10 @@
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
-                fillStretchedCircle(ctx, bullet.x, bullet.y, BULLET_SIZE, 0, 2, BULLET_SIDE_COLOR); //petite épaisseur
+                fillStretchedCircle(ctx, bullet.x, bullet.y, BULLET_SIZE, 0, 2, bullet.sideColor); //petite épaisseur
                 ctx.beginPath();
                 ctx.arc(bullet.x, bullet.y, BULLET_SIZE, 0, Math.PI * 2);
-                ctx.fillStyle = BULLET_COLOR;
+                ctx.fillStyle = bullet.color;
                 ctx.fill();
             }
         }
@@ -2267,7 +2354,8 @@
         //label = texte court dans le rond ; effect = ce que la compétence améliore (voir BASE_STATS)
         const SKILL_TREES_DATA = [
             {
-                name: "Pyro",
+                name: "Vulcain",
+                theme: "Pyro",
                 color: "#ff7a45",
                 project: {
                     title: "Projet 1",
@@ -2295,7 +2383,8 @@
                 }
             },
             {
-                name: "Hydro",
+                name: "Poséidon",
+                theme: "Hydro",
                 color: "#4da6ff",
                 project: {
                     title: "Projet 2",
@@ -2323,7 +2412,8 @@
                 }
             },
             {
-                name: "Flore",
+                name: "Déméter",
+                theme: "Flore",
                 color: "#55dd55",
                 project: {
                     title: "Projet 3",
@@ -2351,7 +2441,8 @@
                 }
             },
             {
-                name: "Aéro",
+                name: "Hélios",
+                theme: "Aéro",
                 color: "#e0f7ff",
                 project: {
                     title: "Projet 4",
@@ -2379,7 +2470,8 @@
                 }
             },
             {
-                name: "Cosmos",
+                name: "Ouranos",
+                theme: "Cosmos",
                 color: "#ffd84d",
                 project: {
                     title: "Projet 5",
@@ -2455,7 +2547,7 @@
                 }
             }
 
-            return { name: treeData.name, color: treeData.color, project: treeData.project, nodes: nodes };
+            return { name: treeData.name, theme: treeData.theme, color: treeData.color, project: treeData.project, nodes: nodes };
         }
 
         const SKILL_TREES = [];
@@ -2506,7 +2598,7 @@
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
-            treeTitle.textContent = tree.name;
+            treeTitle.textContent = tree.name + " · " + tree.theme; //ex : "Vulcain · Pyro"
             nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
@@ -2790,6 +2882,9 @@
             enemies.length = 0;
             bullets.length = 0;
             particles.length = 0;
+            for (const planet of planets) {
+                planet.fireTimer = Math.random() * PLANET_FIRE_INTERVAL;
+            }
             shockwaves.length = 0;
             enemySpawnTimer = 0;
             runTime = 0;
