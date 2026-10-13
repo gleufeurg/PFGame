@@ -2875,6 +2875,7 @@
                 speed: stats.speed,
                 size: size,
                 health: health,
+                maxHealth: health,      // sa vie de départ (sert pour l'exécution des combos)
                 gold: stats.gold,
                 xp: stats.xp,
                 angle: Math.random() * Math.PI * 2,
@@ -3093,6 +3094,17 @@
                     drawBossInfo(enemy);
                 }
 
+                //Affaibli : petit anneau violet en pointillés. Empoisonné : vert.
+                if (enemy.weakTimer > 0 || enemy.poisonTimer > 0) {
+                    ctx.setLineDash([4, 4]); //trait en pointillés : 4 pixels de trait, 4 de vide
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size + 6, 0, Math.PI * 2);
+                    ctx.strokeStyle = enemy.weakTimer > 0 ? "#c77dff" : "#9be22d";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
                 //Statuts des combos : un anneau bleu glacé si gelé, bleu pâle si ralenti
                 if (enemy.freezeTimer > 0 || enemy.slowTimer > 0) {
                     ctx.beginPath();
@@ -3168,6 +3180,11 @@
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
             applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
             damageEnemy(enemy, damage, "enemyHit");
+            //Exécution : un ennemi normal presque mort est achevé d'un coup
+            if (getBulletEffect(bullet, "execute") > 0 && !enemy.isBoss && enemies.includes(enemy) && enemy.health <= enemy.maxHealth * COMBO_EXECUTE_THRESHOLD) {
+                spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 10);
+                damageEnemy(enemy, enemy.health + 1, null);
+            }
         }
 
         //Enlève des PV à un ennemi, et s'occupe de sa mort (récompenses, éclats, son). sound = son si il survit (ou null)
@@ -3176,10 +3193,16 @@
             if (index === -1) {
                 return; //déjà mort
             }
+            if (enemy.weakTimer > 0) {
+                amount *= COMBO_WEAKEN_MULTIPLIER; //affaibli : subit plus de dégâts
+            }
             enemy.health -= amount;
             enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
 
             if (enemy.health <= 0) {
+                if (enemy.poisonTimer > 0) {
+                    spreadPoison(enemy);
+                }
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
                 enemies.splice(index, 1);
                 if (enemy.isBoss) {
@@ -3286,7 +3309,7 @@
                             effects.push({ type: type, power: item.strength });
                         }
                     }
-                    const ringColor = combos.length > 0 ? ATTRIBUTES[combos[0].attribute].color : null;
+                    const ringColor = combos.length > 0 ? getComboColor(combos[0]) : null;
                     shootAt(closestEnemy, planet.x, planet.y, PLANET_DAMAGE, planet.color, effects, ringColor);
                     planet.fireTimer = 0;
                 }
@@ -3307,13 +3330,13 @@
             aegis: { name: "Égide", icon: "🛡️", color: "#e8b07a" }
         };
 
-        //Les options de lien. strength = force des effets (les deux côtés = plus de combos mais chacun plus faible,
-        //opposé = un seul combo mais plus fort, car la planète est loin)
+        //Les options de lien. strength = force des effets (opposé = plus fort, car la planète est loin).
+        //"Les deux côtés" ne donne pas 2 attributs : les attributs des 2 voisines fusionnent en UN attribut unique.
         const LINK_MODES = {
             none: { name: "Aucun", strength: 0 },
             left: { name: "Gauche", strength: 1 },
             right: { name: "Droite", strength: 1 },
-            both: { name: "Les deux côtés", strength: 0.65 },
+            both: { name: "Les deux côtés", strength: 1 },       // les 2 voisines FUSIONNENT en un attribut unique (voir FUSIONS)
             opposite: { name: "Opposé", strength: 1.4 }
         };
 
@@ -3343,6 +3366,32 @@
             "aegis+moon": { name: "Chouette", description: "les balles rebondissent sur un autre ennemi", effects: ["chain"] }
         };
 
+        //LES FUSIONS ("Les deux côtés") : les attributs des 2 voisines fusionnent en un attribut unique, avec son propre effet.
+        //La clé = les 2 attributs des VOISINES (pas celui de la planète elle-même), dans l'ordre alphabétique.
+        const FUSIONS = {
+            "fire+water": { name: "Brume", description: "un nuage ralentit les ennemis autour, et ils subissent +50% de dégâts", effects: ["slowArea", "weaken"] },
+            "fire+plant": { name: "Cendre", description: "poison : l'ennemi perd des PV, et s'il meurt le poison saute sur ses voisins", effects: ["poison"] },
+            "air+fire": { name: "Tempête de feu", description: "grosse explosion qui fait brûler tous les ennemis touchés", effects: ["explosion", "explosion", "burnArea"] },
+            "fire+light": { name: "Plasma", description: "les balles traversent 2 ennemis et font +50% de dégâts", effects: ["pierce", "pierce", "damageBoost"] },
+            "fire+moon": { name: "Météore", description: "un météore s'écrase sur un autre ennemi au hasard (x3 dégâts)", effects: ["meteor"] },
+            "aegis+fire": { name: "Magma", description: "explosion qui repousse tous les ennemis autour", effects: ["explosion", "knockbackArea"] },
+            "plant+water": { name: "Marais", description: "un marais toxique ralentit et empoisonne autour de l'impact", effects: ["slowArea", "poison"] },
+            "air+water": { name: "Blizzard", description: "gèle tous les ennemis autour de l'impact", effects: ["freezeArea"] },
+            "light+water": { name: "Prisme", description: "la balle se divise en 3 rayons vers d'autres ennemis", effects: ["split", "split3"] },
+            "moon+water": { name: "Abysses", description: "un tourbillon attire les ennemis autour vers l'impact", effects: ["vortex"] },
+            "aegis+water": { name: "Corail", description: "chaque coup te soigne et recharge ton bouclier plus vite", effects: ["heal", "shieldCharge"] },
+            "air+plant": { name: "Spores", description: "poison qui se propage, et la balle éclate en graines", effects: ["poison", "split"] },
+            "light+plant": { name: "Sève dorée", description: "chaque coup rapporte de l'or ET de l'XP", effects: ["gold", "xp"] },
+            "moon+plant": { name: "Sylve", description: "enracine tous les ennemis autour de l'impact", effects: ["rootArea"] },
+            "aegis+plant": { name: "Chêne", description: "recharge ton bouclier plus vite et repousse l'ennemi", effects: ["shieldCharge", "knockback"] },
+            "air+light": { name: "Orage", description: "la foudre rebondit sur 3 ennemis proches", effects: ["chain", "chain3"] },
+            "air+moon": { name: "Comète", description: "les balles traversent les ennemis et peuvent faire un critique", effects: ["pierce", "crit"] },
+            "aegis+air": { name: "Cyclone", description: "repousse tous les ennemis autour de l'impact", effects: ["knockbackArea", "knockbackArea"] },
+            "light+moon": { name: "Étoile", description: "critiques, et achève les ennemis presque morts (moins de 20% de vie)", effects: ["crit", "execute"] },
+            "aegis+light": { name: "Auréole", description: "chaque coup te soigne, et l'ennemi subit +50% de dégâts", effects: ["heal", "weaken"] },
+            "aegis+moon": { name: "Nuit", description: "l'ennemi subit +50% de dégâts et est achevé s'il est presque mort", effects: ["weaken", "execute"] }
+        };
+
         //Réglages des effets (pour un combo de force 1)
         const COMBO_EXPLOSION_RADIUS = 70;      // pixels
         const COMBO_EXPLOSION_DAMAGE = 0.8;     // x les dégâts de la balle, pour chaque ennemi autour
@@ -3352,6 +3401,7 @@
         const COMBO_SLOW_FACTOR = 0.45;         // vitesse des ennemis ralentis (45%)
         const COMBO_FREEZE_DURATION = 1.2;      // gelé = immobile
         const COMBO_ROOT_DURATION = 0.6;
+        const COMBO_FREEZE_AREA_DURATION = 0.7; // gel de zone (Blizzard) : plus court, car il touche beaucoup d'ennemis
         const COMBO_KNOCKBACK = 30;             // pixels de recul
         const COMBO_HEAL = 0.08;                // PV rendus par coup
         const COMBO_GOLD = 0.15;                // or par coup
@@ -3363,6 +3413,24 @@
         const COMBO_CHAIN_RANGE = 160;          // distance max du rebond
         const COMBO_CHAIN_DAMAGE = 0.7;
         const COMBO_SPLIT_DAMAGE = 0.5;
+        const COMBO_WEAKEN_DURATION = 3;        // "affaibli" : subit plus de dégâts
+        const COMBO_WEAKEN_MULTIPLIER = 1.5;
+        const COMBO_POISON_DURATION = 4;
+        const COMBO_POISON_DPS = 0.5;
+        const COMBO_POISON_SPREAD = 2;          // nombre de voisins contaminés quand un empoisonné meurt
+        const COMBO_METEOR_DAMAGE = 3;
+        const COMBO_VORTEX_RADIUS = 110;
+        const COMBO_VORTEX_PULL = 0.6;          // 0 = n'attire pas, 1 = colle tout le monde sur l'impact
+        const COMBO_SHIELD_CHARGE = 0.6;        // secondes de recharge du bouclier gagnées par coup
+        const COMBO_EXECUTE_THRESHOLD = 0.2;    // achève sous 20% de vie (pas les super ennemis)
+
+        //Couleur d'un combo : celle de l'attribut emprunté, ou le mélange des 2 pour une fusion
+        function getComboColor(item) {
+            if (item.fusion) {
+                return mixHex(ATTRIBUTES[item.fusion[0]].color, ATTRIBUTES[item.fusion[1]].color, 0.5);
+            }
+            return ATTRIBUTES[item.attribute].color;
+        }
 
         function getComboKey(attributeA, attributeB) {
             return [attributeA, attributeB].sort().join("+"); //sort = range dans l'ordre alphabétique, join = colle avec "+"
@@ -3387,10 +3455,18 @@
             return linked.filter(function (other, i) { return other !== planet && linked.indexOf(other) === i; }); //sans doublon
         }
 
-        //Les combos actifs d'une planète : [{ attribute, partner, combo, strength }]
+        //Les combos actifs d'une planète : [{ attribute, partner, combo, strength, fusion }]
         function getPlanetCombos(planet) {
             const result = [];
-            for (const partner of getLinkedPlanets(planet)) {
+            const linked = getLinkedPlanets(planet);
+            //LES DEUX CÔTÉS : les 2 voisines fusionnent en un attribut unique (un seul effet, pas deux)
+            if (planet.tree.linkMode === "both" && linked.length === 2) {
+                const attributes = [linked[0].tree.element, linked[1].tree.element];
+                const fusion = FUSIONS[getComboKey(attributes[0], attributes[1])];
+                result.push({ attribute: attributes[0], fusion: attributes, partner: linked[0], combo: fusion, strength: LINK_MODES.both.strength });
+                return result;
+            }
+            for (const partner of linked) {
                 const attribute = partner.tree.element;
                 if (attribute === planet.tree.element) {
                     continue; //même attribut : pas de combo
@@ -3483,6 +3559,76 @@
                     shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE * power("chain"), bullet.color, [], ATTRIBUTES.light.color);
                 }
             }
+            if (power("chain3") > 0) { //Orage : en plus du 1er rebond, 2 autres éclairs
+                let except = bullet.alreadyHit.concat([enemy]);
+                for (let i = 0; i < 2; i++) {
+                    const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE * 1.3, except);
+                    if (next === null) {
+                        break;
+                    }
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE, bullet.color, [], ATTRIBUTES.light.color);
+                    except = except.concat([next]);
+                }
+            }
+            if (power("split3") > 0) { //Prisme : une 3e balle en plus des 2 graines
+                const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE * 1.5, bullet.alreadyHit.concat([enemy]));
+                if (next !== null) {
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE, bullet.ringColor || bullet.color);
+                }
+            }
+            if (power("weaken") > 0) {
+                enemy.weakTimer = COMBO_WEAKEN_DURATION * power("weaken");
+            }
+            if (power("poison") > 0) {
+                poisonEnemy(enemy, bullet.damage * COMBO_POISON_DPS * power("poison"));
+            }
+            if (power("burnArea") > 0) {
+                for (const other of enemies) {
+                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS * 1.4 + other.size) {
+                        other.burnTimer = COMBO_BURN_DURATION;
+                        other.burnDps = Math.max(other.burnDps || 0, bullet.damage * COMBO_BURN_DPS);
+                    }
+                }
+            }
+            if (power("freezeArea") > 0 || power("rootArea") > 0) {
+                const duration = power("freezeArea") > 0 ? COMBO_FREEZE_AREA_DURATION : COMBO_ROOT_DURATION;
+                spawnShockwave(enemy.x, enemy.y, power("freezeArea") > 0 ? "#9be8ff" : ATTRIBUTES.plant.color, COMBO_EXPLOSION_RADIUS);
+                for (const other of enemies) {
+                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
+                        other.freezeTimer = Math.max(other.freezeTimer || 0, duration);
+                    }
+                }
+            }
+            if (power("knockbackArea") > 0) {
+                spawnShockwave(enemy.x, enemy.y, "#ffffff", COMBO_EXPLOSION_RADIUS);
+                for (const other of enemies) {
+                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
+                        other.distance = Math.min(other.startDistance, other.distance + COMBO_KNOCKBACK * power("knockbackArea"));
+                    }
+                }
+            }
+            if (power("vortex") > 0) {
+                //Les ennemis autour se rapprochent de l'impact : on rapproche leur distance ET leur angle de ceux de la cible
+                spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.water.color, COMBO_VORTEX_RADIUS);
+                for (const other of enemies) {
+                    if (other !== enemy && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_VORTEX_RADIUS) {
+                        other.distance += (enemy.distance - other.distance) * COMBO_VORTEX_PULL;
+                        other.angle += wrapAngle(enemy.angle - other.angle) * COMBO_VORTEX_PULL;
+                    }
+                }
+            }
+            if (power("meteor") > 0) {
+                const others = enemies.filter(function (other) { return other !== enemy; });
+                if (others.length > 0) {
+                    const target = pickRandom(others);
+                    spawnShockwave(target.x, target.y, ATTRIBUTES.fire.color, target.size + 30);
+                    spawnParticles(target.x, target.y, "#ffb347", 14, 280);
+                    damageEnemy(target, bullet.damage * COMBO_METEOR_DAMAGE * power("meteor"), "enemyHit");
+                }
+            }
+            if (power("shieldCharge") > 0 && playerStats.shield > 0) {
+                shieldTimer += COMBO_SHIELD_CHARGE * power("shieldCharge");
+            }
             if (power("split") > 0) {
                 let except = bullet.alreadyHit.concat([enemy]);
                 for (let i = 0; i < 2; i++) {
@@ -3496,9 +3642,41 @@
             }
         }
 
-        //Les statuts des ennemis (brûlure, ralenti, gelé) : appelé à chaque image. Renvoie la vitesse (1 = normale)
+        function poisonEnemy(enemy, dps) {
+            enemy.poisonTimer = COMBO_POISON_DURATION;
+            enemy.poisonDps = Math.max(enemy.poisonDps || 0, dps);
+        }
+
+        //Un ennemi empoisonné meurt : le poison saute sur ses voisins les plus proches
+        function spreadPoison(enemy) {
+            let except = [enemy];
+            for (let i = 0; i < COMBO_POISON_SPREAD; i++) {
+                const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE, except);
+                if (next === null) {
+                    break;
+                }
+                poisonEnemy(next, enemy.poisonDps);
+                spawnParticles(next.x, next.y, "#9be22d", 6, 120);
+                except = except.concat([next]);
+            }
+        }
+
+        //Les statuts des ennemis (brûlure, poison, ralenti, gelé, affaibli) : appelé à chaque image. Renvoie la vitesse (1 = normale)
         function updateEnemyStatus(enemy, deltaTime) {
             let speedFactor = 1;
+            if (enemy.weakTimer > 0) {
+                enemy.weakTimer -= deltaTime;
+            }
+            if (enemy.poisonTimer > 0) {
+                enemy.poisonTimer -= deltaTime;
+                if (Math.random() < deltaTime * 6) {
+                    spawnParticles(enemy.x, enemy.y - enemy.size / 2, "#9be22d", 1, 30); //petites bulles vertes
+                }
+                damageEnemy(enemy, enemy.poisonDps * deltaTime, null);
+                if (!enemies.includes(enemy)) {
+                    return 0;
+                }
+            }
             if (enemy.slowTimer > 0) {
                 enemy.slowTimer -= deltaTime;
                 speedFactor = COMBO_SLOW_FACTOR;
@@ -4382,9 +4560,12 @@
             }
             for (const item of combos) {
                 const card = createElementWithText("div", "comboCard", "");
-                card.style.setProperty("--combo-color", ATTRIBUTES[item.attribute].color);
+                card.style.setProperty("--combo-color", getComboColor(item));
                 const strength = item.strength === 1 ? "" : " (force x" + item.strength + ")";
-                card.appendChild(createElementWithText("strong", "", own.icon + " + " + ATTRIBUTES[item.attribute].icon + "  " + item.combo.name));
+                const title = item.fusion
+                    ? "Fusion " + ATTRIBUTES[item.fusion[0]].icon + " + " + ATTRIBUTES[item.fusion[1]].icon + " → " + item.combo.name
+                    : own.icon + " + " + ATTRIBUTES[item.attribute].icon + "  " + item.combo.name;
+                card.appendChild(createElementWithText("strong", "", title));
                 card.appendChild(document.createTextNode(item.combo.description + strength)); //createTextNode = un simple morceau de texte
                 orbitLinkArea.appendChild(card);
             }
