@@ -21,6 +21,7 @@ Images de référence pour les formes des skill trees, et les choix de style val
   - débloquée : remplie, avec un cœur blanc.
 - Le nom est écrit sous l'étoile.
 - Pas d'aura ni de flou lumineux.
+- Les liens entre compétences ne doivent jamais se croiser. Le jeu le vérifie et affiche un avertissement dans la console (F12) si c'est le cas.
 - Les tuiles hexagonales ont été essayées, puis abandonnées.
 
 ## Style général

@@ -2964,10 +2964,9 @@
                 b.add("start", 8, 54, [], "start");
                 gust("mid", "start", [17, 26, 35, 44, 53, 62, 70], 82, 40, 12, { 2: "notable", 5: "notable", 10: "notable", 15: "grand" });
                 gust("top", null, [14, 23, 32, 41, 50, 58], 68, 22, 10, { 0: "keystone", 3: "notable", 9: "notable", 14: "keystone" });
-                gust("low", null, [22, 31, 40, 48], 60, 62, 9, { 1: "notable", 3: "notable", 7: "notable", 12: "keystone" });
+                gust("low", null, [22, 31, 40, 48], 60, 70, 9, { 1: "notable", 3: "notable", 7: "notable", 12: "keystone" });
                 b.layout["top3"].links.push("mid3");   //les souffles se rejoignent : on peut passer de l'un à l'autre
                 b.layout["low2"].links.push("mid3");
-                b.layout["low4"].links.push("mid6");
                 return b.layout;
             },
 
@@ -3444,7 +3443,33 @@
                 }
             }
 
+            warnCrossingLinks(treeData.name, nodes);
             return { name: treeData.name, color: treeData.color, project: treeData.project, isLocked: treeData.locked === true, nodes: nodes };
+        }
+
+        //VÉRIFICATION : prévient dans la console (F12) si deux liens d'un arbre se croisent, pour corriger la forme
+        function warnCrossingLinks(treeName, nodes) {
+            const segments = [];
+            for (const node of nodes) {
+                for (const linkedId of node.links) {
+                    segments.push([node, nodes.find(function (other) { return other.id === linkedId; })]);
+                }
+            }
+            //De quel côté de la ligne (a → b) se trouve le point c ? (> 0 d'un côté, < 0 de l'autre)
+            const side = function (a, b, c) { return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x); };
+            for (let i = 0; i < segments.length; i++) {
+                for (let j = i + 1; j < segments.length; j++) {
+                    const [a, b] = segments[i];
+                    const [c, d] = segments[j];
+                    if (a === c || a === d || b === c || b === d) {
+                        continue; //deux liens qui partent de la même compétence ne se "croisent" pas
+                    }
+                    //Ils se croisent si c et d sont de part et d'autre de (a, b), ET a et b de part et d'autre de (c, d)
+                    if (side(a, b, c) * side(a, b, d) < 0 && side(c, d, a) * side(c, d, b) < 0) {
+                        console.warn(treeName + " : le lien " + a.id + "–" + b.id + " croise le lien " + c.id + "–" + d.id);
+                    }
+                }
+            }
         }
 
         const SKILL_TREES = [];
