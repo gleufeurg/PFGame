@@ -2868,25 +2868,33 @@
         }
 
         const TREE_SHAPES = {
-            //FLAMME (Vulcain) : le contour arrondi en bas, la grande pointe, une 2e pointe à droite, et la langue de feu à l'intérieur
+            //FLAMME (Vulcain) : trois langues de feu comme sur le dessin. Au milieu la plus haute (grande keystone à sa pointe),
+            //à gauche une langue large et arrondie, à droite une plus petite qui se recourbe.
+            //Les points sont pris sur l'image d'origine (en pixels) puis convertis en % avec toPercent.
             fire: function () {
                 const b = createLayoutBuilder();
-                b.add("start", 50, 78, [], "start");
-                b.add("bottom", 50, 88, ["start"]);
-                //Le bas arrondi : un demi-cercle de chaque côté
-                b.chain("bottom", "arcL", [polar(50, 66, 120, 22).concat("notable"), polar(50, 66, 150, 22), polar(50, 66, 180, 22)]);
-                b.chain("bottom", "arcR", [polar(50, 66, 60, 22).concat("notable"), polar(50, 66, 30, 22), polar(50, 66, 0, 22).concat("notable")]);
-                //Le bord gauche monte jusqu'à la grande pointe
-                b.chain("arcL3", "edgeL", [[29, 54, "notable"], [32, 43], [37, 32, "keystone"], [43, 22], [48, 14, "notable"], [53, 6, "grand"]]);
-                //Le bord droit redescend, creuse un peu, puis remonte en une 2e pointe
-                b.chain("edgeL6", "edgeR", [[57, 17], [61, 29], [64, 40, "notable"], [70, 33], [75, 25, "keystone"], [77, 37], [76, 48, "notable"], [74, 57]]);
-                b.layout["edgeR8"].links.push("arcR3");
-                //La langue de feu au milieu : une courbe en S
-                b.chain("start", "tongue", [[45, 70], [43, 60], [46, 50, "notable"], [51, 42], [55, 34, "keystone"]]);
-                b.layout["tongue5"].links.push("edgeR2");
-                //Une petite flamme intérieure à droite
-                b.chain("start", "inner", [[56, 70], [60, 60], [61, 50]]);
-                b.layout["inner3"].links.push("edgeR3");
+                const toPercent = function (point) { return [50 + (point[0] - 390) * 0.165, 6 + (point[1] - 100) * 0.165, point[2]]; };
+                const startPoint = toPercent([440, 605]);
+                b.add("start", startPoint[0], startPoint[1], [], "start");
+                //Langue du milieu : le bord gauche monte jusqu'à la pointe, le bord droit redescend jusqu'au départ
+                b.chain("start", "midL", [
+                    [442, 545], [430, 485, "notable"], [400, 432], [365, 385], [340, 325, "notable"], [345, 255], [375, 175, "notable"], [430, 105, "grand"]
+                ].map(toPercent));
+                b.chain("midL8", "midR", [
+                    [415, 180], [405, 255], [415, 325, "notable"], [445, 385], [475, 440], [485, 500, "notable"], [472, 560]
+                ].map(toPercent));
+                b.layout["midR7"].links.push("start");
+                //Langue de gauche : son bord extérieur fait le tour par le bas, puis remonte jusqu'à sa pointe
+                b.chain("start", "left", [
+                    [395, 608], [340, 606], [285, 583, "notable"], [238, 535], [205, 470], [196, 400, "keystone"], [212, 330, "notable"], [250, 275], [300, 245, "keystone"]
+                ].map(toPercent));
+                b.layout["left9"].links.push("midL5");
+                //Langue de droite : le bord extérieur monte jusqu'à sa pointe, puis le bord intérieur se recourbe vers le milieu
+                b.chain("start", "right", [
+                    [492, 590], [535, 553], [568, 497, "notable"], [582, 432], [576, 370], [556, 318], [525, 282, "keystone"]
+                ].map(toPercent));
+                b.chain("right7", "rightIn", [[540, 340], [538, 392], [505, 412]].map(toPercent));
+                b.layout["rightIn3"].links.push("midR5");
                 return b.layout;
             },
 
