@@ -1,0 +1,24 @@
+# Game design
+
+Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé par le jeu : il n'existe que dans le dépôt GitHub.
+
+**Règle :** à chaque changement dans le jeu, les documents concernés sont mis à jour dans le même commit.
+
+| Document | Contenu | Comment il est tenu à jour |
+| --- | --- | --- |
+| [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
+| [skills/](skills/README.md) | les 12 skill trees, les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
+| [ennemis.md](ennemis.md) | ennemis normaux, apparition, mouvements spéciaux, super ennemis, effets subis | écrit à la main |
+| [codes-triche.md](codes-triche.md) | les codes pour tester plus vite | écrit à la main |
+| [direction-artistique/](direction-artistique/README.md) | les choix de style et les images de référence des formes | écrit à la main |
+| [mythologie/](mythologie/README.md) | l'arbre généalogique des dieux grecs | page autonome |
+
+## Régénérer les documents automatiques
+
+Il faut [Node.js](https://nodejs.org/) et Playwright (`npm install playwright`), puis, depuis la racine du dépôt :
+
+```
+node game-design/outils/generer-docs.js
+```
+
+Le script ouvre `index.html` dans un navigateur invisible, lit les données du jeu (skill trees, shop, combos) et réécrit `prix.md` et `skills/`.

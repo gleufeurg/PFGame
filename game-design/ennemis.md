@@ -1,0 +1,99 @@
+# Les ennemis
+
+Tous les chiffres viennent du code du jeu (`index.html`), partie `ENEMIES`.
+
+## Les ennemis normaux
+
+Il y a 4 ennemis normaux, un par élément, et chacun a 25 % de chances d'apparaître. Plus un ennemi est solide, plus il est lent. Pour comparer : le joueur commence avec 10 PV et ses balles font 1 dégât.
+
+| Ennemi | Couleur | Vie (PV) | Vitesse (px/s) | Dégâts s'il touche le joueur | Or | XP |
+| --- | --- | --- | --- | --- | --- | --- |
+| Feu | `#ff5533` | 1 à 3 | 90 | 0,1 à 0,3 | 1 | 1 |
+| Air | `#e0f7ff` | 1 à 2 | 70 | 0,1 à 0,2 | 1 | 1 |
+| Eau | `#4da6ff` | 2 à 4 | 50 | 0,2 à 0,4 | 1 | 1 |
+| Plante | `#55dd55` | 4 à 7 | 35 | 0,4 à 0,7 | 1 | 1 |
+
+- **Dégâts :** un ennemi qui touche le joueur lui retire ses PV restants ÷ 10 (`ENEMY_DAMAGE_DIVIDER`), puis disparaît. Un ennemi déjà abîmé fait donc moins mal.
+- **Taille :** rayon = 4 px + 2,5 px par PV. Une plante à 7 PV fait 21,5 px de rayon, un feu à 1 PV 6,5 px. L'ennemi rétrécit quand on l'abîme.
+- **Récompenses :** chaque ennemi normal donne 1 or et 1 XP, avant les bonus des skills (« or gagné », « XP gagnée »).
+
+## L'apparition
+
+Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,25 s atteint vers 4 min 30. Chacun naît juste au bord de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
+
+| Temps de jeu | Écart entre deux ennemis | Ennemis par minute |
+| --- | --- | --- |
+| 0:00 | 1,6 s | 38 |
+| 0:30 | 1,0 s | 60 |
+| 1:00 | 0,73 s | 83 |
+| 2:00 | 0,47 s | 128 |
+| 3:00 | 0,35 s | 173 |
+| 4:30 et après | 0,25 s | 240 |
+
+Formule : écart = 1,6 ÷ (1 + 0,02 × secondes de jeu), jamais moins de 0,25 s. Les réglages sont `ENEMY_SPAWN_INTERVAL_START`, `ENEMY_SPAWN_RAMP`, `ENEMY_SPAWN_INTERVAL_MIN` et `ENEMY_FIRST_SPAWN_DELAY`.
+
+## Les mouvements spéciaux
+
+Aucun mouvement spécial avant 1:00. Chacun se débloque à son heure : à ce moment-là, un premier ennemi avec ce mouvement apparaît tout de suite, avec le message « Nouveau mouvement », pour montrer au joueur ce qui l'attend (`MOVEMENT_UNLOCKS`, `MOVEMENT_VARIATION_TIME`).
+
+| Temps de jeu | Ce qui change |
+| --- | --- |
+| 1:00 | Spirale |
+| 5:00 | Zigzag |
+| 10:00 | Onduleux |
+| 12:30 | les mouvements varient : vitesse, charges (arrêts puis départs brusques), forme de la spirale, sens de rotation |
+
+10 % des ennemis normaux ont un mouvement spécial (`SPECIAL_MOVEMENT_CHANCE`), choisi au hasard parmi les mouvements déjà débloqués ; les 90 % autres vont tout droit. Leur forme change selon le mouvement, avec un contour jaune (`#ffe14d`), pour les reconnaître d'un coup d'œil. Avant 12:30, tous les ennemis d'un même mouvement bougent de la même façon ; ensuite, chacun tire ses propres réglages à son apparition. Les écarts diminuent en approchant du joueur, pour que l'ennemi finisse par le toucher.
+
+| Mouvement | Forme | Ce qu'il fait | Réglages avant 12:30 | Réglages tirés au hasard (à partir de 12:30) |
+| --- | --- | --- | --- | --- |
+| Tout droit | rond | fonce vers le joueur | aucun | aucun |
+| Spirale | hexagone qui tourne | tourne autour du joueur en se rapprochant | sens horaire, vitesse de rotation 0,4, cercle parfait | sens horaire ou anti-horaire ; vitesse de rotation 0,24 à 0,6 ; forme plus ou moins ovale (0 à 60 %), étirée dans une direction au hasard |
+| Zigzag | triangle, pointe dans la direction où il va | traits en diagonale | largeur 40 px, trait de 0,6 s, tous pareils, sans arrêt | largeur 16 à 68 px ; durée d'un trait 0,25 à 1,1 s ; irrégularité 0 à 60 % ; 40 % de chances de s'arrêter à chaque virage (30 à 55 % du trait) puis de repartir d'un coup |
+| Onduleux | étoile à 5 branches qui tourne | avance en vagues sur le côté | largeur 40 px, fréquence 3 | largeur 20 à 64 px ; vagues plus ou moins serrées (×0,5 à ×1,6) ; point de départ de la vague |
+
+Les réglages communs sont `ENEMY_WAVE_AMPLITUDE` (40 px), `ENEMY_WAVE_FREQUENCY` (3), `ENEMY_SPIRAL_SPEED` (0,4), `ZIGZAG_STOP_AND_GO_CHANCE` (0,4) et `SPIRAL_OVAL_MAX` (0,6).
+
+## Les super ennemis
+
+Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, avec une alerte « X arrive ! ». Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui retire ses PV restants ÷ 10 : un Cerbère intact fait 4 dégâts, un Cronos intact 120.
+
+| Arrivée | Super ennemi | Élément | Vie (PV) | Vitesse (px/s) | Taille (rayon, px) | Pointes | Dégâts s'il touche (intact) | Or | XP |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1:00 | Cerbère | feu | 40 | 12 | 34 | 3 | 4 | 15 | 15 |
+| 2:00 | Hydre de Lerne | eau | 90 | 11 | 38 | 9 | 9 | 25 | 25 |
+| 3:00 | Méduse | plante | 160 | 10 | 42 | 6 | 16 | 40 | 40 |
+| 4:00 | Typhon | air | 260 | 10 | 46 | 4 | 26 | 60 | 60 |
+| 5:00 | Chimère | feu | 400 | 9 | 50 | 5 | 40 | 90 | 90 |
+| 6:00 | Charybde | eau | 600 | 9 | 54 | 8 | 60 | 130 | 130 |
+| 7:00 | Python | plante | 850 | 8 | 58 | 7 | 85 | 180 | 180 |
+| 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 120 | 260 | 260 |
+
+- **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie.
+- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`).
+- **La liste des vaincus est sauvegardée** dans le navigateur, d'une partie à l'autre.
+- **Son élément compte** pour les bonus des skills « +X dégâts contre les ennemis de feu », etc.
+
+## Les effets que subissent les ennemis
+
+Les combos et fusions d'orbite des planètes ajoutent des effets aux balles (le détail des combos est dans [skills/0-combos.md](skills/0-combos.md)). Les dégâts sont exprimés en « × dégâts de la balle » ; un combo plus puissant multiplie ces valeurs.
+
+| Effet | Ce qu'il fait à l'ennemi | Valeurs de base | Super ennemis |
+| --- | --- | --- | --- |
+| Brûlure | perd des PV chaque seconde | 0,6 × par seconde pendant 3 s | oui |
+| Poison | perd des PV chaque seconde ; à sa mort, contamine ses voisins | 0,5 × par seconde pendant 4 s ; 2 voisins | oui |
+| Saignement | perd des PV chaque seconde ; chaque coup en rajoute | +0,3 × par seconde par coup, 3 × maximum, 4 s | oui |
+| Ralenti | avance moins vite | 45 % de sa vitesse pendant 2 s | oui |
+| Gel | immobile, son mouvement spécial s'arrête aussi | 1,2 s (0,7 s en gel de zone) | oui |
+| Enraciné | immobile | 0,6 s | oui |
+| Recul | repoussé vers l'extérieur, jamais plus loin que son point de départ | 30 px | oui |
+| Affaibli | subit plus de dégâts | ×1,5 pendant 3 s | oui |
+| Attiré | aspiré vers un point (vortex, trou noir) | vortex 110 px de rayon ; trou noir 150 px pendant 2 s | oui |
+| Confus | repart en arrière | 1,5 s | non |
+| Renvoyé | retourne au bord de l'écran | 25 % de chances par coup | non |
+| Charmé | fait demi-tour et blesse les ennemis qu'il touche | 2,5 s, 3 dégâts par seconde | non |
+| Exécuté | tué d'un coup | sous 20 % de sa vie | non |
+
+Les autres effets sont des dégâts en plus, sans état : explosion (0,8 × dans 70 px), rebond sur un autre ennemi (0,7 ×, 160 px max), balle qui se divise (0,5 ×), critique (20 % de chances, ×3), balle qui traverse un ennemi, météore (3 ×), foudre sur 2 ennemis au hasard (1,5 ×), éclats de nova (6 × 0,6), écho (2e coup 0,5 s plus tard), braises et flaque toxique au sol (45 px, 3 s) et graine explosive (2,5 ×, dure 6 s).
+
+Quand un super ennemi est touché, il rétrécit jusqu'à 60 % de sa taille au plus, au lieu de fondre comme un ennemi normal.

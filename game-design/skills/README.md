@@ -1,6 +1,6 @@
 # Skills et combos — vue d'ensemble
 
-Ce dossier est généré à partir des données du jeu (`index.html`). Il récapitule tous les skill trees, le shop et les combos d'orbite.
+Ce dossier est généré à partir des données du jeu (`index.html`) par `game-design/outils/generer-docs.js`. Il récapitule tous les skill trees, le shop et les combos d'orbite.
 
 ## Les dieux
 
