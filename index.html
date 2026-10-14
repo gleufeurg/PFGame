@@ -2732,7 +2732,35 @@
 
         //MOVEMENTS
         const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
-        const SPECIAL_MOVEMENT_TYPES = ["wave", "zigzag", "spiral"];
+        //DÉBLOCAGE : aucun mouvement spécial au début. Chacun arrive à son heure (en secondes de jeu) :
+        //à ce moment-là, un 1er ennemi avec ce mouvement apparaît tout de suite, pour montrer au joueur ce qui l'attend.
+        const MOVEMENT_UNLOCKS = [
+            { movement: "spiral", time: 60, name: "Spirale" },     // 1:00
+            { movement: "zigzag", time: 300, name: "Zigzag" },     // 5:00
+            { movement: "wave", time: 600, name: "Onduleux" }      // 10:00
+        ];
+        const MOVEMENT_VARIATION_TIME = 750;  // 12:30 : à partir de là, chaque ennemi spécial varie son mouvement (vitesse, arrêts, forme...)
+        const movementsIntroducedThisRun = new Set(); // les mouvements dont le 1er ennemi est déjà apparu pendant cette partie
+
+        //Les mouvements spéciaux déjà débloqués à ce moment de la partie
+        function getUnlockedMovements() {
+            return MOVEMENT_UNLOCKS.filter(function (unlock) { return runTime >= unlock.time; }).map(function (unlock) { return unlock.movement; });
+        }
+
+        //Appelé à chaque image : quand l'heure d'un mouvement arrive, son 1er ennemi apparaît (le "tuto")
+        function checkMovementUnlocks() {
+            for (const unlock of MOVEMENT_UNLOCKS) {
+                if (runTime >= unlock.time && !movementsIntroducedThisRun.has(unlock.movement)) {
+                    movementsIntroducedThisRun.add(unlock.movement);
+                    spawnEnemy(unlock.movement);
+                    showToast("🌀 Nouveau mouvement : " + unlock.name);
+                }
+            }
+            if (runTime >= MOVEMENT_VARIATION_TIME && !movementsIntroducedThisRun.has("variation")) {
+                movementsIntroducedThisRun.add("variation");
+                showToast("🌀 Les mouvements deviennent imprévisibles !");
+            }
+        }
         const SPECIAL_OUTLINE_COLOR = "#ffe14d"; // contour jaune des ennemis à mouvement spécial
         const SHOW_SPECIAL_RING = false;      // true = anneau jaune en plus autour des ennemis à mouvement spécial
 
@@ -2787,7 +2815,12 @@
         const ZIGZAG_STOP_AND_GO_CHANCE = 0.4;  // chance qu'un zigzag s'arrête à chaque virage puis reparte d'un coup
         const SPIRAL_OVAL_MAX = 0.6;            // à quel point une spirale peut être ovale (0 = cercle parfait)
 
+        //Avant MOVEMENT_VARIATION_TIME, tous les ennemis d'un même mouvement bougent pareil (réglages "standard").
+        //Après, chacun tire au hasard ses propres réglages : vitesse, charges (stop and go), forme de la spirale...
         function createMovementStyle(movement) {
+            if (runTime < MOVEMENT_VARIATION_TIME) {
+                return createStandardMovementStyle(movement);
+            }
             if (movement === "wave") {
                 return {
                     amplitude: ENEMY_WAVE_AMPLITUDE * randomBetween(0.5, 1.6),  // vagues plus ou moins larges
@@ -2814,6 +2847,20 @@
                 };
             }
             return null; //tout droit : pas de style
+        }
+
+        //Les réglages "standard" d'un mouvement, sans hasard
+        function createStandardMovementStyle(movement) {
+            if (movement === "wave") {
+                return { amplitude: ENEMY_WAVE_AMPLITUDE, frequency: ENEMY_WAVE_FREQUENCY, phase: 0 };
+            }
+            if (movement === "zigzag") {
+                return { amplitude: ENEMY_WAVE_AMPLITUDE, legDuration: 0.6, irregularity: 0, pause: 0, seed: 0 };
+            }
+            if (movement === "spiral") {
+                return { direction: 1, speed: ENEMY_SPIRAL_SPEED, oval: 0, tilt: 0 };
+            }
+            return null;
         }
 
         //Un nombre "au hasard" entre 0 et 1, mais toujours le même pour les mêmes valeurs (sert pour la longueur des traits du zigzag)
@@ -2892,14 +2939,21 @@
             return Math.min(toSide, toTopOrBottom) + margin; //le premier bord touché
         }
 
-        function spawnEnemy() {
+        //forcedMovement (optionnel) : impose le mouvement (pour le 1er ennemi d'un mouvement qui vient d'être débloqué)
+        function spawnEnemy(forcedMovement) {
             const type = pickRandom(Object.keys(ENEMY_TYPES));
             const stats = ENEMY_TYPES[type];
             const health = randomInt(stats.minHealth, stats.maxHealth);
             const size = getEnemyTargetSize(health);
             const angle = Math.random() * Math.PI * 2;
             const startDistance = getSpawnDistance(angle, size + ENEMY_WAVE_AMPLITUDE * 2);
-            const movement = Math.random() < SPECIAL_MOVEMENT_CHANCE ? pickRandom(SPECIAL_MOVEMENT_TYPES) : "straight";
+            const unlockedMovements = getUnlockedMovements();
+            let movement = "straight";
+            if (forcedMovement !== undefined) {
+                movement = forcedMovement;
+            } else if (unlockedMovements.length > 0 && Math.random() < SPECIAL_MOVEMENT_CHANCE) {
+                movement = pickRandom(unlockedMovements); //seulement parmi les mouvements déjà débloqués
+            }
 
             enemies.push({
                 type: type,
@@ -3042,6 +3096,7 @@
                 enemySpawnTimer = 0;
             }
             checkBossSchedule();
+            checkMovementUnlocks();
 
             //MOVE
             for (let i = enemies.length - 1; i >= 0; i--) {
@@ -5792,6 +5847,7 @@
             shieldTimer = SHIELD_COOLDOWN;
             killsThisRun = 0;
             bossesSpawnedThisRun.clear(); //clear = vide le Set
+            movementsIntroducedThisRun.clear();
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
             hideStatsPanel();
