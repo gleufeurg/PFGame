@@ -7,7 +7,7 @@
 | Forme de l'arbre | éclair (`bolt`) |
 | Compétences | 30 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1392 |
-| Disponible | à acheter dans le shop (« Nouvelle divinité ») |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°8) |
 
 ## ⭐ Grande keystone
 

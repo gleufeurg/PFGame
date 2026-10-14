@@ -7,7 +7,7 @@
 | Forme de l'arbre | épée (`sword`) |
 | Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1225 |
-| Disponible | à acheter dans le shop (« Nouvelle divinité ») |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°9) |
 
 ## ⭐ Grande keystone
 

@@ -7,7 +7,7 @@
 | Forme de l'arbre | flamme (`fire`) |
 | Compétences | 35 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1099 |
-| Disponible | dès le début |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°1) |
 
 ## ⭐ Grande keystone
 

@@ -7,7 +7,7 @@
 | Forme de l'arbre | aile (`wing`) |
 | Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1011 |
-| Disponible | à acheter dans le shop (« Nouvelle divinité ») |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°11) |
 
 ## ⭐ Grande keystone
 

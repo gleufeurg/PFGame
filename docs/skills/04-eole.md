@@ -7,7 +7,7 @@
 | Forme de l'arbre | souffles de vent (`wind`) |
 | Compétences | 45 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 2117 |
-| Disponible | dès le début |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°4) |
 
 ## ⭐ Grande keystone
 

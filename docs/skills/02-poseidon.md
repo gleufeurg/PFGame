@@ -7,7 +7,7 @@
 | Forme de l'arbre | vagues (`waves`) |
 | Compétences | 36 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1924 |
-| Disponible | dès le début |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°2) |
 
 ## ⭐ Grande keystone
 

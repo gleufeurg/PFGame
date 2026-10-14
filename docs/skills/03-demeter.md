@@ -7,7 +7,7 @@
 | Forme de l'arbre | fleur (`flower`) |
 | Compétences | 49 (8 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 1171 |
-| Disponible | dès le début |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°3) |
 
 ## ⭐ Grande keystone
 

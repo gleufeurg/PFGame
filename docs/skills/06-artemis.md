@@ -7,7 +7,7 @@
 | Forme de l'arbre | arc et flèche (`bow`) |
 | Compétences | 22 (7 notables, 3 keystones, 1 grande keystone) |
 | XP pour tout débloquer | 743 |
-| Disponible | à acheter dans le shop (« Nouvelle divinité ») |
+| Disponible | à acheter dans le shop (« Nouvelle divinité » n°6) |
 
 ## ⭐ Grande keystone
 

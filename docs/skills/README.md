@@ -34,4 +34,4 @@ Voir [0-combos.md](0-combos.md) : 66 combos et 220 fusions.
 | **Dégâts** | +1 dégât par balle | 15 or | 10 |
 | **Régénération** | +0.05 PV par seconde | 12 or | 8 |
 | **Vitesse des balles** | +15% de vitesse des balles | 8 or | 6 |
-| **Nouvelle divinité** | Une nouvelle planète et son skill tree rejoignent l'orbite | 150 or | 7 |
+| **Nouvelle divinité** | Une nouvelle planète et son skill tree rejoignent l'orbite | 50 or | 12 |
