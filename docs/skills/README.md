@@ -6,18 +6,18 @@ Ce dossier est généré à partir des données du jeu (`index.html`). Il récap
 
 | Dieu | Attribut | Forme | Compétences | XP pour tout | Grande keystone | Fichier |
 |---|---|---|---|---|---|---|
-| **Vulcain** | 🔥 Feu | flamme | 35 | 1099 | Héphaïstos : +3 dégâts par balle | [01-vulcain.md](01-vulcain.md) |
+| **Héphaïstos** | 🔥 Feu | flamme | 35 | 1099 | Etna : +3 dégâts par balle | [01-hephaistos.md](01-hephaistos.md) |
 | **Poséidon** | 💧 Eau | vagues | 36 | 1924 | Océanos : +10 PV max | [02-poseidon.md](02-poseidon.md) |
 | **Déméter** | 🌿 Plante | fleur | 49 | 1171 | Gaïa : +1 PV regagné par ennemi tué | [03-demeter.md](03-demeter.md) |
 | **Éole** | 🌪️ Vent | souffles de vent | 45 | 2117 | Thyella : +1 balle par tir | [04-eole.md](04-eole.md) |
-| **Hélios** | ☀️ Lumière | soleil | 49 | 1455 | Chaos : +100% d'or gagné | [05-helios.md](05-helios.md) |
+| **Apollon** | ☀️ Lumière | soleil | 49 | 1455 | Chaos : +100% d'or gagné | [05-apollon.md](05-apollon.md) |
 | **Artémis** | 🌙 Lune | arc et flèche | 22 | 743 | Agrotera : +1 balle par tir | [06-artemis.md](06-artemis.md) |
 | **Athéna** | 🛡️ Égide | couronne de laurier | 51 | 1677 | Parthénos : +100% d'XP gagnée | [07-athena.md](07-athena.md) |
 | **Zeus** | ⚡ Foudre | éclair | 30 | 1392 | Aithér : +4 dégâts par balle | [08-zeus.md](08-zeus.md) |
 | **Arès** | ⚔️ Guerre | épée | 27 | 1225 | Kères : +4 dégâts par balle | [09-ares.md](09-ares.md) |
 | **Aphrodite** | 💗 Amour | cœur | 39 | 1237 | Phanès : +0.5 PV régénérés par seconde | [10-aphrodite.md](10-aphrodite.md) |
 | **Hermès** | 🪶 Plume | aile | 27 | 1011 | Aion : +50% de vitesse d'attaque | [11-hermes.md](11-hermes.md) |
-| **Dionysos** | 🍇 Vigne | grappe de raisin | 28 | 1032 | Zagreus : +1 balle par tir | [12-dionysos.md](12-dionysos.md) |
+| **Hestia** | 🕯️ Foyer | brasero | 27 | 1179 | Ananké : +8 PV max | [12-hestia.md](12-hestia.md) |
 
 ## Les combos
 

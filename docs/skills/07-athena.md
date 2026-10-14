@@ -68,7 +68,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🛡️ Égide + 🪶 Plume | **Bouclier volant** | la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi |
 | 🛡️ Égide + ⚡ Foudre | **Paratonnerre** | la foudre tombe sur 2 ennemis au hasard et recharge ton bouclier plus vite |
 | 🛡️ Égide + ⚔️ Guerre | **Phalange** | fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
-| 🛡️ Égide + 🍇 Vigne | **Coupe sacrée** | te soigne à chaque coup et l'ennemi perd le nord et recule |
+| 🛡️ Égide + 🕯️ Foyer | **Rempart du foyer** | recharge ton bouclier plus vite et repousse les ennemis autour |
 
 ### Fusions « Les deux côtés » où Athéna intervient
 
@@ -95,39 +95,39 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🌪️ Vent + 🪶 Plume | **Ailes d'airain** | la balle revient vers sa planète en touchant tout sur son passage et repousse les ennemis autour |
 | 🛡️ Égide + 🌪️ Vent + ⚡ Foudre | **Égide de Zeus** | la foudre tombe sur 2 ennemis au hasard, repousse les ennemis autour et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🌪️ Vent + ⚔️ Guerre | **Charge** | repousse les ennemis autour, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi subit +50% de dégâts pendant 3 s |
-| 🛡️ Égide + 🌪️ Vent + 🍇 Vigne | **Tourbillon bachique** | l'ennemi perd le nord et recule et un tourbillon attire les ennemis vers l'impact |
 | 🛡️ Égide + 🔥 Feu + 💗 Amour | **Forge d'Héphaïstos** | laisse des braises au sol et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🛡️ Égide + 🔥 Feu + 🪶 Plume | **Bouclier de flammes** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour |
 | 🛡️ Égide + 🔥 Feu + ⚡ Foudre | **Foudre forgée** | la foudre tombe sur 2 ennemis au hasard et explose et blesse les ennemis autour |
 | 🛡️ Égide + 🔥 Feu + ⚔️ Guerre | **Siège** | un météore s'écrase sur un autre ennemi et fait saigner l'ennemi (les saignements s'additionnent) |
-| 🛡️ Égide + 🔥 Feu + 🍇 Vigne | **Torche** | laisse des braises au sol et l'ennemi perd le nord et recule |
 | 🛡️ Égide + ☀️ Lumière + 💗 Amour | **Grâce** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et recharge ton bouclier plus vite |
 | 🛡️ Égide + ☀️ Lumière + 🪶 Plume | **Miroir mobile** | la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi |
 | 🛡️ Égide + ☀️ Lumière + ⚡ Foudre | **Jugement divin** | la foudre tombe sur 2 ennemis au hasard et achève les ennemis presque morts |
 | 🛡️ Égide + ☀️ Lumière + ⚔️ Guerre | **Triomphe** | achève les ennemis presque morts et repousse les ennemis autour |
-| 🛡️ Égide + ☀️ Lumière + 🍇 Vigne | **Extase** | te soigne à chaque coup, l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard |
 | 🛡️ Égide + 💗 Amour + 🌙 Lune | **Berceuse** | gèle les ennemis autour et te soigne à chaque coup |
 | 🛡️ Égide + 💗 Amour + 🌿 Plante | **Jardin des Hespérides** | te soigne à chaque coup, enracine les ennemis autour et recharge ton bouclier plus vite |
 | 🛡️ Égide + 💗 Amour + 🪶 Plume | **Messager de paix** | charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 🛡️ Égide + 💗 Amour + ⚡ Foudre | **Foudre apaisée** | la foudre tombe sur 2 ennemis au hasard et te soigne à chaque coup |
 | 🛡️ Égide + 💗 Amour + ⚔️ Guerre | **Trêve** | charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi subit +50% de dégâts pendant 3 s |
 | 🛡️ Égide + 💗 Amour + 💧 Eau | **Naissance de Vénus** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite |
-| 🛡️ Égide + 💗 Amour + 🍇 Vigne | **Symposion** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule |
 | 🛡️ Égide + 🌙 Lune + 🪶 Plume | **Ombre fugace** | la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
 | 🛡️ Égide + 🌙 Lune + ⚡ Foudre | **Nuit d'orage** | la foudre tombe sur 2 ennemis au hasard et gèle l'ennemi sur place |
 | 🛡️ Égide + 🌙 Lune + ⚔️ Guerre | **Garde de nuit** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et recharge ton bouclier plus vite |
-| 🛡️ Égide + 🌙 Lune + 🍇 Vigne | **Mystères** | l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et chance de renvoyer l'ennemi au bord de l'écran |
 | 🛡️ Égide + 🌿 Plante + 🪶 Plume | **Graines-boucliers** | éclate en 2 projectiles vers d'autres ennemis, recharge ton bouclier plus vite et la balle revient vers sa planète en touchant tout sur son passage |
 | 🛡️ Égide + 🌿 Plante + ⚡ Foudre | **Chêne de Dodone** | la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour |
 | 🛡️ Égide + 🌿 Plante + ⚔️ Guerre | **Haie d'épines** | fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
-| 🛡️ Égide + 🌿 Plante + 🍇 Vigne | **Treille** | enracine les ennemis autour et l'ennemi perd le nord et recule |
 | 🛡️ Égide + 🪶 Plume + ⚡ Foudre | **Caducée de foudre** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🪶 Plume + ⚔️ Guerre | **Guérilla** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🛡️ Égide + 🪶 Plume + 💧 Eau | **Vague-bouclier** | la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 🛡️ Égide + 🪶 Plume + 🍇 Vigne | **Jongleur** | la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
 | 🛡️ Égide + ⚡ Foudre + ⚔️ Guerre | **Gigantomachie** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et repousse les ennemis autour |
 | 🛡️ Égide + ⚡ Foudre + 💧 Eau | **Tempête marine** | la foudre tombe sur 2 ennemis au hasard et un tourbillon attire les ennemis vers l'impact |
-| 🛡️ Égide + ⚡ Foudre + 🍇 Vigne | **Dithyrambe** | la foudre tombe sur 2 ennemis au hasard et l'ennemi perd le nord et recule |
 | 🛡️ Égide + ⚔️ Guerre + 💧 Eau | **Trière** | fait saigner l'ennemi (les saignements s'additionnent), repousse l'ennemi et ralentit les ennemis autour de l'impact |
-| 🛡️ Égide + ⚔️ Guerre + 🍇 Vigne | **Bacchanale guerrière** | fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et recharge ton bouclier plus vite |
-| 🛡️ Égide + 💧 Eau + 🍇 Vigne | **Coupe d'ambroisie** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule |
+| 🛡️ Égide + 🌪️ Vent + 🕯️ Foyer | **Abri** | recharge ton bouclier plus vite, repousse les ennemis autour et ralentit les ennemis autour de l'impact |
+| 🛡️ Égide + 🔥 Feu + 🕯️ Foyer | **Feu de garde** | laisse des braises au sol et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + ☀️ Lumière | **Phare** | rebondit sur 3 ennemis et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + 💗 Amour | **Foyer protecteur** | te soigne à chaque coup, recharge ton bouclier plus vite et charme l'ennemi : il fait demi-tour et blesse ses alliés |
+| 🛡️ Égide + 🕯️ Foyer + 🌙 Lune | **Gardienne de nuit** | gèle l'ennemi sur place et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + 🌿 Plante | **Palissade** | enracine les ennemis autour, repousse les ennemis autour et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + 🪶 Plume | **Bouclier retour** | la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + ⚡ Foudre | **Paratonnerre sacré** | la foudre tombe sur 2 ennemis au hasard, recharge ton bouclier plus vite et te soigne à chaque coup |
+| 🛡️ Égide + 🕯️ Foyer + ⚔️ Guerre | **Citadelle** | repousse les ennemis autour, achève les ennemis presque morts et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🕯️ Foyer + 💧 Eau | **Source du foyer** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite |

@@ -3398,7 +3398,7 @@
             war: { name: "Guerre", icon: "⚔️", color: "#d93a3a" },
             love: { name: "Amour", icon: "💗", color: "#ff8fc7" },
             swift: { name: "Plume", icon: "🪶", color: "#6a7dff" },
-            wine: { name: "Vigne", icon: "🍇", color: "#9b4dca" }
+            hearth: { name: "Foyer", icon: "🕯️", color: "#c4734a" }
         };
 
         //Les options de lien. strength = force des effets (opposé = plus fort, car la planète est loin).
@@ -3435,52 +3435,53 @@
             "light+moon": { name: "Éclipse", description: "grande chance de coup critique (x3)", effects: ["crit", "crit"] },
             "aegis+light": { name: "Aveuglement", description: "les ennemis touchés sont ralentis et subissent un critique de temps en temps", effects: ["slow", "crit"] },
             "aegis+moon": { name: "Chouette", description: "les balles rebondissent sur un autre ennemi", effects: ["chain"] },
-            //Les 5 dieux de l'Olympe ajoutés ensuite (Zeus, Arès, Aphrodite, Hermès, Dionysos)
+            //Les 5 dieux de l'Olympe ajoutés ensuite (Zeus, Arès, Aphrodite, Hermès, Hestia)
             "aegis+love": { name: "Étreinte", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et recharge ton bouclier plus vite", effects: ["charm", "shieldCharge"] },
             "aegis+swift": { name: "Bouclier volant", description: "la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi", effects: ["boomerang", "knockback"] },
             "aegis+thunder": { name: "Paratonnerre", description: "la foudre tombe sur 2 ennemis au hasard et recharge ton bouclier plus vite", effects: ["thunder", "shieldCharge"] },
             "aegis+war": { name: "Phalange", description: "fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi", effects: ["bleed", "knockback"] },
-            "aegis+wine": { name: "Coupe sacrée", description: "te soigne à chaque coup et l'ennemi perd le nord et recule", effects: ["heal", "confuse"] },
             "air+love": { name: "Zéphyr", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse l'ennemi", effects: ["charm", "knockback"] },
             "air+swift": { name: "Sandales ailées", description: "la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis", effects: ["boomerang", "pierce"] },
             "air+thunder": { name: "Tempête", description: "la foudre tombe sur 2 ennemis au hasard et repousse les ennemis autour", effects: ["thunder", "knockbackArea"] },
             "air+war": { name: "Cri de guerre", description: "repousse les ennemis autour et l'ennemi subit +50% de dégâts pendant 3 s", effects: ["knockbackArea", "weaken"] },
-            "air+wine": { name: "Ivresse des cimes", description: "l'ennemi perd le nord et recule et repousse l'ennemi", effects: ["confuse", "knockback"] },
             "fire+love": { name: "Passion", description: "fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["burn", "charm"] },
             "fire+swift": { name: "Étincelle", description: "la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi", effects: ["boomerang", "burn"] },
             "fire+thunder": { name: "Foudre ardente", description: "la foudre tombe sur 2 ennemis au hasard et fait brûler l'ennemi", effects: ["thunder", "burn"] },
             "fire+war": { name: "Terre brûlée", description: "laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["fireZone", "bleed"] },
-            "fire+wine": { name: "Feu grégeois", description: "fait brûler tous les ennemis autour et l'ennemi perd le nord et recule", effects: ["burnArea", "confuse"] },
             "light+love": { name: "Rayon d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["charm", "chain"] },
             "light+swift": { name: "Rayon fugace", description: "la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi", effects: ["boomerang", "chain"] },
             "light+thunder": { name: "Fulgurance", description: "rebondit sur 3 ennemis", effects: ["chain", "chain3"] },
             "light+war": { name: "Gloire", description: "achève les ennemis presque morts et chance de coup critique (x3)", effects: ["execute", "crit"] },
-            "light+wine": { name: "Ivresse dorée", description: "l'ennemi perd le nord et recule et rebondit sur un autre ennemi", effects: ["confuse", "chain"] },
             "love+moon": { name: "Endymion", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place", effects: ["charm", "freeze"] },
             "love+plant": { name: "Rose", description: "fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup", effects: ["bleed", "heal"] },
             "love+swift": { name: "Flèche d'Éros", description: "traverse les ennemis et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["pierce", "charm"] },
             "love+thunder": { name: "Coup de foudre", description: "la foudre tombe sur 2 ennemis au hasard et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["thunder", "charm"] },
             "love+war": { name: "Harmonie", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et achève les ennemis presque morts", effects: ["charm", "execute"] },
             "love+water": { name: "Écume", description: "te soigne à chaque coup et ralentit les ennemis autour de l'impact", effects: ["heal", "slowArea"] },
-            "love+wine": { name: "Ivresse amoureuse", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule", effects: ["charm", "confuse"] },
             "moon+swift": { name: "Chasse nocturne", description: "la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["boomerang", "crit"] },
             "moon+thunder": { name: "Orage nocturne", description: "la foudre tombe sur 2 ennemis au hasard et chance de coup critique (x3)", effects: ["thunder", "crit"] },
             "moon+war": { name: "Embuscade", description: "fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["bleed", "crit"] },
-            "moon+wine": { name: "Délire", description: "l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard", effects: ["confuse", "echo"] },
             "plant+swift": { name: "Graines volantes", description: "éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "boomerang"] },
             "plant+thunder": { name: "Arbre foudroyé", description: "la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour", effects: ["thunder", "rootArea"] },
             "plant+war": { name: "Ronces", description: "fait saigner l'ennemi (les saignements s'additionnent) et enracine l'ennemi un instant", effects: ["bleed", "root"] },
-            "plant+wine": { name: "Vigne", description: "enracine les ennemis autour et l'ennemi perd le nord et recule", effects: ["rootArea", "confuse"] },
             "swift+thunder": { name: "Messager de Zeus", description: "la foudre tombe sur 2 ennemis au hasard et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "boomerang"] },
             "swift+war": { name: "Raid", description: "fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage", effects: ["bleed", "boomerang"] },
             "swift+water": { name: "Ricochet", description: "la balle revient vers sa planète en touchant tout sur son passage et ralentit l'ennemi", effects: ["boomerang", "slow"] },
-            "swift+wine": { name: "Course folle", description: "l'ennemi perd le nord et recule et traverse les ennemis", effects: ["confuse", "pierce"] },
             "thunder+war": { name: "Tonnerre de guerre", description: "la foudre tombe sur 2 ennemis au hasard et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["thunder", "bleed"] },
             "thunder+water": { name: "Électrocution", description: "la foudre tombe sur 2 ennemis au hasard et gèle l'ennemi sur place", effects: ["thunder", "freeze"] },
-            "thunder+wine": { name: "Transe", description: "la foudre tombe sur 2 ennemis au hasard et l'ennemi perd le nord et recule", effects: ["thunder", "confuse"] },
             "war+water": { name: "Naufrage", description: "fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact", effects: ["bleed", "vortex"] },
-            "war+wine": { name: "Ménades en furie", description: "fait saigner l'ennemi (les saignements s'additionnent) et frappe une 2e fois un instant plus tard", effects: ["bleed", "echo"] },
-            "water+wine": { name: "Libation", description: "ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule", effects: ["slowArea", "confuse"] }
+            //Hestia (le foyer)
+            "aegis+hearth": { name: "Rempart du foyer", description: "recharge ton bouclier plus vite et repousse les ennemis autour", effects: ["shieldCharge", "knockbackArea"] },
+            "air+hearth": { name: "Fumée", description: "ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule", effects: ["slowArea", "confuse"] },
+            "fire+hearth": { name: "Flamme éternelle", description: "laisse des braises au sol et te soigne à chaque coup", effects: ["fireZone", "heal"] },
+            "hearth+light": { name: "Lampe", description: "rebondit sur un autre ennemi et te soigne à chaque coup", effects: ["chain", "heal"] },
+            "hearth+love": { name: "Hospitalité", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et te soigne à chaque coup", effects: ["charm", "heal"] },
+            "hearth+moon": { name: "Veillée", description: "frappe une 2e fois un instant plus tard et recharge ton bouclier plus vite", effects: ["echo", "shieldCharge"] },
+            "hearth+plant": { name: "Bois sacré", description: "enracine les ennemis autour et fait brûler l'ennemi", effects: ["rootArea", "burn"] },
+            "hearth+swift": { name: "Braise volante", description: "la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi", effects: ["boomerang", "burn"] },
+            "hearth+thunder": { name: "Foudre domestiquée", description: "la foudre tombe sur 2 ennemis au hasard et recharge ton bouclier plus vite", effects: ["thunder", "shieldCharge"] },
+            "hearth+war": { name: "Dernier rempart", description: "repousse les ennemis autour et achève les ennemis presque morts", effects: ["knockbackArea", "execute"] },
+            "hearth+water": { name: "Bouillon", description: "ralentit les ennemis autour de l'impact et te soigne à chaque coup", effects: ["slowArea", "heal"] }
         };
 
         //LES FUSIONS ("Les deux côtés") : les attributs du dieu ET de ses 2 voisines fusionnent en un attribut unique.
@@ -3527,187 +3528,188 @@
             "aegis+air+swift": { name: "Ailes d'airain", description: "la balle revient vers sa planète en touchant tout sur son passage et repousse les ennemis autour", effects: ["boomerang", "knockbackArea"] },
             "aegis+air+thunder": { name: "Égide de Zeus", description: "la foudre tombe sur 2 ennemis au hasard, repousse les ennemis autour et recharge ton bouclier plus vite", effects: ["thunder", "knockbackArea", "shieldCharge"] },
             "aegis+air+war": { name: "Charge", description: "repousse les ennemis autour, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi subit +50% de dégâts pendant 3 s", effects: ["knockbackArea", "bleed", "weaken"] },
-            "aegis+air+wine": { name: "Tourbillon bachique", description: "l'ennemi perd le nord et recule et un tourbillon attire les ennemis vers l'impact", effects: ["confuse", "vortex"] },
             "aegis+fire+love": { name: "Forge d'Héphaïstos", description: "laisse des braises au sol et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["fireZone", "charm"] },
             "aegis+fire+swift": { name: "Bouclier de flammes", description: "la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour", effects: ["boomerang", "burnArea"] },
             "aegis+fire+thunder": { name: "Foudre forgée", description: "la foudre tombe sur 2 ennemis au hasard et explose et blesse les ennemis autour", effects: ["thunder", "explosion"] },
             "aegis+fire+war": { name: "Siège", description: "un météore s'écrase sur un autre ennemi et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["meteor", "bleed"] },
-            "aegis+fire+wine": { name: "Torche", description: "laisse des braises au sol et l'ennemi perd le nord et recule", effects: ["fireZone", "confuse"] },
             "aegis+light+love": { name: "Grâce", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et recharge ton bouclier plus vite", effects: ["heal", "charm", "shieldCharge"] },
             "aegis+light+swift": { name: "Miroir mobile", description: "la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi", effects: ["boomerang", "chain"] },
             "aegis+light+thunder": { name: "Jugement divin", description: "la foudre tombe sur 2 ennemis au hasard et achève les ennemis presque morts", effects: ["thunder", "execute"] },
             "aegis+light+war": { name: "Triomphe", description: "achève les ennemis presque morts et repousse les ennemis autour", effects: ["execute", "knockbackArea"] },
-            "aegis+light+wine": { name: "Extase", description: "te soigne à chaque coup, l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard", effects: ["heal", "confuse", "echo"] },
             "aegis+love+moon": { name: "Berceuse", description: "gèle les ennemis autour et te soigne à chaque coup", effects: ["freezeArea", "heal"] },
             "aegis+love+plant": { name: "Jardin des Hespérides", description: "te soigne à chaque coup, enracine les ennemis autour et recharge ton bouclier plus vite", effects: ["heal", "rootArea", "shieldCharge"] },
             "aegis+love+swift": { name: "Messager de paix", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage", effects: ["charm", "boomerang"] },
             "aegis+love+thunder": { name: "Foudre apaisée", description: "la foudre tombe sur 2 ennemis au hasard et te soigne à chaque coup", effects: ["thunder", "heal"] },
             "aegis+love+war": { name: "Trêve", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi subit +50% de dégâts pendant 3 s", effects: ["charm", "weaken"] },
             "aegis+love+water": { name: "Naissance de Vénus", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite", effects: ["heal", "slowArea", "shieldCharge"] },
-            "aegis+love+wine": { name: "Symposion", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule", effects: ["heal", "charm", "confuse"] },
             "aegis+moon+swift": { name: "Ombre fugace", description: "la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule", effects: ["boomerang", "confuse"] },
             "aegis+moon+thunder": { name: "Nuit d'orage", description: "la foudre tombe sur 2 ennemis au hasard et gèle l'ennemi sur place", effects: ["thunder", "freeze"] },
             "aegis+moon+war": { name: "Garde de nuit", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et recharge ton bouclier plus vite", effects: ["bleed", "crit", "shieldCharge"] },
-            "aegis+moon+wine": { name: "Mystères", description: "l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et chance de renvoyer l'ennemi au bord de l'écran", effects: ["confuse", "echo", "rewind"] },
             "aegis+plant+swift": { name: "Graines-boucliers", description: "éclate en 2 projectiles vers d'autres ennemis, recharge ton bouclier plus vite et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "shieldCharge", "boomerang"] },
             "aegis+plant+thunder": { name: "Chêne de Dodone", description: "la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour", effects: ["thunder", "rootArea"] },
             "aegis+plant+war": { name: "Haie d'épines", description: "fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour", effects: ["bleed", "knockbackArea"] },
-            "aegis+plant+wine": { name: "Treille", description: "enracine les ennemis autour et l'ennemi perd le nord et recule", effects: ["rootArea", "confuse"] },
             "aegis+swift+thunder": { name: "Caducée de foudre", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite", effects: ["thunder", "boomerang", "shieldCharge"] },
             "aegis+swift+war": { name: "Guérilla", description: "la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi", effects: ["boomerang", "bleed", "knockback"] },
             "aegis+swift+water": { name: "Vague-bouclier", description: "la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact", effects: ["boomerang", "slowArea"] },
-            "aegis+swift+wine": { name: "Jongleur", description: "la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule", effects: ["boomerang", "confuse"] },
             "aegis+thunder+war": { name: "Gigantomachie", description: "la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et repousse les ennemis autour", effects: ["thunder", "execute", "knockbackArea"] },
             "aegis+thunder+water": { name: "Tempête marine", description: "la foudre tombe sur 2 ennemis au hasard et un tourbillon attire les ennemis vers l'impact", effects: ["thunder", "vortex"] },
-            "aegis+thunder+wine": { name: "Dithyrambe", description: "la foudre tombe sur 2 ennemis au hasard et l'ennemi perd le nord et recule", effects: ["thunder", "confuse"] },
             "aegis+war+water": { name: "Trière", description: "fait saigner l'ennemi (les saignements s'additionnent), repousse l'ennemi et ralentit les ennemis autour de l'impact", effects: ["bleed", "knockback", "slowArea"] },
-            "aegis+war+wine": { name: "Bacchanale guerrière", description: "fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et recharge ton bouclier plus vite", effects: ["bleed", "confuse", "shieldCharge"] },
-            "aegis+water+wine": { name: "Coupe d'ambroisie", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule", effects: ["heal", "slowArea", "confuse"] },
             "air+fire+love": { name: "Flamme ardente", description: "fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["burnArea", "charm"] },
             "air+fire+swift": { name: "Comète enflammée", description: "la balle revient vers sa planète en touchant tout sur son passage et explose et blesse les ennemis autour", effects: ["boomerang", "explosion"] },
             "air+fire+thunder": { name: "Orage de feu", description: "la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait brûler l'ennemi", effects: ["thunder", "explosion", "burn"] },
             "air+fire+war": { name: "Incendie de guerre", description: "laisse des braises au sol, repousse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["fireZone", "knockbackArea", "bleed"] },
-            "air+fire+wine": { name: "Flambée", description: "fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et repousse l'ennemi", effects: ["burnArea", "confuse", "knockback"] },
             "air+light+love": { name: "Arc-en-ciel d'Iris", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et se divise en 3 projectiles vers d'autres ennemis", effects: ["charm", "split", "split3"] },
             "air+light+swift": { name: "Vent solaire", description: "la balle revient vers sa planète en touchant tout sur son passage, traverse les ennemis et rebondit sur un autre ennemi", effects: ["boomerang", "pierce", "chain"] },
             "air+light+thunder": { name: "Foudre céleste", description: "la foudre tombe sur 2 ennemis au hasard et rebondit sur 3 ennemis", effects: ["thunder", "chain", "chain3"] },
             "air+light+war": { name: "Lance de lumière", description: "traverse les ennemis et achève les ennemis presque morts", effects: ["pierce", "execute"] },
-            "air+light+wine": { name: "Vertige", description: "l'ennemi perd le nord et recule, rebondit sur un autre ennemi et repousse l'ennemi", effects: ["confuse", "chain", "knockback"] },
             "air+love+moon": { name: "Nuit étoilée", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3)", effects: ["charm", "crit"] },
             "air+love+plant": { name: "Pollen d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis", effects: ["charm", "split"] },
             "air+love+swift": { name: "Messagère", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi", effects: ["charm", "boomerang", "knockback"] },
             "air+love+thunder": { name: "Coup de vent", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour", effects: ["thunder", "charm", "knockbackArea"] },
             "air+love+war": { name: "Tumulte", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi", effects: ["charm", "bleed", "knockback"] },
             "air+love+water": { name: "Embruns", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, ralentit les ennemis autour de l'impact et repousse l'ennemi", effects: ["charm", "slowArea", "knockback"] },
-            "air+love+wine": { name: "Ivresse légère", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et repousse les ennemis autour", effects: ["charm", "confuse", "knockbackArea"] },
             "air+moon+swift": { name: "Vol de nuit", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et traverse les ennemis", effects: ["boomerang", "crit", "pierce"] },
             "air+moon+thunder": { name: "Orage d'été", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et repousse l'ennemi", effects: ["thunder", "crit", "knockback"] },
             "air+moon+war": { name: "Chasse sauvage", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et repousse l'ennemi", effects: ["bleed", "crit", "knockback"] },
-            "air+moon+wine": { name: "Somnambule", description: "l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et repousse l'ennemi", effects: ["confuse", "echo", "knockback"] },
             "air+plant+swift": { name: "Feuilles au vent", description: "éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "boomerang"] },
             "air+plant+thunder": { name: "Foudre champêtre", description: "la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour", effects: ["thunder", "split", "rootArea"] },
             "air+plant+war": { name: "Fléau", description: "fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis", effects: ["bleed", "split"] },
-            "air+plant+wine": { name: "Vendanges", description: "enracine les ennemis autour, l'ennemi perd le nord et recule et repousse les ennemis autour", effects: ["rootArea", "confuse", "knockbackArea"] },
             "air+swift+thunder": { name: "Éclair d'Hermès", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis", effects: ["thunder", "boomerang", "pierce"] },
             "air+swift+war": { name: "Blitz", description: "la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et traverse les ennemis", effects: ["boomerang", "bleed", "pierce"] },
             "air+swift+water": { name: "Tempête d'écume", description: "la balle revient vers sa planète en touchant tout sur son passage, ralentit les ennemis autour de l'impact et repousse l'ennemi", effects: ["boomerang", "slowArea", "knockback"] },
-            "air+swift+wine": { name: "Tourbillon fou", description: "l'ennemi perd le nord et recule, la balle revient vers sa planète en touchant tout sur son passage et un tourbillon attire les ennemis vers l'impact", effects: ["confuse", "boomerang", "vortex"] },
             "air+thunder+war": { name: "Ouragan de guerre", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour", effects: ["thunder", "bleed", "knockbackArea"] },
             "air+thunder+water": { name: "Typhon", description: "la foudre tombe sur 2 ennemis au hasard, un tourbillon attire les ennemis vers l'impact et repousse l'ennemi", effects: ["thunder", "vortex", "knockback"] },
-            "air+thunder+wine": { name: "Bacchanale électrique", description: "la foudre tombe sur 2 ennemis au hasard, l'ennemi perd le nord et recule et repousse les ennemis autour", effects: ["thunder", "confuse", "knockbackArea"] },
             "air+war+water": { name: "Abordage", description: "fait saigner l'ennemi (les saignements s'additionnent), repousse les ennemis autour et ralentit les ennemis autour de l'impact", effects: ["bleed", "knockbackArea", "slowArea"] },
-            "air+war+wine": { name: "Mêlée", description: "fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et repousse les ennemis autour", effects: ["bleed", "confuse", "knockbackArea"] },
-            "air+water+wine": { name: "Mal de mer", description: "l'ennemi perd le nord et recule, ralentit les ennemis autour de l'impact et repousse l'ennemi", effects: ["confuse", "slowArea", "knockback"] },
             "fire+light+love": { name: "Flamme sacrée", description: "te soigne à chaque coup, fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["heal", "burnArea", "charm"] },
             "fire+light+swift": { name: "Rayon ardent", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et traverse les ennemis", effects: ["boomerang", "burn", "pierce"] },
             "fire+light+thunder": { name: "Plasma", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et traverse les ennemis", effects: ["thunder", "burn", "pierce"] },
             "fire+light+war": { name: "Bûcher des héros", description: "achève les ennemis presque morts et laisse des braises au sol", effects: ["execute", "fireZone"] },
-            "fire+light+wine": { name: "Ivresse solaire", description: "fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et rebondit sur un autre ennemi", effects: ["burnArea", "confuse", "chain"] },
             "fire+love+moon": { name: "Feu de l'âme", description: "fait brûler l'ennemi, charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3)", effects: ["burn", "charm", "crit"] },
             "fire+love+plant": { name: "Rose de feu", description: "fait brûler l'ennemi, fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup", effects: ["burn", "bleed", "heal"] },
             "fire+love+swift": { name: "Flèche enflammée", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["boomerang", "burn", "charm"] },
             "fire+love+thunder": { name: "Passion foudroyante", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["thunder", "burn", "charm"] },
             "fire+love+war": { name: "Arès et Aphrodite", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et explose et blesse les ennemis autour", effects: ["charm", "bleed", "explosion"] },
             "fire+love+water": { name: "Bain chaud", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et fait brûler l'ennemi", effects: ["heal", "slowArea", "burn"] },
-            "fire+love+wine": { name: "Festin", description: "te soigne à chaque coup, fait brûler tous les ennemis autour et l'ennemi perd le nord et recule", effects: ["heal", "burnArea", "confuse"] },
             "fire+moon+swift": { name: "Comète", description: "la balle revient vers sa planète en touchant tout sur son passage et un météore s'écrase sur un autre ennemi", effects: ["boomerang", "meteor"] },
             "fire+moon+thunder": { name: "Étoiles filantes", description: "la foudre tombe sur 2 ennemis au hasard et un météore s'écrase sur un autre ennemi", effects: ["thunder", "meteor"] },
             "fire+moon+war": { name: "Massacre", description: "fait saigner l'ennemi (les saignements s'additionnent), achève les ennemis presque morts et fait brûler l'ennemi", effects: ["bleed", "execute", "burn"] },
-            "fire+moon+wine": { name: "Sabbat", description: "l'ennemi perd le nord et recule, laisse des braises au sol et frappe une 2e fois un instant plus tard", effects: ["confuse", "fireZone", "echo"] },
             "fire+plant+swift": { name: "Graines ardentes", description: "éclate en 2 projectiles vers d'autres ennemis, fait brûler l'ennemi et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "burn", "boomerang"] },
             "fire+plant+thunder": { name: "Arbre en feu", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler tous les ennemis autour et enracine les ennemis autour", effects: ["thunder", "burnArea", "rootArea"] },
             "fire+plant+war": { name: "Terre ravagée", description: "laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour", effects: ["fireZone", "bleed", "rootArea"] },
-            "fire+plant+wine": { name: "Vin chaud", description: "fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et te soigne à chaque coup", effects: ["burnArea", "confuse", "heal"] },
             "fire+swift+thunder": { name: "Éclair de feu", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi", effects: ["thunder", "boomerang", "burn"] },
             "fire+swift+war": { name: "Raid incendiaire", description: "la balle revient vers sa planète en touchant tout sur son passage, laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["boomerang", "fireZone", "bleed"] },
             "fire+swift+water": { name: "Vapeur fugace", description: "la balle revient vers sa planète en touchant tout sur son passage, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact", effects: ["boomerang", "explosion", "slowArea"] },
-            "fire+swift+wine": { name: "Torche folle", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et l'ennemi perd le nord et recule", effects: ["boomerang", "burn", "confuse"] },
             "fire+thunder+war": { name: "Apocalypse", description: "la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["thunder", "explosion", "bleed"] },
             "fire+thunder+water": { name: "Orage brûlant", description: "la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact", effects: ["thunder", "explosion", "slowArea"] },
-            "fire+thunder+wine": { name: "Feu sacré", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler tous les ennemis autour et l'ennemi perd le nord et recule", effects: ["thunder", "burnArea", "confuse"] },
             "fire+war+water": { name: "Feu grégeois marin", description: "laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et ralentit les ennemis autour de l'impact", effects: ["fireZone", "bleed", "slowArea"] },
-            "fire+war+wine": { name: "Rage", description: "fait saigner l'ennemi (les saignements s'additionnent), fait brûler l'ennemi et l'ennemi perd le nord et recule", effects: ["bleed", "burn", "confuse"] },
-            "fire+water+wine": { name: "Grog", description: "explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule", effects: ["explosion", "slowArea", "confuse"] },
             "light+love+moon": { name: "Séléné", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, gèle l'ennemi sur place et te soigne à chaque coup", effects: ["charm", "freeze", "heal"] },
             "light+love+plant": { name: "Bouquet", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis", effects: ["heal", "charm", "split"] },
             "light+love+swift": { name: "Message d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi", effects: ["charm", "boomerang", "chain"] },
             "light+love+thunder": { name: "Coup de foudre éclatant", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["thunder", "charm", "chain"] },
             "light+love+war": { name: "Beauté fatale", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (x3)", effects: ["charm", "execute", "crit"] },
             "light+love+water": { name: "Perle", description: "te soigne à chaque coup et se divise en 3 projectiles vers d'autres ennemis", effects: ["heal", "split", "split3"] },
-            "light+love+wine": { name: "Ivresse de lumière", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et te soigne à chaque coup", effects: ["charm", "confuse", "heal"] },
             "light+moon+swift": { name: "Éclipse filante", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et rebondit sur un autre ennemi", effects: ["boomerang", "crit", "chain"] },
             "light+moon+thunder": { name: "Aurore boréale", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et rebondit sur un autre ennemi", effects: ["thunder", "crit", "chain"] },
             "light+moon+war": { name: "Exécution", description: "achève les ennemis presque morts, chance de coup critique (x3) et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["execute", "crit", "bleed"] },
-            "light+moon+wine": { name: "Hallucination", description: "l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et chance de coup critique (x3)", effects: ["confuse", "echo", "crit"] },
             "light+plant+swift": { name: "Pollen d'or", description: "se divise en 3 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "split3", "boomerang"] },
             "light+plant+thunder": { name: "Orage fertile", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine les ennemis autour", effects: ["thunder", "heal", "rootArea"] },
             "light+plant+war": { name: "Lauriers", description: "achève les ennemis presque morts et enracine les ennemis autour", effects: ["execute", "rootArea"] },
-            "light+plant+wine": { name: "Treille dorée", description: "te soigne à chaque coup, enracine les ennemis autour et l'ennemi perd le nord et recule", effects: ["heal", "rootArea", "confuse"] },
             "light+swift+thunder": { name: "Éclair foudroyant", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "chain", "boomerang"] },
             "light+swift+war": { name: "Lance d'Achille", description: "traverse les ennemis, achève les ennemis presque morts et la balle revient vers sa planète en touchant tout sur son passage", effects: ["pierce", "execute", "boomerang"] },
             "light+swift+water": { name: "Reflet sur l'eau", description: "la balle revient vers sa planète en touchant tout sur son passage et se divise en 3 projectiles vers d'autres ennemis", effects: ["boomerang", "split", "split3"] },
-            "light+swift+wine": { name: "Danse des lumières", description: "la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et rebondit sur un autre ennemi", effects: ["boomerang", "confuse", "chain"] },
             "light+thunder+war": { name: "Colère de Zeus", description: "la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (x3)", effects: ["thunder", "execute", "crit"] },
             "light+thunder+water": { name: "Éclair sur la mer", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et gèle l'ennemi sur place", effects: ["thunder", "chain", "freeze"] },
-            "light+thunder+wine": { name: "Illumination", description: "la foudre tombe sur 2 ennemis au hasard, l'ennemi perd le nord et recule et rebondit sur un autre ennemi", effects: ["thunder", "confuse", "chain"] },
             "light+war+water": { name: "Marée de gloire", description: "achève les ennemis presque morts et un tourbillon attire les ennemis vers l'impact", effects: ["execute", "vortex"] },
-            "light+war+wine": { name: "Triomphe de Dionysos", description: "achève les ennemis presque morts, l'ennemi perd le nord et recule et te soigne à chaque coup", effects: ["execute", "confuse", "heal"] },
-            "light+water+wine": { name: "Arc-en-ciel ivre", description: "se divise en 3 projectiles vers d'autres ennemis et l'ennemi perd le nord et recule", effects: ["split", "split3", "confuse"] },
             "love+moon+plant": { name: "Rêve", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, enracine les ennemis autour et te soigne à chaque coup", effects: ["charm", "rootArea", "heal"] },
             "love+moon+swift": { name: "Chasse amoureuse", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["charm", "boomerang", "crit"] },
             "love+moon+thunder": { name: "Nuit de foudre", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place", effects: ["thunder", "charm", "freeze"] },
             "love+moon+war": { name: "Séduction mortelle", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["charm", "bleed", "crit"] },
             "love+moon+water": { name: "Sirène", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et un tourbillon attire les ennemis vers l'impact", effects: ["charm", "vortex"] },
-            "love+moon+wine": { name: "Nuit d'ivresse", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard", effects: ["charm", "confuse", "echo"] },
             "love+plant+swift": { name: "Pétales au vent", description: "éclate en 2 projectiles vers d'autres ennemis, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "charm", "boomerang"] },
             "love+plant+thunder": { name: "Fleur foudroyée", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant", effects: ["thunder", "heal", "root"] },
             "love+plant+war": { name: "Adonis", description: "fait saigner l'ennemi (les saignements s'additionnent), te soigne à chaque coup et enracine les ennemis autour", effects: ["bleed", "heal", "rootArea"] },
             "love+plant+water": { name: "Nymphéa", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et enracine les ennemis autour", effects: ["heal", "slowArea", "rootArea"] },
-            "love+plant+wine": { name: "Ambroisie", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour", effects: ["heal", "charm", "rootArea"] },
             "love+swift+thunder": { name: "Message foudroyant", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "charm", "boomerang"] },
             "love+swift+war": { name: "Cœur de guerrier", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage", effects: ["charm", "bleed", "boomerang"] },
             "love+swift+water": { name: "Déclaration", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact", effects: ["charm", "boomerang", "slowArea"] },
-            "love+swift+wine": { name: "Coup de cœur", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage", effects: ["charm", "confuse", "boomerang"] },
             "love+thunder+war": { name: "Passion orageuse", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["thunder", "charm", "bleed"] },
             "love+thunder+water": { name: "Foudre et écume", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et ralentit les ennemis autour de l'impact", effects: ["thunder", "heal", "slowArea"] },
-            "love+thunder+wine": { name: "Ivresse électrique", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule", effects: ["thunder", "charm", "confuse"] },
             "love+war+water": { name: "Hélène", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact", effects: ["charm", "bleed", "vortex"] },
-            "love+war+wine": { name: "Ménades", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi perd le nord et recule", effects: ["charm", "bleed", "confuse"] },
-            "love+water+wine": { name: "Fontaine de jouvence", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["heal", "slowArea", "charm"] },
             "moon+plant+swift": { name: "Feuilles de nuit", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["split", "boomerang", "crit"] },
             "moon+plant+thunder": { name: "Forêt d'orage", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (x3)", effects: ["thunder", "rootArea", "crit"] },
             "moon+plant+war": { name: "Chasseresse", description: "fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (x3)", effects: ["bleed", "root", "crit"] },
-            "moon+plant+wine": { name: "Champignons", description: "l'ennemi perd le nord et recule, empoisonne l'ennemi et frappe une 2e fois un instant plus tard", effects: ["confuse", "poison", "echo"] },
             "moon+swift+thunder": { name: "Éclair nocturne", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["thunder", "boomerang", "crit"] },
             "moon+swift+war": { name: "Assassinat", description: "achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["execute", "boomerang", "crit"] },
             "moon+swift+water": { name: "Reflet de lune", description: "la balle revient vers sa planète en touchant tout sur son passage et gèle l'ennemi sur place", effects: ["boomerang", "freeze"] },
-            "moon+swift+wine": { name: "Rêve éveillé", description: "l'ennemi perd le nord et recule, la balle revient vers sa planète en touchant tout sur son passage et frappe une 2e fois un instant plus tard", effects: ["confuse", "boomerang", "echo"] },
             "moon+thunder+war": { name: "Orage meurtrier", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["thunder", "bleed", "crit"] },
             "moon+thunder+water": { name: "Tonnerre des abysses", description: "la foudre tombe sur 2 ennemis au hasard, un tourbillon attire les ennemis vers l'impact et gèle l'ennemi sur place", effects: ["thunder", "vortex", "freeze"] },
-            "moon+thunder+wine": { name: "Délire nocturne", description: "la foudre tombe sur 2 ennemis au hasard, l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard", effects: ["thunder", "confuse", "echo"] },
             "moon+war+water": { name: "Marée rouge", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de renvoyer l'ennemi au bord de l'écran et ralentit l'ennemi", effects: ["bleed", "rewind", "slow"] },
-            "moon+war+wine": { name: "Orgie nocturne", description: "fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et chance de coup critique (x3)", effects: ["bleed", "confuse", "crit"] },
-            "moon+water+wine": { name: "Mirage", description: "l'ennemi perd le nord et recule, chance de renvoyer l'ennemi au bord de l'écran et frappe une 2e fois un instant plus tard", effects: ["confuse", "rewind", "echo"] },
             "plant+swift+thunder": { name: "Semailles foudroyantes", description: "la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "split", "boomerang"] },
             "plant+swift+war": { name: "Chardons", description: "éclate en 2 projectiles vers d'autres ennemis, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "bleed", "boomerang"] },
             "plant+swift+water": { name: "Graines flottantes", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact", effects: ["split", "boomerang", "slowArea"] },
-            "plant+swift+wine": { name: "Pépins", description: "éclate en 2 projectiles vers d'autres ennemis, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "confuse", "boomerang"] },
             "plant+thunder+war": { name: "Champ de bataille", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour", effects: ["thunder", "bleed", "rootArea"] },
             "plant+thunder+water": { name: "Pluie d'orage", description: "la foudre tombe sur 2 ennemis au hasard, ralentit les ennemis autour de l'impact et enracine l'ennemi un instant", effects: ["thunder", "slowArea", "root"] },
-            "plant+thunder+wine": { name: "Vigne foudroyée", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et l'ennemi perd le nord et recule", effects: ["thunder", "rootArea", "confuse"] },
             "plant+war+water": { name: "Marécage sanglant", description: "fait saigner l'ennemi (les saignements s'additionnent), laisse une flaque toxique au sol et ralentit l'ennemi", effects: ["bleed", "poisonZone", "slow"] },
-            "plant+war+wine": { name: "Thyrse", description: "fait saigner l'ennemi (les saignements s'additionnent), enracine les ennemis autour et l'ennemi perd le nord et recule", effects: ["bleed", "rootArea", "confuse"] },
-            "plant+water+wine": { name: "Vignoble", description: "laisse une flaque toxique au sol, l'ennemi perd le nord et recule et te soigne à chaque coup", effects: ["poisonZone", "confuse", "heal"] },
             "swift+thunder+war": { name: "Guerre éclair", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["thunder", "boomerang", "bleed"] },
             "swift+thunder+water": { name: "Courant électrique", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact", effects: ["thunder", "boomerang", "slowArea"] },
-            "swift+thunder+wine": { name: "Danse électrique", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule", effects: ["thunder", "boomerang", "confuse"] },
             "swift+war+water": { name: "Pirates", description: "fait saigner l'ennemi (les saignements s'additionnent), la balle revient vers sa planète en touchant tout sur son passage et un tourbillon attire les ennemis vers l'impact", effects: ["bleed", "boomerang", "vortex"] },
-            "swift+war+wine": { name: "Pillage", description: "fait saigner l'ennemi (les saignements s'additionnent), la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule", effects: ["bleed", "boomerang", "confuse"] },
-            "swift+water+wine": { name: "Ivresse marine", description: "la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et ralentit les ennemis autour de l'impact", effects: ["boomerang", "confuse", "slowArea"] },
             "thunder+war+water": { name: "Tempête de guerre", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact", effects: ["thunder", "bleed", "vortex"] },
-            "thunder+war+wine": { name: "Fureur divine", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi perd le nord et recule", effects: ["thunder", "bleed", "confuse"] },
-            "thunder+water+wine": { name: "Déluge", description: "la foudre tombe sur 2 ennemis au hasard, ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule", effects: ["thunder", "slowArea", "confuse"] },
-            "war+water+wine": { name: "Bacchanale", description: "fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et ralentit les ennemis autour de l'impact", effects: ["bleed", "confuse", "slowArea"] }
+            //Hestia (le foyer)
+            "aegis+air+hearth": { name: "Abri", description: "recharge ton bouclier plus vite, repousse les ennemis autour et ralentit les ennemis autour de l'impact", effects: ["shieldCharge", "knockbackArea", "slowArea"] },
+            "aegis+fire+hearth": { name: "Feu de garde", description: "laisse des braises au sol et recharge ton bouclier plus vite", effects: ["fireZone", "shieldCharge"] },
+            "aegis+hearth+light": { name: "Phare", description: "rebondit sur 3 ennemis et recharge ton bouclier plus vite", effects: ["chain", "chain3", "shieldCharge"] },
+            "aegis+hearth+love": { name: "Foyer protecteur", description: "te soigne à chaque coup, recharge ton bouclier plus vite et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["heal", "shieldCharge", "charm"] },
+            "aegis+hearth+moon": { name: "Gardienne de nuit", description: "gèle l'ennemi sur place et recharge ton bouclier plus vite", effects: ["freeze", "shieldCharge"] },
+            "aegis+hearth+plant": { name: "Palissade", description: "enracine les ennemis autour, repousse les ennemis autour et recharge ton bouclier plus vite", effects: ["rootArea", "knockbackArea", "shieldCharge"] },
+            "aegis+hearth+swift": { name: "Bouclier retour", description: "la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite", effects: ["boomerang", "shieldCharge"] },
+            "aegis+hearth+thunder": { name: "Paratonnerre sacré", description: "la foudre tombe sur 2 ennemis au hasard, recharge ton bouclier plus vite et te soigne à chaque coup", effects: ["thunder", "shieldCharge", "heal"] },
+            "aegis+hearth+war": { name: "Citadelle", description: "repousse les ennemis autour, achève les ennemis presque morts et recharge ton bouclier plus vite", effects: ["knockbackArea", "execute", "shieldCharge"] },
+            "aegis+hearth+water": { name: "Source du foyer", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite", effects: ["heal", "slowArea", "shieldCharge"] },
+            "air+fire+hearth": { name: "Soufflet de forge", description: "explose et blesse les ennemis autour et fait brûler tous les ennemis autour", effects: ["explosion", "burnArea"] },
+            "air+hearth+light": { name: "Lanterne", description: "rebondit sur un autre ennemi, repousse l'ennemi et te soigne à chaque coup", effects: ["chain", "knockback", "heal"] },
+            "air+hearth+love": { name: "Chant du foyer", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, repousse les ennemis autour et te soigne à chaque coup", effects: ["charm", "knockbackArea", "heal"] },
+            "air+hearth+moon": { name: "Feu de camp", description: "l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et fait brûler l'ennemi", effects: ["confuse", "echo", "burn"] },
+            "air+hearth+plant": { name: "Fumée d'encens", description: "ralentit les ennemis autour de l'impact, empoisonne l'ennemi et l'ennemi perd le nord et recule", effects: ["slowArea", "poison", "confuse"] },
+            "air+hearth+swift": { name: "Étincelles volantes", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et repousse l'ennemi", effects: ["boomerang", "burn", "knockback"] },
+            "air+hearth+thunder": { name: "Orage au loin", description: "la foudre tombe sur 2 ennemis au hasard, repousse les ennemis autour et recharge ton bouclier plus vite", effects: ["thunder", "knockbackArea", "shieldCharge"] },
+            "air+hearth+war": { name: "Feu de signal", description: "repousse les ennemis autour et fait brûler tous les ennemis autour", effects: ["knockbackArea", "burnArea"] },
+            "air+hearth+water": { name: "Brume du soir", description: "ralentit les ennemis autour de l'impact et gèle l'ennemi sur place", effects: ["slowArea", "freeze"] },
+            "fire+hearth+light": { name: "Flambeau", description: "rebondit sur un autre ennemi, fait brûler l'ennemi et laisse des braises au sol", effects: ["chain", "burn", "fireZone"] },
+            "fire+hearth+love": { name: "Cœur ardent", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait brûler tous les ennemis autour et te soigne à chaque coup", effects: ["charm", "burnArea", "heal"] },
+            "fire+hearth+moon": { name: "Veille ardente", description: "laisse des braises au sol et chance de coup critique (x3)", effects: ["fireZone", "crit"] },
+            "fire+hearth+plant": { name: "Bûche", description: "laisse des braises au sol et enracine les ennemis autour", effects: ["fireZone", "rootArea"] },
+            "fire+hearth+swift": { name: "Tison", description: "la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour", effects: ["boomerang", "burnArea"] },
+            "fire+hearth+thunder": { name: "Feu du ciel", description: "la foudre tombe sur 2 ennemis au hasard et laisse des braises au sol", effects: ["thunder", "fireZone"] },
+            "fire+hearth+war": { name: "Forge de guerre", description: "explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["explosion", "bleed"] },
+            "fire+hearth+water": { name: "Chaudron", description: "explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et te soigne à chaque coup", effects: ["explosion", "slowArea", "heal"] },
+            "hearth+light+love": { name: "Lumière du foyer", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["heal", "charm", "chain"] },
+            "hearth+light+moon": { name: "Bougie", description: "chance de coup critique (x3), te soigne à chaque coup et frappe une 2e fois un instant plus tard", effects: ["crit", "heal", "echo"] },
+            "hearth+light+plant": { name: "Serre", description: "te soigne à chaque coup, enracine les ennemis autour et éclate en 2 projectiles vers d'autres ennemis", effects: ["heal", "rootArea", "split"] },
+            "hearth+light+swift": { name: "Étoile du berger", description: "la balle revient vers sa planète en touchant tout sur son passage, rebondit sur un autre ennemi et te soigne à chaque coup", effects: ["boomerang", "chain", "heal"] },
+            "hearth+light+thunder": { name: "Éclair apprivoisé", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et te soigne à chaque coup", effects: ["thunder", "chain", "heal"] },
+            "hearth+light+war": { name: "Flamme olympique", description: "achève les ennemis presque morts, fait brûler l'ennemi et rebondit sur un autre ennemi", effects: ["execute", "burn", "chain"] },
+            "hearth+light+water": { name: "Reflet du foyer", description: "se divise en 3 projectiles vers d'autres ennemis et te soigne à chaque coup", effects: ["split", "split3", "heal"] },
+            "hearth+love+moon": { name: "Berceau", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, gèle l'ennemi sur place et te soigne à chaque coup", effects: ["charm", "freeze", "heal"] },
+            "hearth+love+plant": { name: "Couronne de fleurs", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour", effects: ["heal", "charm", "rootArea"] },
+            "hearth+love+swift": { name: "Retour au foyer", description: "la balle revient vers sa planète en touchant tout sur son passage, te soigne à chaque coup et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["boomerang", "heal", "charm"] },
+            "hearth+love+thunder": { name: "Étincelle d'amour", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et te soigne à chaque coup", effects: ["thunder", "charm", "heal"] },
+            "hearth+love+war": { name: "Paix des foyers", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi subit +50% de dégâts pendant 3 s et te soigne à chaque coup", effects: ["charm", "weaken", "heal"] },
+            "hearth+love+water": { name: "Bain tiède", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["heal", "slowArea", "charm"] },
+            "hearth+moon+plant": { name: "Herbes de sorcière", description: "empoisonne l'ennemi, frappe une 2e fois un instant plus tard et te soigne à chaque coup", effects: ["poison", "echo", "heal"] },
+            "hearth+moon+swift": { name: "Lueur errante", description: "la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (x3)", effects: ["boomerang", "confuse", "crit"] },
+            "hearth+moon+thunder": { name: "Nuit orageuse", description: "la foudre tombe sur 2 ennemis au hasard, gèle l'ennemi sur place et te soigne à chaque coup", effects: ["thunder", "freeze", "heal"] },
+            "hearth+moon+war": { name: "Sentinelle", description: "chance de coup critique (x3), achève les ennemis presque morts et recharge ton bouclier plus vite", effects: ["crit", "execute", "shieldCharge"] },
+            "hearth+moon+water": { name: "Puits", description: "un tourbillon attire les ennemis vers l'impact et te soigne à chaque coup", effects: ["vortex", "heal"] },
+            "hearth+plant+swift": { name: "Graines du foyer", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup", effects: ["split", "boomerang", "heal"] },
+            "hearth+plant+thunder": { name: "Bois foudroyé", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et fait brûler l'ennemi", effects: ["thunder", "rootArea", "burn"] },
+            "hearth+plant+war": { name: "Clôture", description: "fait saigner l'ennemi (les saignements s'additionnent), enracine les ennemis autour et repousse les ennemis autour", effects: ["bleed", "rootArea", "knockbackArea"] },
+            "hearth+plant+water": { name: "Potager", description: "te soigne à chaque coup, enracine les ennemis autour et ralentit les ennemis autour de l'impact", effects: ["heal", "rootArea", "slowArea"] },
+            "hearth+swift+thunder": { name: "Messager du foyer", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup", effects: ["thunder", "boomerang", "heal"] },
+            "hearth+swift+war": { name: "Patrouille", description: "la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et recharge ton bouclier plus vite", effects: ["boomerang", "bleed", "shieldCharge"] },
+            "hearth+swift+water": { name: "Ricochet tiède", description: "la balle revient vers sa planète en touchant tout sur son passage, ralentit les ennemis autour de l'impact et te soigne à chaque coup", effects: ["boomerang", "slowArea", "heal"] },
+            "hearth+thunder+war": { name: "Défense sacrée", description: "la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et recharge ton bouclier plus vite", effects: ["thunder", "execute", "shieldCharge"] },
+            "hearth+thunder+water": { name: "Averse", description: "la foudre tombe sur 2 ennemis au hasard, ralentit les ennemis autour de l'impact et te soigne à chaque coup", effects: ["thunder", "slowArea", "heal"] },
+            "hearth+war+water": { name: "Douves", description: "fait saigner l'ennemi (les saignements s'additionnent), ralentit les ennemis autour de l'impact et repousse les ennemis autour", effects: ["bleed", "slowArea", "knockbackArea"] }
         };
 
         //Réglages des effets (pour un combo de force 1)
@@ -4338,7 +4340,7 @@
         }
 
         const TREE_SHAPES = {
-            //FLAMME (Vulcain) : trois langues de feu comme sur le dessin. Au milieu la plus haute (grande keystone à sa pointe),
+            //FLAMME (Héphaïstos) : trois langues de feu comme sur le dessin. Au milieu la plus haute (grande keystone à sa pointe),
             //à gauche une langue large et arrondie, à droite une plus petite qui se recourbe.
             //Les points sont pris sur l'image d'origine (en pixels) puis convertis en % avec toPercent.
             fire: function () {
@@ -4440,7 +4442,7 @@
                 return b.layout;
             },
 
-            //SOLEIL (Hélios) : un cœur en anneau, une couronne, et 12 rayons ondulés comme des flammes
+            //SOLEIL (Apollon) : un cœur en anneau, une couronne, et 12 rayons ondulés comme des flammes
             sun: function () {
                 const b = createLayoutBuilder();
                 b.add("start", 50, 50, [], "start");
@@ -4569,7 +4571,32 @@
                 return b.layout;
             },
 
-            //GRAPPE DE RAISIN (Dionysos) : des grains en triangle, la tige, une feuille de vigne et une vrille
+            //BRASERO (Hestia) : la vasque ronde, le bord, la flamme sacrée qui en sort, et les trois pieds
+            hearth: function () {
+                const b = createLayoutBuilder();
+                //La vasque : un demi-cercle sous le bord (de droite à gauche en passant par le bas)
+                const bowl = [];
+                for (let k = 0; k <= 8; k++) {
+                    bowl.push(polar(50, 50, k * 22.5, 26));
+                }
+                b.chain(null, "bowl", bowl);
+                //Le bord : une ligne droite qui referme la vasque en haut
+                b.chain("bowl9", "rim", [[33, 50], [42, 50], [50, 50], [58, 50], [67, 50]]);
+                b.layout["rim5"].links.push("bowl1");
+                //La flamme : deux côtés qui montent du bord et se rejoignent en pointe
+                b.chain("rim2", "flameL", [[38, 40], [40, 30], [46, 21]]);
+                b.chain("rim4", "flameR", [[62, 40], [60, 30], [54, 21]]);
+                b.add("flameTip", 50, 13, ["flameL3", "flameR3"], "grand");
+                //Les trois pieds, sous la vasque
+                b.chain("bowl7", "legL", [[26, 82], [22, 94]]);
+                b.chain("bowl3", "legR", [[74, 82], [78, 94]]);
+                b.chain("bowl5", "legM", [[50, 86], [50, 95]]);
+                setRoles(b, null, { start: "legM2", keystones: ["legL2", "legR2", "rim3"],
+                    notables: ["bowl2", "bowl4", "bowl6", "bowl8", "flameL1", "flameR1", "flameL3", "flameR3"] });
+                return b.layout;
+            },
+
+            //GRAPPE DE RAISIN (gardée pour un futur dieu) : des grains en triangle, la tige, une feuille de vigne et une vrille
             grapes: function () {
                 const b = createLayoutBuilder();
                 const rows = [42, 51, 60, 69, 78];
@@ -4664,7 +4691,7 @@
         //label = texte court dans le rond ; effect = ce que la compétence améliore (voir BASE_STATS)
         const SKILL_TREES_DATA = [
             {
-                name: "Vulcain",
+                name: "Héphaïstos",
                 element: "fire",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#ff7a45",
                 project: {
@@ -4676,7 +4703,7 @@
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
                 ],
-                shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -4694,7 +4721,7 @@
                         { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
                         { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } }
                     ],
-                    grand: { label: "SOLEIL", name: "Héphaïstos", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                    grand: { label: "ETNA", name: "Etna", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
                 }
             },
             {
@@ -4710,7 +4737,7 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
                 ],
-                shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
@@ -4744,7 +4771,7 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
                 ],
-                shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
                     notables: [
@@ -4778,7 +4805,7 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
                 ],
-                shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                     notables: [
@@ -4800,7 +4827,7 @@
                 }
             },
             {
-                name: "Hélios",
+                name: "Apollon",
                 element: "light",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
                 color: "#ffd84d",
                 project: {
@@ -4812,7 +4839,7 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
-                shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
                     notables: [
@@ -4849,7 +4876,7 @@
                     { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
                 ],
-                shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic (la forme à 3 branches gardée de côté)
+                shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic (la forme à 3 branches gardée de côté)
                 skills: {
                     start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     notables: [
@@ -4885,7 +4912,7 @@
                     { label: "ESQ", name: "Aglaure", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } },
                     { label: "XP", name: "Hersé", description: "+4% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.04 } }
                 ],
-                shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "SAG", name: "Métis", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     notables: [
@@ -4921,7 +4948,7 @@
                     { label: "VIT", name: "Brontè", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "AIR", name: "Kéraunos", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } }
                 ],
-                shape: "bolt",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "bolt",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Thémis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -4957,7 +4984,7 @@
                     { label: "FEU", name: "Deimos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
                     { label: "VIE", name: "Alala", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } }
                 ],
-                shape: "sword",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "sword",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Ényo", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
@@ -4993,7 +5020,7 @@
                     { label: "REG", name: "Himéros", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "ESQ", name: "Pothos", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
-                shape: "heart",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "heart",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "PV", name: "Éros", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
@@ -5029,7 +5056,7 @@
                     { label: "VIT", name: "Hodios", description: "+4% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.04 } },
                     { label: "ESQ", name: "Agoraios", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
-                shape: "wing",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "wing",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIT", name: "Maïa", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     notables: [
@@ -5050,40 +5077,40 @@
                     grand: { label: "AION", name: "Aion", description: "GRANDE KEYSTONE : +50% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.5 } }
                 }
             },
-            //DIONYSOS : la vigne et la fête. Soins, vie par ennemi tué et dégâts contre les plantes.
+            //HESTIA : le foyer, la maison et la protection. Vie, régénération, esquive et bouclier.
             {
-                name: "Dionysos",
-                element: "wine",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
-                color: "#9b4dca",
+                name: "Hestia",
+                element: "hearth",            // son attribut : il le prête aux planètes voisines qui se lient à lui (voir ATTRIBUTES)
+                color: "#c4734a",
                 locked: true,             // à acheter dans le shop ("Nouvelle divinité")
                 project: {
                     title: "Projet 12",
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "VIE", name: "Ménade", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } },
-                    { label: "REG", name: "Satyre", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
-                    { label: "PLA", name: "Bacchante", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } }
+                    { label: "REG", name: "Vestale", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
+                    { label: "PV", name: "Lare", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
+                    { label: "ESQ", name: "Pénate", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
-                shape: "grapes",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, grapes ou classic
+                shape: "hearth",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "REG", name: "Sémélé", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                    start: { label: "PV", name: "Rhéa", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                     notables: [
-                        { label: "PV", name: "Silène", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                        { label: "REG", name: "Ariane", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "VIE", name: "Comus", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
-                        { label: "XP", name: "Méthé", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                        { label: "DMG", name: "Acratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "PLA", name: "Ampélos", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
-                        { label: "REG", name: "Staphylos", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "VIE", name: "Œnopion", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } }
+                        { label: "REG", name: "Tabiti", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "PV", name: "Agathodaimon", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                        { label: "VIE", name: "Philotès", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
+                        { label: "ESQ", name: "Eucléia", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "REG", name: "Homonoia", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "PV", name: "Euthénia", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
+                        { label: "REG", name: "Elpis", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                        { label: "ESQ", name: "Hestiade", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } }
                     ],
                     keystones: [
-                        { label: "THYRSE", name: "Thyrse", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                        { label: "LYAIOS", name: "Lyaios", description: "+0.3 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
-                        { label: "BROMIOS", name: "Bromios", description: "+0.15 PV régénérés par seconde", effect: { stat: "regen", value: 0.15 } }
+                        { label: "VESTA", name: "Vesta", description: "+5 PV max", effect: { stat: "maxHealth", value: 5 } },
+                        { label: "CONSEIL", name: "Boulaia", description: "+0.15 PV régénérés par seconde", effect: { stat: "regen", value: 0.15 } },
+                        { label: "SALUT", name: "Sôtéria", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } }
                     ],
-                    grand: { label: "ZAGREUS", name: "Zagreus", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    grand: { label: "ANANKÉ", name: "Ananké", description: "GRANDE KEYSTONE : +8 PV max", effect: { stat: "maxHealth", value: 8 } }
                 }
             }
         ];

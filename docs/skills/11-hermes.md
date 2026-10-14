@@ -68,7 +68,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🪶 Plume + ⚡ Foudre | **Messager de Zeus** | la foudre tombe sur 2 ennemis au hasard et la balle revient vers sa planète en touchant tout sur son passage |
 | 🪶 Plume + ⚔️ Guerre | **Raid** | fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 🪶 Plume + 💧 Eau | **Ricochet** | la balle revient vers sa planète en touchant tout sur son passage et ralentit l'ennemi |
-| 🪶 Plume + 🍇 Vigne | **Course folle** | l'ennemi perd le nord et recule et traverse les ennemis |
+| 🕯️ Foyer + 🪶 Plume | **Braise volante** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi |
 
 ### Fusions « Les deux côtés » où Hermès intervient
 
@@ -85,7 +85,6 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🪶 Plume + ⚡ Foudre | **Caducée de foudre** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🪶 Plume + ⚔️ Guerre | **Guérilla** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🛡️ Égide + 🪶 Plume + 💧 Eau | **Vague-bouclier** | la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 🛡️ Égide + 🪶 Plume + 🍇 Vigne | **Jongleur** | la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
 | 🌪️ Vent + 🔥 Feu + 🪶 Plume | **Comète enflammée** | la balle revient vers sa planète en touchant tout sur son passage et explose et blesse les ennemis autour |
 | 🌪️ Vent + ☀️ Lumière + 🪶 Plume | **Vent solaire** | la balle revient vers sa planète en touchant tout sur son passage, traverse les ennemis et rebondit sur un autre ennemi |
 | 🌪️ Vent + 💗 Amour + 🪶 Plume | **Messagère** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi |
@@ -94,7 +93,6 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + 🪶 Plume + ⚡ Foudre | **Éclair d'Hermès** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis |
 | 🌪️ Vent + 🪶 Plume + ⚔️ Guerre | **Blitz** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et traverse les ennemis |
 | 🌪️ Vent + 🪶 Plume + 💧 Eau | **Tempête d'écume** | la balle revient vers sa planète en touchant tout sur son passage, ralentit les ennemis autour de l'impact et repousse l'ennemi |
-| 🌪️ Vent + 🪶 Plume + 🍇 Vigne | **Tourbillon fou** | l'ennemi perd le nord et recule, la balle revient vers sa planète en touchant tout sur son passage et un tourbillon attire les ennemis vers l'impact |
 | 🔥 Feu + ☀️ Lumière + 🪶 Plume | **Rayon ardent** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et traverse les ennemis |
 | 🔥 Feu + 💗 Amour + 🪶 Plume | **Flèche enflammée** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + 🌙 Lune + 🪶 Plume | **Comète** | la balle revient vers sa planète en touchant tout sur son passage et un météore s'écrase sur un autre ennemi |
@@ -102,32 +100,34 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🔥 Feu + 🪶 Plume + ⚡ Foudre | **Éclair de feu** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi |
 | 🔥 Feu + 🪶 Plume + ⚔️ Guerre | **Raid incendiaire** | la balle revient vers sa planète en touchant tout sur son passage, laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + 🪶 Plume + 💧 Eau | **Vapeur fugace** | la balle revient vers sa planète en touchant tout sur son passage, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact |
-| 🔥 Feu + 🪶 Plume + 🍇 Vigne | **Torche folle** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et l'ennemi perd le nord et recule |
 | ☀️ Lumière + 💗 Amour + 🪶 Plume | **Message d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi |
 | ☀️ Lumière + 🌙 Lune + 🪶 Plume | **Éclipse filante** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et rebondit sur un autre ennemi |
 | ☀️ Lumière + 🌿 Plante + 🪶 Plume | **Pollen d'or** | se divise en 3 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🪶 Plume + ⚡ Foudre | **Éclair foudroyant** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🪶 Plume + ⚔️ Guerre | **Lance d'Achille** | traverse les ennemis, achève les ennemis presque morts et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🪶 Plume + 💧 Eau | **Reflet sur l'eau** | la balle revient vers sa planète en touchant tout sur son passage et se divise en 3 projectiles vers d'autres ennemis |
-| ☀️ Lumière + 🪶 Plume + 🍇 Vigne | **Danse des lumières** | la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et rebondit sur un autre ennemi |
 | 💗 Amour + 🌙 Lune + 🪶 Plume | **Chasse amoureuse** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 💗 Amour + 🌿 Plante + 🪶 Plume | **Pétales au vent** | éclate en 2 projectiles vers d'autres ennemis, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🪶 Plume + ⚡ Foudre | **Message foudroyant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🪶 Plume + ⚔️ Guerre | **Cœur de guerrier** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🪶 Plume + 💧 Eau | **Déclaration** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 💗 Amour + 🪶 Plume + 🍇 Vigne | **Coup de cœur** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌙 Lune + 🌿 Plante + 🪶 Plume | **Feuilles de nuit** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 🌙 Lune + 🪶 Plume + ⚡ Foudre | **Éclair nocturne** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 🌙 Lune + 🪶 Plume + ⚔️ Guerre | **Assassinat** | achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 🌙 Lune + 🪶 Plume + 💧 Eau | **Reflet de lune** | la balle revient vers sa planète en touchant tout sur son passage et gèle l'ennemi sur place |
-| 🌙 Lune + 🪶 Plume + 🍇 Vigne | **Rêve éveillé** | l'ennemi perd le nord et recule, la balle revient vers sa planète en touchant tout sur son passage et frappe une 2e fois un instant plus tard |
 | 🌿 Plante + 🪶 Plume + ⚡ Foudre | **Semailles foudroyantes** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + ⚔️ Guerre | **Chardons** | éclate en 2 projectiles vers d'autres ennemis, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + 💧 Eau | **Graines flottantes** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 🌿 Plante + 🪶 Plume + 🍇 Vigne | **Pépins** | éclate en 2 projectiles vers d'autres ennemis, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage |
 | 🪶 Plume + ⚡ Foudre + ⚔️ Guerre | **Guerre éclair** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🪶 Plume + ⚡ Foudre + 💧 Eau | **Courant électrique** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 🪶 Plume + ⚡ Foudre + 🍇 Vigne | **Danse électrique** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
 | 🪶 Plume + ⚔️ Guerre + 💧 Eau | **Pirates** | fait saigner l'ennemi (les saignements s'additionnent), la balle revient vers sa planète en touchant tout sur son passage et un tourbillon attire les ennemis vers l'impact |
-| 🪶 Plume + ⚔️ Guerre + 🍇 Vigne | **Pillage** | fait saigner l'ennemi (les saignements s'additionnent), la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
-| 🪶 Plume + 💧 Eau + 🍇 Vigne | **Ivresse marine** | la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et ralentit les ennemis autour de l'impact |
+| 🛡️ Égide + 🕯️ Foyer + 🪶 Plume | **Bouclier retour** | la balle revient vers sa planète en touchant tout sur son passage et recharge ton bouclier plus vite |
+| 🌪️ Vent + 🕯️ Foyer + 🪶 Plume | **Étincelles volantes** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et repousse l'ennemi |
+| 🔥 Feu + 🕯️ Foyer + 🪶 Plume | **Tison** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour |
+| 🕯️ Foyer + ☀️ Lumière + 🪶 Plume | **Étoile du berger** | la balle revient vers sa planète en touchant tout sur son passage, rebondit sur un autre ennemi et te soigne à chaque coup |
+| 🕯️ Foyer + 💗 Amour + 🪶 Plume | **Retour au foyer** | la balle revient vers sa planète en touchant tout sur son passage, te soigne à chaque coup et charme l'ennemi : il fait demi-tour et blesse ses alliés |
+| 🕯️ Foyer + 🌙 Lune + 🪶 Plume | **Lueur errante** | la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (x3) |
+| 🕯️ Foyer + 🌿 Plante + 🪶 Plume | **Graines du foyer** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup |
+| 🕯️ Foyer + 🪶 Plume + ⚡ Foudre | **Messager du foyer** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup |
+| 🕯️ Foyer + 🪶 Plume + ⚔️ Guerre | **Patrouille** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et recharge ton bouclier plus vite |
+| 🕯️ Foyer + 🪶 Plume + 💧 Eau | **Ricochet tiède** | la balle revient vers sa planète en touchant tout sur son passage, ralentit les ennemis autour de l'impact et te soigne à chaque coup |

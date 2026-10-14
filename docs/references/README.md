@@ -4,11 +4,11 @@ Images de référence pour les formes des skill trees, et les choix de style val
 
 | Dieu | Forme | Image |
 |---|---|---|
-| Vulcain | flamme | `vulcain-flamme.png` |
+| Héphaïstos (ancien Vulcain) | flamme | `vulcain-flamme.png` |
 | Poséidon | vagues | `poseidon-vagues.png` |
 | Déméter | fleur à 8 pétales en tourbillon | `demeter-fleur.png` |
 | Éole | souffles de vent qui finissent en spirale | `eole-vent.png` |
-| Hélios | soleil avec un anneau au centre et des rayons ondulés | `helios-soleil.png` |
+| Apollon (ancien Hélios) | soleil avec un anneau au centre et des rayons ondulés | `helios-soleil.png` |
 | Artémis | arc et flèche (pas d'image) | |
 | Athéna | couronne de laurier (deux branches en arc) | `athena-laurier.png` |
 

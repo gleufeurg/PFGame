@@ -68,7 +68,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 💗 Amour + ⚡ Foudre | **Coup de foudre** | la foudre tombe sur 2 ennemis au hasard et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 💗 Amour + ⚔️ Guerre | **Harmonie** | charme l'ennemi : il fait demi-tour et blesse ses alliés et achève les ennemis presque morts |
 | 💗 Amour + 💧 Eau | **Écume** | te soigne à chaque coup et ralentit les ennemis autour de l'impact |
-| 💗 Amour + 🍇 Vigne | **Ivresse amoureuse** | charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule |
+| 🕯️ Foyer + 💗 Amour | **Hospitalité** | charme l'ennemi : il fait demi-tour et blesse ses alliés et te soigne à chaque coup |
 
 ### Fusions « Les deux côtés » où Aphrodite intervient
 
@@ -85,7 +85,6 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 💗 Amour + ⚡ Foudre | **Foudre apaisée** | la foudre tombe sur 2 ennemis au hasard et te soigne à chaque coup |
 | 🛡️ Égide + 💗 Amour + ⚔️ Guerre | **Trêve** | charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi subit +50% de dégâts pendant 3 s |
 | 🛡️ Égide + 💗 Amour + 💧 Eau | **Naissance de Vénus** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite |
-| 🛡️ Égide + 💗 Amour + 🍇 Vigne | **Symposion** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule |
 | 🌪️ Vent + 🔥 Feu + 💗 Amour | **Flamme ardente** | fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🌪️ Vent + ☀️ Lumière + 💗 Amour | **Arc-en-ciel d'Iris** | charme l'ennemi : il fait demi-tour et blesse ses alliés et se divise en 3 projectiles vers d'autres ennemis |
 | 🌪️ Vent + 💗 Amour + 🌙 Lune | **Nuit étoilée** | charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3) |
@@ -94,7 +93,6 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + 💗 Amour + ⚡ Foudre | **Coup de vent** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour |
 | 🌪️ Vent + 💗 Amour + ⚔️ Guerre | **Tumulte** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + 💧 Eau | **Embruns** | charme l'ennemi : il fait demi-tour et blesse ses alliés, ralentit les ennemis autour de l'impact et repousse l'ennemi |
-| 🌪️ Vent + 💗 Amour + 🍇 Vigne | **Ivresse légère** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et repousse les ennemis autour |
 | 🔥 Feu + ☀️ Lumière + 💗 Amour | **Flamme sacrée** | te soigne à chaque coup, fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + 💗 Amour + 🌙 Lune | **Feu de l'âme** | fait brûler l'ennemi, charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3) |
 | 🔥 Feu + 💗 Amour + 🌿 Plante | **Rose de feu** | fait brûler l'ennemi, fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup |
@@ -102,32 +100,34 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🔥 Feu + 💗 Amour + ⚡ Foudre | **Passion foudroyante** | la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + 💗 Amour + ⚔️ Guerre | **Arès et Aphrodite** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et explose et blesse les ennemis autour |
 | 🔥 Feu + 💗 Amour + 💧 Eau | **Bain chaud** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et fait brûler l'ennemi |
-| 🔥 Feu + 💗 Amour + 🍇 Vigne | **Festin** | te soigne à chaque coup, fait brûler tous les ennemis autour et l'ennemi perd le nord et recule |
 | ☀️ Lumière + 💗 Amour + 🌙 Lune | **Séléné** | charme l'ennemi : il fait demi-tour et blesse ses alliés, gèle l'ennemi sur place et te soigne à chaque coup |
 | ☀️ Lumière + 💗 Amour + 🌿 Plante | **Bouquet** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | ☀️ Lumière + 💗 Amour + 🪶 Plume | **Message d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi |
 | ☀️ Lumière + 💗 Amour + ⚡ Foudre | **Coup de foudre éclatant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
 | ☀️ Lumière + 💗 Amour + ⚔️ Guerre | **Beauté fatale** | charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (x3) |
 | ☀️ Lumière + 💗 Amour + 💧 Eau | **Perle** | te soigne à chaque coup et se divise en 3 projectiles vers d'autres ennemis |
-| ☀️ Lumière + 💗 Amour + 🍇 Vigne | **Ivresse de lumière** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et te soigne à chaque coup |
 | 💗 Amour + 🌙 Lune + 🌿 Plante | **Rêve** | charme l'ennemi : il fait demi-tour et blesse ses alliés, enracine les ennemis autour et te soigne à chaque coup |
 | 💗 Amour + 🌙 Lune + 🪶 Plume | **Chasse amoureuse** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 💗 Amour + 🌙 Lune + ⚡ Foudre | **Nuit de foudre** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place |
 | 💗 Amour + 🌙 Lune + ⚔️ Guerre | **Séduction mortelle** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3) |
 | 💗 Amour + 🌙 Lune + 💧 Eau | **Sirène** | charme l'ennemi : il fait demi-tour et blesse ses alliés et un tourbillon attire les ennemis vers l'impact |
-| 💗 Amour + 🌙 Lune + 🍇 Vigne | **Nuit d'ivresse** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et frappe une 2e fois un instant plus tard |
 | 💗 Amour + 🌿 Plante + 🪶 Plume | **Pétales au vent** | éclate en 2 projectiles vers d'autres ennemis, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🌿 Plante + ⚡ Foudre | **Fleur foudroyée** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant |
 | 💗 Amour + 🌿 Plante + ⚔️ Guerre | **Adonis** | fait saigner l'ennemi (les saignements s'additionnent), te soigne à chaque coup et enracine les ennemis autour |
 | 💗 Amour + 🌿 Plante + 💧 Eau | **Nymphéa** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et enracine les ennemis autour |
-| 💗 Amour + 🌿 Plante + 🍇 Vigne | **Ambroisie** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour |
 | 💗 Amour + 🪶 Plume + ⚡ Foudre | **Message foudroyant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🪶 Plume + ⚔️ Guerre | **Cœur de guerrier** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🪶 Plume + 💧 Eau | **Déclaration** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 💗 Amour + 🪶 Plume + 🍇 Vigne | **Coup de cœur** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + ⚡ Foudre + ⚔️ Guerre | **Passion orageuse** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et fait saigner l'ennemi (les saignements s'additionnent) |
 | 💗 Amour + ⚡ Foudre + 💧 Eau | **Foudre et écume** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et ralentit les ennemis autour de l'impact |
-| 💗 Amour + ⚡ Foudre + 🍇 Vigne | **Ivresse électrique** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi perd le nord et recule |
 | 💗 Amour + ⚔️ Guerre + 💧 Eau | **Hélène** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact |
-| 💗 Amour + ⚔️ Guerre + 🍇 Vigne | **Ménades** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi perd le nord et recule |
-| 💗 Amour + 💧 Eau + 🍇 Vigne | **Fontaine de jouvence** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés |
+| 🛡️ Égide + 🕯️ Foyer + 💗 Amour | **Foyer protecteur** | te soigne à chaque coup, recharge ton bouclier plus vite et charme l'ennemi : il fait demi-tour et blesse ses alliés |
+| 🌪️ Vent + 🕯️ Foyer + 💗 Amour | **Chant du foyer** | charme l'ennemi : il fait demi-tour et blesse ses alliés, repousse les ennemis autour et te soigne à chaque coup |
+| 🔥 Feu + 🕯️ Foyer + 💗 Amour | **Cœur ardent** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait brûler tous les ennemis autour et te soigne à chaque coup |
+| 🕯️ Foyer + ☀️ Lumière + 💗 Amour | **Lumière du foyer** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
+| 🕯️ Foyer + 💗 Amour + 🌙 Lune | **Berceau** | charme l'ennemi : il fait demi-tour et blesse ses alliés, gèle l'ennemi sur place et te soigne à chaque coup |
+| 🕯️ Foyer + 💗 Amour + 🌿 Plante | **Couronne de fleurs** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour |
+| 🕯️ Foyer + 💗 Amour + 🪶 Plume | **Retour au foyer** | la balle revient vers sa planète en touchant tout sur son passage, te soigne à chaque coup et charme l'ennemi : il fait demi-tour et blesse ses alliés |
+| 🕯️ Foyer + 💗 Amour + ⚡ Foudre | **Étincelle d'amour** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et te soigne à chaque coup |
+| 🕯️ Foyer + 💗 Amour + ⚔️ Guerre | **Paix des foyers** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi subit +50% de dégâts pendant 3 s et te soigne à chaque coup |
+| 🕯️ Foyer + 💗 Amour + 💧 Eau | **Bain tiède** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés |

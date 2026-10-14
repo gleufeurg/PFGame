@@ -68,7 +68,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🌿 Plante + 🪶 Plume | **Graines volantes** | éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + ⚡ Foudre | **Arbre foudroyé** | la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour |
 | 🌿 Plante + ⚔️ Guerre | **Ronces** | fait saigner l'ennemi (les saignements s'additionnent) et enracine l'ennemi un instant |
-| 🌿 Plante + 🍇 Vigne | **Vigne** | enracine les ennemis autour et l'ennemi perd le nord et recule |
+| 🕯️ Foyer + 🌿 Plante | **Bois sacré** | enracine les ennemis autour et fait brûler l'ennemi |
 
 ### Fusions « Les deux côtés » où Déméter intervient
 
@@ -95,39 +95,39 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🌿 Plante + 🪶 Plume | **Graines-boucliers** | éclate en 2 projectiles vers d'autres ennemis, recharge ton bouclier plus vite et la balle revient vers sa planète en touchant tout sur son passage |
 | 🛡️ Égide + 🌿 Plante + ⚡ Foudre | **Chêne de Dodone** | la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour |
 | 🛡️ Égide + 🌿 Plante + ⚔️ Guerre | **Haie d'épines** | fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
-| 🛡️ Égide + 🌿 Plante + 🍇 Vigne | **Treille** | enracine les ennemis autour et l'ennemi perd le nord et recule |
 | 🌪️ Vent + 💗 Amour + 🌿 Plante | **Pollen d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | 🌪️ Vent + 🌿 Plante + 🪶 Plume | **Feuilles au vent** | éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌪️ Vent + 🌿 Plante + ⚡ Foudre | **Foudre champêtre** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour |
 | 🌪️ Vent + 🌿 Plante + ⚔️ Guerre | **Fléau** | fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis |
-| 🌪️ Vent + 🌿 Plante + 🍇 Vigne | **Vendanges** | enracine les ennemis autour, l'ennemi perd le nord et recule et repousse les ennemis autour |
 | 🔥 Feu + 💗 Amour + 🌿 Plante | **Rose de feu** | fait brûler l'ennemi, fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup |
 | 🔥 Feu + 🌿 Plante + 🪶 Plume | **Graines ardentes** | éclate en 2 projectiles vers d'autres ennemis, fait brûler l'ennemi et la balle revient vers sa planète en touchant tout sur son passage |
 | 🔥 Feu + 🌿 Plante + ⚡ Foudre | **Arbre en feu** | la foudre tombe sur 2 ennemis au hasard, fait brûler tous les ennemis autour et enracine les ennemis autour |
 | 🔥 Feu + 🌿 Plante + ⚔️ Guerre | **Terre ravagée** | laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour |
-| 🔥 Feu + 🌿 Plante + 🍇 Vigne | **Vin chaud** | fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et te soigne à chaque coup |
 | ☀️ Lumière + 💗 Amour + 🌿 Plante | **Bouquet** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | ☀️ Lumière + 🌿 Plante + 🪶 Plume | **Pollen d'or** | se divise en 3 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🌿 Plante + ⚡ Foudre | **Orage fertile** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine les ennemis autour |
 | ☀️ Lumière + 🌿 Plante + ⚔️ Guerre | **Lauriers** | achève les ennemis presque morts et enracine les ennemis autour |
-| ☀️ Lumière + 🌿 Plante + 🍇 Vigne | **Treille dorée** | te soigne à chaque coup, enracine les ennemis autour et l'ennemi perd le nord et recule |
 | 💗 Amour + 🌙 Lune + 🌿 Plante | **Rêve** | charme l'ennemi : il fait demi-tour et blesse ses alliés, enracine les ennemis autour et te soigne à chaque coup |
 | 💗 Amour + 🌿 Plante + 🪶 Plume | **Pétales au vent** | éclate en 2 projectiles vers d'autres ennemis, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + 🌿 Plante + ⚡ Foudre | **Fleur foudroyée** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant |
 | 💗 Amour + 🌿 Plante + ⚔️ Guerre | **Adonis** | fait saigner l'ennemi (les saignements s'additionnent), te soigne à chaque coup et enracine les ennemis autour |
 | 💗 Amour + 🌿 Plante + 💧 Eau | **Nymphéa** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et enracine les ennemis autour |
-| 💗 Amour + 🌿 Plante + 🍇 Vigne | **Ambroisie** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour |
 | 🌙 Lune + 🌿 Plante + 🪶 Plume | **Feuilles de nuit** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
 | 🌙 Lune + 🌿 Plante + ⚡ Foudre | **Forêt d'orage** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (x3) |
 | 🌙 Lune + 🌿 Plante + ⚔️ Guerre | **Chasseresse** | fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (x3) |
-| 🌙 Lune + 🌿 Plante + 🍇 Vigne | **Champignons** | l'ennemi perd le nord et recule, empoisonne l'ennemi et frappe une 2e fois un instant plus tard |
 | 🌿 Plante + 🪶 Plume + ⚡ Foudre | **Semailles foudroyantes** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + ⚔️ Guerre | **Chardons** | éclate en 2 projectiles vers d'autres ennemis, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + 💧 Eau | **Graines flottantes** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |
-| 🌿 Plante + 🪶 Plume + 🍇 Vigne | **Pépins** | éclate en 2 projectiles vers d'autres ennemis, l'ennemi perd le nord et recule et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + ⚡ Foudre + ⚔️ Guerre | **Champ de bataille** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour |
 | 🌿 Plante + ⚡ Foudre + 💧 Eau | **Pluie d'orage** | la foudre tombe sur 2 ennemis au hasard, ralentit les ennemis autour de l'impact et enracine l'ennemi un instant |
-| 🌿 Plante + ⚡ Foudre + 🍇 Vigne | **Vigne foudroyée** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et l'ennemi perd le nord et recule |
 | 🌿 Plante + ⚔️ Guerre + 💧 Eau | **Marécage sanglant** | fait saigner l'ennemi (les saignements s'additionnent), laisse une flaque toxique au sol et ralentit l'ennemi |
-| 🌿 Plante + ⚔️ Guerre + 🍇 Vigne | **Thyrse** | fait saigner l'ennemi (les saignements s'additionnent), enracine les ennemis autour et l'ennemi perd le nord et recule |
-| 🌿 Plante + 💧 Eau + 🍇 Vigne | **Vignoble** | laisse une flaque toxique au sol, l'ennemi perd le nord et recule et te soigne à chaque coup |
+| 🛡️ Égide + 🕯️ Foyer + 🌿 Plante | **Palissade** | enracine les ennemis autour, repousse les ennemis autour et recharge ton bouclier plus vite |
+| 🌪️ Vent + 🕯️ Foyer + 🌿 Plante | **Fumée d'encens** | ralentit les ennemis autour de l'impact, empoisonne l'ennemi et l'ennemi perd le nord et recule |
+| 🔥 Feu + 🕯️ Foyer + 🌿 Plante | **Bûche** | laisse des braises au sol et enracine les ennemis autour |
+| 🕯️ Foyer + ☀️ Lumière + 🌿 Plante | **Serre** | te soigne à chaque coup, enracine les ennemis autour et éclate en 2 projectiles vers d'autres ennemis |
+| 🕯️ Foyer + 💗 Amour + 🌿 Plante | **Couronne de fleurs** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et enracine les ennemis autour |
+| 🕯️ Foyer + 🌙 Lune + 🌿 Plante | **Herbes de sorcière** | empoisonne l'ennemi, frappe une 2e fois un instant plus tard et te soigne à chaque coup |
+| 🕯️ Foyer + 🌿 Plante + 🪶 Plume | **Graines du foyer** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup |
+| 🕯️ Foyer + 🌿 Plante + ⚡ Foudre | **Bois foudroyé** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et fait brûler l'ennemi |
+| 🕯️ Foyer + 🌿 Plante + ⚔️ Guerre | **Clôture** | fait saigner l'ennemi (les saignements s'additionnent), enracine les ennemis autour et repousse les ennemis autour |
+| 🕯️ Foyer + 🌿 Plante + 💧 Eau | **Potager** | te soigne à chaque coup, enracine les ennemis autour et ralentit les ennemis autour de l'impact |

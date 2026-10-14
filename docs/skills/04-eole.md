@@ -68,7 +68,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🌪️ Vent + 🪶 Plume | **Sandales ailées** | la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis |
 | 🌪️ Vent + ⚡ Foudre | **Tempête** | la foudre tombe sur 2 ennemis au hasard et repousse les ennemis autour |
 | 🌪️ Vent + ⚔️ Guerre | **Cri de guerre** | repousse les ennemis autour et l'ennemi subit +50% de dégâts pendant 3 s |
-| 🌪️ Vent + 🍇 Vigne | **Ivresse des cimes** | l'ennemi perd le nord et recule et repousse l'ennemi |
+| 🌪️ Vent + 🕯️ Foyer | **Fumée** | ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule |
 
 ### Fusions « Les deux côtés » où Éole intervient
 
@@ -95,39 +95,39 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🌪️ Vent + 🪶 Plume | **Ailes d'airain** | la balle revient vers sa planète en touchant tout sur son passage et repousse les ennemis autour |
 | 🛡️ Égide + 🌪️ Vent + ⚡ Foudre | **Égide de Zeus** | la foudre tombe sur 2 ennemis au hasard, repousse les ennemis autour et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🌪️ Vent + ⚔️ Guerre | **Charge** | repousse les ennemis autour, fait saigner l'ennemi (les saignements s'additionnent) et l'ennemi subit +50% de dégâts pendant 3 s |
-| 🛡️ Égide + 🌪️ Vent + 🍇 Vigne | **Tourbillon bachique** | l'ennemi perd le nord et recule et un tourbillon attire les ennemis vers l'impact |
 | 🌪️ Vent + 🔥 Feu + 💗 Amour | **Flamme ardente** | fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🌪️ Vent + 🔥 Feu + 🪶 Plume | **Comète enflammée** | la balle revient vers sa planète en touchant tout sur son passage et explose et blesse les ennemis autour |
 | 🌪️ Vent + 🔥 Feu + ⚡ Foudre | **Orage de feu** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait brûler l'ennemi |
 | 🌪️ Vent + 🔥 Feu + ⚔️ Guerre | **Incendie de guerre** | laisse des braises au sol, repousse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
-| 🌪️ Vent + 🔥 Feu + 🍇 Vigne | **Flambée** | fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et repousse l'ennemi |
 | 🌪️ Vent + ☀️ Lumière + 💗 Amour | **Arc-en-ciel d'Iris** | charme l'ennemi : il fait demi-tour et blesse ses alliés et se divise en 3 projectiles vers d'autres ennemis |
 | 🌪️ Vent + ☀️ Lumière + 🪶 Plume | **Vent solaire** | la balle revient vers sa planète en touchant tout sur son passage, traverse les ennemis et rebondit sur un autre ennemi |
 | 🌪️ Vent + ☀️ Lumière + ⚡ Foudre | **Foudre céleste** | la foudre tombe sur 2 ennemis au hasard et rebondit sur 3 ennemis |
 | 🌪️ Vent + ☀️ Lumière + ⚔️ Guerre | **Lance de lumière** | traverse les ennemis et achève les ennemis presque morts |
-| 🌪️ Vent + ☀️ Lumière + 🍇 Vigne | **Vertige** | l'ennemi perd le nord et recule, rebondit sur un autre ennemi et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + 🌙 Lune | **Nuit étoilée** | charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3) |
 | 🌪️ Vent + 💗 Amour + 🌿 Plante | **Pollen d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | 🌪️ Vent + 💗 Amour + 🪶 Plume | **Messagère** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + ⚡ Foudre | **Coup de vent** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour |
 | 🌪️ Vent + 💗 Amour + ⚔️ Guerre | **Tumulte** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + 💧 Eau | **Embruns** | charme l'ennemi : il fait demi-tour et blesse ses alliés, ralentit les ennemis autour de l'impact et repousse l'ennemi |
-| 🌪️ Vent + 💗 Amour + 🍇 Vigne | **Ivresse légère** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi perd le nord et recule et repousse les ennemis autour |
 | 🌪️ Vent + 🌙 Lune + 🪶 Plume | **Vol de nuit** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et traverse les ennemis |
 | 🌪️ Vent + 🌙 Lune + ⚡ Foudre | **Orage d'été** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et repousse l'ennemi |
 | 🌪️ Vent + 🌙 Lune + ⚔️ Guerre | **Chasse sauvage** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et repousse l'ennemi |
-| 🌪️ Vent + 🌙 Lune + 🍇 Vigne | **Somnambule** | l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et repousse l'ennemi |
 | 🌪️ Vent + 🌿 Plante + 🪶 Plume | **Feuilles au vent** | éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌪️ Vent + 🌿 Plante + ⚡ Foudre | **Foudre champêtre** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour |
 | 🌪️ Vent + 🌿 Plante + ⚔️ Guerre | **Fléau** | fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis |
-| 🌪️ Vent + 🌿 Plante + 🍇 Vigne | **Vendanges** | enracine les ennemis autour, l'ennemi perd le nord et recule et repousse les ennemis autour |
 | 🌪️ Vent + 🪶 Plume + ⚡ Foudre | **Éclair d'Hermès** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis |
 | 🌪️ Vent + 🪶 Plume + ⚔️ Guerre | **Blitz** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et traverse les ennemis |
 | 🌪️ Vent + 🪶 Plume + 💧 Eau | **Tempête d'écume** | la balle revient vers sa planète en touchant tout sur son passage, ralentit les ennemis autour de l'impact et repousse l'ennemi |
-| 🌪️ Vent + 🪶 Plume + 🍇 Vigne | **Tourbillon fou** | l'ennemi perd le nord et recule, la balle revient vers sa planète en touchant tout sur son passage et un tourbillon attire les ennemis vers l'impact |
 | 🌪️ Vent + ⚡ Foudre + ⚔️ Guerre | **Ouragan de guerre** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
 | 🌪️ Vent + ⚡ Foudre + 💧 Eau | **Typhon** | la foudre tombe sur 2 ennemis au hasard, un tourbillon attire les ennemis vers l'impact et repousse l'ennemi |
-| 🌪️ Vent + ⚡ Foudre + 🍇 Vigne | **Bacchanale électrique** | la foudre tombe sur 2 ennemis au hasard, l'ennemi perd le nord et recule et repousse les ennemis autour |
 | 🌪️ Vent + ⚔️ Guerre + 💧 Eau | **Abordage** | fait saigner l'ennemi (les saignements s'additionnent), repousse les ennemis autour et ralentit les ennemis autour de l'impact |
-| 🌪️ Vent + ⚔️ Guerre + 🍇 Vigne | **Mêlée** | fait saigner l'ennemi (les saignements s'additionnent), l'ennemi perd le nord et recule et repousse les ennemis autour |
-| 🌪️ Vent + 💧 Eau + 🍇 Vigne | **Mal de mer** | l'ennemi perd le nord et recule, ralentit les ennemis autour de l'impact et repousse l'ennemi |
+| 🛡️ Égide + 🌪️ Vent + 🕯️ Foyer | **Abri** | recharge ton bouclier plus vite, repousse les ennemis autour et ralentit les ennemis autour de l'impact |
+| 🌪️ Vent + 🔥 Feu + 🕯️ Foyer | **Soufflet de forge** | explose et blesse les ennemis autour et fait brûler tous les ennemis autour |
+| 🌪️ Vent + 🕯️ Foyer + ☀️ Lumière | **Lanterne** | rebondit sur un autre ennemi, repousse l'ennemi et te soigne à chaque coup |
+| 🌪️ Vent + 🕯️ Foyer + 💗 Amour | **Chant du foyer** | charme l'ennemi : il fait demi-tour et blesse ses alliés, repousse les ennemis autour et te soigne à chaque coup |
+| 🌪️ Vent + 🕯️ Foyer + 🌙 Lune | **Feu de camp** | l'ennemi perd le nord et recule, frappe une 2e fois un instant plus tard et fait brûler l'ennemi |
+| 🌪️ Vent + 🕯️ Foyer + 🌿 Plante | **Fumée d'encens** | ralentit les ennemis autour de l'impact, empoisonne l'ennemi et l'ennemi perd le nord et recule |
+| 🌪️ Vent + 🕯️ Foyer + 🪶 Plume | **Étincelles volantes** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et repousse l'ennemi |
+| 🌪️ Vent + 🕯️ Foyer + ⚡ Foudre | **Orage au loin** | la foudre tombe sur 2 ennemis au hasard, repousse les ennemis autour et recharge ton bouclier plus vite |
+| 🌪️ Vent + 🕯️ Foyer + ⚔️ Guerre | **Feu de signal** | repousse les ennemis autour et fait brûler tous les ennemis autour |
+| 🌪️ Vent + 🕯️ Foyer + 💧 Eau | **Brume du soir** | ralentit les ennemis autour de l'impact et gèle l'ennemi sur place |

@@ -1,4 +1,4 @@
-# Vulcain — 🔥 Feu
+# Héphaïstos — 🔥 Feu
 
 | | |
 |---|---|
@@ -13,7 +13,7 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Héphaïstos** (SOLEIL) | +3 dégâts par balle | 150 XP |
+| **Etna** (ETNA) | +3 dégâts par balle | 150 XP |
 
 ## 🔷 Keystones
 
@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## 🔗 Combos d'orbite
 
-### Quand Vulcain emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Héphaïstos emprunte un attribut (Gauche, Droite ou Opposé)
 
 | Combo | Nom | Effet |
 |---|---|---|
@@ -68,9 +68,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🔥 Feu + 🪶 Plume | **Étincelle** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi |
 | 🔥 Feu + ⚡ Foudre | **Foudre ardente** | la foudre tombe sur 2 ennemis au hasard et fait brûler l'ennemi |
 | 🔥 Feu + ⚔️ Guerre | **Terre brûlée** | laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent) |
-| 🔥 Feu + 🍇 Vigne | **Feu grégeois** | fait brûler tous les ennemis autour et l'ennemi perd le nord et recule |
+| 🔥 Feu + 🕯️ Foyer | **Flamme éternelle** | laisse des braises au sol et te soigne à chaque coup |
 
-### Fusions « Les deux côtés » où Vulcain intervient
+### Fusions « Les deux côtés » où Héphaïstos intervient
 
 Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :
 
@@ -95,39 +95,39 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🔥 Feu + 🪶 Plume | **Bouclier de flammes** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour |
 | 🛡️ Égide + 🔥 Feu + ⚡ Foudre | **Foudre forgée** | la foudre tombe sur 2 ennemis au hasard et explose et blesse les ennemis autour |
 | 🛡️ Égide + 🔥 Feu + ⚔️ Guerre | **Siège** | un météore s'écrase sur un autre ennemi et fait saigner l'ennemi (les saignements s'additionnent) |
-| 🛡️ Égide + 🔥 Feu + 🍇 Vigne | **Torche** | laisse des braises au sol et l'ennemi perd le nord et recule |
 | 🌪️ Vent + 🔥 Feu + 💗 Amour | **Flamme ardente** | fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🌪️ Vent + 🔥 Feu + 🪶 Plume | **Comète enflammée** | la balle revient vers sa planète en touchant tout sur son passage et explose et blesse les ennemis autour |
 | 🌪️ Vent + 🔥 Feu + ⚡ Foudre | **Orage de feu** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait brûler l'ennemi |
 | 🌪️ Vent + 🔥 Feu + ⚔️ Guerre | **Incendie de guerre** | laisse des braises au sol, repousse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
-| 🌪️ Vent + 🔥 Feu + 🍇 Vigne | **Flambée** | fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et repousse l'ennemi |
 | 🔥 Feu + ☀️ Lumière + 💗 Amour | **Flamme sacrée** | te soigne à chaque coup, fait brûler tous les ennemis autour et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + ☀️ Lumière + 🪶 Plume | **Rayon ardent** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et traverse les ennemis |
 | 🔥 Feu + ☀️ Lumière + ⚡ Foudre | **Plasma** | la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et traverse les ennemis |
 | 🔥 Feu + ☀️ Lumière + ⚔️ Guerre | **Bûcher des héros** | achève les ennemis presque morts et laisse des braises au sol |
-| 🔥 Feu + ☀️ Lumière + 🍇 Vigne | **Ivresse solaire** | fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et rebondit sur un autre ennemi |
 | 🔥 Feu + 💗 Amour + 🌙 Lune | **Feu de l'âme** | fait brûler l'ennemi, charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3) |
 | 🔥 Feu + 💗 Amour + 🌿 Plante | **Rose de feu** | fait brûler l'ennemi, fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup |
 | 🔥 Feu + 💗 Amour + 🪶 Plume | **Flèche enflammée** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + 💗 Amour + ⚡ Foudre | **Passion foudroyante** | la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🔥 Feu + 💗 Amour + ⚔️ Guerre | **Arès et Aphrodite** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et explose et blesse les ennemis autour |
 | 🔥 Feu + 💗 Amour + 💧 Eau | **Bain chaud** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et fait brûler l'ennemi |
-| 🔥 Feu + 💗 Amour + 🍇 Vigne | **Festin** | te soigne à chaque coup, fait brûler tous les ennemis autour et l'ennemi perd le nord et recule |
 | 🔥 Feu + 🌙 Lune + 🪶 Plume | **Comète** | la balle revient vers sa planète en touchant tout sur son passage et un météore s'écrase sur un autre ennemi |
 | 🔥 Feu + 🌙 Lune + ⚡ Foudre | **Étoiles filantes** | la foudre tombe sur 2 ennemis au hasard et un météore s'écrase sur un autre ennemi |
 | 🔥 Feu + 🌙 Lune + ⚔️ Guerre | **Massacre** | fait saigner l'ennemi (les saignements s'additionnent), achève les ennemis presque morts et fait brûler l'ennemi |
-| 🔥 Feu + 🌙 Lune + 🍇 Vigne | **Sabbat** | l'ennemi perd le nord et recule, laisse des braises au sol et frappe une 2e fois un instant plus tard |
 | 🔥 Feu + 🌿 Plante + 🪶 Plume | **Graines ardentes** | éclate en 2 projectiles vers d'autres ennemis, fait brûler l'ennemi et la balle revient vers sa planète en touchant tout sur son passage |
 | 🔥 Feu + 🌿 Plante + ⚡ Foudre | **Arbre en feu** | la foudre tombe sur 2 ennemis au hasard, fait brûler tous les ennemis autour et enracine les ennemis autour |
 | 🔥 Feu + 🌿 Plante + ⚔️ Guerre | **Terre ravagée** | laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour |
-| 🔥 Feu + 🌿 Plante + 🍇 Vigne | **Vin chaud** | fait brûler tous les ennemis autour, l'ennemi perd le nord et recule et te soigne à chaque coup |
 | 🔥 Feu + 🪶 Plume + ⚡ Foudre | **Éclair de feu** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et fait brûler l'ennemi |
 | 🔥 Feu + 🪶 Plume + ⚔️ Guerre | **Raid incendiaire** | la balle revient vers sa planète en touchant tout sur son passage, laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + 🪶 Plume + 💧 Eau | **Vapeur fugace** | la balle revient vers sa planète en touchant tout sur son passage, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact |
-| 🔥 Feu + 🪶 Plume + 🍇 Vigne | **Torche folle** | la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et l'ennemi perd le nord et recule |
 | 🔥 Feu + ⚡ Foudre + ⚔️ Guerre | **Apocalypse** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + ⚡ Foudre + 💧 Eau | **Orage brûlant** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact |
-| 🔥 Feu + ⚡ Foudre + 🍇 Vigne | **Feu sacré** | la foudre tombe sur 2 ennemis au hasard, fait brûler tous les ennemis autour et l'ennemi perd le nord et recule |
 | 🔥 Feu + ⚔️ Guerre + 💧 Eau | **Feu grégeois marin** | laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et ralentit les ennemis autour de l'impact |
-| 🔥 Feu + ⚔️ Guerre + 🍇 Vigne | **Rage** | fait saigner l'ennemi (les saignements s'additionnent), fait brûler l'ennemi et l'ennemi perd le nord et recule |
-| 🔥 Feu + 💧 Eau + 🍇 Vigne | **Grog** | explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et l'ennemi perd le nord et recule |
+| 🛡️ Égide + 🔥 Feu + 🕯️ Foyer | **Feu de garde** | laisse des braises au sol et recharge ton bouclier plus vite |
+| 🌪️ Vent + 🔥 Feu + 🕯️ Foyer | **Soufflet de forge** | explose et blesse les ennemis autour et fait brûler tous les ennemis autour |
+| 🔥 Feu + 🕯️ Foyer + ☀️ Lumière | **Flambeau** | rebondit sur un autre ennemi, fait brûler l'ennemi et laisse des braises au sol |
+| 🔥 Feu + 🕯️ Foyer + 💗 Amour | **Cœur ardent** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait brûler tous les ennemis autour et te soigne à chaque coup |
+| 🔥 Feu + 🕯️ Foyer + 🌙 Lune | **Veille ardente** | laisse des braises au sol et chance de coup critique (x3) |
+| 🔥 Feu + 🕯️ Foyer + 🌿 Plante | **Bûche** | laisse des braises au sol et enracine les ennemis autour |
+| 🔥 Feu + 🕯️ Foyer + 🪶 Plume | **Tison** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour |
+| 🔥 Feu + 🕯️ Foyer + ⚡ Foudre | **Feu du ciel** | la foudre tombe sur 2 ennemis au hasard et laisse des braises au sol |
+| 🔥 Feu + 🕯️ Foyer + ⚔️ Guerre | **Forge de guerre** | explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
+| 🔥 Feu + 🕯️ Foyer + 💧 Eau | **Chaudron** | explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et te soigne à chaque coup |
