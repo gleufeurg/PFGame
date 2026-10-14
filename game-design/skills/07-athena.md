@@ -111,7 +111,7 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 💗 Amour + 💧 Eau | **Naissance de Vénus** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🌙 Lune + 🪶 Plume | **Ombre fugace** | la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule |
 | 🛡️ Égide + 🌙 Lune + ⚡ Foudre | **Nuit d'orage** | la foudre tombe sur 2 ennemis au hasard et gèle l'ennemi sur place |
-| 🛡️ Égide + 🌙 Lune + ⚔️ Guerre | **Garde de nuit** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🌙 Lune + ⚔️ Guerre | **Garde de nuit** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🌿 Plante + 🪶 Plume | **Graines-boucliers** | éclate en 2 projectiles vers d'autres ennemis, recharge ton bouclier plus vite et la balle revient vers sa planète en touchant tout sur son passage |
 | 🛡️ Égide + 🌿 Plante + ⚡ Foudre | **Chêne de Dodone** | la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour |
 | 🛡️ Égide + 🌿 Plante + ⚔️ Guerre | **Haie d'épines** | fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |

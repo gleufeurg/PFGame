@@ -61,9 +61,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🛡️ Égide + ⚔️ Guerre | **Phalange** | fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🌪️ Vent + ⚔️ Guerre | **Cri de guerre** | repousse les ennemis autour et l'ennemi subit +50% de dégâts pendant 3 s |
 | 🔥 Feu + ⚔️ Guerre | **Terre brûlée** | laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent) |
-| ☀️ Lumière + ⚔️ Guerre | **Gloire** | achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + ⚔️ Guerre | **Gloire** | achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | 💗 Amour + ⚔️ Guerre | **Harmonie** | charme l'ennemi : il fait demi-tour et blesse ses alliés et achève les ennemis presque morts |
-| 🌙 Lune + ⚔️ Guerre | **Embuscade** | fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3) |
+| 🌙 Lune + ⚔️ Guerre | **Embuscade** | fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques) |
 | 🌿 Plante + ⚔️ Guerre | **Ronces** | fait saigner l'ennemi (les saignements s'additionnent) et enracine l'ennemi un instant |
 | 🪶 Plume + ⚔️ Guerre | **Raid** | fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | ⚡ Foudre + ⚔️ Guerre | **Tonnerre de guerre** | la foudre tombe sur 2 ennemis au hasard et fait saigner l'ennemi (les saignements s'additionnent) |
@@ -80,7 +80,7 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🛡️ Égide + 🔥 Feu + ⚔️ Guerre | **Siège** | un météore s'écrase sur un autre ennemi et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🛡️ Égide + ☀️ Lumière + ⚔️ Guerre | **Triomphe** | achève les ennemis presque morts et repousse les ennemis autour |
 | 🛡️ Égide + 💗 Amour + ⚔️ Guerre | **Trêve** | charme l'ennemi : il fait demi-tour et blesse ses alliés et l'ennemi subit +50% de dégâts pendant 3 s |
-| 🛡️ Égide + 🌙 Lune + ⚔️ Guerre | **Garde de nuit** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et recharge ton bouclier plus vite |
+| 🛡️ Égide + 🌙 Lune + ⚔️ Guerre | **Garde de nuit** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et recharge ton bouclier plus vite |
 | 🛡️ Égide + 🌿 Plante + ⚔️ Guerre | **Haie d'épines** | fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
 | 🛡️ Égide + 🪶 Plume + ⚔️ Guerre | **Guérilla** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🛡️ Égide + ⚡ Foudre + ⚔️ Guerre | **Gigantomachie** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et repousse les ennemis autour |
@@ -88,7 +88,7 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + 🔥 Feu + ⚔️ Guerre | **Incendie de guerre** | laisse des braises au sol, repousse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🌪️ Vent + ☀️ Lumière + ⚔️ Guerre | **Lance de lumière** | traverse les ennemis et achève les ennemis presque morts |
 | 🌪️ Vent + 💗 Amour + ⚔️ Guerre | **Tumulte** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
-| 🌪️ Vent + 🌙 Lune + ⚔️ Guerre | **Chasse sauvage** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et repousse l'ennemi |
+| 🌪️ Vent + 🌙 Lune + ⚔️ Guerre | **Chasse sauvage** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi |
 | 🌪️ Vent + 🌿 Plante + ⚔️ Guerre | **Fléau** | fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis |
 | 🌪️ Vent + 🪶 Plume + ⚔️ Guerre | **Blitz** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et traverse les ennemis |
 | 🌪️ Vent + ⚡ Foudre + ⚔️ Guerre | **Ouragan de guerre** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
@@ -100,20 +100,20 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🔥 Feu + 🪶 Plume + ⚔️ Guerre | **Raid incendiaire** | la balle revient vers sa planète en touchant tout sur son passage, laisse des braises au sol et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + ⚡ Foudre + ⚔️ Guerre | **Apocalypse** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + ⚔️ Guerre + 💧 Eau | **Feu grégeois marin** | laisse des braises au sol, fait saigner l'ennemi (les saignements s'additionnent) et ralentit les ennemis autour de l'impact |
-| ☀️ Lumière + 💗 Amour + ⚔️ Guerre | **Beauté fatale** | charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (x3) |
-| ☀️ Lumière + 🌙 Lune + ⚔️ Guerre | **Exécution** | achève les ennemis presque morts, chance de coup critique (x3) et fait saigner l'ennemi (les saignements s'additionnent) |
+| ☀️ Lumière + 💗 Amour + ⚔️ Guerre | **Beauté fatale** | charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
+| ☀️ Lumière + 🌙 Lune + ⚔️ Guerre | **Exécution** | achève les ennemis presque morts, chance de coup critique (+100% de dégâts critiques) et fait saigner l'ennemi (les saignements s'additionnent) |
 | ☀️ Lumière + 🌿 Plante + ⚔️ Guerre | **Lauriers** | achève les ennemis presque morts et enracine les ennemis autour |
 | ☀️ Lumière + 🪶 Plume + ⚔️ Guerre | **Lance d'Achille** | traverse les ennemis, achève les ennemis presque morts et la balle revient vers sa planète en touchant tout sur son passage |
-| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | ☀️ Lumière + ⚔️ Guerre + 💧 Eau | **Marée de gloire** | achève les ennemis presque morts et un tourbillon attire les ennemis vers l'impact |
-| 💗 Amour + 🌙 Lune + ⚔️ Guerre | **Séduction mortelle** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3) |
+| 💗 Amour + 🌙 Lune + ⚔️ Guerre | **Séduction mortelle** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques) |
 | 💗 Amour + 🌿 Plante + ⚔️ Guerre | **Adonis** | fait saigner l'ennemi (les saignements s'additionnent), te soigne à chaque coup et enracine les ennemis autour |
 | 💗 Amour + 🪶 Plume + ⚔️ Guerre | **Cœur de guerrier** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + ⚡ Foudre + ⚔️ Guerre | **Passion orageuse** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et fait saigner l'ennemi (les saignements s'additionnent) |
 | 💗 Amour + ⚔️ Guerre + 💧 Eau | **Hélène** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact |
-| 🌙 Lune + 🌿 Plante + ⚔️ Guerre | **Chasseresse** | fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (x3) |
-| 🌙 Lune + 🪶 Plume + ⚔️ Guerre | **Assassinat** | achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
-| 🌙 Lune + ⚡ Foudre + ⚔️ Guerre | **Orage meurtrier** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3) |
+| 🌙 Lune + 🌿 Plante + ⚔️ Guerre | **Chasseresse** | fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + 🪶 Plume + ⚔️ Guerre | **Assassinat** | achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + ⚡ Foudre + ⚔️ Guerre | **Orage meurtrier** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques) |
 | 🌙 Lune + ⚔️ Guerre + 💧 Eau | **Marée rouge** | fait saigner l'ennemi (les saignements s'additionnent), chance de renvoyer l'ennemi au bord de l'écran et ralentit l'ennemi |
 | 🌿 Plante + 🪶 Plume + ⚔️ Guerre | **Chardons** | éclate en 2 projectiles vers d'autres ennemis, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + ⚡ Foudre + ⚔️ Guerre | **Champ de bataille** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour |
@@ -126,7 +126,7 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🔥 Feu + 🕯️ Foyer + ⚔️ Guerre | **Forge de guerre** | explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🕯️ Foyer + ☀️ Lumière + ⚔️ Guerre | **Flamme olympique** | achève les ennemis presque morts, fait brûler l'ennemi et rebondit sur un autre ennemi |
 | 🕯️ Foyer + 💗 Amour + ⚔️ Guerre | **Paix des foyers** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi subit +50% de dégâts pendant 3 s et te soigne à chaque coup |
-| 🕯️ Foyer + 🌙 Lune + ⚔️ Guerre | **Sentinelle** | chance de coup critique (x3), achève les ennemis presque morts et recharge ton bouclier plus vite |
+| 🕯️ Foyer + 🌙 Lune + ⚔️ Guerre | **Sentinelle** | chance de coup critique (+100% de dégâts critiques), achève les ennemis presque morts et recharge ton bouclier plus vite |
 | 🕯️ Foyer + 🌿 Plante + ⚔️ Guerre | **Clôture** | fait saigner l'ennemi (les saignements s'additionnent), enracine les ennemis autour et repousse les ennemis autour |
 | 🕯️ Foyer + 🪶 Plume + ⚔️ Guerre | **Patrouille** | la balle revient vers sa planète en touchant tout sur son passage, fait saigner l'ennemi (les saignements s'additionnent) et recharge ton bouclier plus vite |
 | 🕯️ Foyer + ⚡ Foudre + ⚔️ Guerre | **Défense sacrée** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et recharge ton bouclier plus vite |

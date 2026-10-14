@@ -112,9 +112,9 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 💗 Amour + 🌿 Plante + ⚡ Foudre | **Fleur foudroyée** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant |
 | 💗 Amour + 🌿 Plante + ⚔️ Guerre | **Adonis** | fait saigner l'ennemi (les saignements s'additionnent), te soigne à chaque coup et enracine les ennemis autour |
 | 💗 Amour + 🌿 Plante + 💧 Eau | **Nymphéa** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et enracine les ennemis autour |
-| 🌙 Lune + 🌿 Plante + 🪶 Plume | **Feuilles de nuit** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
-| 🌙 Lune + 🌿 Plante + ⚡ Foudre | **Forêt d'orage** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (x3) |
-| 🌙 Lune + 🌿 Plante + ⚔️ Guerre | **Chasseresse** | fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (x3) |
+| 🌙 Lune + 🌿 Plante + 🪶 Plume | **Feuilles de nuit** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + 🌿 Plante + ⚡ Foudre | **Forêt d'orage** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + 🌿 Plante + ⚔️ Guerre | **Chasseresse** | fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (+100% de dégâts critiques) |
 | 🌿 Plante + 🪶 Plume + ⚡ Foudre | **Semailles foudroyantes** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + ⚔️ Guerre | **Chardons** | éclate en 2 projectiles vers d'autres ennemis, fait saigner l'ennemi (les saignements s'additionnent) et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + 🪶 Plume + 💧 Eau | **Graines flottantes** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et ralentit les ennemis autour de l'impact |

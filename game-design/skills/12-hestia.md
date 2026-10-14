@@ -97,14 +97,14 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + 🕯️ Foyer + 💧 Eau | **Brume du soir** | ralentit les ennemis autour de l'impact et gèle l'ennemi sur place |
 | 🔥 Feu + 🕯️ Foyer + ☀️ Lumière | **Flambeau** | rebondit sur un autre ennemi, fait brûler l'ennemi et laisse des braises au sol |
 | 🔥 Feu + 🕯️ Foyer + 💗 Amour | **Cœur ardent** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait brûler tous les ennemis autour et te soigne à chaque coup |
-| 🔥 Feu + 🕯️ Foyer + 🌙 Lune | **Veille ardente** | laisse des braises au sol et chance de coup critique (x3) |
+| 🔥 Feu + 🕯️ Foyer + 🌙 Lune | **Veille ardente** | laisse des braises au sol et chance de coup critique (+100% de dégâts critiques) |
 | 🔥 Feu + 🕯️ Foyer + 🌿 Plante | **Bûche** | laisse des braises au sol et enracine les ennemis autour |
 | 🔥 Feu + 🕯️ Foyer + 🪶 Plume | **Tison** | la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour |
 | 🔥 Feu + 🕯️ Foyer + ⚡ Foudre | **Feu du ciel** | la foudre tombe sur 2 ennemis au hasard et laisse des braises au sol |
 | 🔥 Feu + 🕯️ Foyer + ⚔️ Guerre | **Forge de guerre** | explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + 🕯️ Foyer + 💧 Eau | **Chaudron** | explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et te soigne à chaque coup |
 | 🕯️ Foyer + ☀️ Lumière + 💗 Amour | **Lumière du foyer** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
-| 🕯️ Foyer + ☀️ Lumière + 🌙 Lune | **Bougie** | chance de coup critique (x3), te soigne à chaque coup et frappe une 2e fois un instant plus tard |
+| 🕯️ Foyer + ☀️ Lumière + 🌙 Lune | **Bougie** | chance de coup critique (+100% de dégâts critiques), te soigne à chaque coup et frappe une 2e fois un instant plus tard |
 | 🕯️ Foyer + ☀️ Lumière + 🌿 Plante | **Serre** | te soigne à chaque coup, enracine les ennemis autour et éclate en 2 projectiles vers d'autres ennemis |
 | 🕯️ Foyer + ☀️ Lumière + 🪶 Plume | **Étoile du berger** | la balle revient vers sa planète en touchant tout sur son passage, rebondit sur un autre ennemi et te soigne à chaque coup |
 | 🕯️ Foyer + ☀️ Lumière + ⚡ Foudre | **Éclair apprivoisé** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et te soigne à chaque coup |
@@ -117,9 +117,9 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🕯️ Foyer + 💗 Amour + ⚔️ Guerre | **Paix des foyers** | charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi subit +50% de dégâts pendant 3 s et te soigne à chaque coup |
 | 🕯️ Foyer + 💗 Amour + 💧 Eau | **Bain tiède** | te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés |
 | 🕯️ Foyer + 🌙 Lune + 🌿 Plante | **Herbes de sorcière** | empoisonne l'ennemi, frappe une 2e fois un instant plus tard et te soigne à chaque coup |
-| 🕯️ Foyer + 🌙 Lune + 🪶 Plume | **Lueur errante** | la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (x3) |
+| 🕯️ Foyer + 🌙 Lune + 🪶 Plume | **Lueur errante** | la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (+100% de dégâts critiques) |
 | 🕯️ Foyer + 🌙 Lune + ⚡ Foudre | **Nuit orageuse** | la foudre tombe sur 2 ennemis au hasard, gèle l'ennemi sur place et te soigne à chaque coup |
-| 🕯️ Foyer + 🌙 Lune + ⚔️ Guerre | **Sentinelle** | chance de coup critique (x3), achève les ennemis presque morts et recharge ton bouclier plus vite |
+| 🕯️ Foyer + 🌙 Lune + ⚔️ Guerre | **Sentinelle** | chance de coup critique (+100% de dégâts critiques), achève les ennemis presque morts et recharge ton bouclier plus vite |
 | 🕯️ Foyer + 🌙 Lune + 💧 Eau | **Puits** | un tourbillon attire les ennemis vers l'impact et te soigne à chaque coup |
 | 🕯️ Foyer + 🌿 Plante + 🪶 Plume | **Graines du foyer** | éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup |
 | 🕯️ Foyer + 🌿 Plante + ⚡ Foudre | **Bois foudroyé** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et fait brûler l'ennemi |

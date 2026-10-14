@@ -4,7 +4,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum coûte **79 054 or**, dont 72 240 or pour les 12 dieux.
+- Tout le shop au maximum coûte **86 318 or**, dont 72 240 or pour les 12 dieux.
 - Tous les skills des 12 dieux coûtent **16 230 XP**.
 
 ## Le shop
@@ -14,6 +14,8 @@ Chaque niveau coûte plus cher que le précédent : prix = prix de départ × mu
 | Amélioration | Effet par niveau | Multiplicateur | Prix par niveau (or) | Total (or) |
 | --- | --- | --- | --- | --- |
 | Nouvelle divinité (12 niv.) | Une nouvelle planète et son skill tree rejoignent l'orbite | ×1,8 | 50, 90, 162, 292, 525, 945, 1 701, 3 061, 5 510, 9 918, 17 852, 32 134 | 72 240 |
+| Chance de critique (10 niv.) | +2% de chance de coup critique | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
+| Dégâts critiques (10 niv.) | +20% de dégâts critiques | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
 | Dégâts (10 niv.) | +1 dégât par balle | ×1,6 | 15, 24, 38, 61, 98, 157, 252, 403, 644, 1 031 | 2 723 |
 | Cadence de tir (10 niv.) | +10% de vitesse d'attaque | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171, 256, 384 | 1 134 |
 | Vie max (10 niv.) | +2 PV max | ×1,5 | 8, 12, 18, 27, 41, 61, 91, 137, 205, 308 | 908 |
@@ -58,29 +60,29 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
 | 5 | Hestia | Départ | +1 dégât par balle |
-| 9 | Cyclope III, V | Mineure | +1 dégât contre les ennemis de feu, chacun |
+| 9 | Cyclope III, V | Mineure | +1% de chance de coup critique, chacun |
 | 9 | Dactyle I, IV | Mineure | +0.5 dégât par balle, chacun |
 | 13 | Dactyle VI | Mineure | +0.5 dégât par balle |
 | 13 | Telchine IV | Mineure | +5% de vitesse d'attaque |
 | 17 | Telchine I, III | Mineure | +5% de vitesse d'attaque, chacun |
 | 20 | Aglaé | Notable | +30 de portée |
-| 20 | Prométhée | Notable | +1 dégât contre les ennemis de feu |
-| 21 | Cyclope I, IV | Mineure | +1 dégât contre les ennemis de feu, chacun |
+| 20 | Prométhée | Notable | +3% de chance de coup critique |
+| 21 | Cyclope I, IV | Mineure | +1% de chance de coup critique, chacun |
 | 21 | Dactyle III, VIII | Mineure | +0.5 dégât par balle, chacun |
 | 21 | Telchine VI | Mineure | +5% de vitesse d'attaque |
-| 25 | Cyclope VI, VII | Mineure | +1 dégât contre les ennemis de feu, chacun |
+| 25 | Cyclope VI, VII | Mineure | +1% de chance de coup critique, chacun |
 | 25 | Dactyle V | Mineure | +0.5 dégât par balle |
 | 26 | Bia | Notable | +10% de vitesse d'attaque |
 | 26 | Talos | Notable | +20% de vitesse des balles |
-| 29 | Cyclope II | Mineure | +1 dégât contre les ennemis de feu |
+| 29 | Cyclope II | Mineure | +1% de chance de coup critique |
 | 29 | Dactyle II, VII | Mineure | +0.5 dégât par balle, chacun |
 | 29 | Telchine VII | Mineure | +5% de vitesse d'attaque |
 | 33 | Telchine II, V | Mineure | +5% de vitesse d'attaque, chacun |
 | 38 | Argès | Notable | +15% de vitesse d'attaque |
-| 38 | Kédalion | Notable | +2 dégâts contre les ennemis de feu |
+| 38 | Kédalion | Notable | +25% de dégâts critiques |
 | 50 | Kratos | Notable | +1 dégât par balle |
 | 50 | Stéropès | Notable | +10% de vitesse d'attaque |
-| 72 | Brontès | Keystone | +2 dégâts par balle |
+| 72 | Brontès | Keystone | +60% de dégâts critiques |
 | 72 | Cabires | Keystone | +1 balle par tir |
 | 74 | Hécate | Keystone | +3 dégâts contre les plantes |
 | 150 | Etna | Grande keystone | GRANDE KEYSTONE : +3 dégâts par balle |

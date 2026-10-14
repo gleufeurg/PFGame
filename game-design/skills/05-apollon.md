@@ -62,12 +62,12 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | ☀️ Lumière + 💧 Eau | **Arc-en-ciel** | la balle se divise en 3 rayons qui visent d'autres ennemis |
 | ☀️ Lumière + 🌿 Plante | **Photosynthèse** | la balle plante une graine au sol, qui explose quand un ennemi passe dessus |
 | 🌪️ Vent + ☀️ Lumière | **Éclair** | la foudre rebondit sur un autre ennemi proche |
-| ☀️ Lumière + 🌙 Lune | **Éclipse** | grande chance de coup critique (x3) |
+| ☀️ Lumière + 🌙 Lune | **Éclipse** | grande chance de coup critique (+100% de dégâts critiques) |
 | 🛡️ Égide + ☀️ Lumière | **Aveuglement** | les ennemis touchés sont ralentis et subissent un critique de temps en temps |
 | ☀️ Lumière + 💗 Amour | **Rayon d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
 | ☀️ Lumière + 🪶 Plume | **Rayon fugace** | la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi |
 | ☀️ Lumière + ⚡ Foudre | **Fulgurance** | rebondit sur 3 ennemis |
-| ☀️ Lumière + ⚔️ Guerre | **Gloire** | achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + ⚔️ Guerre | **Gloire** | achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | 🕯️ Foyer + ☀️ Lumière | **Lampe** | rebondit sur un autre ennemi et te soigne à chaque coup |
 
 ### Fusions « Les deux côtés » où Apollon intervient
@@ -107,25 +107,25 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | ☀️ Lumière + 💗 Amour + 🌿 Plante | **Bouquet** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | ☀️ Lumière + 💗 Amour + 🪶 Plume | **Message d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi |
 | ☀️ Lumière + 💗 Amour + ⚡ Foudre | **Coup de foudre éclatant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
-| ☀️ Lumière + 💗 Amour + ⚔️ Guerre | **Beauté fatale** | charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + 💗 Amour + ⚔️ Guerre | **Beauté fatale** | charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | ☀️ Lumière + 💗 Amour + 💧 Eau | **Perle** | te soigne à chaque coup et se divise en 3 projectiles vers d'autres ennemis |
-| ☀️ Lumière + 🌙 Lune + 🪶 Plume | **Éclipse filante** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et rebondit sur un autre ennemi |
-| ☀️ Lumière + 🌙 Lune + ⚡ Foudre | **Aurore boréale** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et rebondit sur un autre ennemi |
-| ☀️ Lumière + 🌙 Lune + ⚔️ Guerre | **Exécution** | achève les ennemis presque morts, chance de coup critique (x3) et fait saigner l'ennemi (les saignements s'additionnent) |
+| ☀️ Lumière + 🌙 Lune + 🪶 Plume | **Éclipse filante** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (+100% de dégâts critiques) et rebondit sur un autre ennemi |
+| ☀️ Lumière + 🌙 Lune + ⚡ Foudre | **Aurore boréale** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et rebondit sur un autre ennemi |
+| ☀️ Lumière + 🌙 Lune + ⚔️ Guerre | **Exécution** | achève les ennemis presque morts, chance de coup critique (+100% de dégâts critiques) et fait saigner l'ennemi (les saignements s'additionnent) |
 | ☀️ Lumière + 🌿 Plante + 🪶 Plume | **Pollen d'or** | se divise en 3 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🌿 Plante + ⚡ Foudre | **Orage fertile** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine les ennemis autour |
 | ☀️ Lumière + 🌿 Plante + ⚔️ Guerre | **Lauriers** | achève les ennemis presque morts et enracine les ennemis autour |
 | ☀️ Lumière + 🪶 Plume + ⚡ Foudre | **Éclair foudroyant** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🪶 Plume + ⚔️ Guerre | **Lance d'Achille** | traverse les ennemis, achève les ennemis presque morts et la balle revient vers sa planète en touchant tout sur son passage |
 | ☀️ Lumière + 🪶 Plume + 💧 Eau | **Reflet sur l'eau** | la balle revient vers sa planète en touchant tout sur son passage et se divise en 3 projectiles vers d'autres ennemis |
-| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | ☀️ Lumière + ⚡ Foudre + 💧 Eau | **Éclair sur la mer** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et gèle l'ennemi sur place |
 | ☀️ Lumière + ⚔️ Guerre + 💧 Eau | **Marée de gloire** | achève les ennemis presque morts et un tourbillon attire les ennemis vers l'impact |
 | 🛡️ Égide + 🕯️ Foyer + ☀️ Lumière | **Phare** | rebondit sur 3 ennemis et recharge ton bouclier plus vite |
 | 🌪️ Vent + 🕯️ Foyer + ☀️ Lumière | **Lanterne** | rebondit sur un autre ennemi, repousse l'ennemi et te soigne à chaque coup |
 | 🔥 Feu + 🕯️ Foyer + ☀️ Lumière | **Flambeau** | rebondit sur un autre ennemi, fait brûler l'ennemi et laisse des braises au sol |
 | 🕯️ Foyer + ☀️ Lumière + 💗 Amour | **Lumière du foyer** | te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
-| 🕯️ Foyer + ☀️ Lumière + 🌙 Lune | **Bougie** | chance de coup critique (x3), te soigne à chaque coup et frappe une 2e fois un instant plus tard |
+| 🕯️ Foyer + ☀️ Lumière + 🌙 Lune | **Bougie** | chance de coup critique (+100% de dégâts critiques), te soigne à chaque coup et frappe une 2e fois un instant plus tard |
 | 🕯️ Foyer + ☀️ Lumière + 🌿 Plante | **Serre** | te soigne à chaque coup, enracine les ennemis autour et éclate en 2 projectiles vers d'autres ennemis |
 | 🕯️ Foyer + ☀️ Lumière + 🪶 Plume | **Étoile du berger** | la balle revient vers sa planète en touchant tout sur son passage, rebondit sur un autre ennemi et te soigne à chaque coup |
 | 🕯️ Foyer + ☀️ Lumière + ⚡ Foudre | **Éclair apprivoisé** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et te soigne à chaque coup |

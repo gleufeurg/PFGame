@@ -63,7 +63,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | 🔥 Feu + ⚡ Foudre | **Foudre ardente** | la foudre tombe sur 2 ennemis au hasard et fait brûler l'ennemi |
 | ☀️ Lumière + ⚡ Foudre | **Fulgurance** | rebondit sur 3 ennemis |
 | 💗 Amour + ⚡ Foudre | **Coup de foudre** | la foudre tombe sur 2 ennemis au hasard et charme l'ennemi : il fait demi-tour et blesse ses alliés |
-| 🌙 Lune + ⚡ Foudre | **Orage nocturne** | la foudre tombe sur 2 ennemis au hasard et chance de coup critique (x3) |
+| 🌙 Lune + ⚡ Foudre | **Orage nocturne** | la foudre tombe sur 2 ennemis au hasard et chance de coup critique (+100% de dégâts critiques) |
 | 🌿 Plante + ⚡ Foudre | **Arbre foudroyé** | la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour |
 | 🪶 Plume + ⚡ Foudre | **Messager de Zeus** | la foudre tombe sur 2 ennemis au hasard et la balle revient vers sa planète en touchant tout sur son passage |
 | ⚡ Foudre + ⚔️ Guerre | **Tonnerre de guerre** | la foudre tombe sur 2 ennemis au hasard et fait saigner l'ennemi (les saignements s'additionnent) |
@@ -88,7 +88,7 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + 🔥 Feu + ⚡ Foudre | **Orage de feu** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait brûler l'ennemi |
 | 🌪️ Vent + ☀️ Lumière + ⚡ Foudre | **Foudre céleste** | la foudre tombe sur 2 ennemis au hasard et rebondit sur 3 ennemis |
 | 🌪️ Vent + 💗 Amour + ⚡ Foudre | **Coup de vent** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour |
-| 🌪️ Vent + 🌙 Lune + ⚡ Foudre | **Orage d'été** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et repousse l'ennemi |
+| 🌪️ Vent + 🌙 Lune + ⚡ Foudre | **Orage d'été** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi |
 | 🌪️ Vent + 🌿 Plante + ⚡ Foudre | **Foudre champêtre** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour |
 | 🌪️ Vent + 🪶 Plume + ⚡ Foudre | **Éclair d'Hermès** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et traverse les ennemis |
 | 🌪️ Vent + ⚡ Foudre + ⚔️ Guerre | **Ouragan de guerre** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour |
@@ -101,19 +101,19 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🔥 Feu + ⚡ Foudre + ⚔️ Guerre | **Apocalypse** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent) |
 | 🔥 Feu + ⚡ Foudre + 💧 Eau | **Orage brûlant** | la foudre tombe sur 2 ennemis au hasard, explose et blesse les ennemis autour et ralentit les ennemis autour de l'impact |
 | ☀️ Lumière + 💗 Amour + ⚡ Foudre | **Coup de foudre éclatant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi |
-| ☀️ Lumière + 🌙 Lune + ⚡ Foudre | **Aurore boréale** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et rebondit sur un autre ennemi |
+| ☀️ Lumière + 🌙 Lune + ⚡ Foudre | **Aurore boréale** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et rebondit sur un autre ennemi |
 | ☀️ Lumière + 🌿 Plante + ⚡ Foudre | **Orage fertile** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine les ennemis autour |
 | ☀️ Lumière + 🪶 Plume + ⚡ Foudre | **Éclair foudroyant** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et la balle revient vers sa planète en touchant tout sur son passage |
-| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (x3) |
+| ☀️ Lumière + ⚡ Foudre + ⚔️ Guerre | **Colère de Zeus** | la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques) |
 | ☀️ Lumière + ⚡ Foudre + 💧 Eau | **Éclair sur la mer** | la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et gèle l'ennemi sur place |
 | 💗 Amour + 🌙 Lune + ⚡ Foudre | **Nuit de foudre** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place |
 | 💗 Amour + 🌿 Plante + ⚡ Foudre | **Fleur foudroyée** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant |
 | 💗 Amour + 🪶 Plume + ⚡ Foudre | **Message foudroyant** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage |
 | 💗 Amour + ⚡ Foudre + ⚔️ Guerre | **Passion orageuse** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et fait saigner l'ennemi (les saignements s'additionnent) |
 | 💗 Amour + ⚡ Foudre + 💧 Eau | **Foudre et écume** | la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et ralentit les ennemis autour de l'impact |
-| 🌙 Lune + 🌿 Plante + ⚡ Foudre | **Forêt d'orage** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (x3) |
-| 🌙 Lune + 🪶 Plume + ⚡ Foudre | **Éclair nocturne** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3) |
-| 🌙 Lune + ⚡ Foudre + ⚔️ Guerre | **Orage meurtrier** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3) |
+| 🌙 Lune + 🌿 Plante + ⚡ Foudre | **Forêt d'orage** | la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + 🪶 Plume + ⚡ Foudre | **Éclair nocturne** | la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques) |
+| 🌙 Lune + ⚡ Foudre + ⚔️ Guerre | **Orage meurtrier** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques) |
 | 🌙 Lune + ⚡ Foudre + 💧 Eau | **Tonnerre des abysses** | la foudre tombe sur 2 ennemis au hasard, un tourbillon attire les ennemis vers l'impact et gèle l'ennemi sur place |
 | 🌿 Plante + 🪶 Plume + ⚡ Foudre | **Semailles foudroyantes** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌿 Plante + ⚡ Foudre + ⚔️ Guerre | **Champ de bataille** | la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et enracine les ennemis autour |

@@ -33,5 +33,7 @@ Voir [0-combos.md](0-combos.md) : 66 combos et 220 fusions.
 | **Vie max** | +2 PV max | 8 or | 10 |
 | **Dégâts** | +1 dégât par balle | 15 or | 10 |
 | **Régénération** | +0.05 PV par seconde | 12 or | 8 |
+| **Chance de critique** | +2% de chance de coup critique | 20 or | 10 |
+| **Dégâts critiques** | +20% de dégâts critiques | 20 or | 10 |
 | **Vitesse des balles** | +15% de vitesse des balles | 8 or | 6 |
 | **Nouvelle divinité** | Une nouvelle planète et son skill tree rejoignent l'orbite | 50 or | 12 |

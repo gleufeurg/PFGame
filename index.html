@@ -1419,6 +1419,7 @@
             drawLightning();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
             drawPlayer();
+            drawDamageNumbers();     //tout en haut : les nombres passent devant tout le reste
 
             ctx.restore(); //on annule la secousse pour la prochaine image
         }
@@ -1648,6 +1649,87 @@
             shockwaves.push({ x: x, y: y, color: color, radius: 0, maxRadius: maxRadius, life: 0.5, maxLife: 0.5 });
         }
 
+        //NOMBRES DE DÉGÂTS : chaque coup affiche les dégâts au-dessus de l'ennemi, de la couleur de l'attaque
+        const damageNumbers = [];
+        const DAMAGE_NUMBER_DURATION = 0.8;       // secondes à l'écran (un critique reste un peu plus)
+        const DAMAGE_NUMBER_RISE_SPEED = 45;      // pixels par seconde vers le haut
+        const DAMAGE_NUMBER_SIZE = 13;            // taille du texte (px)
+        const CRIT_NUMBER_SIZE = 20;              // un critique est plus gros...
+        const CRIT_OUTLINE_COLOR = "#ff2a2a";     // ...avec un contour rouge
+        const DOT_NUMBER_INTERVAL = 0.5;          // dégâts continus (brûlure, poison...) : additionnés et affichés toutes les 0.5 s
+        const PLAYER_HIT_COLOR = "#ffffff";       // les balles du joueur
+
+        //Couleur de chaque type d'attaque. La plupart reprennent la couleur de l'attribut (ATTRIBUTES),
+        //sauf la foudre en jaune, et la lumière en blanc doré (pour ne pas la confondre avec la foudre)
+        const DAMAGE_COLORS = {
+            fire: "#ff7a45", water: "#4da6ff", plant: "#55dd55", air: "#e0f7ff",
+            light: "#fff4c2", moon: "#c7b8ff", aegis: "#e8b07a", thunder: "#ffe14d",
+            war: "#d93a3a", love: "#ff8fc7", swift: "#6a7dff", hearth: "#c4734a"
+        };
+
+        //La couleur des dégâts d'une balle (ou d'un effet) : on retrouve son attribut grâce à sa couleur
+        function getDamageColor(color) {
+            if (color === BULLET_COLOR || !color) {
+                return PLAYER_HIT_COLOR;
+            }
+            for (const key of Object.keys(ATTRIBUTES)) {
+                if (ATTRIBUTES[key].color === color) {
+                    return DAMAGE_COLORS[key];
+                }
+            }
+            return color; //couleur inconnue (mélange de fusion...) : on la garde telle quelle
+        }
+
+        function spawnDamageNumber(x, y, amount, color, isCrit) {
+            if (amount < 0.05) {
+                return; //trop petit pour être lisible
+            }
+            const life = DAMAGE_NUMBER_DURATION + (isCrit ? 0.3 : 0);
+            damageNumbers.push({ x: x + randomBetween(-8, 8), y: y, amount: amount, color: color, isCrit: isCrit, life: life, maxLife: life });
+        }
+
+        //1 chiffre après la virgule pour les petits nombres (0.6), entier au-delà de 10
+        function formatDamage(amount) {
+            return amount >= 10 ? String(Math.round(amount)) : String(Math.round(amount * 10) / 10);
+        }
+
+        //Affiche d'un coup les dégâts continus accumulés par un ennemi (une couleur = un nombre)
+        function flushDotNumbers(enemy) {
+            if (!enemy.dotDamage) {
+                return;
+            }
+            for (const color of Object.keys(enemy.dotDamage)) {
+                spawnDamageNumber(enemy.x, enemy.y - enemy.size, enemy.dotDamage[color], color, false);
+            }
+            enemy.dotDamage = {};
+            enemy.dotTimer = 0;
+        }
+
+        function drawDamageNumbers() {
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.lineJoin = "round";
+            for (const number of damageNumbers) {
+                const age = number.maxLife - number.life; //secondes depuis l'apparition
+                ctx.globalAlpha = Math.min(1, number.life / 0.3); //s'efface à la fin
+                let size = DAMAGE_NUMBER_SIZE;
+                if (number.isCrit) {
+                    //Critique : il "explose" (très gros), revient à sa taille en rebondissant, et tremble un peu au début
+                    const pop = Math.max(0, 1 - age / 0.25);
+                    size = CRIT_NUMBER_SIZE * (1 + 0.8 * pop);
+                }
+                const shake = number.isCrit && age < 0.25 ? randomBetween(-1.5, 1.5) : 0;
+                ctx.font = "900 " + size + "px Nunito";
+                ctx.lineWidth = number.isCrit ? 5 : 3;
+                ctx.strokeStyle = number.isCrit ? CRIT_OUTLINE_COLOR : "rgba(0, 0, 0, 0.65)";
+                const text = formatDamage(number.amount) + (number.isCrit ? "!" : "");
+                ctx.strokeText(text, number.x + shake, number.y);
+                ctx.fillStyle = number.color;
+                ctx.fillText(text, number.x + shake, number.y);
+            }
+            ctx.globalAlpha = 1;
+        }
+
         //SECOUSSE DE L'ÉCRAN
         const SCREEN_SHAKE_DURATION = 0.25;
         const SCREEN_SHAKE_STRENGTH = 4;    // pixels max (petit : on reste "cosy")
@@ -1673,7 +1755,21 @@
                     shockwaves.splice(i, 1);
                 }
             }
+            for (let i = damageNumbers.length - 1; i >= 0; i--) {
+                const number = damageNumbers[i];
+                number.life -= deltaTime;
+                number.y -= DAMAGE_NUMBER_RISE_SPEED * deltaTime;
+                if (number.life <= 0) {
+                    damageNumbers.splice(i, 1);
+                }
+            }
             for (const enemy of enemies) {
+                if (enemy.dotDamage) {
+                    enemy.dotTimer = (enemy.dotTimer || 0) + deltaTime;
+                    if (enemy.dotTimer >= DOT_NUMBER_INTERVAL) {
+                        flushDotNumbers(enemy);
+                    }
+                }
                 enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
                 //Rétrécit en douceur vers la taille qui correspond à sa vie actuelle
                 //Super ennemi : il rétrécit jusqu'à 60% de sa taille quand sa vie baisse
@@ -2057,6 +2153,8 @@
             range: 300,           // distance max pour viser, en pixels
             bulletSpeed: 1,       // multiplicateur de vitesse des balles
             bulletCount: 1,       // nombre de balles par tir
+            critChance: 0,        // chance de coup critique (0.1 = 10%)
+            critDamage: 2,        // dégâts d'un coup critique (2 = 200% des dégâts normaux)
             goldMultiplier: 1,    // multiplicateur d'or gagné
             xpMultiplier: 1       // multiplicateur d'XP gagnée
         };
@@ -3287,15 +3385,18 @@
 
         function hitEnemy(enemy, index, bullet) {
             let damage = bullet.damage + playerStats.damageVs[enemy.type];
-            //Combos d'orbite qui changent les dégâts du coup lui-même
-            const crit = getBulletEffect(bullet, "crit");
-            if (crit > 0 && Math.random() < COMBO_CRIT_CHANCE * crit) {
-                damage *= COMBO_CRIT_MULTIPLIER;
-                spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 14);
+            //COUP CRITIQUE : chance = stat du joueur (shop, Héphaïstos) + combo d'orbite "crit".
+            //Dégâts = x critDamage (2 = 200% au départ). Le combo "crit" ajoute aussi +100% de dégâts critiques.
+            const comboCrit = getBulletEffect(bullet, "crit");
+            const critChance = playerStats.critChance + COMBO_CRIT_CHANCE * comboCrit;
+            const isCrit = Math.random() < critChance;
+            if (isCrit) {
+                damage *= playerStats.critDamage + (comboCrit > 0 ? COMBO_CRIT_BONUS_DAMAGE : 0);
+                spawnShockwave(enemy.x, enemy.y, CRIT_OUTLINE_COLOR, enemy.size + 14);
             }
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
             applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
-            damageEnemy(enemy, damage, "enemyHit");
+            damageEnemy(enemy, damage, "enemyHit", { color: getDamageColor(bullet.color), crit: isCrit });
             //Exécution : un ennemi normal presque mort est achevé d'un coup
             if (getBulletEffect(bullet, "execute") > 0 && !enemy.isBoss && enemies.includes(enemy) && enemy.health <= enemy.maxHealth * COMBO_EXECUTE_THRESHOLD) {
                 spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 10);
@@ -3304,7 +3405,8 @@
         }
 
         //Enlève des PV à un ennemi, et s'occupe de sa mort (récompenses, éclats, son). sound = son si il survit (ou null)
-        function damageEnemy(enemy, amount, sound) {
+        //hit (optionnel) = { color: couleur du nombre, crit: true si coup critique, dot: true pour les dégâts continus }
+        function damageEnemy(enemy, amount, sound, hit = {}) {
             const index = enemies.indexOf(enemy); //indexOf = sa place dans la liste (-1 s'il n'y est plus)
             if (index === -1) {
                 return; //déjà mort
@@ -3314,8 +3416,17 @@
             }
             enemy.health -= amount;
             enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
+            const numberColor = hit.color || PLAYER_HIT_COLOR;
+            if (hit.dot) {
+                //Dégâts continus : minuscules à chaque image, donc on les additionne (affichés toutes les DOT_NUMBER_INTERVAL)
+                enemy.dotDamage = enemy.dotDamage || {};
+                enemy.dotDamage[numberColor] = (enemy.dotDamage[numberColor] || 0) + amount;
+            } else {
+                spawnDamageNumber(enemy.x, enemy.y - enemy.size, amount, numberColor, hit.crit === true);
+            }
 
             if (enemy.health <= 0) {
+                flushDotNumbers(enemy); //les derniers dégâts continus s'affichent aussi
                 if (enemy.poisonTimer > 0) {
                     spreadPoison(enemy);
                 }
@@ -3485,7 +3596,7 @@
             "fire+water": { name: "Vapeur", description: "un nuage de vapeur ralentit les ennemis autour de l'impact", effects: ["slowArea"] },
             "fire+plant": { name: "Feu de forêt", description: "les ennemis touchés brûlent pendant 3 s", effects: ["burn"] },
             "fire+light": { name: "Éruption solaire", description: "les balles brûlent et traversent un ennemi", effects: ["burn", "pierce"] },
-            "fire+moon": { name: "Flèche ardente", description: "chance de coup critique (x3), et les ennemis brûlent", effects: ["crit", "burn"] },
+            "fire+moon": { name: "Flèche ardente", description: "chance de coup critique (+100% de dégâts critiques), et les ennemis brûlent", effects: ["crit", "burn"] },
             "aegis+fire": { name: "Forge", description: "les balles laissent des braises au sol qui brûlent les ennemis qui passent dessus", effects: ["fireZone"] },
             "air+water": { name: "Gel", description: "les ennemis touchés sont gelés sur place", effects: ["freeze"] },
             "plant+water": { name: "Floraison", description: "chaque coup te soigne un peu", effects: ["heal"] },
@@ -3499,7 +3610,7 @@
             "air+light": { name: "Éclair", description: "la foudre rebondit sur un autre ennemi proche", effects: ["chain"] },
             "air+moon": { name: "Flèche du vent", description: "les balles traversent les ennemis", effects: ["pierce"] },
             "aegis+air": { name: "Bourrasque", description: "les ennemis touchés sont fortement repoussés", effects: ["knockback", "knockback"] },
-            "light+moon": { name: "Éclipse", description: "grande chance de coup critique (x3)", effects: ["crit", "crit"] },
+            "light+moon": { name: "Éclipse", description: "grande chance de coup critique (+100% de dégâts critiques)", effects: ["crit", "crit"] },
             "aegis+light": { name: "Aveuglement", description: "les ennemis touchés sont ralentis et subissent un critique de temps en temps", effects: ["slow", "crit"] },
             "aegis+moon": { name: "Chouette", description: "les balles rebondissent sur un autre ennemi", effects: ["chain"] },
             //Les 5 dieux de l'Olympe ajoutés ensuite (Zeus, Arès, Aphrodite, Hermès, Hestia)
@@ -3518,16 +3629,16 @@
             "light+love": { name: "Rayon d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["charm", "chain"] },
             "light+swift": { name: "Rayon fugace", description: "la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi", effects: ["boomerang", "chain"] },
             "light+thunder": { name: "Fulgurance", description: "rebondit sur 3 ennemis", effects: ["chain", "chain3"] },
-            "light+war": { name: "Gloire", description: "achève les ennemis presque morts et chance de coup critique (x3)", effects: ["execute", "crit"] },
+            "light+war": { name: "Gloire", description: "achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques)", effects: ["execute", "crit"] },
             "love+moon": { name: "Endymion", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place", effects: ["charm", "freeze"] },
             "love+plant": { name: "Rose", description: "fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup", effects: ["bleed", "heal"] },
             "love+swift": { name: "Flèche d'Éros", description: "traverse les ennemis et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["pierce", "charm"] },
             "love+thunder": { name: "Coup de foudre", description: "la foudre tombe sur 2 ennemis au hasard et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["thunder", "charm"] },
             "love+war": { name: "Harmonie", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et achève les ennemis presque morts", effects: ["charm", "execute"] },
             "love+water": { name: "Écume", description: "te soigne à chaque coup et ralentit les ennemis autour de l'impact", effects: ["heal", "slowArea"] },
-            "moon+swift": { name: "Chasse nocturne", description: "la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["boomerang", "crit"] },
-            "moon+thunder": { name: "Orage nocturne", description: "la foudre tombe sur 2 ennemis au hasard et chance de coup critique (x3)", effects: ["thunder", "crit"] },
-            "moon+war": { name: "Embuscade", description: "fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["bleed", "crit"] },
+            "moon+swift": { name: "Chasse nocturne", description: "la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques)", effects: ["boomerang", "crit"] },
+            "moon+thunder": { name: "Orage nocturne", description: "la foudre tombe sur 2 ennemis au hasard et chance de coup critique (+100% de dégâts critiques)", effects: ["thunder", "crit"] },
+            "moon+war": { name: "Embuscade", description: "fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques)", effects: ["bleed", "crit"] },
             "plant+swift": { name: "Graines volantes", description: "éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "boomerang"] },
             "plant+thunder": { name: "Arbre foudroyé", description: "la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour", effects: ["thunder", "rootArea"] },
             "plant+war": { name: "Ronces", description: "fait saigner l'ennemi (les saignements s'additionnent) et enracine l'ennemi un instant", effects: ["bleed", "root"] },
@@ -3611,7 +3722,7 @@
             "aegis+love+water": { name: "Naissance de Vénus", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et recharge ton bouclier plus vite", effects: ["heal", "slowArea", "shieldCharge"] },
             "aegis+moon+swift": { name: "Ombre fugace", description: "la balle revient vers sa planète en touchant tout sur son passage et l'ennemi perd le nord et recule", effects: ["boomerang", "confuse"] },
             "aegis+moon+thunder": { name: "Nuit d'orage", description: "la foudre tombe sur 2 ennemis au hasard et gèle l'ennemi sur place", effects: ["thunder", "freeze"] },
-            "aegis+moon+war": { name: "Garde de nuit", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et recharge ton bouclier plus vite", effects: ["bleed", "crit", "shieldCharge"] },
+            "aegis+moon+war": { name: "Garde de nuit", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et recharge ton bouclier plus vite", effects: ["bleed", "crit", "shieldCharge"] },
             "aegis+plant+swift": { name: "Graines-boucliers", description: "éclate en 2 projectiles vers d'autres ennemis, recharge ton bouclier plus vite et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "shieldCharge", "boomerang"] },
             "aegis+plant+thunder": { name: "Chêne de Dodone", description: "la foudre tombe sur 2 ennemis au hasard et enracine les ennemis autour", effects: ["thunder", "rootArea"] },
             "aegis+plant+war": { name: "Haie d'épines", description: "fait saigner l'ennemi (les saignements s'additionnent) et repousse les ennemis autour", effects: ["bleed", "knockbackArea"] },
@@ -3629,15 +3740,15 @@
             "air+light+swift": { name: "Vent solaire", description: "la balle revient vers sa planète en touchant tout sur son passage, traverse les ennemis et rebondit sur un autre ennemi", effects: ["boomerang", "pierce", "chain"] },
             "air+light+thunder": { name: "Foudre céleste", description: "la foudre tombe sur 2 ennemis au hasard et rebondit sur 3 ennemis", effects: ["thunder", "chain", "chain3"] },
             "air+light+war": { name: "Lance de lumière", description: "traverse les ennemis et achève les ennemis presque morts", effects: ["pierce", "execute"] },
-            "air+love+moon": { name: "Nuit étoilée", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3)", effects: ["charm", "crit"] },
+            "air+love+moon": { name: "Nuit étoilée", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (+100% de dégâts critiques)", effects: ["charm", "crit"] },
             "air+love+plant": { name: "Pollen d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis", effects: ["charm", "split"] },
             "air+love+swift": { name: "Messagère", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi", effects: ["charm", "boomerang", "knockback"] },
             "air+love+thunder": { name: "Coup de vent", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour", effects: ["thunder", "charm", "knockbackArea"] },
             "air+love+war": { name: "Tumulte", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi", effects: ["charm", "bleed", "knockback"] },
             "air+love+water": { name: "Embruns", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, ralentit les ennemis autour de l'impact et repousse l'ennemi", effects: ["charm", "slowArea", "knockback"] },
-            "air+moon+swift": { name: "Vol de nuit", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et traverse les ennemis", effects: ["boomerang", "crit", "pierce"] },
-            "air+moon+thunder": { name: "Orage d'été", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et repousse l'ennemi", effects: ["thunder", "crit", "knockback"] },
-            "air+moon+war": { name: "Chasse sauvage", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et repousse l'ennemi", effects: ["bleed", "crit", "knockback"] },
+            "air+moon+swift": { name: "Vol de nuit", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (+100% de dégâts critiques) et traverse les ennemis", effects: ["boomerang", "crit", "pierce"] },
+            "air+moon+thunder": { name: "Orage d'été", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi", effects: ["thunder", "crit", "knockback"] },
+            "air+moon+war": { name: "Chasse sauvage", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi", effects: ["bleed", "crit", "knockback"] },
             "air+plant+swift": { name: "Feuilles au vent", description: "éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "boomerang"] },
             "air+plant+thunder": { name: "Foudre champêtre", description: "la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour", effects: ["thunder", "split", "rootArea"] },
             "air+plant+war": { name: "Fléau", description: "fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis", effects: ["bleed", "split"] },
@@ -3651,7 +3762,7 @@
             "fire+light+swift": { name: "Rayon ardent", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et traverse les ennemis", effects: ["boomerang", "burn", "pierce"] },
             "fire+light+thunder": { name: "Plasma", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et traverse les ennemis", effects: ["thunder", "burn", "pierce"] },
             "fire+light+war": { name: "Bûcher des héros", description: "achève les ennemis presque morts et laisse des braises au sol", effects: ["execute", "fireZone"] },
-            "fire+love+moon": { name: "Feu de l'âme", description: "fait brûler l'ennemi, charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3)", effects: ["burn", "charm", "crit"] },
+            "fire+love+moon": { name: "Feu de l'âme", description: "fait brûler l'ennemi, charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (+100% de dégâts critiques)", effects: ["burn", "charm", "crit"] },
             "fire+love+plant": { name: "Rose de feu", description: "fait brûler l'ennemi, fait saigner l'ennemi (les saignements s'additionnent) et te soigne à chaque coup", effects: ["burn", "bleed", "heal"] },
             "fire+love+swift": { name: "Flèche enflammée", description: "la balle revient vers sa planète en touchant tout sur son passage, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["boomerang", "burn", "charm"] },
             "fire+love+thunder": { name: "Passion foudroyante", description: "la foudre tombe sur 2 ennemis au hasard, fait brûler l'ennemi et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["thunder", "burn", "charm"] },
@@ -3673,24 +3784,24 @@
             "light+love+plant": { name: "Bouquet", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis", effects: ["heal", "charm", "split"] },
             "light+love+swift": { name: "Message d'amour", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et rebondit sur un autre ennemi", effects: ["charm", "boomerang", "chain"] },
             "light+love+thunder": { name: "Coup de foudre éclatant", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["thunder", "charm", "chain"] },
-            "light+love+war": { name: "Beauté fatale", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (x3)", effects: ["charm", "execute", "crit"] },
+            "light+love+war": { name: "Beauté fatale", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques)", effects: ["charm", "execute", "crit"] },
             "light+love+water": { name: "Perle", description: "te soigne à chaque coup et se divise en 3 projectiles vers d'autres ennemis", effects: ["heal", "split", "split3"] },
-            "light+moon+swift": { name: "Éclipse filante", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et rebondit sur un autre ennemi", effects: ["boomerang", "crit", "chain"] },
-            "light+moon+thunder": { name: "Aurore boréale", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et rebondit sur un autre ennemi", effects: ["thunder", "crit", "chain"] },
-            "light+moon+war": { name: "Exécution", description: "achève les ennemis presque morts, chance de coup critique (x3) et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["execute", "crit", "bleed"] },
+            "light+moon+swift": { name: "Éclipse filante", description: "la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (+100% de dégâts critiques) et rebondit sur un autre ennemi", effects: ["boomerang", "crit", "chain"] },
+            "light+moon+thunder": { name: "Aurore boréale", description: "la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et rebondit sur un autre ennemi", effects: ["thunder", "crit", "chain"] },
+            "light+moon+war": { name: "Exécution", description: "achève les ennemis presque morts, chance de coup critique (+100% de dégâts critiques) et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["execute", "crit", "bleed"] },
             "light+plant+swift": { name: "Pollen d'or", description: "se divise en 3 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "split3", "boomerang"] },
             "light+plant+thunder": { name: "Orage fertile", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine les ennemis autour", effects: ["thunder", "heal", "rootArea"] },
             "light+plant+war": { name: "Lauriers", description: "achève les ennemis presque morts et enracine les ennemis autour", effects: ["execute", "rootArea"] },
             "light+swift+thunder": { name: "Éclair foudroyant", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "chain", "boomerang"] },
             "light+swift+war": { name: "Lance d'Achille", description: "traverse les ennemis, achève les ennemis presque morts et la balle revient vers sa planète en touchant tout sur son passage", effects: ["pierce", "execute", "boomerang"] },
             "light+swift+water": { name: "Reflet sur l'eau", description: "la balle revient vers sa planète en touchant tout sur son passage et se divise en 3 projectiles vers d'autres ennemis", effects: ["boomerang", "split", "split3"] },
-            "light+thunder+war": { name: "Colère de Zeus", description: "la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (x3)", effects: ["thunder", "execute", "crit"] },
+            "light+thunder+war": { name: "Colère de Zeus", description: "la foudre tombe sur 2 ennemis au hasard, achève les ennemis presque morts et chance de coup critique (+100% de dégâts critiques)", effects: ["thunder", "execute", "crit"] },
             "light+thunder+water": { name: "Éclair sur la mer", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et gèle l'ennemi sur place", effects: ["thunder", "chain", "freeze"] },
             "light+war+water": { name: "Marée de gloire", description: "achève les ennemis presque morts et un tourbillon attire les ennemis vers l'impact", effects: ["execute", "vortex"] },
             "love+moon+plant": { name: "Rêve", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, enracine les ennemis autour et te soigne à chaque coup", effects: ["charm", "rootArea", "heal"] },
-            "love+moon+swift": { name: "Chasse amoureuse", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["charm", "boomerang", "crit"] },
+            "love+moon+swift": { name: "Chasse amoureuse", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques)", effects: ["charm", "boomerang", "crit"] },
             "love+moon+thunder": { name: "Nuit de foudre", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et gèle l'ennemi sur place", effects: ["thunder", "charm", "freeze"] },
-            "love+moon+war": { name: "Séduction mortelle", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["charm", "bleed", "crit"] },
+            "love+moon+war": { name: "Séduction mortelle", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques)", effects: ["charm", "bleed", "crit"] },
             "love+moon+water": { name: "Sirène", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés et un tourbillon attire les ennemis vers l'impact", effects: ["charm", "vortex"] },
             "love+plant+swift": { name: "Pétales au vent", description: "éclate en 2 projectiles vers d'autres ennemis, charme l'ennemi : il fait demi-tour et blesse ses alliés et la balle revient vers sa planète en touchant tout sur son passage", effects: ["split", "charm", "boomerang"] },
             "love+plant+thunder": { name: "Fleur foudroyée", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et enracine l'ennemi un instant", effects: ["thunder", "heal", "root"] },
@@ -3702,13 +3813,13 @@
             "love+thunder+war": { name: "Passion orageuse", description: "la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["thunder", "charm", "bleed"] },
             "love+thunder+water": { name: "Foudre et écume", description: "la foudre tombe sur 2 ennemis au hasard, te soigne à chaque coup et ralentit les ennemis autour de l'impact", effects: ["thunder", "heal", "slowArea"] },
             "love+war+water": { name: "Hélène", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et un tourbillon attire les ennemis vers l'impact", effects: ["charm", "bleed", "vortex"] },
-            "moon+plant+swift": { name: "Feuilles de nuit", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["split", "boomerang", "crit"] },
-            "moon+plant+thunder": { name: "Forêt d'orage", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (x3)", effects: ["thunder", "rootArea", "crit"] },
-            "moon+plant+war": { name: "Chasseresse", description: "fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (x3)", effects: ["bleed", "root", "crit"] },
-            "moon+swift+thunder": { name: "Éclair nocturne", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["thunder", "boomerang", "crit"] },
-            "moon+swift+war": { name: "Assassinat", description: "achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (x3)", effects: ["execute", "boomerang", "crit"] },
+            "moon+plant+swift": { name: "Feuilles de nuit", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques)", effects: ["split", "boomerang", "crit"] },
+            "moon+plant+thunder": { name: "Forêt d'orage", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et chance de coup critique (+100% de dégâts critiques)", effects: ["thunder", "rootArea", "crit"] },
+            "moon+plant+war": { name: "Chasseresse", description: "fait saigner l'ennemi (les saignements s'additionnent), enracine l'ennemi un instant et chance de coup critique (+100% de dégâts critiques)", effects: ["bleed", "root", "crit"] },
+            "moon+swift+thunder": { name: "Éclair nocturne", description: "la foudre tombe sur 2 ennemis au hasard, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques)", effects: ["thunder", "boomerang", "crit"] },
+            "moon+swift+war": { name: "Assassinat", description: "achève les ennemis presque morts, la balle revient vers sa planète en touchant tout sur son passage et chance de coup critique (+100% de dégâts critiques)", effects: ["execute", "boomerang", "crit"] },
             "moon+swift+water": { name: "Reflet de lune", description: "la balle revient vers sa planète en touchant tout sur son passage et gèle l'ennemi sur place", effects: ["boomerang", "freeze"] },
-            "moon+thunder+war": { name: "Orage meurtrier", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (x3)", effects: ["thunder", "bleed", "crit"] },
+            "moon+thunder+war": { name: "Orage meurtrier", description: "la foudre tombe sur 2 ennemis au hasard, fait saigner l'ennemi (les saignements s'additionnent) et chance de coup critique (+100% de dégâts critiques)", effects: ["thunder", "bleed", "crit"] },
             "moon+thunder+water": { name: "Tonnerre des abysses", description: "la foudre tombe sur 2 ennemis au hasard, un tourbillon attire les ennemis vers l'impact et gèle l'ennemi sur place", effects: ["thunder", "vortex", "freeze"] },
             "moon+war+water": { name: "Marée rouge", description: "fait saigner l'ennemi (les saignements s'additionnent), chance de renvoyer l'ennemi au bord de l'écran et ralentit l'ennemi", effects: ["bleed", "rewind", "slow"] },
             "plant+swift+thunder": { name: "Semailles foudroyantes", description: "la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage", effects: ["thunder", "split", "boomerang"] },
@@ -3743,14 +3854,14 @@
             "air+hearth+water": { name: "Brume du soir", description: "ralentit les ennemis autour de l'impact et gèle l'ennemi sur place", effects: ["slowArea", "freeze"] },
             "fire+hearth+light": { name: "Flambeau", description: "rebondit sur un autre ennemi, fait brûler l'ennemi et laisse des braises au sol", effects: ["chain", "burn", "fireZone"] },
             "fire+hearth+love": { name: "Cœur ardent", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, fait brûler tous les ennemis autour et te soigne à chaque coup", effects: ["charm", "burnArea", "heal"] },
-            "fire+hearth+moon": { name: "Veille ardente", description: "laisse des braises au sol et chance de coup critique (x3)", effects: ["fireZone", "crit"] },
+            "fire+hearth+moon": { name: "Veille ardente", description: "laisse des braises au sol et chance de coup critique (+100% de dégâts critiques)", effects: ["fireZone", "crit"] },
             "fire+hearth+plant": { name: "Bûche", description: "laisse des braises au sol et enracine les ennemis autour", effects: ["fireZone", "rootArea"] },
             "fire+hearth+swift": { name: "Tison", description: "la balle revient vers sa planète en touchant tout sur son passage et fait brûler tous les ennemis autour", effects: ["boomerang", "burnArea"] },
             "fire+hearth+thunder": { name: "Feu du ciel", description: "la foudre tombe sur 2 ennemis au hasard et laisse des braises au sol", effects: ["thunder", "fireZone"] },
             "fire+hearth+war": { name: "Forge de guerre", description: "explose et blesse les ennemis autour et fait saigner l'ennemi (les saignements s'additionnent)", effects: ["explosion", "bleed"] },
             "fire+hearth+water": { name: "Chaudron", description: "explose et blesse les ennemis autour, ralentit les ennemis autour de l'impact et te soigne à chaque coup", effects: ["explosion", "slowArea", "heal"] },
             "hearth+light+love": { name: "Lumière du foyer", description: "te soigne à chaque coup, charme l'ennemi : il fait demi-tour et blesse ses alliés et rebondit sur un autre ennemi", effects: ["heal", "charm", "chain"] },
-            "hearth+light+moon": { name: "Bougie", description: "chance de coup critique (x3), te soigne à chaque coup et frappe une 2e fois un instant plus tard", effects: ["crit", "heal", "echo"] },
+            "hearth+light+moon": { name: "Bougie", description: "chance de coup critique (+100% de dégâts critiques), te soigne à chaque coup et frappe une 2e fois un instant plus tard", effects: ["crit", "heal", "echo"] },
             "hearth+light+plant": { name: "Serre", description: "te soigne à chaque coup, enracine les ennemis autour et éclate en 2 projectiles vers d'autres ennemis", effects: ["heal", "rootArea", "split"] },
             "hearth+light+swift": { name: "Étoile du berger", description: "la balle revient vers sa planète en touchant tout sur son passage, rebondit sur un autre ennemi et te soigne à chaque coup", effects: ["boomerang", "chain", "heal"] },
             "hearth+light+thunder": { name: "Éclair apprivoisé", description: "la foudre tombe sur 2 ennemis au hasard, rebondit sur un autre ennemi et te soigne à chaque coup", effects: ["thunder", "chain", "heal"] },
@@ -3763,9 +3874,9 @@
             "hearth+love+war": { name: "Paix des foyers", description: "charme l'ennemi : il fait demi-tour et blesse ses alliés, l'ennemi subit +50% de dégâts pendant 3 s et te soigne à chaque coup", effects: ["charm", "weaken", "heal"] },
             "hearth+love+water": { name: "Bain tiède", description: "te soigne à chaque coup, ralentit les ennemis autour de l'impact et charme l'ennemi : il fait demi-tour et blesse ses alliés", effects: ["heal", "slowArea", "charm"] },
             "hearth+moon+plant": { name: "Herbes de sorcière", description: "empoisonne l'ennemi, frappe une 2e fois un instant plus tard et te soigne à chaque coup", effects: ["poison", "echo", "heal"] },
-            "hearth+moon+swift": { name: "Lueur errante", description: "la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (x3)", effects: ["boomerang", "confuse", "crit"] },
+            "hearth+moon+swift": { name: "Lueur errante", description: "la balle revient vers sa planète en touchant tout sur son passage, l'ennemi perd le nord et recule et chance de coup critique (+100% de dégâts critiques)", effects: ["boomerang", "confuse", "crit"] },
             "hearth+moon+thunder": { name: "Nuit orageuse", description: "la foudre tombe sur 2 ennemis au hasard, gèle l'ennemi sur place et te soigne à chaque coup", effects: ["thunder", "freeze", "heal"] },
-            "hearth+moon+war": { name: "Sentinelle", description: "chance de coup critique (x3), achève les ennemis presque morts et recharge ton bouclier plus vite", effects: ["crit", "execute", "shieldCharge"] },
+            "hearth+moon+war": { name: "Sentinelle", description: "chance de coup critique (+100% de dégâts critiques), achève les ennemis presque morts et recharge ton bouclier plus vite", effects: ["crit", "execute", "shieldCharge"] },
             "hearth+moon+water": { name: "Puits", description: "un tourbillon attire les ennemis vers l'impact et te soigne à chaque coup", effects: ["vortex", "heal"] },
             "hearth+plant+swift": { name: "Graines du foyer", description: "éclate en 2 projectiles vers d'autres ennemis, la balle revient vers sa planète en touchant tout sur son passage et te soigne à chaque coup", effects: ["split", "boomerang", "heal"] },
             "hearth+plant+thunder": { name: "Bois foudroyé", description: "la foudre tombe sur 2 ennemis au hasard, enracine les ennemis autour et fait brûler l'ennemi", effects: ["thunder", "rootArea", "burn"] },
@@ -3791,8 +3902,8 @@
         const COMBO_FREEZE_AREA_DURATION = 0.7; // gel de zone (Blizzard) : plus court, car il touche beaucoup d'ennemis
         const COMBO_KNOCKBACK = 30;             // pixels de recul
         const COMBO_HEAL = 0.08;                // PV rendus par coup
-        const COMBO_CRIT_CHANCE = 0.2;          // chance de critique
-        const COMBO_CRIT_MULTIPLIER = 3;
+        const COMBO_CRIT_CHANCE = 0.2;          // chance de critique en plus (s'ajoute à celle du joueur)
+        const COMBO_CRIT_BONUS_DAMAGE = 1;      // +100% de dégâts critiques (200% -> 300%)
         const COMBO_PIERCE_COUNT = 1;           // ennemis traversés
         const COMBO_CHAIN_RANGE = 160;          // distance max du rebond
         const COMBO_CHAIN_DAMAGE = 0.7;
@@ -3931,7 +4042,7 @@
                 spawnParticles(enemy.x, enemy.y, ATTRIBUTES.fire.color, 10, 260);
                 for (const other of enemies.slice()) { //slice() = une copie : la liste peut changer si des ennemis meurent
                     if (other !== enemy && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= radius + other.size) {
-                        damageEnemy(other, bullet.damage * COMBO_EXPLOSION_DAMAGE * power("explosion"), null);
+                        damageEnemy(other, bullet.damage * COMBO_EXPLOSION_DAMAGE * power("explosion"), null, { color: DAMAGE_COLORS.fire });
                     }
                 }
             }
@@ -4032,7 +4143,7 @@
                     const target = pickRandom(others);
                     spawnShockwave(target.x, target.y, ATTRIBUTES.fire.color, target.size + 30);
                     spawnParticles(target.x, target.y, "#ffb347", 14, 280);
-                    damageEnemy(target, bullet.damage * COMBO_METEOR_DAMAGE * power("meteor"), "enemyHit");
+                    damageEnemy(target, bullet.damage * COMBO_METEOR_DAMAGE * power("meteor"), "enemyHit", { color: DAMAGE_COLORS.fire });
                 }
             }
             if (power("fireZone") > 0) {
@@ -4071,7 +4182,7 @@
                     const target = others.splice(Math.floor(Math.random() * others.length), 1)[0]; //on le retire de la liste : pas 2 fois le même
                     lightningBolts.push({ x: target.x, y: target.y, endTime: performance.now() + 180 });
                     spawnParticles(target.x, target.y, ATTRIBUTES.thunder.color, 8, 200);
-                    damageEnemy(target, bullet.damage * COMBO_THUNDER_DAMAGE, "enemyHit");
+                    damageEnemy(target, bullet.damage * COMBO_THUNDER_DAMAGE, "enemyHit", { color: DAMAGE_COLORS.thunder });
                 }
             }
             if (power("bleed") > 0) {
@@ -4123,7 +4234,7 @@
                         const pull = Math.min(1, 2.5 * deltaTime);
                         enemy.distance += (holeDistance - enemy.distance) * pull;
                         enemy.angle += wrapAngle(holeAngle - enemy.angle) * pull;
-                        damageEnemy(enemy, hazard.dps * deltaTime, null);
+                        damageEnemy(enemy, hazard.dps * deltaTime, null, { color: getDamageColor(hazard.color), dot: true });
                     }
                 }
                 if (isUsed) {
@@ -4131,7 +4242,7 @@
                     spawnParticles(hazard.x, hazard.y, hazard.color, 12, 240);
                     for (const enemy of enemies.slice()) {
                         if (Math.hypot(enemy.x - hazard.x, enemy.y - hazard.y) <= COMBO_EXPLOSION_RADIUS + enemy.size) {
-                            damageEnemy(enemy, hazard.damage, null);
+                            damageEnemy(enemy, hazard.damage, null, { color: getDamageColor(hazard.color) });
                         }
                     }
                 }
@@ -4145,7 +4256,7 @@
                 if (echo.timer <= 0) {
                     if (enemies.includes(echo.enemy)) {
                         spawnShockwave(echo.enemy.x, echo.enemy.y, echo.color, echo.enemy.size + 12);
-                        damageEnemy(echo.enemy, echo.damage, "enemyHit");
+                        damageEnemy(echo.enemy, echo.damage, "enemyHit", { color: getDamageColor(echo.color) });
                     }
                     echoes.splice(i, 1);
                 }
@@ -4254,7 +4365,7 @@
                 if (Math.random() < deltaTime * 6) {
                     spawnParticles(enemy.x, enemy.y - enemy.size / 2, "#9be22d", 1, 30); //petites bulles vertes
                 }
-                damageEnemy(enemy, enemy.poisonDps * deltaTime, null);
+                damageEnemy(enemy, enemy.poisonDps * deltaTime, null, { color: DAMAGE_COLORS.plant, dot: true });
                 if (!enemies.includes(enemy)) {
                     return 0;
                 }
@@ -4272,7 +4383,7 @@
                 if (Math.random() < deltaTime * 6) {
                     spawnParticles(enemy.x, enemy.y + enemy.size / 2, ATTRIBUTES.war.color, 1, 30); //gouttes rouges
                 }
-                damageEnemy(enemy, enemy.bleedDps * deltaTime, null);
+                damageEnemy(enemy, enemy.bleedDps * deltaTime, null, { color: DAMAGE_COLORS.war, dot: true });
                 if (!enemies.includes(enemy)) {
                     return 0;
                 }
@@ -4285,7 +4396,7 @@
                 enemy.charmTimer -= deltaTime;
                 for (const other of enemies.slice()) {
                     if (other !== enemy && !(other.charmTimer > 0) && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= other.size + enemy.size) {
-                        damageEnemy(other, COMBO_CHARM_DPS * deltaTime, null);
+                        damageEnemy(other, COMBO_CHARM_DPS * deltaTime, null, { color: DAMAGE_COLORS.love, dot: true });
                     }
                 }
                 speedFactor = -0.8;
@@ -4299,7 +4410,7 @@
                 if (Math.random() < deltaTime * 8) {
                     spawnParticles(enemy.x, enemy.y - enemy.size / 2, ATTRIBUTES.fire.color, 1, 40); //petites flammes
                 }
-                damageEnemy(enemy, enemy.burnDps * deltaTime, null);
+                damageEnemy(enemy, enemy.burnDps * deltaTime, null, { color: DAMAGE_COLORS.fire, dot: true });
             }
             return speedFactor;
         }
@@ -4769,14 +4880,14 @@
                 minorSkills: [
                     { label: "DMG", name: "Dactyle", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
-                    { label: "FEU", name: "Cyclope", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } }
+                    { label: "CRIT", name: "Cyclope", description: "+1% de chance de coup critique", effect: { stat: "critChance", value: 0.01 } }
                 ],
                 shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                     notables: [
-                        { label: "FEU", name: "Prométhée", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                        { label: "FEU", name: "Kédalion", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                        { label: "CRIT", name: "Prométhée", description: "+3% de chance de coup critique", effect: { stat: "critChance", value: 0.03 } },
+                        { label: "×CRIT", name: "Kédalion", description: "+25% de dégâts critiques", effect: { stat: "critDamage", value: 0.25 } },
                         { label: "VIT", name: "Stéropès", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                         { label: "VIT", name: "Argès", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
                         { label: "POR", name: "Aglaé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
@@ -4785,7 +4896,7 @@
                         { label: "VIT", name: "Bia", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
                     ],
                     keystones: [
-                        { label: "BRAISE", name: "Brontès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "×CRIT", name: "Brontès", description: "+60% de dégâts critiques", effect: { stat: "critDamage", value: 0.6 } },
                         { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
                         { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } }
                     ],
@@ -5398,6 +5509,8 @@
             bulletCount: function (value) { return ["Balles par tir", "+" + formatNumber(value)]; },
             range: function (value) { return ["Portée", "+" + formatNumber(value) + " px"]; },
             bulletSpeed: function (value) { return ["Vitesse des balles", "+" + formatNumber(value * 100) + "%"]; },
+            critChance: function (value) { return ["Chance de critique", "+" + formatNumber(value * 100) + "%"]; },
+            critDamage: function (value) { return ["Dégâts critiques", "+" + formatNumber(value * 100) + "%"]; },
             dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
             shield: function () { return ["Bouclier", "Oui"]; },
             goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
@@ -5766,6 +5879,8 @@
             { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 2 } },
             { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "damage", value: 1 } },
             { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.05 } },
+            { name: "Chance de critique", description: "+2% de chance de coup critique", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critChance", value: 0.02 } },
+            { name: "Dégâts critiques", description: "+20% de dégâts critiques", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critDamage", value: 0.2 } },
             { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
             { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
@@ -5836,6 +5951,7 @@
             hazards.length = 0;
             echoes.length = 0;
             particles.length = 0;
+            damageNumbers.length = 0;
             for (const planet of planets) {
                 planet.fireTimer = Math.random() * PLANET_FIRE_INTERVAL;
             }
@@ -5943,7 +6059,9 @@
                         ["Tirs par seconde", formatNumber(playerStats.attackSpeed / BASE_FIRE_INTERVAL)],
                         ["Balles par tir", playerStats.bulletCount],
                         ["Portée", playerStats.range + " px"],
-                        ["Vitesse des balles", formatPercent(playerStats.bulletSpeed)]
+                        ["Vitesse des balles", formatPercent(playerStats.bulletSpeed)],
+                        ["Chance de critique", formatNumber(playerStats.critChance * 100) + "%"],
+                        ["Dégâts critiques", formatNumber(playerStats.critDamage * 100) + "%"]
                     ].concat(elementBonuses) //concat = ajoute les lignes de elementBonuses à la fin
                 },
                 {

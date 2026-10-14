@@ -103,15 +103,15 @@ Qu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie 
 | 🌪️ Vent + ☀️ Lumière + 🪶 Plume | **Vent solaire** | la balle revient vers sa planète en touchant tout sur son passage, traverse les ennemis et rebondit sur un autre ennemi |
 | 🌪️ Vent + ☀️ Lumière + ⚡ Foudre | **Foudre céleste** | la foudre tombe sur 2 ennemis au hasard et rebondit sur 3 ennemis |
 | 🌪️ Vent + ☀️ Lumière + ⚔️ Guerre | **Lance de lumière** | traverse les ennemis et achève les ennemis presque morts |
-| 🌪️ Vent + 💗 Amour + 🌙 Lune | **Nuit étoilée** | charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (x3) |
+| 🌪️ Vent + 💗 Amour + 🌙 Lune | **Nuit étoilée** | charme l'ennemi : il fait demi-tour et blesse ses alliés et chance de coup critique (+100% de dégâts critiques) |
 | 🌪️ Vent + 💗 Amour + 🌿 Plante | **Pollen d'amour** | charme l'ennemi : il fait demi-tour et blesse ses alliés et éclate en 2 projectiles vers d'autres ennemis |
 | 🌪️ Vent + 💗 Amour + 🪶 Plume | **Messagère** | charme l'ennemi : il fait demi-tour et blesse ses alliés, la balle revient vers sa planète en touchant tout sur son passage et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + ⚡ Foudre | **Coup de vent** | la foudre tombe sur 2 ennemis au hasard, charme l'ennemi : il fait demi-tour et blesse ses alliés et repousse les ennemis autour |
 | 🌪️ Vent + 💗 Amour + ⚔️ Guerre | **Tumulte** | charme l'ennemi : il fait demi-tour et blesse ses alliés, fait saigner l'ennemi (les saignements s'additionnent) et repousse l'ennemi |
 | 🌪️ Vent + 💗 Amour + 💧 Eau | **Embruns** | charme l'ennemi : il fait demi-tour et blesse ses alliés, ralentit les ennemis autour de l'impact et repousse l'ennemi |
-| 🌪️ Vent + 🌙 Lune + 🪶 Plume | **Vol de nuit** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (x3) et traverse les ennemis |
-| 🌪️ Vent + 🌙 Lune + ⚡ Foudre | **Orage d'été** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (x3) et repousse l'ennemi |
-| 🌪️ Vent + 🌙 Lune + ⚔️ Guerre | **Chasse sauvage** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (x3) et repousse l'ennemi |
+| 🌪️ Vent + 🌙 Lune + 🪶 Plume | **Vol de nuit** | la balle revient vers sa planète en touchant tout sur son passage, chance de coup critique (+100% de dégâts critiques) et traverse les ennemis |
+| 🌪️ Vent + 🌙 Lune + ⚡ Foudre | **Orage d'été** | la foudre tombe sur 2 ennemis au hasard, chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi |
+| 🌪️ Vent + 🌙 Lune + ⚔️ Guerre | **Chasse sauvage** | fait saigner l'ennemi (les saignements s'additionnent), chance de coup critique (+100% de dégâts critiques) et repousse l'ennemi |
 | 🌪️ Vent + 🌿 Plante + 🪶 Plume | **Feuilles au vent** | éclate en 2 projectiles vers d'autres ennemis et la balle revient vers sa planète en touchant tout sur son passage |
 | 🌪️ Vent + 🌿 Plante + ⚡ Foudre | **Foudre champêtre** | la foudre tombe sur 2 ennemis au hasard, éclate en 2 projectiles vers d'autres ennemis et enracine les ennemis autour |
 | 🌪️ Vent + 🌿 Plante + ⚔️ Guerre | **Fléau** | fait saigner l'ennemi (les saignements s'additionnent) et éclate en 2 projectiles vers d'autres ennemis |

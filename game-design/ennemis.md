@@ -94,6 +94,30 @@ Les combos et fusions d'orbite des planètes ajoutent des effets aux balles (le 
 | Charmé | fait demi-tour et blesse les ennemis qu'il touche | 2,5 s, 3 dégâts par seconde | non |
 | Exécuté | tué d'un coup | sous 20 % de sa vie | non |
 
-Les autres effets sont des dégâts en plus, sans état : explosion (0,8 × dans 70 px), rebond sur un autre ennemi (0,7 ×, 160 px max), balle qui se divise (0,5 ×), critique (20 % de chances, ×3), balle qui traverse un ennemi, météore (3 ×), foudre sur 2 ennemis au hasard (1,5 ×), éclats de nova (6 × 0,6), écho (2e coup 0,5 s plus tard), braises et flaque toxique au sol (45 px, 3 s) et graine explosive (2,5 ×, dure 6 s).
+Les autres effets sont des dégâts en plus, sans état : explosion (0,8 × dans 70 px), rebond sur un autre ennemi (0,7 ×, 160 px max), balle qui se divise (0,5 ×), critique (combo : +20 % de chances et +100 % de dégâts critiques, voir plus bas), balle qui traverse un ennemi, météore (3 ×), foudre sur 2 ennemis au hasard (1,5 ×), éclats de nova (6 × 0,6), écho (2e coup 0,5 s plus tard), braises et flaque toxique au sol (45 px, 3 s) et graine explosive (2,5 ×, dure 6 s).
 
 Quand un super ennemi est touché, il rétrécit jusqu'à 60 % de sa taille au plus, au lieu de fondre comme un ennemi normal.
+
+## Les nombres de dégâts et les coups critiques
+
+Chaque coup affiche ses dégâts au-dessus de l'ennemi, puis le nombre monte et s'efface en 0,8 s (`DAMAGE_NUMBER_DURATION`). Sa couleur dit quelle attaque a touché (`DAMAGE_COLORS`) :
+
+| Attaque | Couleur |
+| --- | --- |
+| balle du joueur | blanc `#ffffff` |
+| balle d'une planète | la couleur de l'attribut du dieu (Déméter vert, Poséidon bleu…) |
+| foudre (Zeus, combo foudre) | jaune `#ffe14d` |
+| lumière (Apollon) | blanc doré `#fff4c2` |
+| explosion, météore, brûlure, braises | orange feu `#ff7a45` |
+| poison, flaque toxique, graine | vert plante `#55dd55` |
+| saignement | rouge `#d93a3a` |
+| ennemi charmé | rose `#ff8fc7` |
+
+Les dégâts continus (brûlure, poison, saignement, charme, trou noir) sont additionnés et affichés toutes les 0,5 s (`DOT_NUMBER_INTERVAL`), sinon il y aurait un nombre minuscule à chaque image.
+
+**Coup critique :** le nombre est plus gros (20 px au lieu de 13), avec un contour rouge et un « ! ». Il apparaît presque deux fois plus grand puis se rétracte en 0,25 s en tremblant, et une onde rouge part de l'ennemi.
+
+| Stat | Au départ | Comment l'augmenter |
+| --- | --- | --- |
+| Chance de critique | 0 % | shop « Chance de critique » (+2 % par niveau, 10 niveaux) ; Héphaïstos : Cyclope (+1 % ×7), Prométhée (+3 %) ; combos d'orbite « critique » (+20 %) |
+| Dégâts critiques | 200 % | shop « Dégâts critiques » (+20 % par niveau, 10 niveaux) ; Héphaïstos : Kédalion (+25 %), Brontès (+60 %) ; combos d'orbite « critique » (+100 %) |
