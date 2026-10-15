@@ -37,5 +37,5 @@ Voir [0-combos.md](0-combos.md) : 66 combos et 220 fusions.
 | **Dégâts critiques** | +20% de dégâts critiques | 20 or | 10 |
 | **Vitesse des balles** | +15% de vitesse des balles | 8 or | 6 |
 | **Accélérer le temps** | Débloque la vitesse x2, puis x4 | 40 or | 2 |
-| **Sauter dans le temps** | Débloque le saut de +30 s, puis de +100 s | 30 or | 2 |
+| **Sauter dans le temps** | Débloque le saut de +10 s, puis +30 s, puis +100 s | 15 or | 3 |
 | **Nouvelle divinité** | Une nouvelle planète et son skill tree rejoignent l'orbite | 50 or | 12 |

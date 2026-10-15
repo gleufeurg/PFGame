@@ -5,7 +5,7 @@
 | Touche | Effet |
 | --- | --- |
 | S | ouvre la fenêtre des skills (le dernier arbre vu), ou la ferme |
-| T | passe le plus grand saut de temps débloqué |
+| T | passe le plus grand saut de temps débloqué (rien tant qu'aucun n'est acheté) |
 | R | rejoue (écran de game over) |
 | Échap | ferme la fenêtre ouverte, sinon ouvre les paramètres |
 
@@ -13,12 +13,12 @@ Pendant qu'on tape un code de triche, S, T et R ne se déclenchent pas : taper �
 
 ## Le temps
 
-Au début, on ne peut passer que 10 s à la fois et on ne peut pas accélérer. Le shop débloque le reste :
+Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout :
 
-| Amélioration | Niveau 1 | Niveau 2 |
-| --- | --- | --- |
-| Accélérer le temps | vitesse x2 | vitesse x4 |
-| Sauter dans le temps | saut de +30 s | saut de +100 s |
+| Amélioration | Niveau 1 | Niveau 2 | Niveau 3 |
+| --- | --- | --- | --- |
+| Accélérer le temps | vitesse x2 | vitesse x4 | — |
+| Sauter dans le temps | saut de +10 s | saut de +30 s | saut de +100 s |
 
 Les boutons pas encore achetés restent visibles avec un cadenas.
 

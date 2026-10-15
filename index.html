@@ -884,6 +884,10 @@
             color: #ffd84d;
         }
 
+        #contactArea a {
+            color: var(--ui-accent);
+        }
+
         #contactArea {
             margin-top: 24px;
             text-align: left;
@@ -1441,9 +1445,7 @@
             <section id="contactArea">
                 <h2>Contact</h2>
                 <div class="placeholder">
-                    <!-- À REMPLIR : tes coordonnées -->
-                    Mail : ton.mail@exemple.com<br>
-                    Téléphone : 06 00 00 00 00<br>
+                    Mail : <a id="contactMail" href="#">(chargement…)</a><br>
                     LinkedIn / Portfolio : ...
                 </div>
             </section>
@@ -2568,13 +2570,21 @@
 
             //La vie affichée est arrondie en dessous (9.9 -> 9) : sous 1 PV, on est donc à 0 -> mort
             if (playerHealth < 1) {
-                playerHealth = 0;
-                isGameOver = true;
-                playSound("gameOver");
-                openGameOver();
+                killPlayer();
             } else {
                 playSound("playerHit");
             }
+        }
+
+        //LA MORT : fin de la partie, on garde l'or et l'XP gagnés et on ouvre le shop
+        function killPlayer() {
+            if (isGameOver) {
+                return;
+            }
+            playerHealth = 0;
+            isGameOver = true;
+            playSound("gameOver");
+            openGameOver();
         }
 
         function healPlayer(amount) {
@@ -3068,21 +3078,21 @@
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
         const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
 
-        //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut passer que 10 s à la fois, et pas accélérer
+        //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut ni passer le temps, ni accélérer
         const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
 
         function getUnlockedSkipOptions() {
-            return TIME_SKIP_OPTIONS.slice(0, 1 + timeUpgrades.skip); //slice(0, n) = les n premiers
+            return TIME_SKIP_OPTIONS.slice(0, timeUpgrades.skip); //slice(0, n) = les n premiers (aucun au début : tout s'achète au shop)
         }
 
         function getUnlockedSpeeds() {
             return GAME_SPEED_OPTIONS.slice(0, 1 + timeUpgrades.speed);
         }
 
-        //Le plus grand saut débloqué (pour la touche T)
+        //Le plus grand saut débloqué (pour la touche T), ou 0 si aucun n'est débloqué
         function getBiggestSkip() {
             const options = getUnlockedSkipOptions();
-            return options[options.length - 1];
+            return options.length > 0 ? options[options.length - 1] : 0;
         }
 
         function skipTime(seconds) {
@@ -6615,7 +6625,7 @@
             { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
             //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades)
             { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 40, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
-            { name: "Sauter dans le temps", description: "Débloque le saut de +30 s, puis de +100 s", baseCost: 30, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "skip" },
+            { name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: 15, costGrowth: 3, maxLevel: 3, level: 0, effect: null, timeUpgrade: "skip" },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
             { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
@@ -6651,7 +6661,7 @@
                     description = "Débloque la vitesse du jeu x" + GAME_SPEED_OPTIONS[item.level + 1];
                 }
                 if (item.timeUpgrade === "skip" && !isMaxed) {
-                    description = "Débloque le saut de +" + TIME_SKIP_OPTIONS[item.level + 1] + " s (touche T)";
+                    description = "Débloque le saut de +" + TIME_SKIP_OPTIONS[item.level] + " s (touche T)";
                 }
 
                 const button = document.createElement("button");
@@ -6730,6 +6740,13 @@
         }
 
         document.getElementById("restartButton").addEventListener("click", restartGame);
+
+        //CONTACT : l'adresse est assemblée ici en morceaux, au lieu d'être écrite en entier dans la page.
+        //Les robots qui ramassent les adresses mail sur les sites (pour envoyer du spam) la trouvent moins facilement.
+        const CONTACT_MAIL_PARTS = ["evangelinelefevre002", "gmail.com"];
+        const contactMail = document.getElementById("contactMail");
+        contactMail.textContent = CONTACT_MAIL_PARTS.join("@");
+        contactMail.href = "mailto:" + CONTACT_MAIL_PARTS.join("@");
 
         document.addEventListener("keydown", function (event) {
             //(R, T et S sont gérés avec les codes de triche plus bas : taper "hestia" ne doit pas ouvrir les skills sur le "s")
@@ -7111,6 +7128,16 @@
             midas: function () {         // or et XP gagnés x10 (retaper pour désactiver)
                 cheatRewardMultiplier = cheatRewardMultiplier === 1 ? 10 : 1;
                 return "Or et XP x" + cheatRewardMultiplier;
+            },
+            thanatos: function () {      // le joueur meurt tout de suite (game over, sans recommencer : on garde ce qu'on a gagné)
+                if (currentTree !== null) {
+                    closeSkillTree();
+                }
+                if (isSettingsOpen) {
+                    closeSettings();
+                }
+                killPlayer();
+                return "Le joueur est mort";
             },
             achille: function () {       // invincible (retaper pour désactiver)
                 isCheatInvincible = !isCheatInvincible;
