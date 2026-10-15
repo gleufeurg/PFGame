@@ -338,7 +338,7 @@
             width: 100%;
         }
 
-        #projectArea { /*à gauche : la présentation du projet*/
+        #projectArea { /*à gauche : les liens d'orbite*/
             grid-area: project;
             border-right: 1px solid var(--ui-line);
             padding-right: 24px;
@@ -884,6 +884,78 @@
             color: #ffd84d;
         }
 
+        /*PUBLICITÉS ET PACK PREMIUM*/
+        #adOverlay, #purchaseOverlay {
+            z-index: 50; /*au-dessus de tout le reste*/
+        }
+
+        .adPanel {
+            max-width: 480px;
+            text-align: center;
+        }
+
+        .adTag {
+            margin: 0 0 8px;
+            color: var(--ui-muted);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .adBox {
+            display: grid;
+            place-items: center;
+            height: 220px;
+            border: 2px dashed var(--ui-line);
+            border-radius: 12px;
+            color: var(--ui-muted);
+            font-weight: 800;
+        }
+
+        #deathChoices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .adChoice {
+            flex: 1 1 200px;
+            padding: 10px 14px;
+            border: 2px solid var(--ui-accent);
+            border-radius: 12px;
+            background-color: var(--ui-accent-soft);
+            color: var(--ui-heading);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .adChoice:disabled {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        .premiumBox {
+            margin: 14px 0;
+            padding: 12px 16px;
+            border: 2px solid #b48cff;
+            border-radius: 12px;
+            background-color: rgba(180, 140, 255, 0.1);
+        }
+
+        .premiumBox h3 {
+            margin: 0 0 6px;
+            color: #d6c2ff;
+        }
+
+        .premiumBox ul {
+            margin: 0 0 10px;
+            padding-left: 20px;
+            text-align: left;
+        }
+
         #contactArea a {
             color: var(--ui-accent);
         }
@@ -1406,8 +1478,6 @@
     <div id="skillTreePanel" class="overlay hidden">
         <div class="panel">
             <section id="projectArea">
-                <h2 id="projectTitle"></h2>
-                <div id="projectContent" class="placeholder"></div>
                 <div id="orbitLinkArea"></div>
             </section>
             <section id="treeArea">
@@ -1440,7 +1510,12 @@
         <div class="panel">
             <h1>GAME OVER</h1>
             <p>Or disponible : <span id="shopGold">0</span></p>
+            <div id="deathChoices">
+                <button id="reviveButton" class="adChoice"></button>
+                <button id="doubleRewardsButton" class="adChoice"></button>
+            </div>
             <div id="shopItems"></div>
+            <div id="premiumBoxShop" class="premiumBox"></div>
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
             <section id="contactArea">
                 <h2>Contact</h2>
@@ -1471,8 +1546,29 @@
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
             </div>
+            <div id="premiumBoxSettings" class="premiumBox"></div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
             <p class="smallText">Échap : ouvrir / fermer ce menu</p>
+        </div>
+    </div>
+
+    <!-- PUBLICITÉ : en mode test, une fausse pub de quelques secondes (voir ADS_TEST_MODE) -->
+    <div id="adOverlay" class="overlay hidden">
+        <div class="panel adPanel">
+            <p class="adTag">Publicité</p>
+            <div class="adBox">Espace publicitaire<br><small>(pub de test : aucune vraie pub n'est encore branchée)</small></div>
+            <p id="adCountdown"></p>
+            <button id="adCloseButton" class="primaryButton"></button>
+        </div>
+    </div>
+
+    <!-- ACHAT : en mode test, l'achat est simulé (voir PAYMENT_TEST_MODE) -->
+    <div id="purchaseOverlay" class="overlay hidden">
+        <div class="panel adPanel">
+            <h2>💎 Pack Premium</h2>
+            <p id="purchaseText"></p>
+            <button id="purchaseConfirmButton" class="primaryButton">Acheter</button>
+            <button id="purchaseCancelButton" class="primaryButton">Annuler</button>
         </div>
     </div>
 
@@ -2713,8 +2809,12 @@
 
         function gainRewards(goldAmount, xpAmount) {
             //On garde les virgules (ex: 1.1 or par ennemi avec +10%) pour que les petits bonus comptent quand même
-            gold += goldAmount * playerStats.goldMultiplier * cheatRewardMultiplier;
-            xp += xpAmount * playerStats.xpMultiplier * cheatRewardMultiplier;
+            const goldGained = goldAmount * playerStats.goldMultiplier * cheatRewardMultiplier;
+            const xpGained = xpAmount * playerStats.xpMultiplier * cheatRewardMultiplier;
+            gold += goldGained;
+            xp += xpGained;
+            roundGold += goldGained; //pour "doubler les récompenses de ce round"
+            roundXp += xpGained;
             updateHud();
         }
 
@@ -3076,17 +3176,31 @@
 
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
-        const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
+        const TIME_SKIP_OPTIONS = [10, 30, 100, 500, 999];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
+        const PREMIUM_SKIPS = [500, 999];                     // seulement avec le Pack Premium
 
         //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut ni passer le temps, ni accélérer
+        //PACK PREMIUM (acheté une fois, retenu par le navigateur) : déclaré ici car les boutons de temps en ont besoin dès le départ
+        let isPremiumOwned = false;
+        try {
+            isPremiumOwned = localStorage.getItem("premium") === "1";
+        } catch (error) {
+        }
+
+        function isPremium() {
+            return isPremiumOwned;
+        }
+
         const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
 
         function getUnlockedSkipOptions() {
-            return TIME_SKIP_OPTIONS.slice(0, timeUpgrades.skip); //slice(0, n) = les n premiers (aucun au début : tout s'achète au shop)
+            const fromShop = TIME_SKIP_OPTIONS.slice(0, timeUpgrades.skip); //slice(0, n) = les n premiers (aucun au début : tout s'achète au shop)
+            return isPremium() ? fromShop.concat(PREMIUM_SKIPS) : fromShop;
         }
 
         function getUnlockedSpeeds() {
-            return GAME_SPEED_OPTIONS.slice(0, 1 + timeUpgrades.speed);
+            const fromShop = GAME_SPEED_OPTIONS.slice(0, 1 + timeUpgrades.speed);
+            return isPremium() ? fromShop.concat(PREMIUM_SPEEDS) : fromShop;
         }
 
         //Le plus grand saut débloqué (pour la touche T), ou 0 si aucun n'est débloqué
@@ -3136,8 +3250,10 @@
                 const button = document.createElement("button");
                 button.className = "skipButton";
                 button.disabled = !isUnlocked;
-                button.textContent = (isUnlocked ? "⏩ +" : "🔒 +") + seconds + " s";
-                button.title = isUnlocked ? "Passer " + seconds + " secondes" : "À débloquer dans le shop : « Sauter dans le temps »";
+                const lockIcon = PREMIUM_SKIPS.includes(seconds) ? "💎 +" : "🔒 +";
+                button.textContent = (isUnlocked ? "⏩ +" : lockIcon) + seconds + " s";
+                button.title = isUnlocked ? "Passer " + seconds + " secondes"
+                    : PREMIUM_SKIPS.includes(seconds) ? "Avec le Pack Premium" : "À débloquer dans le shop : « Sauter dans le temps »";
                 button.addEventListener("click", function () { skipTime(seconds); });
                 skipButtons.appendChild(button);
             }
@@ -3145,7 +3261,8 @@
         renderSkipButtons();
 
         //VITESSE DU JEU : x1, x2, x4... (multiplie le temps qui passe à chaque image)
-        const GAME_SPEED_OPTIONS = [1, 2, 4];
+        const GAME_SPEED_OPTIONS = [1, 2, 4, 8, 10];
+        const PREMIUM_SPEEDS = [8, 10];              // seulement avec le Pack Premium
         let gameSpeed = 1;
         const speedButtons = document.getElementById("speedButtons");
 
@@ -3159,8 +3276,9 @@
                     button.classList.add("active");
                 }
                 button.disabled = !isUnlocked;
-                button.textContent = (isUnlocked ? "x" : "🔒 x") + speed;
-                button.title = isUnlocked ? "Vitesse du jeu x" + speed : "À débloquer dans le shop : « Accélérer le temps »";
+                button.textContent = (isUnlocked ? "x" : PREMIUM_SPEEDS.includes(speed) ? "💎 x" : "🔒 x") + speed;
+                button.title = isUnlocked ? "Vitesse du jeu x" + speed
+                    : PREMIUM_SPEEDS.includes(speed) ? "Avec le Pack Premium" : "À débloquer dans le shop : « Accélérer le temps »";
                 button.addEventListener("click", function () { setGameSpeed(speed); });
                 speedButtons.appendChild(button);
             }
@@ -6056,8 +6174,6 @@
 
         //SKILL TREE : AFFICHAGE (HTML)
         const skillTreePanel = document.getElementById("skillTreePanel");
-        const projectTitle = document.getElementById("projectTitle");
-        const projectContent = document.getElementById("projectContent");
         const treeTitle = document.getElementById("treeTitle");
         const treeXp = document.getElementById("treeXp");
         const treeLinks = document.getElementById("treeLinks");
@@ -6108,8 +6224,6 @@
             playSound(wasOpen ? "click" : "menuOpen");
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
             skillTreePanel.classList.toggle("treeLocked", tree.isLocked);  //dieu pas encore en orbite : arbre sombre
-            projectTitle.textContent = tree.project.title;
-            projectContent.innerHTML = tree.project.html;
             treeTitle.textContent = (tree.isLocked ? "🔒 " : "") + tree.name;
             renderGodTabs();
             renderOrbitLinks(tree);
@@ -6640,9 +6754,15 @@
 
         function openGameOver() {
             updateRecords();
-            renderShop();
-            gameOverPanel.classList.remove("hidden");
-            showStatsPanel();
+            hasDoubledThisDeath = false; //une nouvelle mort : on peut de nouveau doubler les récompenses
+            //D'abord une pub (sauf avec le Pack Premium), puis le shop
+            showInterstitialAd(function () {
+                renderShop();
+                renderDeathChoices();
+                renderPremiumBoxes();
+                gameOverPanel.classList.remove("hidden");
+                showStatsPanel();
+            });
         }
 
         function renderShop() {
@@ -6712,7 +6832,13 @@
         }
 
         function restartGame() {
+            if (!adOverlay.classList.contains("hidden")) {
+                return; //une pub est affichée : on attend la fin
+            }
             runMaxHealthBonus = 0;
+            hasRevivedThisRun = false;
+            roundGold = 0;
+            roundXp = 0;
             computeStats();
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;
@@ -6761,6 +6887,200 @@
                 }
             }
         });
+
+
+        /////////////////////
+        ////PUBLICITÉS///////  Après chaque mort, et pour ressusciter ou doubler ses récompenses
+        /////////////////////
+        //Le jeu utilise l'API "H5 Games Ads" de Google (la fonction adBreak) si elle est chargée dans la page.
+        //Sinon (ou en mode test), il affiche une fausse pub de quelques secondes, pour tester tout le parcours.
+        //Pour brancher de vraies pubs : voir game-design/monetisation.md
+        const ADS_TEST_MODE = true;           // true = fausse pub de test, même si l'API de Google est là
+        const AD_TEST_DURATION = 5;           // secondes de fausse pub
+        const adOverlay = document.getElementById("adOverlay");
+        const adCountdown = document.getElementById("adCountdown");
+        const adCloseButton = document.getElementById("adCloseButton");
+        let adTimer = null;
+
+        function canUseGoogleAds() {
+            return !ADS_TEST_MODE && typeof window.adBreak === "function";
+        }
+
+        //Pub "entre deux écrans" (après une mort). onDone est appelé quand la pub est finie.
+        function showInterstitialAd(onDone) {
+            if (isPremium()) {
+                onDone(); //Pack Premium : pas de pub
+                return;
+            }
+            if (canUseGoogleAds()) {
+                window.adBreak({ type: "next", name: "game-over", adBreakDone: onDone });
+                return;
+            }
+            showTestAd(false, onDone, onDone);
+        }
+
+        //Pub "récompensée" : onReward si le joueur l'a regardée jusqu'au bout, onCancel s'il l'a fermée avant
+        function showRewardedAd(name, onReward, onCancel) {
+            if (isPremium()) {
+                onReward(); //Pack Premium : la récompense sans la pub
+                return;
+            }
+            if (canUseGoogleAds()) {
+                let rewarded = false;
+                window.adBreak({
+                    type: "reward",
+                    name: name,
+                    beforeReward: function (showAdFn) { showAdFn(); },  //Google demande si on veut montrer la pub : oui
+                    adViewed: function () { rewarded = true; },           //regardée jusqu'au bout
+                    adDismissed: function () { rewarded = false; },       //fermée avant la fin
+                    adBreakDone: function () { if (rewarded) { onReward(); } else { onCancel(); } }
+                });
+                return;
+            }
+            showTestAd(true, onReward, onCancel);
+        }
+
+        //FAUSSE PUB (test) : un compte à rebours. Une pub récompensée fermée trop tôt ne donne rien.
+        function showTestAd(isRewarded, onFinished, onClosedEarly) {
+            let secondsLeft = AD_TEST_DURATION;
+            adOverlay.classList.remove("hidden");
+            const update = function () {
+                adCountdown.textContent = secondsLeft > 0 ? "La pub se termine dans " + secondsLeft + " s" : "Pub terminée";
+                adCloseButton.textContent = secondsLeft > 0 ? (isRewarded ? "Fermer (sans la récompense)" : "Patiente…") : (isRewarded ? "Récupérer ma récompense" : "Continuer");
+                adCloseButton.disabled = secondsLeft > 0 && !isRewarded; //une pub normale ne se ferme qu'à la fin
+            };
+            update();
+            clearInterval(adTimer);
+            adTimer = setInterval(function () { //setInterval = recommence toutes les X millisecondes
+                secondsLeft--;
+                update();
+                if (secondsLeft <= 0) {
+                    clearInterval(adTimer);
+                }
+            }, 1000);
+            adCloseButton.onclick = function () {
+                clearInterval(adTimer);
+                adOverlay.classList.add("hidden");
+                if (secondsLeft <= 0) {
+                    onFinished();
+                } else {
+                    onClosedEarly();
+                }
+            };
+        }
+
+        //CHOIX À LA MORT : ressusciter (1 fois par partie) et doubler les récompenses de ce round (1 fois par mort)
+        let hasRevivedThisRun = false;
+        let hasDoubledThisDeath = false;
+        let roundGold = 0;       // or gagné depuis le début du round (partie ou dernière résurrection)
+        let roundXp = 0;
+        const reviveButton = document.getElementById("reviveButton");
+        const doubleRewardsButton = document.getElementById("doubleRewardsButton");
+
+        function renderDeathChoices() {
+            const adText = isPremium() ? "" : " (pub)";
+            reviveButton.disabled = hasRevivedThisRun;
+            reviveButton.textContent = hasRevivedThisRun ? "💖 Déjà ressuscité cette partie" : "💖 Ressusciter" + adText;
+            doubleRewardsButton.disabled = hasDoubledThisDeath || (roundGold < 1 && roundXp < 1);
+            doubleRewardsButton.textContent = hasDoubledThisDeath
+                ? "💰 Récompenses doublées !"
+                : "💰 Doubler les récompenses de ce round : +" + Math.floor(roundGold) + " or, +" + Math.floor(roundXp) + " XP" + adText;
+        }
+
+        reviveButton.addEventListener("click", function () {
+            showRewardedAd("revive", revivePlayer, function () { showToast("Pub fermée trop tôt : pas de résurrection"); });
+        });
+
+        doubleRewardsButton.addEventListener("click", function () {
+            showRewardedAd("double-rewards", function () {
+                gold += roundGold;
+                xp += roundXp;
+                hasDoubledThisDeath = true;
+                playSound("buy");
+                showToast("💰 +" + Math.floor(roundGold) + " or et +" + Math.floor(roundXp) + " XP");
+                updateHud();
+                renderShop();
+                renderDeathChoices();
+            }, function () { showToast("Pub fermée trop tôt : pas de bonus"); });
+        });
+
+        //RÉSURRECTION : la partie continue, avec toute sa vie, et les ennemis sont repoussés au bord de l'écran
+        function revivePlayer() {
+            hasRevivedThisRun = true;
+            isGameOver = false;
+            refreshStats();
+            playerHealth = playerStats.maxHealth;
+            for (const enemy of enemies) {
+                enemy.distance = enemy.startDistance; //repoussé à son point de départ : on a le temps de respirer
+            }
+            roundGold = 0; //un nouveau round commence
+            roundXp = 0;
+            gameOverPanel.classList.add("hidden");
+            hideStatsPanel();
+            playSound("shieldBlock");
+            showToast("💖 Tu es ressuscité !");
+        }
+
+
+        /////////////////////
+        ////PACK PREMIUM/////  Un achat unique : plus de pubs, vitesses x8 et x10, sauts de +500 s et +999 s
+        /////////////////////
+        //Pour encaisser de vrais paiements : voir game-design/monetisation.md (il faut un service de paiement)
+        const PAYMENT_TEST_MODE = true;       // true = achat simulé (rien n'est payé)
+        const PREMIUM_PRICE = "2,99 €";
+        const PREMIUM_PERKS = ["Plus aucune pub (résurrection et bonus sans pub)", "Vitesses du jeu x8 et x10", "Sauts dans le temps de +500 s et +999 s"];
+        const purchaseOverlay = document.getElementById("purchaseOverlay");
+        //(isPremiumOwned et isPremium() sont plus haut, avant les boutons de temps qui en ont besoin)
+
+        //La boîte "Pack Premium", sous le shop et dans les paramètres
+        function renderPremiumBoxes() {
+            for (const box of [document.getElementById("premiumBoxShop"), document.getElementById("premiumBoxSettings")]) {
+                box.textContent = "";
+                box.appendChild(createElementWithText("h3", "", "💎 Pack Premium — " + PREMIUM_PRICE));
+                const list = document.createElement("ul");
+                for (const perk of PREMIUM_PERKS) {
+                    list.appendChild(createElementWithText("li", "", perk));
+                }
+                box.appendChild(list);
+                const button = createElementWithText("button", "adChoice", isPremium() ? "✔ Pack Premium acheté, merci !" : "Acheter le Pack Premium");
+                button.disabled = isPremium();
+                button.addEventListener("click", openPurchase);
+                box.appendChild(button);
+            }
+        }
+
+        function openPurchase() {
+            document.getElementById("purchaseText").textContent = PAYMENT_TEST_MODE
+                ? "Mode test : l'achat est simulé, rien ne sera payé. Prix prévu : " + PREMIUM_PRICE + "."
+                : "Tu vas être redirigé vers la page de paiement (" + PREMIUM_PRICE + ").";
+            purchaseOverlay.classList.remove("hidden");
+        }
+
+        document.getElementById("purchaseCancelButton").addEventListener("click", function () {
+            purchaseOverlay.classList.add("hidden");
+        });
+
+        document.getElementById("purchaseConfirmButton").addEventListener("click", function () {
+            purchaseOverlay.classList.add("hidden");
+            if (!PAYMENT_TEST_MODE) {
+                return; //ici : ouvrir la vraie page de paiement (voir game-design/monetisation.md)
+            }
+            unlockPremium();
+        });
+
+        function unlockPremium() {
+            isPremiumOwned = true;
+            try {
+                localStorage.setItem("premium", "1");
+            } catch (error) {
+            }
+            playSound("buy");
+            showToast("💎 Pack Premium débloqué : merci !");
+            renderPremiumBoxes();
+            renderSkipButtons();
+            renderSpeedButtons();
+            renderDeathChoices();
+        }
 
 
         /////////////////////
@@ -7408,6 +7728,7 @@
             isSettingsOpen = true;
             updatePause();
             renderSettings();
+            renderPremiumBoxes();
             settingsPanel.classList.remove("hidden");
             playSound("menuOpen");
         }

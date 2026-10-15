@@ -11,6 +11,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
 | [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |
 | [interface.md](interface.md) | touches, améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |
+| [monetisation.md](monetisation.md) | pubs, résurrection, doublement des récompenses, Pack Premium, ce qu'il manque pour encaisser de l'argent (branche `monetisation` seulement) | écrit à la main |
 | [codes-triche.md](codes-triche.md) | les codes pour tester plus vite | écrit à la main |
 | [direction-artistique/](direction-artistique/README.md) | les choix de style et les images de référence des formes | écrit à la main |
 | [mythologie/](mythologie/README.md) | l'arbre généalogique des dieux grecs | page autonome |
