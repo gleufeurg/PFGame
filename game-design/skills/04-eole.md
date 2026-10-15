@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Héliade** (VEL) | +10% de vitesse des balles | ×11 | 13 à 65 XP |
 | **Anémoï** (VIT) | +5% de vitesse d'attaque | ×10 | 21 à 65 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Éole
 
-**Vent arrière** : +25% de vitesse d'attaque. Pour le joueur ET la planète d'en face.
+Quand une autre planète, en face de Éole, choisit le lien « Opposé », elle reçoit **Vent arrière** : +25% de vitesse d'attaque. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

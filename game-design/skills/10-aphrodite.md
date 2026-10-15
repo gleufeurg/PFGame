@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Himéros** (REG) | +0.02 PV régénérés par seconde | ×9 | 13 à 33 XP |
 | **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×8 | 9 à 37 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Aphrodite
 
-**Charme durable** : +0.001 PV max pour toi à chaque balle qui touche. Pour le joueur ET la planète d'en face.
+Quand une autre planète, en face de Aphrodite, choisit le lien « Opposé », elle reçoit **Charme durable** : +0.001 PV max pour toi à chaque balle qui touche. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

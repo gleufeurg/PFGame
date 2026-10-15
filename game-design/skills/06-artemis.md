@@ -51,9 +51,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Oréade** (DMG) | +0.5 dégât par balle | ×3 | 17 à 29 XP |
 | **Pléione** (VEL) | +8% de vitesse des balles | ×3 | 9 à 21 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Artémis
 
-**Œil de la chasseresse** : +60 de portée. Pour le joueur ET la planète d'en face.
+Quand une autre planète, en face de Artémis, choisit le lien « Opposé », elle reçoit **Œil de la chasseresse** : +60 de portée. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

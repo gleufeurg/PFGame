@@ -2406,16 +2406,20 @@
                 }
             }
 
-            //LIEN "OPPOSÉ" : la stat du dieu traverse le centre -> le joueur ET la planète d'en face (si elle peut s'en servir)
+            //LIEN "OPPOSÉ" : la planète qui CHOISIT le lien reçoit la stat du dieu d'en face.
+            //Le lien traverse le centre : le joueur la reçoit aussi. (Les stats de vie ne vont qu'au joueur.)
             for (const planet of planets) {
                 if (planet.tree.linkMode !== "opposite") {
                     continue;
                 }
                 const partner = getLinkedPlanets(planet)[0];
-                for (const effect of OPPOSITE_BONUSES[planet.tree.element].effects) {
+                if (partner === undefined) {
+                    continue; //personne en face (une seule planète) : pas de bonus
+                }
+                for (const effect of OPPOSITE_BONUSES[partner.tree.element].effects) {
                     applyEffect(playerStats, effect, 1);
-                    if (partner !== undefined && SHOOTER_STATS.includes(effect.stat)) {
-                        applyEffect(partner.stats, effect, 1);
+                    if (SHOOTER_STATS.includes(effect.stat)) {
+                        applyEffect(planet.stats, effect, 1);
                     }
                 }
             }
@@ -2834,8 +2838,9 @@
             ctx.stroke();
         }
 
-        //LIENS VISIBLES : un fin trait en pointillés, de la couleur de la planète qui crée le lien.
-        //Les pointillés avancent vers la (ou les) planète(s) visée(s). Le lien "opposé" passe par le centre.
+        //LIENS VISIBLES : un fin trait en pointillés, de la couleur de la planète qui choisit le lien.
+        //Les pointillés avancent DEPUIS la planète visée VERS celle qui a choisi le lien (c'est elle qui reçoit).
+        //Le lien "opposé" passe par le centre (le joueur reçoit aussi).
         function drawPlanetLinks() {
             ctx.lineWidth = 1.5;
             ctx.setLineDash([5, 7]);
@@ -2846,17 +2851,12 @@
                 }
                 const linked = getLinkedPlanets(planet);
                 ctx.beginPath();
-                if (planet.tree.linkMode === "opposite") {
-                    ctx.moveTo(planet.x, planet.y);
-                    ctx.lineTo(center.x, center.y);
-                    for (const other of linked) {
-                        ctx.lineTo(other.x, other.y);
+                for (const other of linked) {
+                    ctx.moveTo(other.x, other.y);
+                    if (planet.tree.linkMode === "opposite") {
+                        ctx.lineTo(center.x, center.y);
                     }
-                } else {
-                    for (const other of linked) {
-                        ctx.moveTo(planet.x, planet.y);
-                        ctx.lineTo(other.x, other.y);
-                    }
+                    ctx.lineTo(planet.x, planet.y);
                 }
                 ctx.strokeStyle = hexToRgba(planet.color, 0.6);
                 ctx.stroke();
@@ -4139,9 +4139,9 @@
             opposite: { name: "Opposé", strength: 1 }           // pas de combo : une STAT typique du dieu (voir OPPOSITE_BONUSES)
         };
 
-        //LIEN "OPPOSÉ" : au lieu d'un combo, la planète envoie à travers le centre une STAT typique de son dieu.
-        //Elle va au joueur (le lien traverse le milieu) ET à la planète d'en face, sauf si elle ne sert qu'au joueur
-        //(vie, bouclier, régénération... : seul le joueur peut être touché). Clé = l'attribut du dieu qui crée le lien.
+        //LIEN "OPPOSÉ" : au lieu d'un combo, la planète qui choisit le lien reçoit une STAT typique du dieu d'en face.
+        //Le lien traverse le milieu : le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur
+        //(vie, bouclier, régénération... : seul le joueur peut être touché) ne vont qu'à lui. Clé = l'attribut du dieu d'EN FACE.
         const OPPOSITE_BONUSES = {
             fire: { name: "Forge", description: "+1 dégât par balle", effects: [{ stat: "damage", value: 1 }] },
             water: { name: "Marée protectrice", description: "un bouclier qui bloque un coup, et se recharge 50% plus vite", centerOnly: true, effects: [{ stat: "shield", value: 1 }, { stat: "shieldRecharge", value: 0.5 }] },
@@ -6233,12 +6233,18 @@
 
             //Le résultat : la stat du lien "opposé"...
             if (tree.linkMode === "opposite") {
-                const bonus = OPPOSITE_BONUSES[tree.element];
                 const partner = getLinkedPlanets(planet)[0];
-                const receivers = bonus.centerOnly || partner === undefined ? "pour toi (le triangle du milieu)" : "pour toi et " + partner.name;
                 const card = createElementWithText("div", "comboCard", "");
-                card.style.setProperty("--combo-color", tree.color);
-                card.appendChild(createElementWithText("strong", "", own.icon + " Lien opposé : " + bonus.name));
+                if (partner === undefined) {
+                    card.appendChild(createElementWithText("strong", "", "Lien opposé"));
+                    card.appendChild(document.createTextNode("Aucune planète en face pour l'instant : pas de bonus."));
+                    orbitLinkArea.appendChild(card);
+                    return;
+                }
+                const bonus = OPPOSITE_BONUSES[partner.tree.element]; //le bonus du dieu d'EN FACE
+                const receivers = bonus.centerOnly ? "pour toi (le triangle du milieu)" : "pour toi et " + tree.name;
+                card.style.setProperty("--combo-color", partner.color);
+                card.appendChild(createElementWithText("strong", "", ATTRIBUTES[partner.tree.element].icon + " Lien opposé avec " + partner.name + " : " + bonus.name));
                 card.appendChild(document.createTextNode(bonus.description + ", " + receivers + "."));
                 orbitLinkArea.appendChild(card);
                 return;
@@ -6895,7 +6901,8 @@
                 return "Aucun";
             }
             if (mode === "opposite") {
-                return "Opposé : " + OPPOSITE_BONUSES[planet.tree.element].name;
+                const partner = getLinkedPlanets(planet)[0];
+                return partner === undefined ? "Opposé : personne en face" : "Opposé : " + OPPOSITE_BONUSES[partner.tree.element].name + " (de " + partner.name + ")";
             }
             const combos = getPlanetCombos(planet);
             return LINK_MODES[mode].name + " : " + (combos.length > 0 ? combos.map(function (item) { return item.combo.name; }).join(", ") : "pas de combo");

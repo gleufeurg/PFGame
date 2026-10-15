@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 9 à 85 XP |
 | **Naïade** (ESQ) | +3% de chance d'esquiver un coup | ×7 | 13 à 77 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Poséidon
 
-**Marée protectrice** : un bouclier qui bloque un coup, et se recharge 50% plus vite. Seulement pour le joueur (le triangle du milieu).
+Quand une autre planète, en face de Poséidon, choisit le lien « Opposé », elle reçoit **Marée protectrice** : un bouclier qui bloque un coup, et se recharge 50% plus vite. Seulement pour le joueur (le triangle du milieu).
 
 ## 🔗 Combos d'orbite
 

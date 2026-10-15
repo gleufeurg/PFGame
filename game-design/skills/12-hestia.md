@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Lare** (PV) | +1 PV max | ×5 | 9 à 45 XP |
 | **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 13 à 33 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Hestia
 
-**Foyer** : +0.15 PV régénérés par seconde pour toi. Seulement pour le joueur (le triangle du milieu).
+Quand une autre planète, en face de Hestia, choisit le lien « Opposé », elle reçoit **Foyer** : +0.15 PV régénérés par seconde pour toi. Seulement pour le joueur (le triangle du milieu).
 
 ## 🔗 Combos d'orbite
 

@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Hyade** (XP) | +5% d'XP gagnée | ×12 | 13 à 33 XP |
 | **Titanide** (DMG) | +0.5 dégât par balle | ×12 | 9 à 29 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Apollon
 
-**Clarté** : +10% de chance de coup critique. Pour le joueur ET la planète d'en face.
+Quand une autre planète, en face de Apollon, choisit le lien « Opposé », elle reçoit **Clarté** : +10% de chance de coup critique. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

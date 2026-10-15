@@ -52,9 +52,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Hodios** (VIT) | +4% de vitesse d'attaque | ×5 | 13 à 45 XP |
 | **Agoraios** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 13 à 37 XP |
 
-## ↔️ Lien « Opposé »
+## ↔️ Lien « Opposé » vers Hermès
 
-**Messager** : +50% de vitesse des balles. Pour le joueur ET la planète d'en face.
+Quand une autre planète, en face de Hermès, choisit le lien « Opposé », elle reçoit **Messager** : +50% de vitesse des balles. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 
