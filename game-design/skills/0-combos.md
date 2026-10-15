@@ -8,7 +8,7 @@ Chaque dieu a un **attribut**. Dans la fenêtre de son skill tree (en bas à gau
 | **Gauche** | combo avec la planète d'avant dans l'orbite | ×1 |
 | **Droite** | combo avec la planète d'après | ×1 |
 | **Les deux côtés** | le dieu et ses 2 voisines **fusionnent** en un attribut unique, qui donne un effet spécial (voir Fusions) | ×1 |
-| **Opposé** | combo avec la planète en face | ×1.4 |
+| **Opposé** | pas de combo : une **stat** typique du dieu, pour le joueur et la planète d'en face (voir [statistiques.md](../statistiques.md)) | — |
 
 ## Les attributs
 
@@ -27,7 +27,7 @@ Chaque dieu a un **attribut**. Dans la fenêtre de son skill tree (en bas à gau
 | Hermès | 🪶 Plume |
 | Hestia | 🕯️ Foyer |
 
-## Combos (Gauche, Droite, Opposé) : attribut du dieu + attribut emprunté
+## Combos (Gauche, Droite) : attribut du dieu + attribut emprunté
 
 | Combo | Nom | Effet |
 |---|---|---|

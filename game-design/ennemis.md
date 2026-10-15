@@ -6,20 +6,32 @@ Tous les chiffres viennent du code du jeu (`index.html`), partie `ENEMIES`.
 
 Il y a 4 ennemis normaux, un par élément, et chacun a 25 % de chances d'apparaître. Plus un ennemi est solide, plus il est lent. Pour comparer : le joueur commence avec 10 PV et ses balles font 1 dégât.
 
-| Ennemi | Couleur | Vie (PV) | Vitesse (px/s) | Dégâts s'il touche le joueur | Or | XP |
-| --- | --- | --- | --- | --- | --- | --- |
-| Feu | `#ff5533` | 1 à 3 | 90 | 0,1 à 0,3 | 1 | 1 |
-| Air | `#e0f7ff` | 1 à 2 | 70 | 0,1 à 0,2 | 1 | 1 |
-| Eau | `#4da6ff` | 2 à 4 | 50 | 0,2 à 0,4 | 1 | 1 |
-| Plante | `#55dd55` | 4 à 7 | 35 | 0,4 à 0,7 | 1 | 1 |
+| Ennemi | Couleur | Vie au début (PV) | Vitesse (px/s) | Or | XP |
+| --- | --- | --- | --- | --- | --- |
+| Feu | `#ff5533` | 0,8 à 1,2 | 90 | 1 | 1 |
+| Air | `#e0f7ff` | 0,6 à 1 | 70 | 1 | 1 |
+| Eau | `#4da6ff` | 1,4 à 2,2 | 50 | 1 | 1 |
+| Plante | `#55dd55` | 2,2 à 3,4 | 35 | 1 | 1 |
 
-- **Dégâts :** un ennemi qui touche le joueur lui retire ses PV restants ÷ 10 (`ENEMY_DAMAGE_DIVIDER`), puis disparaît. Un ennemi déjà abîmé fait donc moins mal.
-- **Taille :** rayon = 4 px + 2,5 px par PV. Une plante à 7 PV fait 21,5 px de rayon, un feu à 1 PV 6,5 px. L'ennemi rétrécit quand on l'abîme.
+- **Dégâts :** un ennemi qui touche le joueur lui fait autant de dégâts que sa vie restante (1 PV restant = 1 dégât), puis disparaît. Les virgules comptent (0,4 PV restant = 0,4 dégât), même si la vie du joueur est affichée sans virgule. Un ennemi abîmé fait donc moins mal.
+- **Vie qui monte :** la vie ci-dessus est multipliée par un nombre qui grandit avec le temps (`getEnemyHealthScale`) : 1 + 0,4 × minutes + 0,04 × minutes².
+
+| Temps de jeu | Multiplicateur de vie | Plante (la plus solide) |
+| --- | --- | --- |
+| 0:00 | ×1 | 2,2 à 3,4 PV |
+| 1:00 | ×1,44 | 3,2 à 4,9 PV |
+| 5:00 | ×4 | 8,8 à 13,6 PV |
+| 10:00 | ×9 | 20 à 31 PV |
+| 20:00 | ×25 | 55 à 85 PV |
+
+- **Taille :** rayon = 4 px + 4 px par PV « de départ » (sans le multiplicateur du temps, pour que les ennemis ne deviennent pas géants). Une plante fait 13 à 18 px de rayon, un air 6 à 8 px. L'ennemi rétrécit quand on l'abîme.
 - **Récompenses :** chaque ennemi normal donne 1 or et 1 XP, avant les bonus des skills (« or gagné », « XP gagnée »).
 
 ## L'apparition
 
-Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,25 s atteint vers 4 min 30. Chacun naît juste au bord de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
+Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,25 s atteint vers 4 min 30. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
+
+**Avec la caméra :** quand la portée du joueur dépasse l'écran, la caméra dézoome pour que la portée occupe environ 95 % de la demi-largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`). Les ennemis naissent toujours hors de l'écran visible. Au-delà de 1000 px de portée (`CAMERA_MAX_RANGE`), la caméra ne dézoome plus, et les ennemis naissent n'importe où entre le bord de l'écran et 1000 px du centre.
 
 | Temps de jeu | Écart entre deux ennemis | Ennemis par minute |
 | --- | --- | --- |
@@ -56,18 +68,18 @@ Les réglages communs sont `ENEMY_WAVE_AMPLITUDE` (40 px), `ENEMY_WAVE_FREQUENCY
 
 ## Les super ennemis
 
-Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, avec une alerte « X arrive ! ». Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui retire ses PV restants ÷ 10 : un Cerbère intact fait 4 dégâts, un Cronos intact 120.
+Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, avec une alerte « X arrive ! ». Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive. Leur vie ne monte pas avec le temps.
 
 | Arrivée | Super ennemi | Élément | Vie (PV) | Vitesse (px/s) | Taille (rayon, px) | Pointes | Dégâts s'il touche (intact) | Or | XP |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1:00 | Cerbère | feu | 40 | 12 | 34 | 3 | 4 | 15 | 15 |
-| 2:00 | Hydre de Lerne | eau | 90 | 11 | 38 | 9 | 9 | 25 | 25 |
-| 3:00 | Méduse | plante | 160 | 10 | 42 | 6 | 16 | 40 | 40 |
-| 4:00 | Typhon | air | 260 | 10 | 46 | 4 | 26 | 60 | 60 |
-| 5:00 | Chimère | feu | 400 | 9 | 50 | 5 | 40 | 90 | 90 |
-| 6:00 | Charybde | eau | 600 | 9 | 54 | 8 | 60 | 130 | 130 |
-| 7:00 | Python | plante | 850 | 8 | 58 | 7 | 85 | 180 | 180 |
-| 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 120 | 260 | 260 |
+| 1:00 | Cerbère | feu | 40 | 12 | 34 | 3 | 40 | 15 | 15 |
+| 2:00 | Hydre de Lerne | eau | 90 | 11 | 38 | 9 | 90 | 25 | 25 |
+| 3:00 | Méduse | plante | 160 | 10 | 42 | 6 | 160 | 40 | 40 |
+| 4:00 | Typhon | air | 260 | 10 | 46 | 4 | 260 | 60 | 60 |
+| 5:00 | Chimère | feu | 400 | 9 | 50 | 5 | 400 | 90 | 90 |
+| 6:00 | Charybde | eau | 600 | 9 | 54 | 8 | 600 | 130 | 130 |
+| 7:00 | Python | plante | 850 | 8 | 58 | 7 | 850 | 180 | 180 |
+| 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 1 200 | 260 | 260 |
 
 - **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie.
 - **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`).
@@ -121,3 +133,14 @@ Les dégâts continus (brûlure, poison, saignement, charme, trou noir) sont add
 | --- | --- | --- |
 | Chance de critique | 0 % | shop « Chance de critique » (+2 % par niveau, 10 niveaux) ; Héphaïstos : Cyclope (+1 % ×7), Prométhée (+3 %) ; combos d'orbite « critique » (+20 %) |
 | Dégâts critiques | 200 % | shop « Dégâts critiques » (+20 % par niveau, 10 niveaux) ; Héphaïstos : Kédalion (+25 %), Brontès (+60 %) ; combos d'orbite « critique » (+100 %) |
+
+## Beaucoup d'ennemis à l'écran
+
+Le jeu est prévu pour tenir environ 10 000 ennemis :
+
+- **Grille :** le terrain est découpé en cases de 64 px (`ENEMY_GRID_CELL`). Une balle ou une explosion ne regarde que les ennemis des cases autour d'elle, pas les 10 000.
+- **Ménage groupé :** un ennemi mort passe à `alive = false` et n'est retiré de la liste qu'une fois par pas de jeu (`removeDeadEnemies`).
+- **Images pré-dessinées :** chaque ennemi rond est une petite image dessinée une seule fois par couleur et par taille, puis recopiée (`getRoundEnemySprite`).
+- **Moins de détails quand il y en a trop :** au-delà de 1 500 ennemis (`MAX_ENEMY_SHADOWS`), les ennemis ronds n'ont plus d'ombre. Au-delà de 150 nombres de dégâts à l'écran (`MAX_DAMAGE_NUMBERS`), on n'en ajoute plus, sauf les critiques. Les ennemis hors de l'écran ne sont pas dessinés.
+
+Mesure faite sans carte graphique (le cas le plus lent) : 10 000 ennemis prennent environ 60 ms par image, contre 870 ms avant. Avec une carte graphique, c'est nettement plus rapide.

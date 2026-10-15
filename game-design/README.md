@@ -8,7 +8,9 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | --- | --- | --- |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
 | [skills/](skills/README.md) | les 12 skill trees, les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
-| [ennemis.md](ennemis.md) | ennemis normaux, apparition, mouvements spéciaux, super ennemis, effets subis | écrit à la main |
+| [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
+| [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |
+| [interface.md](interface.md) | touches, améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |
 | [codes-triche.md](codes-triche.md) | les codes pour tester plus vite | écrit à la main |
 | [direction-artistique/](direction-artistique/README.md) | les choix de style et les images de référence des formes | écrit à la main |
 | [mythologie/](mythologie/README.md) | l'arbre généalogique des dieux grecs | page autonome |

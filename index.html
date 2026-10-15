@@ -555,7 +555,7 @@
 
         #treeCanvas { /*la "fenêtre" sur l'arbre : on peut zoomer (molette) et se déplacer (cliquer-glisser)*/
             position: relative;
-            height: clamp(420px, calc(100vh - 280px), 900px); /*entre 420px et 900px selon la hauteur de l'écran*/
+            height: clamp(360px, calc(100vh - 360px), 900px); /*entre 360px et 900px selon la hauteur de l'écran (sous les onglets des dieux)*/
             margin: 16px 0;
             overflow: hidden; /*ce qui dépasse est caché*/
             border-radius: 12px;
@@ -615,6 +615,108 @@
 
         #treeLinks line.active {
             stroke: var(--tree-color);
+        }
+
+        /*ACHAT D'UNE COMPÉTENCE : le lien se remplit de la voisine vers la nouvelle étoile, et l'étoile "éclot"*/
+        #treeLinks line.filling {
+            stroke-dasharray: 1;        /*avec pathLength="1" : un tiret = toute la ligne*/
+            stroke-dashoffset: 1;       /*décalé d'une ligne entière : invisible au départ*/
+            animation: fillLink 0.45s ease-out forwards;
+        }
+
+        @keyframes fillLink {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .skillNode.justUnlocked .star {
+            animation: starPop 0.5s ease-out;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0.5); }
+            60% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        /*ONGLETS DES DIEUX : passer d'un skill tree à l'autre*/
+        #godTabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .godTab {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 7px;
+            border: 2px solid var(--ui-border);
+            border-radius: 8px;
+            background-color: var(--ui-surface);
+            color: var(--ui-text);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .godTab .godTabIcon { /*un petit losange de la couleur du dieu, comme sa planète*/
+            width: 9px;
+            height: 9px;
+            transform: rotate(45deg);
+            background-color: var(--god-color);
+        }
+
+        .godTab.active {
+            border-color: var(--god-color);
+            color: var(--god-color);
+        }
+
+        .godTab.locked {
+            opacity: 0.55;
+        }
+
+        /*ARBRE D'UN DIEU PAS ENCORE EN ORBITE : sombre, on peut le regarder mais pas y toucher*/
+        #lockedTreeBanner {
+            display: none;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: var(--ui-text);
+            font-weight: 800;
+            font-size: 14px;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        #skillTreePanel.treeLocked #lockedTreeBanner {
+            display: block;
+        }
+
+        #skillTreePanel.treeLocked #treeWorld {
+            filter: grayscale(0.7) brightness(0.45);
+        }
+
+        #skillTreePanel.treeLocked .skillNode {
+            cursor: not-allowed;
+        }
+
+        .refundButton {
+            border: 2px solid var(--ui-accent);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--ui-heading);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 3px 10px;
+            cursor: pointer;
         }
 
         .skillNode { /*une compétence = un bouton rond*/
@@ -1290,7 +1392,7 @@
         </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
-    <div id="hint">Clique sur une planète pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place dans l'orbite</div>
+    <div id="hint">Clique sur une planète (ou appuie sur S) pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place dans l'orbite</div>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
     </button>
@@ -1305,12 +1407,14 @@
                 <div id="orbitLinkArea"></div>
             </section>
             <section id="treeArea">
+                <div id="godTabs"></div>
                 <div class="treeHeader">
                     <h2 id="treeTitle"></h2>
                     <span>XP disponible : <span id="treeXp">0</span></span>
-                    <button id="closeTreeButton" class="primaryButton">Reprendre ▶</button>
+                    <button id="closeTreeButton" class="primaryButton" title="Touche S">Reprendre ▶</button>
                 </div>
                 <div id="treeCanvas">
+                    <div id="lockedTreeBanner">🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu</div>
                     <div id="treeWorld">
                         <svg id="treeLinks"></svg>
                         <div id="treeNodes"></div>
@@ -1396,18 +1500,59 @@
 
         let visualTime = 0;   // temps "réel" pour les animations du décor (continue même en pause)
 
+        //CAMÉRA : quand la portée du joueur dépasse l'écran, on dézoome pour qu'elle remplisse environ 95% de la largeur.
+        //Le "monde" (ennemis, planètes, balles) garde ses vraies distances en pixels : seul le dessin est réduit.
+        const CAMERA_RANGE_SCREEN_RATIO = 0.95;  // la portée occupe au plus 95% de la demi-largeur de l'écran (sur les côtés)
+        const CAMERA_MAX_RANGE = 1000;           // au-delà de cette portée, on ne dézoome plus
+        const CAMERA_SMOOTHING = 2;              // vitesse du zoom (plus grand = plus rapide)
+        let cameraZoom = 1;                      // 1 = normal, 0.5 = on voit 2 fois plus loin
+        let shakeX = 0;                          // décalage de la secousse de l'écran (en pixels d'écran)
+        let shakeY = 0;
+
+        //Le zoom visé pour la portée actuelle
+        function getTargetCameraZoom() {
+            const range = Math.min(playerStats.range, CAMERA_MAX_RANGE);
+            return Math.min(1, (canvas.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
+        }
+
+        function updateCamera(deltaTime) {
+            cameraZoom += (getTargetCameraZoom() - cameraZoom) * Math.min(1, deltaTime * CAMERA_SMOOTHING); //glisse en douceur
+        }
+
+        //Un point de l'écran (souris) -> le point du monde qui est dessiné là
+        function screenToWorld(x, y) {
+            return { x: center.x + (x - center.x) / cameraZoom, y: center.y + (y - center.y) / cameraZoom };
+        }
+
+        //Le rectangle du monde visible à l'écran (+ une marge)
+        function getVisibleWorldRect(margin) {
+            const halfWidth = canvas.width / 2 / cameraZoom + margin;
+            const halfHeight = canvas.height / 2 / cameraZoom + margin;
+            return { left: center.x - halfWidth, right: center.x + halfWidth, top: center.y - halfHeight, bottom: center.y + halfHeight };
+        }
+
+        //Le zoom du monde : agrandit (ou réduit) autour du centre de l'écran
+        function applyWorldTransform(targetCtx, offsetX, offsetY) {
+            targetCtx.setTransform(cameraZoom, 0, 0, cameraZoom, center.x * (1 - cameraZoom) + offsetX, center.y * (1 - cameraZoom) + offsetY);
+        }
+
         function drawCanvas() {
             //Petite secousse de l'écran quand le joueur est touché : on décale tout le dessin au hasard
-            ctx.save(); //mémorise l'état du pinceau (position, couleurs...) pour le remettre après
+            shakeX = 0;
+            shakeY = 0;
             if (screenShakeTimer > 0) {
                 const strength = SCREEN_SHAKE_STRENGTH * (screenShakeTimer / SCREEN_SHAKE_DURATION);
-                ctx.translate(randomBetween(-strength, strength), randomBetween(-strength, strength)); //translate = décale le pinceau
+                shakeX = randomBetween(-strength, strength);
+                shakeY = randomBetween(-strength, strength);
             }
+            ctx.save(); //mémorise l'état du pinceau (position, couleurs...) pour le remettre après
+            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
 
             ctx.drawImage(backgroundCanvas, 0, 0); //le fond, dessiné une seule fois au démarrage
             if (SPACE_BACKGROUND) {
                 drawStars();
             }
+            applyWorldTransform(ctx, shakeX, shakeY); //à partir d'ici, on dessine le "monde", avec le zoom de la caméra
             updatePlanetPositions(); //avant les ombres : elles ont besoin de savoir où sont les planètes
             drawRange();
             drawOrbit();
@@ -1417,6 +1562,7 @@
             drawBullets();
             drawEffects();
             drawLightning();
+            drawPlanetLinks();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
             drawPlayer();
             drawDamageNumbers();     //tout en haut : les nombres passent devant tout le reste
@@ -1658,6 +1804,7 @@
         const CRIT_OUTLINE_COLOR = "#ff2a2a";     // ...avec un contour rouge
         const DOT_NUMBER_INTERVAL = 0.5;          // dégâts continus (brûlure, poison...) : additionnés et affichés toutes les 0.5 s
         const PLAYER_HIT_COLOR = "#ffffff";       // les balles du joueur
+        const MAX_DAMAGE_NUMBERS = 150;           // au-delà, on n'en affiche plus (pour ne pas ralentir le jeu)
 
         //Couleur de chaque type d'attaque. La plupart reprennent la couleur de l'attribut (ATTRIBUTES),
         //sauf la foudre en jaune, et la lumière en blanc doré (pour ne pas la confondre avec la foudre)
@@ -1684,8 +1831,19 @@
             if (amount < 0.05) {
                 return; //trop petit pour être lisible
             }
+            if (damageNumbers.length >= MAX_DAMAGE_NUMBERS && !isCrit) {
+                return; //trop de nombres à l'écran : on n'en ajoute plus (sauf les critiques), pour ne pas ralentir le jeu
+            }
             const life = DAMAGE_NUMBER_DURATION + (isCrit ? 0.3 : 0);
             damageNumbers.push({ x: x + randomBetween(-8, 8), y: y, amount: amount, color: color, isCrit: isCrit, life: life, maxLife: life });
+        }
+
+        //Un petit texte qui monte et s'efface, comme un nombre de dégâts (ex : "✨ Explosion" avec l'Égide d'Athéna)
+        function spawnFloatingLabel(x, y, text, color) {
+            if (damageNumbers.length >= MAX_DAMAGE_NUMBERS) {
+                return;
+            }
+            damageNumbers.push({ x: x, y: y, amount: 0, text: text, color: color, isCrit: false, life: 1.1, maxLife: 1.1 });
         }
 
         //1 chiffre après la virgule pour les petits nombres (0.6), entier au-delà de 10
@@ -1719,10 +1877,13 @@
                     size = CRIT_NUMBER_SIZE * (1 + 0.8 * pop);
                 }
                 const shake = number.isCrit && age < 0.25 ? randomBetween(-1.5, 1.5) : 0;
-                ctx.font = "900 " + size + "px Nunito";
+                if (number.text !== undefined) {
+                    size = DAMAGE_NUMBER_SIZE - 1; //un libellé (pas un nombre) : un peu plus petit
+                }
+                ctx.font = "900 " + size / Math.sqrt(cameraZoom) + "px Nunito"; //quand la caméra dézoome, le texte rétrécit moins que le reste
                 ctx.lineWidth = number.isCrit ? 5 : 3;
                 ctx.strokeStyle = number.isCrit ? CRIT_OUTLINE_COLOR : "rgba(0, 0, 0, 0.65)";
-                const text = formatDamage(number.amount) + (number.isCrit ? "!" : "");
+                const text = number.text !== undefined ? number.text : formatDamage(number.amount) + (number.isCrit ? "!" : "");
                 ctx.strokeText(text, number.x + shake, number.y);
                 ctx.fillStyle = number.color;
                 ctx.fillText(text, number.x + shake, number.y);
@@ -1764,6 +1925,9 @@
                 }
             }
             for (const enemy of enemies) {
+                if (!enemy.alive) {
+                    continue;
+                }
                 if (enemy.dotDamage) {
                     enemy.dotTimer = (enemy.dotTimer || 0) + deltaTime;
                     if (enemy.dotTimer >= DOT_NUMBER_INTERVAL) {
@@ -1773,7 +1937,7 @@
                 enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
                 //Rétrécit en douceur vers la taille qui correspond à sa vie actuelle
                 //Super ennemi : il rétrécit jusqu'à 60% de sa taille quand sa vie baisse
-                const targetSize = enemy.isBoss ? enemy.boss.size * (0.6 + 0.4 * Math.max(0, enemy.health) / enemy.maxHealth) : getEnemyTargetSize(enemy.health);
+                const targetSize = enemy.isBoss ? enemy.boss.size * (0.6 + 0.4 * Math.max(0, enemy.health) / enemy.maxHealth) : getEnemyTargetSize(enemy.health / enemy.healthScale);
                 enemy.size += (targetSize - enemy.size) * Math.min(1, deltaTime * ENEMY_SHRINK_SPEED);
             }
             screenShakeTimer -= deltaTime;
@@ -2057,13 +2221,20 @@
         //"Gélule" : un rond (x, y) étiré jusqu'à (x + dx, y + dy).
         //Sert pour l'ombre d'un rond (étirée en diagonale) et pour son épaisseur (étirée vers le bas).
         function fillStretchedCircle(targetCtx, x, y, radius, dx, dy, color) {
-            const angle = Math.atan2(dy, dx); //atan2 = l'angle de la direction (dx, dy)
             targetCtx.beginPath();
-            targetCtx.arc(x, y, radius, angle + Math.PI / 2, angle + Math.PI * 1.5);        //moitié arrière du rond de départ
-            targetCtx.arc(x + dx, y + dy, radius, angle - Math.PI / 2, angle + Math.PI / 2); //moitié avant du rond d'arrivée
-            targetCtx.closePath();
+            traceStretchedCircle(targetCtx, x, y, radius, dx, dy);
             targetCtx.fillStyle = color;
             targetCtx.fill();
+        }
+
+        //Ajoute une "gélule" au chemin en cours, SANS la remplir : on peut en ajouter des milliers puis tout remplir d'un coup
+        function traceStretchedCircle(targetCtx, x, y, radius, dx, dy) {
+            const angle = Math.atan2(dy, dx); //atan2 = l'angle de la direction (dx, dy)
+            const startAngle = angle + Math.PI / 2;
+            targetCtx.moveTo(x + Math.cos(startAngle) * radius, y + Math.sin(startAngle) * radius); //lève le crayon : pas de trait parasite
+            targetCtx.arc(x, y, radius, startAngle, angle + Math.PI * 1.5);                  //moitié arrière du rond de départ
+            targetCtx.arc(x + dx, y + dy, radius, angle - Math.PI / 2, angle + Math.PI / 2); //moitié avant du rond d'arrivée
+            targetCtx.closePath();
         }
 
         //Les points d'une forme régulière (count côtés), comme dans drawCircle
@@ -2108,16 +2279,31 @@
             return { x: Math.cos(SHADOW_ANGLE) * length, y: Math.sin(SHADOW_ANGLE) * length };
         }
 
-        function drawShadows() {
-            shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
+        const MAX_ENEMY_SHADOWS = 1500;        // au-delà de ce nombre d'ennemis, les ennemis ronds n'ont plus d'ombre (pour garder le jeu fluide)
 
+        function drawShadows() {
+            shadowCtx.setTransform(1, 0, 0, 1, 0, 0);
+            shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
+            applyWorldTransform(shadowCtx, 0, 0); //les ombres suivent aussi le zoom de la caméra
+
+            //Ennemis ronds : leur ombre est une petite image pré-dessinée (voir getShadowSprite), simplement recopiée.
+            //Quand il y a énormément d'ennemis, on ne dessine plus leurs ombres (on ne les remarque plus, et ça coûte cher).
+            const view = getVisibleWorldRect(80);
+            const drawRoundShadows = enemies.length <= MAX_ENEMY_SHADOWS;
             for (const enemy of enemies) {
-                const shadow = shadowVector(enemy.size * 2.2);
-                const shapePoints = getEnemyShapePoints(enemy, enemy.x, enemy.y + getEnemyDepth(enemy));
-                if (shapePoints === null) {
-                    fillStretchedCircle(shadowCtx, enemy.x, enemy.y + getEnemyDepth(enemy), enemy.size, shadow.x, shadow.y, SHADOW_COLOR);
+                if (!enemy.alive || enemy.x < view.left || enemy.x > view.right || enemy.y < view.top || enemy.y > view.bottom) {
+                    continue; //hors de l'écran : inutile de dessiner son ombre
+                }
+                if (isRoundEnemy(enemy)) {
+                    if (!drawRoundShadows) {
+                        continue;
+                    }
+                    const radius = getSpriteRadius(enemy.size);
+                    shadowCtx.drawImage(getShadowSprite(radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
                 } else {
-                    fillStretchedShape(shadowCtx, shapePoints, shadow.x, shadow.y, SHADOW_COLOR);
+                    //Les ennemis à forme spéciale (bien moins nombreux) : dessinés un par un
+                    const shadow = shadowVector(enemy.size * 2.2);
+                    fillStretchedShape(shadowCtx, getEnemyShapePoints(enemy, enemy.x, enemy.y + getEnemyDepth(enemy)), shadow.x, shadow.y, SHADOW_COLOR);
                 }
             }
             for (const bullet of bullets) {
@@ -2133,59 +2319,122 @@
             const playerShadow = shadowVector(80);
             fillStretchedCircle(shadowCtx, center.x, center.y, PLAYER_3D_SIZE * 0.6, playerShadow.x, playerShadow.y, SHADOW_COLOR);
 
+            //Le canvas des ombres est déjà zoomé : on le recopie sans le zoom du monde (juste la secousse)
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
             ctx.globalAlpha = SHADOW_OPACITY;
             ctx.drawImage(shadowCanvas, 0, 0);
-            ctx.globalAlpha = 1;
+            ctx.restore();
         }
 
 
         /////////////////////
         ////PLAYER STATS/////  Toutes les valeurs que le shop et les skill trees peuvent améliorer
         /////////////////////
+        //QUI PROFITE DE QUOI :
+        //- LE JOUEUR (le triangle du milieu) : tout le shop, + la vie et la défense de tous les skill trees (lui seul peut être touché)
+        //- CHAQUE PLANÈTE : ses propres stats de tir (PLANET_BASE_STATS), + les stats de tir de SON skill tree.
+        //  Ex : +30 de portée chez Héphaïstos = seulement la planète Héphaïstos, pas les autres ni le joueur.
+        //(Plus tard : des pouvoirs pour qu'une planète profite des stats d'une autre. Voir game-design/statistiques.md)
         const BASE_STATS = {
             maxHealth: 10,        // points de vie max
             regen: 0,             // PV regagnés par seconde
             dodgeChance: 0,       // chance d'esquiver un coup (0.1 = 10%)
             shield: 0,            // 1 ou plus = un bouclier bloque un coup, puis se recharge
+            shieldRecharge: 1,    // vitesse de recharge du bouclier (1.5 = 50% plus rapide)
             lifeOnKill: 0,        // PV regagnés à chaque ennemi tué
             damage: 1,            // dégâts par balle
             attackSpeed: 1,       // multiplicateur de cadence de tir (1 = normal, 1.5 = 50% plus rapide)
             range: 300,           // distance max pour viser, en pixels
             bulletSpeed: 1,       // multiplicateur de vitesse des balles
-            bulletCount: 1,       // nombre de balles par tir
+            bulletCount: 1,       // nombre de balles par tir (côte à côte, en "mur")
             critChance: 0,        // chance de coup critique (0.1 = 10%)
             critDamage: 2,        // dégâts d'un coup critique (2 = 200% des dégâts normaux)
+            lifeOnHit: 0,         // PV regagnés par le joueur à chaque balle qui touche
+            maxHealthOnHit: 0,    // PV max gagnés (pour la partie) à chaque balle qui touche
+            comboProcChance: 0,   // chance, à chaque tir, de déclencher un effet de combo au hasard
             goldMultiplier: 1,    // multiplicateur d'or gagné
             xpMultiplier: 1       // multiplicateur d'XP gagnée
         };
+        //Les stats de départ de chaque planète (seulement des stats de tir)
+        const PLANET_BASE_STATS = {
+            damage: 1,
+            attackSpeed: 1,       // 1 tir par seconde (voir PLANET_FIRE_INTERVAL)
+            range: 250,           // depuis la planète
+            bulletSpeed: 1,
+            bulletCount: 1,
+            critChance: 0,
+            critDamage: 2,
+            lifeOnHit: 0,
+            maxHealthOnHit: 0,
+            comboProcChance: 0
+        };
+        //Les stats "de tir" : elles vont à celui qui tire. Toutes les autres (vie, défense, or, XP) vont au joueur.
+        const SHOOTER_STATS = ["damage", "attackSpeed", "range", "bulletSpeed", "bulletCount", "critChance", "critDamage", "damageVs", "lifeOnHit", "maxHealthOnHit", "comboProcChance"];
         let playerStats = {};
+        let runMaxHealthBonus = 0;   // PV max gagnés pendant la partie (Aphrodite) : remis à 0 à chaque nouvelle partie
 
-        //Recalcule les stats à partir de zéro : base + niveaux du shop + compétences débloquées
+        function createShooterStats(base) {
+            const stats = { ...base }; //copie (sans modifier la base)
+            stats.damageVs = { water: 0, fire: 0, plant: 0, air: 0 }; //dégâts bonus contre chaque élément
+            return stats;
+        }
+
+        //Recalcule toutes les stats à partir de zéro : base + shop + skill trees + liens "opposé"
         function computeStats() {
-            playerStats = { ...BASE_STATS }; //copie de BASE_STATS (sans la modifier)
-            playerStats.damageVs = { water: 0, fire: 0, plant: 0, air: 0 }; //dégâts bonus contre chaque élément
-
+            playerStats = createShooterStats(BASE_STATS);
             for (const item of SHOP_ITEMS) {
                 if (item.effect !== null) {
-                    applyEffect(item.effect, item.level);
+                    applyEffect(playerStats, item.effect, item.level);
                 }
             }
 
+            for (const planet of planets) {
+                planet.stats = createShooterStats(PLANET_BASE_STATS);
+            }
             for (const tree of SKILL_TREES) {
+                const planet = planets.find(function (other) { return other.tree === tree; });
                 for (const node of tree.nodes) {
-                    if (node.unlocked) {
-                        applyEffect(node.effect, 1);
+                    if (!node.unlocked) {
+                        continue;
+                    }
+                    const isShooterStat = SHOOTER_STATS.includes(node.effect.stat);
+                    if (isShooterStat && planet === undefined) {
+                        continue; //dieu pas en orbite : ses stats de tir ne servent à personne
+                    }
+                    applyEffect(isShooterStat ? planet.stats : playerStats, node.effect, 1);
+                }
+            }
+
+            //LIEN "OPPOSÉ" : la stat du dieu traverse le centre -> le joueur ET la planète d'en face (si elle peut s'en servir)
+            for (const planet of planets) {
+                if (planet.tree.linkMode !== "opposite") {
+                    continue;
+                }
+                const partner = getLinkedPlanets(planet)[0];
+                for (const effect of OPPOSITE_BONUSES[planet.tree.element].effects) {
+                    applyEffect(playerStats, effect, 1);
+                    if (partner !== undefined && SHOOTER_STATS.includes(effect.stat)) {
+                        applyEffect(partner.stats, effect, 1);
                     }
                 }
             }
+            playerStats.maxHealth += runMaxHealthBonus;
         }
 
-        function applyEffect(effect, times) {
+        function applyEffect(stats, effect, times) {
             if (effect.stat === "damageVs") {
-                playerStats.damageVs[effect.element] += effect.value * times;
+                stats.damageVs[effect.element] += effect.value * times;
             } else {
-                playerStats[effect.stat] += effect.value * times;
+                stats[effect.stat] += effect.value * times;
             }
+        }
+
+        //Aphrodite : des PV max en plus pour la partie (et autant de PV tout de suite)
+        function gainMaxHealth(amount) {
+            runMaxHealthBonus += amount;
+            playerStats.maxHealth += amount;
+            healPlayer(amount);
         }
 
         //À appeler après chaque achat : si la vie max augmente, on gagne aussi ces PV
@@ -2195,6 +2444,7 @@
             if (playerStats.maxHealth > oldMaxHealth) {
                 playerHealth += playerStats.maxHealth - oldMaxHealth;
             }
+            playerHealth = Math.min(playerHealth, playerStats.maxHealth); //après un remboursement, la vie max peut baisser
         }
 
 
@@ -2262,7 +2512,6 @@
         let isGameOver = false;
         let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
         let isSettingsOpen = false;
-        const MIN_DAMAGE_TAKEN = 1;               // un coup d'ennemi fait toujours au moins 1 dégât
 
         //Le jeu est en pause tant qu'un des menus est ouvert
         function updatePause() {
@@ -2275,10 +2524,15 @@
         let isShieldReady = false;
         let shieldTimer = SHIELD_COOLDOWN;        // plein au départ : le bouclier est prêt tout de suite
 
+        //Temps de recharge du bouclier (plus court avec Poséidon en lien "opposé")
+        function getShieldCooldown() {
+            return SHIELD_COOLDOWN / playerStats.shieldRecharge;
+        }
+
         function updateShield(deltaTime) {
             if (playerStats.shield > 0 && !isShieldReady) {
                 shieldTimer += deltaTime;
-                if (shieldTimer >= SHIELD_COOLDOWN) {
+                if (shieldTimer >= getShieldCooldown()) {
                     isShieldReady = true;
                 }
             }
@@ -2303,7 +2557,7 @@
                 return;
             }
 
-            playerHealth -= Math.max(MIN_DAMAGE_TAKEN, amount); //on prend toujours au moins MIN_DAMAGE_TAKEN
+            playerHealth -= amount;
             playerHitTimer = PLAYER_HIT_FLASH_DURATION;
             screenShakeTimer = SCREEN_SHAKE_DURATION;
             spawnShockwave(center.x, center.y, "#ff4d6d", PLAYER_RADIUS * 4);
@@ -2490,6 +2744,7 @@
                 sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
                 size: PLANET_SIZE,
                 tree: tree,
+                stats: createShooterStats(PLANET_BASE_STATS), // ses stats de tir (recalculées par computeStats)
                 fireTimer: Math.random() * PLANET_FIRE_INTERVAL, //décalé au hasard : les planètes ne tirent pas toutes en même temps
                 x: 0,
                 y: 0
@@ -2499,11 +2754,22 @@
         //Une nouvelle divinité rejoint l'orbite (achetée dans le shop)
         function unlockNextGod() {
             const tree = SKILL_TREES.find(function (tree) { return tree.isLocked; });
-            if (tree === undefined) {
+            if (tree !== undefined) {
+                unlockGod(tree);
+            }
+        }
+
+        //Ce dieu-là rejoint l'orbite (shop, ou code de triche avec son nom)
+        function unlockGod(tree) {
+            if (!tree.isLocked) {
                 return;
             }
             tree.isLocked = false;
             addPlanet(tree);
+            //Le niveau de "Nouvelle divinité" dans le shop = le nombre de dieux en orbite (utile si un code en débloque un)
+            const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
+            godItem.level = SKILL_TREES.filter(function (other) { return !other.isLocked; }).length;
+            refreshStats();
             showToast("✨ " + tree.name + " rejoint l'orbite !");
         }
 
@@ -2568,6 +2834,37 @@
             ctx.stroke();
         }
 
+        //LIENS VISIBLES : un fin trait en pointillés, de la couleur de la planète qui crée le lien.
+        //Les pointillés avancent vers la (ou les) planète(s) visée(s). Le lien "opposé" passe par le centre.
+        function drawPlanetLinks() {
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 7]);
+            ctx.lineDashOffset = -visualTime * 25;
+            for (const planet of planets) {
+                if (planet.tree.linkMode === "none") {
+                    continue;
+                }
+                const linked = getLinkedPlanets(planet);
+                ctx.beginPath();
+                if (planet.tree.linkMode === "opposite") {
+                    ctx.moveTo(planet.x, planet.y);
+                    ctx.lineTo(center.x, center.y);
+                    for (const other of linked) {
+                        ctx.lineTo(other.x, other.y);
+                    }
+                } else {
+                    for (const other of linked) {
+                        ctx.moveTo(planet.x, planet.y);
+                        ctx.lineTo(other.x, other.y);
+                    }
+                }
+                ctx.strokeStyle = hexToRgba(planet.color, 0.6);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            ctx.lineDashOffset = 0;
+        }
+
         function drawPlanets() {
             for (const planet of planets) {
                 const isHovered = planet === hoveredPlanet;
@@ -2606,7 +2903,8 @@
                 planetWasDragged = false;
                 return;
             }
-            const planet = findPlanetAt(event.offsetX, event.offsetY);
+            const point = screenToWorld(event.offsetX, event.offsetY);
+            const planet = findPlanetAt(point.x, point.y);
             if (planet !== null) {
                 openSkillTree(planet.tree);
             }
@@ -2617,7 +2915,8 @@
             if (isGameOver || isPaused) {
                 return;
             }
-            pressedPlanet = findPlanetAt(event.offsetX, event.offsetY);
+            const point = screenToWorld(event.offsetX, event.offsetY);
+            pressedPlanet = findPlanetAt(point.x, point.y);
             pressStart = { x: event.offsetX, y: event.offsetY };
             planetWasDragged = false;
         });
@@ -2628,14 +2927,15 @@
                 draggedPlanet = pressedPlanet;
                 canvas.setPointerCapture(event.pointerId); //on continue de recevoir les mouvements même si la souris sort du jeu
             }
+            const point = screenToWorld(event.offsetX, event.offsetY);
             if (draggedPlanet !== null) {
-                dragPlanetTo(event.offsetX, event.offsetY);
+                dragPlanetTo(point.x, point.y);
                 hoveredPlanet = draggedPlanet;
                 canvas.style.cursor = "grabbing";
                 return;
             }
             //Le curseur devient une main quand on survole une planète
-            const planet = findPlanetAt(event.offsetX, event.offsetY);
+            const planet = findPlanetAt(point.x, point.y);
             hoveredPlanet = planet;
             canvas.style.cursor = planet !== null ? "pointer" : "default";
         });
@@ -2645,6 +2945,7 @@
                 planetWasDragged = true; //le "click" qui suit le lâcher ne doit pas ouvrir l'arbre
                 playSound("buy");
                 draggedPlanet = null;
+                refreshStats(); //les voisines ont changé : les liens "opposé" aussi
             }
             pressedPlanet = null;
         }
@@ -2657,6 +2958,98 @@
         ///ENEMIES///
         /////////////
         const enemies = [];
+        //OPTIMISATION (pour des milliers d'ennemis) :
+        //1. Un ennemi mort n'est pas retiré tout de suite de la liste (retirer au milieu d'une liste est lent) :
+        //   il passe à alive = false, et removeDeadEnemies() fait le ménage une seule fois par pas de jeu.
+        //2. Une GRILLE découpe le terrain en cases de ENEMY_GRID_CELL pixels. Pour trouver les ennemis près d'un point
+        //   (une balle, une explosion...), on ne regarde que les cases autour de ce point, pas les 10 000 ennemis.
+        const ENEMY_GRID_CELL = 64;
+        const enemyGrid = new Map();     // numéro de case -> liste des ennemis dans cette case
+        let biggestEnemySize = 0;        // rayon du plus gros ennemi : sert de marge pour les recherches
+
+        function getCellIndex(cellX, cellY) {
+            return (cellX + 4096) * 8192 + (cellY + 4096); //un numéro unique par case
+        }
+
+        //Range chaque ennemi vivant dans sa case (une fois par pas de jeu, après leurs déplacements)
+        function rebuildEnemyGrid() {
+            for (const cell of enemyGrid.values()) {
+                cell.length = 0; //on vide les cases sans les jeter : pas besoin de recréer des listes
+            }
+            biggestEnemySize = 0;
+            for (const enemy of enemies) {
+                if (!enemy.alive) {
+                    continue;
+                }
+                const index = getCellIndex(Math.floor(enemy.x / ENEMY_GRID_CELL), Math.floor(enemy.y / ENEMY_GRID_CELL));
+                let cell = enemyGrid.get(index);
+                if (cell === undefined) {
+                    cell = [];
+                    enemyGrid.set(index, cell);
+                }
+                cell.push(enemy);
+                biggestEnemySize = Math.max(biggestEnemySize, enemy.size);
+            }
+        }
+
+        //Appelle callback(enemy) pour chaque ennemi vivant qui touche le cercle (x, y, radius).
+        //Si callback renvoie true, on s'arrête (on a trouvé ce qu'on cherchait).
+        function forEachEnemyNear(x, y, radius, callback) {
+            const reach = radius + biggestEnemySize;
+            const minCellX = Math.floor((x - reach) / ENEMY_GRID_CELL);
+            const maxCellX = Math.floor((x + reach) / ENEMY_GRID_CELL);
+            const minCellY = Math.floor((y - reach) / ENEMY_GRID_CELL);
+            const maxCellY = Math.floor((y + reach) / ENEMY_GRID_CELL);
+            for (let cellX = minCellX; cellX <= maxCellX; cellX++) {
+                for (let cellY = minCellY; cellY <= maxCellY; cellY++) {
+                    const cell = enemyGrid.get(getCellIndex(cellX, cellY));
+                    if (cell === undefined) {
+                        continue;
+                    }
+                    for (const enemy of cell) {
+                        if (!enemy.alive) {
+                            continue;
+                        }
+                        const dx = enemy.x - x;
+                        const dy = enemy.y - y;
+                        const touch = radius + enemy.size;
+                        if (dx * dx + dy * dy <= touch * touch && callback(enemy) === true) { //dx² + dy² <= r² : pas besoin de racine carrée
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        //Les ennemis vivants qui touchent le cercle (x, y, radius), dans une nouvelle liste (on peut les blesser sans risque)
+        function getEnemiesNear(x, y, radius) {
+            const found = [];
+            forEachEnemyNear(x, y, radius, function (enemy) { found.push(enemy); });
+            return found;
+        }
+
+        //Le ménage : on garde seulement les vivants, en les tassant au début de la liste (sans créer de nouvelle liste)
+        function removeDeadEnemies() {
+            let kept = 0;
+            for (let i = 0; i < enemies.length; i++) {
+                if (enemies[i].alive) {
+                    enemies[kept] = enemies[i];
+                    kept++;
+                }
+            }
+            enemies.length = kept;
+        }
+
+        //Un ennemi vivant au hasard (sauf ceux de "except"), sans parcourir toute la liste
+        function pickRandomEnemy(except) {
+            for (let tries = 0; tries < 12 && enemies.length > 0; tries++) {
+                const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+                if (enemy.alive && !except.includes(enemy)) {
+                    return enemy;
+                }
+            }
+            return null;
+        }
         //Fréquence d'apparition : elle augmente petit à petit pendant la partie
         const ENEMY_SPAWN_INTERVAL_START = 1.6;  // au début : un ennemi toutes les X secondes
         const ENEMY_SPAWN_INTERVAL_MIN = 0.25;   // jamais plus rapide que ça
@@ -2673,11 +3066,27 @@
 
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
-        const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes)
-        const TIME_SKIP_KEY_SECONDS = 30;          // ce que fait la touche T
+        const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
+
+        //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut passer que 10 s à la fois, et pas accélérer
+        const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
+
+        function getUnlockedSkipOptions() {
+            return TIME_SKIP_OPTIONS.slice(0, 1 + timeUpgrades.skip); //slice(0, n) = les n premiers
+        }
+
+        function getUnlockedSpeeds() {
+            return GAME_SPEED_OPTIONS.slice(0, 1 + timeUpgrades.speed);
+        }
+
+        //Le plus grand saut débloqué (pour la touche T)
+        function getBiggestSkip() {
+            const options = getUnlockedSkipOptions();
+            return options[options.length - 1];
+        }
 
         function skipTime(seconds) {
-            if (isGameOver || isPaused) {
+            if (isGameOver || isPaused || !getUnlockedSkipOptions().includes(seconds)) {
                 return;
             }
             let remaining = seconds;
@@ -2707,16 +3116,23 @@
             checkBossSchedule(); //un super ennemi dont l'heure est passée pendant le saut arrive aussitôt (son annonce remplace le message)
         }
 
-        //Crée un bouton orange par option de TIME_SKIP_OPTIONS
+        //Un bouton orange par option de TIME_SKIP_OPTIONS (verrouillé tant qu'il n'est pas acheté dans le shop)
         const skipButtons = document.getElementById("skipButtons");
-        for (const seconds of TIME_SKIP_OPTIONS) {
-            const button = document.createElement("button");
-            button.className = "skipButton";
-            button.textContent = "⏩ +" + seconds + " s";
-            button.title = "Passer " + seconds + " secondes";
-            button.addEventListener("click", function () { skipTime(seconds); });
-            skipButtons.appendChild(button);
+
+        function renderSkipButtons() {
+            skipButtons.innerHTML = "";
+            for (const seconds of TIME_SKIP_OPTIONS) {
+                const isUnlocked = getUnlockedSkipOptions().includes(seconds);
+                const button = document.createElement("button");
+                button.className = "skipButton";
+                button.disabled = !isUnlocked;
+                button.textContent = (isUnlocked ? "⏩ +" : "🔒 +") + seconds + " s";
+                button.title = isUnlocked ? "Passer " + seconds + " secondes" : "À débloquer dans le shop : « Sauter dans le temps »";
+                button.addEventListener("click", function () { skipTime(seconds); });
+                skipButtons.appendChild(button);
+            }
         }
+        renderSkipButtons();
 
         //VITESSE DU JEU : x1, x2, x4... (multiplie le temps qui passe à chaque image)
         const GAME_SPEED_OPTIONS = [1, 2, 4];
@@ -2726,19 +3142,24 @@
         function renderSpeedButtons() {
             speedButtons.innerHTML = "";
             for (const speed of GAME_SPEED_OPTIONS) {
+                const isUnlocked = getUnlockedSpeeds().includes(speed);
                 const button = document.createElement("button");
                 button.className = "speedButton";
                 if (speed === gameSpeed) {
                     button.classList.add("active");
                 }
-                button.textContent = "x" + speed;
-                button.title = "Vitesse du jeu x" + speed;
+                button.disabled = !isUnlocked;
+                button.textContent = (isUnlocked ? "x" : "🔒 x") + speed;
+                button.title = isUnlocked ? "Vitesse du jeu x" + speed : "À débloquer dans le shop : « Accélérer le temps »";
                 button.addEventListener("click", function () { setGameSpeed(speed); });
                 speedButtons.appendChild(button);
             }
         }
 
         function setGameSpeed(speed) {
+            if (!getUnlockedSpeeds().includes(speed)) {
+                return;
+            }
             gameSpeed = speed;
             renderSpeedButtons();
             updateTimeMenuButton();
@@ -2805,15 +3226,25 @@
 
         //TYPES (éléments)
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minHealth: 2, maxHealth: 4, gold: 1, xp: 1 },
-            fire: { color: "#ff5533", speed: 90, minHealth: 1, maxHealth: 3, gold: 1, xp: 1 },
-            plant: { color: "#55dd55", speed: 35, minHealth: 4, maxHealth: 7, gold: 1, xp: 1 },
-            air: { color: "#e0f7ff", speed: 70, minHealth: 1, maxHealth: 2, gold: 1, xp: 1 }
+            water: { color: "#4da6ff", speed: 50, minHealth: 1.4, maxHealth: 2.2, gold: 1, xp: 1 },
+            fire: { color: "#ff5533", speed: 90, minHealth: 0.8, maxHealth: 1.2, gold: 1, xp: 1 },
+            plant: { color: "#55dd55", speed: 35, minHealth: 2.2, maxHealth: 3.4, gold: 1, xp: 1 },
+            air: { color: "#e0f7ff", speed: 70, minHealth: 0.6, maxHealth: 1, gold: 1, xp: 1 }
         };
+
+        //VIE QUI MONTE : la vie des ennemis (ci-dessus = au tout début) est multipliée par ce nombre, qui grandit avec le temps.
+        //Ex : 1:00 -> x1.44, 5:00 -> x4, 10:00 -> x9, 20:00 -> x25
+        const ENEMY_HEALTH_GROWTH = 0.4;            // +40% par minute...
+        const ENEMY_HEALTH_GROWTH_SQUARED = 0.04;   // ...plus une petite part qui accélère (minutes au carré)
+
+        function getEnemyHealthScale() {
+            const minutes = runTime / 60;
+            return 1 + ENEMY_HEALTH_GROWTH * minutes + ENEMY_HEALTH_GROWTH_SQUARED * minutes * minutes;
+        }
 
         //TAILLE : plus un ennemi a de vie, plus il est gros (et il rétrécit quand on l'abîme)
         const ENEMY_BASE_SIZE = 4;           // taille d'un ennemi à 0 PV
-        const ENEMY_SIZE_PER_HEALTH = 2.5;   // pixels de rayon en plus par point de vie
+        const ENEMY_SIZE_PER_HEALTH = 4;     // pixels de rayon en plus par point de vie "de départ" (la taille ne grossit pas avec le temps)
         const ENEMY_SHRINK_SPEED = 10;       // vitesse à laquelle il rétrécit jusqu'à sa nouvelle taille
 
         function getEnemyTargetSize(health) {
@@ -2825,8 +3256,8 @@
             return Math.floor(randomBetween(min, max + 1));
         }
 
-        //DÉGÂTS : un ennemi qui touche le joueur fait (ses PV restants / ENEMY_DAMAGE_DIVIDER) dégâts
-        const ENEMY_DAMAGE_DIVIDER = 10;
+        //DÉGÂTS : un ennemi qui touche le joueur lui fait autant de dégâts que sa vie restante (1 PV restant = 1 dégât).
+        //Les virgules comptent (0.4 PV restant = 0.4 dégât), même si la vie du joueur est affichée sans virgule.
 
         //MOVEMENTS
         const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
@@ -3031,18 +3462,26 @@
 
         //Distance entre le centre et le bord de l'écran dans cette direction, + une marge (pour naître juste hors de l'écran).
         //Avant, tous les ennemis partaient d'un grand cercle (la diagonale) : en haut et en bas, ils marchaient longtemps sans être visibles.
+        //Avec la caméra dézoomée, l'écran montre plus loin : on prend le zoom le plus petit (actuel ou visé) pour naître hors de l'écran.
+        //Si la portée dépasse CAMERA_MAX_RANGE, les ennemis naissent n'importe où entre le bord de l'écran et CAMERA_MAX_RANGE du centre.
         function getSpawnDistance(angle, margin) {
-            const toSide = (canvas.width / 2) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
-            const toTopOrBottom = (canvas.height / 2) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
-            return Math.min(toSide, toTopOrBottom) + margin; //le premier bord touché
+            const zoom = Math.min(cameraZoom, getTargetCameraZoom());
+            const toSide = (canvas.width / 2 / zoom) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
+            const toTopOrBottom = (canvas.height / 2 / zoom) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
+            const outsideScreen = Math.min(toSide, toTopOrBottom) + margin; //le premier bord touché
+            if (playerStats.range > CAMERA_MAX_RANGE) {
+                return randomBetween(Math.min(CAMERA_MAX_RANGE, outsideScreen), outsideScreen);
+            }
+            return outsideScreen;
         }
 
         //forcedMovement (optionnel) : impose le mouvement (pour le 1er ennemi d'un mouvement qui vient d'être débloqué)
         function spawnEnemy(forcedMovement) {
             const type = pickRandom(Object.keys(ENEMY_TYPES));
             const stats = ENEMY_TYPES[type];
-            const health = randomInt(stats.minHealth, stats.maxHealth);
-            const size = getEnemyTargetSize(health);
+            const healthScale = getEnemyHealthScale();
+            const health = randomBetween(stats.minHealth, stats.maxHealth) * healthScale;
+            const size = getEnemyTargetSize(health / healthScale); //la taille dépend de la vie "de départ", pas du temps
             const angle = Math.random() * Math.PI * 2;
             const startDistance = getSpawnDistance(angle, size + ENEMY_WAVE_AMPLITUDE * 2);
             const unlockedMovements = getUnlockedMovements();
@@ -3054,6 +3493,8 @@
             }
 
             enemies.push({
+                alive: true,            // false = mort (retiré de la liste au prochain ménage)
+                healthScale: healthScale,
                 type: type,
                 movement: movement,
                 style: createMovementStyle(movement), // les réglages au hasard de SON mouvement (null si tout droit)
@@ -3121,6 +3562,8 @@
             const angle = Math.random() * Math.PI * 2;
             const startDistance = getSpawnDistance(angle, boss.size + ENEMY_WAVE_AMPLITUDE);
             enemies.push({
+                alive: true,
+                healthScale: 1,
                 isBoss: true,
                 boss: boss,
                 type: boss.element,
@@ -3197,22 +3640,23 @@
             checkMovementUnlocks();
 
             //MOVE
-            for (let i = enemies.length - 1; i >= 0; i--) {
-                const enemy = enemies[i];
-
+            for (const enemy of enemies) {
+                if (!enemy.alive) {
+                    continue;
+                }
                 const statusSpeed = updateEnemyStatus(enemy, deltaTime); //brûlure, ralenti, gelé
-                if (!enemies.includes(enemy)) {
+                if (!enemy.alive) {
                     continue; //il vient de mourir de sa brûlure
                 }
                 const moveTime = deltaTime * Math.abs(statusSpeed); //abs = sans le signe : un ennemi qui recule continue son zigzag
                 enemy.time += moveTime; //gelé = son mouvement (zigzag...) s'arrête aussi
-                const step = enemy.style ? getMovementStep(enemy, moveTime) : { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
+                const step = enemy.style ? getMovementStep(enemy, moveTime) : STRAIGHT_STEP;
                 enemy.distance -= enemy.speed * step.speedFactor * statusSpeed * deltaTime;
                 enemy.distance = Math.min(enemy.distance, enemy.startDistance); //il ne recule pas plus loin que son point de départ
 
                 if (enemy.distance <= PLAYER_RADIUS + enemy.size) {
-                    enemies.splice(i, 1);
-                    damagePlayer(enemy.health / ENEMY_DAMAGE_DIVIDER);
+                    enemy.alive = false;
+                    damagePlayer(Math.max(0, enemy.health)); //1 PV restant = 1 dégât
                     if (isGameOver) {
                         return; //la partie est finie, on arrête de bouger les ennemis
                     }
@@ -3233,13 +3677,22 @@
                 enemy.x = newX;
                 enemy.y = newY;
             }
+            rebuildEnemyGrid(); //les ennemis ont bougé : on les range dans leur nouvelle case
         }
+
+        //Un ennemi qui va tout droit : pas d'écart (un seul objet partagé, pour ne pas en créer 10 000 par image)
+        const STRAIGHT_STEP = { sideOffset: 0, speedFactor: 1, radialOffset: 0 };
 
         const ENEMY_HIT_FLASH_DURATION = 0.08;
 
         //Épaisseur d'un ennemi : proportionnelle à sa taille
         function getEnemyDepth(enemy) {
             return Math.max(2, enemy.size * 0.35);
+        }
+
+        //A-t-il un anneau de statut (charmé, affaibli, empoisonné, gelé, ralenti) à dessiner autour de lui ?
+        function hasStatusRing(enemy) {
+            return enemy.charmTimer > 0 || enemy.weakTimer > 0 || enemy.poisonTimer > 0 || enemy.freezeTimer > 0 || enemy.slowTimer > 0;
         }
 
         //Nom + barre de vie au-dessus d'un super ennemi
@@ -3262,22 +3715,86 @@
             ctx.fillText(enemy.boss.name, enemy.x, y - 6);
         }
 
+        //Un ennemi "rond" (qui va tout droit, pas un super ennemi) : ce sont les plus nombreux, dessinés par paquets
+        function isRoundEnemy(enemy) {
+            return !enemy.isBoss && enemy.movement === "straight";
+        }
+
+        //SPRITES : un ennemi rond (épaisseur + dessus) est une petite image dessinée UNE fois par couleur et par taille,
+        //puis simplement recopiée (drawImage) à chaque image : c'est la façon la plus rapide de dessiner des milliers de ronds.
+        const enemySprites = new Map();      // "couleur|couleur de côté|rayon" -> image
+        const shadowSprites = new Map();     // "couleur d'ombre|rayon" -> image
+        const SPRITE_PADDING = 2;            // marge autour du dessin dans l'image
+
+        //Le rayon arrondi au pixel : une image par pixel de rayon suffit
+        function getSpriteRadius(size) {
+            return Math.max(1, Math.round(size));
+        }
+
+        function getRoundEnemySprite(color, sideColor, radius) {
+            const key = color + "|" + sideColor + "|" + radius;
+            let sprite = enemySprites.get(key);
+            if (sprite === undefined) {
+                const depth = Math.max(2, radius * 0.35);
+                sprite = document.createElement("canvas");
+                sprite.width = radius * 2 + SPRITE_PADDING * 2;
+                sprite.height = Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2;
+                const spriteCtx = sprite.getContext("2d");
+                const middle = radius + SPRITE_PADDING;
+                fillStretchedCircle(spriteCtx, middle, middle, radius, 0, depth, sideColor); //l'épaisseur
+                spriteCtx.beginPath();
+                spriteCtx.arc(middle, middle, radius, 0, Math.PI * 2);                     //le dessus
+                spriteCtx.fillStyle = color;
+                spriteCtx.fill();
+                enemySprites.set(key, sprite);
+            }
+            return sprite;
+        }
+
+        function getShadowSprite(radius) {
+            const key = SHADOW_COLOR + "|" + radius; //la couleur d'ombre change avec le thème
+            let sprite = shadowSprites.get(key);
+            if (sprite === undefined) {
+                const depth = Math.max(2, radius * 0.35);
+                const shadow = shadowVector(radius * 2.2);
+                sprite = document.createElement("canvas");
+                sprite.width = Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2;
+                sprite.height = Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2;
+                const middle = radius + SPRITE_PADDING;
+                fillStretchedCircle(sprite.getContext("2d"), middle, middle + depth, radius, shadow.x, shadow.y, SHADOW_COLOR);
+                shadowSprites.set(key, sprite);
+            }
+            return sprite;
+        }
+
         function drawEnemies() {
+            const view = getVisibleWorldRect(60);
+            const visible = [];
             for (const enemy of enemies) {
+                if (!enemy.alive || enemy.x < view.left || enemy.x > view.right || enemy.y < view.top || enemy.y > view.bottom) {
+                    continue; //hors de l'écran : on ne le dessine pas
+                }
+                visible.push(enemy);
+                if (isRoundEnemy(enemy)) {
+                    const radius = getSpriteRadius(enemy.size);
+                    const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
+                    ctx.drawImage(getRoundEnemySprite(topColor, enemy.sideColor, radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
+                }
+            }
+
+            for (const enemy of visible) {
+                if (isRoundEnemy(enemy) && !hasStatusRing(enemy)) {
+                    continue; //déjà dessiné, et rien à ajouter autour
+                }
                 const depth = getEnemyDepth(enemy);
                 const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
 
                 if (enemy.isBoss) {
                     drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.2, 0.9);
                 }
-                const shapePoints = getEnemyShapePoints(enemy, enemy.x, enemy.y);
+                const shapePoints = isRoundEnemy(enemy) ? null : getEnemyShapePoints(enemy, enemy.x, enemy.y);
                 if (shapePoints === null) {
-                    //ROND : 1. l'épaisseur (le rond étiré vers le bas, en plus foncé), 2. le dessus
-                    fillStretchedCircle(ctx, enemy.x, enemy.y, enemy.size, 0, depth, enemy.sideColor);
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
-                    ctx.fillStyle = topColor;
-                    ctx.fill();
+                    //rond déjà dessiné avec son paquet de couleur
                 } else {
                     //AUTRES FORMES : même principe avec des points
                     fillStretchedShape(ctx, shapePoints, 0, depth, enemy.sideColor);
@@ -3339,23 +3856,44 @@
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
 
-        //Renvoie les ennemis à portée, du plus proche au plus loin
-        function findEnemiesInRange() {
-            const inRange = [];
-            for (const enemy of enemies) {
-                const distance = Math.hypot(enemy.x - center.x, enemy.y - center.y);
-                if (distance < playerStats.range) {
-                    inRange.push({ enemy: enemy, distance: distance });
-                }
+        //BALLES PAR TIR : les balles en plus partent côte à côte, comme un "mur" (pas vers d'autres ennemis)
+        const BULLET_WALL_SPACING = 10;      // écart entre deux balles du mur, en pixels
+
+        //Un tir complet de "stats.bulletCount" balles, depuis (x, y) vers "target", avec les stats de celui qui tire
+        function fireVolley(x, y, target, stats, color, effects, ringColor) {
+            //Égide d'Athéna (lien "opposé") : chance de déclencher un effet de combo au hasard sur ce tir
+            let proc = null;
+            if (stats.comboProcChance > 0 && Math.random() < stats.comboProcChance) {
+                proc = { type: pickRandom(Object.keys(EFFECT_NAMES)), shown: false };
+                effects = effects.concat([{ type: proc.type, power: 1 }]);
             }
-            inRange.sort(function (a, b) { return a.distance - b.distance; }); //trie du plus petit au plus grand
-            return inRange;
+            const dx = target.x - x;
+            const dy = target.y - y;
+            const distance = Math.hypot(dx, dy) || 1; //|| 1 : évite de diviser par 0
+            const dirX = dx / distance;
+            const dirY = dy / distance;
+            const count = Math.max(1, Math.round(stats.bulletCount));
+            for (let i = 0; i < count; i++) {
+                //Écart sur le côté (perpendiculaire à la direction du tir) : ..., -10, 0, +10, ...
+                const offset = (i - (count - 1) / 2) * BULLET_WALL_SPACING;
+                const sideX = -dirY * offset;
+                const sideY = dirX * offset;
+                //Les balles du milieu suivent la cible ; celles des bords filent tout droit, parallèles
+                const followsTarget = Math.abs(offset) <= BULLET_WALL_SPACING / 2;
+                const bullet = shootAt(followsTarget ? target : null, x + sideX, y + sideY, stats.damage, color, effects, ringColor, stats);
+                bullet.dirX = dirX;
+                bullet.dirY = dirY;
+                bullet.wallX = sideX;  //elle vise la cible + son écart, pour garder la forme du mur
+                bullet.wallY = sideY;
+                bullet.proc = proc;
+            }
         }
 
         //Tire une balle de (x, y) vers "target". Par défaut : depuis le joueur, avec ses dégâts et sa couleur.
         //effects = les effets des combos d'orbite : [{ type: "explosion", power: 1 }, ...] (vide pour les tirs normaux)
-        function shootAt(target, x = center.x, y = center.y, damage = playerStats.damage, color = BULLET_COLOR, effects = [], ringColor = null) {
-            bullets.push({
+        //stats = les stats de celui qui tire (joueur ou planète) : critique, vie par touche...
+        function shootAt(target, x = center.x, y = center.y, damage = playerStats.damage, color = BULLET_COLOR, effects = [], ringColor = null, stats = playerStats) {
+            const bullet = {
                 x: x,
                 y: y,
                 dirX: 0,
@@ -3370,35 +3908,53 @@
                 isReturning: false,
                 ringColor: ringColor,          // contour de la couleur de l'attribut emprunté (ou null)
                 pierceLeft: Math.round(COMBO_PIERCE_COUNT * getEffectPower(effects, "pierce")), // ennemis qu'elle peut encore traverser
-                alreadyHit: []                 // les ennemis déjà touchés (pour ne pas toucher 2 fois le même en traversant)
-            });
+                alreadyHit: [],                // les ennemis déjà touchés (pour ne pas toucher 2 fois le même en traversant)
+                stats: stats,                  // les stats de celui qui a tiré
+                wallX: 0,                      // écart dans le "mur" de balles
+                wallY: 0,
+                proc: null                     // effet tiré au hasard par l'Égide d'Athéna (ou null)
+            };
+            bullets.push(bullet);
+            return bullet;
         }
 
         //Une balle qui part tout droit dans une direction (angle), sans cible. except = ennemis qu'elle ne peut pas toucher
-        function shootInDirection(x, y, angle, damage, color, except) {
-            shootAt(null, x, y, damage, color);
-            const bullet = bullets[bullets.length - 1];
+        function shootInDirection(x, y, angle, damage, color, except, stats = playerStats) {
+            const bullet = shootAt(null, x, y, damage, color, [], null, stats);
             bullet.dirX = Math.cos(angle);
             bullet.dirY = Math.sin(angle);
             bullet.alreadyHit = except.slice();
         }
 
-        function hitEnemy(enemy, index, bullet) {
-            let damage = bullet.damage + playerStats.damageVs[enemy.type];
+        function hitEnemy(enemy, bullet) {
+            const stats = bullet.stats; //les stats de celui qui a tiré (joueur ou planète)
+            let damage = bullet.damage + stats.damageVs[enemy.type];
             //COUP CRITIQUE : chance = stat du joueur (shop, Héphaïstos) + combo d'orbite "crit".
             //Dégâts = x critDamage (2 = 200% au départ). Le combo "crit" ajoute aussi +100% de dégâts critiques.
             const comboCrit = getBulletEffect(bullet, "crit");
-            const critChance = playerStats.critChance + COMBO_CRIT_CHANCE * comboCrit;
+            const critChance = stats.critChance + COMBO_CRIT_CHANCE * comboCrit;
             const isCrit = Math.random() < critChance;
             if (isCrit) {
-                damage *= playerStats.critDamage + (comboCrit > 0 ? COMBO_CRIT_BONUS_DAMAGE : 0);
+                damage *= stats.critDamage + (comboCrit > 0 ? COMBO_CRIT_BONUS_DAMAGE : 0);
                 spawnShockwave(enemy.x, enemy.y, CRIT_OUTLINE_COLOR, enemy.size + 14);
             }
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
+            //Vie par touche (Déméter) et vie max par touche (Aphrodite) : c'est toujours le joueur qui en profite
+            if (stats.lifeOnHit > 0) {
+                healPlayer(stats.lifeOnHit);
+            }
+            if (stats.maxHealthOnHit > 0) {
+                gainMaxHealth(stats.maxHealthOnHit);
+            }
+            //Égide d'Athéna : le nom de l'effet tiré au hasard s'affiche au premier impact
+            if (bullet.proc !== null && !bullet.proc.shown) {
+                bullet.proc.shown = true;
+                spawnFloatingLabel(enemy.x, enemy.y - enemy.size - 16, "✨ " + EFFECT_NAMES[bullet.proc.type], ATTRIBUTES.aegis.color);
+            }
             applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
             damageEnemy(enemy, damage, "enemyHit", { color: getDamageColor(bullet.color), crit: isCrit });
             //Exécution : un ennemi normal presque mort est achevé d'un coup
-            if (getBulletEffect(bullet, "execute") > 0 && !enemy.isBoss && enemies.includes(enemy) && enemy.health <= enemy.maxHealth * COMBO_EXECUTE_THRESHOLD) {
+            if (getBulletEffect(bullet, "execute") > 0 && !enemy.isBoss && enemy.alive && enemy.health <= enemy.maxHealth * COMBO_EXECUTE_THRESHOLD) {
                 spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 10);
                 damageEnemy(enemy, enemy.health + 1, null);
             }
@@ -3407,8 +3963,7 @@
         //Enlève des PV à un ennemi, et s'occupe de sa mort (récompenses, éclats, son). sound = son si il survit (ou null)
         //hit (optionnel) = { color: couleur du nombre, crit: true si coup critique, dot: true pour les dégâts continus }
         function damageEnemy(enemy, amount, sound, hit = {}) {
-            const index = enemies.indexOf(enemy); //indexOf = sa place dans la liste (-1 s'il n'y est plus)
-            if (index === -1) {
+            if (!enemy.alive) {
                 return; //déjà mort
             }
             if (enemy.weakTimer > 0) {
@@ -3431,7 +3986,7 @@
                     spreadPoison(enemy);
                 }
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
-                enemies.splice(index, 1);
+                enemy.alive = false; //retiré de la liste au prochain ménage (removeDeadEnemies)
                 if (enemy.isBoss) {
                     onBossDefeated(enemy);
                 }
@@ -3444,15 +3999,26 @@
             }
         }
 
+        //Le premier ennemi touché par cette balle (grâce à la grille : seulement les ennemis tout près), ou null
+        function findBulletHit(bullet) {
+            let found = null;
+            forEachEnemyNear(bullet.x, bullet.y, BULLET_SIZE, function (enemy) {
+                if (bullet.alreadyHit.includes(enemy)) {
+                    return false; //déjà touché par elle : on continue à chercher
+                }
+                found = enemy;
+                return true; //trouvé : on arrête
+            });
+            return found;
+        }
+
         function updateBullets(deltaTime) {
-            //FIRE : une balle par ennemi le plus proche (s'il y a moins d'ennemis que de balles, on recommence au plus proche)
+            //FIRE : le joueur tire un "mur" de balles vers l'ennemi le plus proche
             fireTimer += deltaTime;
             if (fireTimer >= BASE_FIRE_INTERVAL / playerStats.attackSpeed) {
-                const targets = findEnemiesInRange();
-                if (targets.length > 0) {
-                    for (let i = 0; i < playerStats.bulletCount; i++) {
-                        shootAt(targets[i % targets.length].enemy);
-                    }
+                const target = findNearestEnemy(center.x, center.y, playerStats.range, []);
+                if (target !== null) {
+                    fireVolley(center.x, center.y, target, playerStats, BULLET_COLOR, [], null);
                     fireTimer = 0;
                 }
             }
@@ -3460,16 +4026,16 @@
             updatePlanetShooting(deltaTime);
 
             //MOVE & HIT
-            const maxDistance = Math.hypot(canvas.width, canvas.height) / 2;
-            const bulletSpeed = BASE_BULLET_SPEED * playerStats.bulletSpeed;
+            const maxDistance = Math.hypot(canvas.width, canvas.height) / 2 / cameraZoom + 50; //sortie de l'écran visible (avec le zoom)
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
+                const bulletSpeed = BASE_BULLET_SPEED * bullet.stats.bulletSpeed; //chaque tireur a sa vitesse de balles
 
-                //La balle suit sa cible tant qu'elle est vivante, sinon elle continue tout droit
-                if (enemies.includes(bullet.target)) {
-                    const dx = bullet.target.x - bullet.x;
-                    const dy = bullet.target.y - bullet.y;
+                //La balle suit sa cible tant qu'elle est vivante (en gardant son écart dans le mur), sinon elle continue tout droit
+                if (bullet.target !== null && bullet.target.alive) {
+                    const dx = bullet.target.x + bullet.wallX - bullet.x;
+                    const dy = bullet.target.y + bullet.wallY - bullet.y;
                     const distance = Math.hypot(dx, dy);
                     if (distance > 0) {
                         bullet.dirX = dx / distance;
@@ -3481,26 +4047,20 @@
                 bullet.y += bullet.dirY * bulletSpeed * deltaTime;
 
                 let hasHit = false;
-                for (let j = enemies.length - 1; j >= 0; j--) {
-                    const enemy = enemies[j];
-                    if (bullet.alreadyHit.includes(enemy)) {
-                        continue;
-                    }
-                    if (Math.hypot(enemy.x - bullet.x, enemy.y - bullet.y) <= enemy.size + BULLET_SIZE) {
-                        hitEnemy(enemy, j, bullet);
-                        bullet.alreadyHit.push(enemy);
-                        if (getBulletEffect(bullet, "boomerang") > 0 && !bullet.isReturning) {
-                            //Boomerang : demi-tour vers sa planète, il peut retoucher tout le monde sur le chemin du retour
-                            bullet.isReturning = true;
-                            bullet.target = null;
-                            bullet.alreadyHit = [enemy];
-                        } else if (bullet.pierceLeft > 0) {
-                            bullet.pierceLeft--; //elle traverse : elle continue tout droit au lieu de disparaître
-                            bullet.target = null;
-                        } else {
-                            hasHit = true;
-                        }
-                        break;
+                const enemy = findBulletHit(bullet);
+                if (enemy !== null) {
+                    hitEnemy(enemy, bullet);
+                    bullet.alreadyHit.push(enemy);
+                    if (getBulletEffect(bullet, "boomerang") > 0 && !bullet.isReturning) {
+                        //Boomerang : demi-tour vers sa planète, il peut retoucher tout le monde sur le chemin du retour
+                        bullet.isReturning = true;
+                        bullet.target = null;
+                        bullet.alreadyHit = [enemy];
+                    } else if (bullet.pierceLeft > 0) {
+                        bullet.pierceLeft--; //elle traverse : elle continue tout droit au lieu de disparaître
+                        bullet.target = null;
+                    } else {
+                        hasHit = true;
                     }
                 }
 
@@ -3524,27 +4084,17 @@
             }
         }
 
-        //LES PLANÈTES TIRENT AUSSI : lentement, chacune sur l'ennemi le plus proche d'elle, avec des balles de sa couleur
-        const PLANET_FIRE_INTERVAL = 1;      // un tir par seconde
-        const PLANET_DAMAGE = 1;
-        const PLANET_RANGE = 250;            // distance max (depuis la planète) pour viser
+        //LES PLANÈTES TIRENT AUSSI : chacune sur l'ennemi le plus proche d'elle, avec des balles de sa couleur et SES stats
+        //(planet.stats = PLANET_BASE_STATS + les stats de tir de son skill tree + les liens "opposé" reçus)
+        const PLANET_FIRE_INTERVAL = 1;      // un tir toutes les X secondes (divisé par la vitesse d'attaque de la planète)
 
         function updatePlanetShooting(deltaTime) {
             for (const planet of planets) {
                 planet.fireTimer += deltaTime;
-                if (planet.fireTimer < PLANET_FIRE_INTERVAL) {
+                if (planet.fireTimer < PLANET_FIRE_INTERVAL / planet.stats.attackSpeed) {
                     continue;
                 }
-                //L'ennemi le plus proche de cette planète
-                let closestEnemy = null;
-                let closestDistance = PLANET_RANGE;
-                for (const enemy of enemies) {
-                    const distance = Math.hypot(enemy.x - planet.x, enemy.y - planet.y);
-                    if (distance < closestDistance) {
-                        closestEnemy = enemy;
-                        closestDistance = distance;
-                    }
-                }
+                const closestEnemy = findNearestEnemy(planet.x, planet.y, planet.stats.range, []);
                 if (closestEnemy !== null) {
                     const combos = getPlanetCombos(planet);
                     const effects = [];
@@ -3554,7 +4104,7 @@
                         }
                     }
                     const ringColor = combos.length > 0 ? getComboColor(combos[0]) : null;
-                    shootAt(closestEnemy, planet.x, planet.y, PLANET_DAMAGE, planet.color, effects, ringColor);
+                    fireVolley(planet.x, planet.y, closestEnemy, planet.stats, planet.color, effects, ringColor);
                     planet.fireTimer = 0;
                 }
             }
@@ -3586,7 +4136,35 @@
             left: { name: "Gauche", strength: 1 },
             right: { name: "Droite", strength: 1 },
             both: { name: "Les deux côtés", strength: 1 },       // le dieu et ses 2 voisines FUSIONNENT en un attribut unique (voir FUSIONS)
-            opposite: { name: "Opposé", strength: 1.4 }
+            opposite: { name: "Opposé", strength: 1 }           // pas de combo : une STAT typique du dieu (voir OPPOSITE_BONUSES)
+        };
+
+        //LIEN "OPPOSÉ" : au lieu d'un combo, la planète envoie à travers le centre une STAT typique de son dieu.
+        //Elle va au joueur (le lien traverse le milieu) ET à la planète d'en face, sauf si elle ne sert qu'au joueur
+        //(vie, bouclier, régénération... : seul le joueur peut être touché). Clé = l'attribut du dieu qui crée le lien.
+        const OPPOSITE_BONUSES = {
+            fire: { name: "Forge", description: "+1 dégât par balle", effects: [{ stat: "damage", value: 1 }] },
+            water: { name: "Marée protectrice", description: "un bouclier qui bloque un coup, et se recharge 50% plus vite", centerOnly: true, effects: [{ stat: "shield", value: 1 }, { stat: "shieldRecharge", value: 0.5 }] },
+            plant: { name: "Sève", description: "+0.03 PV pour toi à chaque balle qui touche", effects: [{ stat: "lifeOnHit", value: 0.03 }] },
+            air: { name: "Vent arrière", description: "+25% de vitesse d'attaque", effects: [{ stat: "attackSpeed", value: 0.25 }] },
+            light: { name: "Clarté", description: "+10% de chance de coup critique", effects: [{ stat: "critChance", value: 0.1 }] },
+            moon: { name: "Œil de la chasseresse", description: "+60 de portée", effects: [{ stat: "range", value: 60 }] },
+            aegis: { name: "Stratégie", description: "15% de chance, à chaque tir, de déclencher un effet de combo au hasard", effects: [{ stat: "comboProcChance", value: 0.15 }] },
+            thunder: { name: "Colère de Zeus", description: "+50% de dégâts critiques", effects: [{ stat: "critDamage", value: 0.5 }] },
+            war: { name: "Soif de sang", description: "+0.5 PV pour toi à chaque ennemi tué", centerOnly: true, effects: [{ stat: "lifeOnKill", value: 0.5 }] },
+            love: { name: "Charme durable", description: "+0.001 PV max pour toi à chaque balle qui touche", effects: [{ stat: "maxHealthOnHit", value: 0.001 }] },
+            swift: { name: "Messager", description: "+50% de vitesse des balles", effects: [{ stat: "bulletSpeed", value: 0.5 }] },
+            hearth: { name: "Foyer", description: "+0.15 PV régénérés par seconde pour toi", centerOnly: true, effects: [{ stat: "regen", value: 0.15 }] }
+        };
+
+        //Le nom de chaque effet de combo (pour l'Égide d'Athéna, qui en déclenche un au hasard)
+        const EFFECT_NAMES = {
+            explosion: "Explosion", slowArea: "Vapeur", burn: "Brûlure", burnArea: "Incendie", pierce: "Perforation", crit: "Critique",
+            freeze: "Gel", freezeArea: "Blizzard", root: "Racines", rootArea: "Ronces", heal: "Soin", knockback: "Recul", knockbackArea: "Onde de choc",
+            slow: "Ralenti", split: "Division", split3: "Prisme", chain: "Rebond", chain3: "Orage", weaken: "Affaiblissement", poison: "Poison",
+            vortex: "Vortex", meteor: "Météore", shieldCharge: "Recharge du bouclier", execute: "Exécution", fireZone: "Braises",
+            poisonZone: "Flaque toxique", mine: "Graine explosive", blackhole: "Trou noir", nova: "Nova", echo: "Écho", confuse: "Confusion",
+            rewind: "Retour en arrière", thunder: "Foudre", bleed: "Saignement", charm: "Charme", boomerang: "Boomerang"
         };
 
         //LES COMBOS : la clé = les 2 attributs dans l'ordre alphabétique, reliés par "+" (voir getComboKey)
@@ -3981,6 +4559,9 @@
         //Les combos actifs d'une planète : [{ attribute, partner, combo, strength, fusion }]
         function getPlanetCombos(planet) {
             const result = [];
+            if (planet.tree.linkMode === "opposite") {
+                return result; //le lien "opposé" ne fait pas de combo : il donne une stat (voir OPPOSITE_BONUSES)
+            }
             const linked = getLinkedPlanets(planet);
             //LES DEUX CÔTÉS : le dieu et ses 2 voisines fusionnent en un attribut unique (un seul effet spécial)
             if (planet.tree.linkMode === "both" && linked.length === 2) {
@@ -4018,12 +4599,23 @@
         //L'ennemi le plus proche de (x, y), sauf ceux de la liste "except", à moins de maxDistance
         function findNearestEnemy(x, y, maxDistance, except) {
             let nearest = null;
-            let nearestDistance = maxDistance;
-            for (const enemy of enemies) {
-                const distance = Math.hypot(enemy.x - x, enemy.y - y);
-                if (distance < nearestDistance && !except.includes(enemy)) {
+            let nearestDistanceSquared = maxDistance * maxDistance; //on compare des distances au carré : pas besoin de racine carrée
+            const check = function (enemy) {
+                const dx = enemy.x - x;
+                const dy = enemy.y - y;
+                const distanceSquared = dx * dx + dy * dy;
+                if (distanceSquared < nearestDistanceSquared && !except.includes(enemy)) {
                     nearest = enemy;
-                    nearestDistance = distance;
+                    nearestDistanceSquared = distanceSquared;
+                }
+            };
+            if (maxDistance <= 400) {
+                forEachEnemyNear(x, y, maxDistance, check); //petite zone : la grille va plus vite
+            } else {
+                for (const enemy of enemies) { //grande zone : on regarde tout le monde une fois
+                    if (enemy.alive) {
+                        check(enemy);
+                    }
                 }
             }
             return nearest;
@@ -4040,18 +4632,16 @@
                 const radius = COMBO_EXPLOSION_RADIUS * Math.sqrt(power("explosion"));
                 spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.fire.color, radius);
                 spawnParticles(enemy.x, enemy.y, ATTRIBUTES.fire.color, 10, 260);
-                for (const other of enemies.slice()) { //slice() = une copie : la liste peut changer si des ennemis meurent
-                    if (other !== enemy && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= radius + other.size) {
+                for (const other of getEnemiesNear(enemy.x, enemy.y, radius)) {
+                    if (other !== enemy) {
                         damageEnemy(other, bullet.damage * COMBO_EXPLOSION_DAMAGE * power("explosion"), null, { color: DAMAGE_COLORS.fire });
                     }
                 }
             }
             if (power("slowArea") > 0) {
                 spawnShockwave(enemy.x, enemy.y, "#d8eefc", COMBO_EXPLOSION_RADIUS);
-                for (const other of enemies) {
-                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
-                        other.slowTimer = Math.max(other.slowTimer || 0, COMBO_SLOW_DURATION * power("slowArea"));
-                    }
+                for (const other of getEnemiesNear(enemy.x, enemy.y, COMBO_EXPLOSION_RADIUS)) {
+                    other.slowTimer = Math.max(other.slowTimer || 0, COMBO_SLOW_DURATION * power("slowArea"));
                 }
             }
             if (power("burn") > 0) {
@@ -4076,7 +4666,7 @@
             if (power("chain") > 0) {
                 const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE, bullet.alreadyHit.concat([enemy]));
                 if (next !== null) {
-                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE * power("chain"), bullet.color, [], ATTRIBUTES.light.color);
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE * power("chain"), bullet.color, [], ATTRIBUTES.light.color, bullet.stats);
                 }
             }
             if (power("chain3") > 0) { //Orage : en plus du 1er rebond, 2 autres éclairs
@@ -4086,14 +4676,14 @@
                     if (next === null) {
                         break;
                     }
-                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE, bullet.color, [], ATTRIBUTES.light.color);
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_CHAIN_DAMAGE, bullet.color, [], ATTRIBUTES.light.color, bullet.stats);
                     except = except.concat([next]);
                 }
             }
             if (power("split3") > 0) { //Prisme : une 3e balle en plus des 2 graines
                 const next = findNearestEnemy(enemy.x, enemy.y, COMBO_CHAIN_RANGE * 1.5, bullet.alreadyHit.concat([enemy]));
                 if (next !== null) {
-                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE, bullet.ringColor || bullet.color);
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE, bullet.ringColor || bullet.color, [], null, bullet.stats);
                 }
             }
             if (power("weaken") > 0) {
@@ -4103,44 +4693,37 @@
                 poisonEnemy(enemy, bullet.damage * COMBO_POISON_DPS * power("poison"));
             }
             if (power("burnArea") > 0) {
-                for (const other of enemies) {
-                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS * 1.4 + other.size) {
-                        other.burnTimer = COMBO_BURN_DURATION;
-                        other.burnDps = Math.max(other.burnDps || 0, bullet.damage * COMBO_BURN_DPS);
-                    }
+                for (const other of getEnemiesNear(enemy.x, enemy.y, COMBO_EXPLOSION_RADIUS * 1.4)) {
+                    other.burnTimer = COMBO_BURN_DURATION;
+                    other.burnDps = Math.max(other.burnDps || 0, bullet.damage * COMBO_BURN_DPS);
                 }
             }
             if (power("freezeArea") > 0 || power("rootArea") > 0) {
                 const duration = power("freezeArea") > 0 ? COMBO_FREEZE_AREA_DURATION : COMBO_ROOT_DURATION;
                 spawnShockwave(enemy.x, enemy.y, power("freezeArea") > 0 ? "#9be8ff" : ATTRIBUTES.plant.color, COMBO_EXPLOSION_RADIUS);
-                for (const other of enemies) {
-                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
-                        other.freezeTimer = Math.max(other.freezeTimer || 0, duration);
-                    }
+                for (const other of getEnemiesNear(enemy.x, enemy.y, COMBO_EXPLOSION_RADIUS)) {
+                    other.freezeTimer = Math.max(other.freezeTimer || 0, duration);
                 }
             }
             if (power("knockbackArea") > 0) {
                 spawnShockwave(enemy.x, enemy.y, "#ffffff", COMBO_EXPLOSION_RADIUS);
-                for (const other of enemies) {
-                    if (Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_EXPLOSION_RADIUS + other.size) {
-                        other.distance = Math.min(other.startDistance, other.distance + COMBO_KNOCKBACK * power("knockbackArea"));
-                    }
+                for (const other of getEnemiesNear(enemy.x, enemy.y, COMBO_EXPLOSION_RADIUS)) {
+                    other.distance = Math.min(other.startDistance, other.distance + COMBO_KNOCKBACK * power("knockbackArea"));
                 }
             }
             if (power("vortex") > 0) {
                 //Les ennemis autour se rapprochent de l'impact : on rapproche leur distance ET leur angle de ceux de la cible
                 spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.water.color, COMBO_VORTEX_RADIUS);
-                for (const other of enemies) {
-                    if (other !== enemy && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= COMBO_VORTEX_RADIUS) {
+                for (const other of getEnemiesNear(enemy.x, enemy.y, COMBO_VORTEX_RADIUS)) {
+                    if (other !== enemy) {
                         other.distance += (enemy.distance - other.distance) * COMBO_VORTEX_PULL;
                         other.angle += wrapAngle(enemy.angle - other.angle) * COMBO_VORTEX_PULL;
                     }
                 }
             }
             if (power("meteor") > 0) {
-                const others = enemies.filter(function (other) { return other !== enemy; });
-                if (others.length > 0) {
-                    const target = pickRandom(others);
+                const target = pickRandomEnemy([enemy]);
+                if (target !== null) {
                     spawnShockwave(target.x, target.y, ATTRIBUTES.fire.color, target.size + 30);
                     spawnParticles(target.x, target.y, "#ffb347", 14, 280);
                     damageEnemy(target, bullet.damage * COMBO_METEOR_DAMAGE * power("meteor"), "enemyHit", { color: DAMAGE_COLORS.fire });
@@ -4162,7 +4745,7 @@
                 //6 éclats tout droit, dans toutes les directions (sans cible)
                 for (let i = 0; i < COMBO_NOVA_COUNT; i++) {
                     const angle = Math.PI * 2 / COMBO_NOVA_COUNT * i;
-                    shootInDirection(enemy.x, enemy.y, angle, bullet.damage * COMBO_NOVA_DAMAGE, ATTRIBUTES.fire.color, [enemy]);
+                    shootInDirection(enemy.x, enemy.y, angle, bullet.damage * COMBO_NOVA_DAMAGE, ATTRIBUTES.fire.color, [enemy], bullet.stats);
                 }
             }
             if (power("echo") > 0) {
@@ -4177,9 +4760,13 @@
             }
             if (power("thunder") > 0) {
                 //La foudre tombe du ciel sur des ennemis au hasard, n'importe où sur l'écran
-                const others = enemies.filter(function (other) { return other !== enemy; });
-                for (let i = 0; i < COMBO_THUNDER_TARGETS * power("thunder") && others.length > 0; i++) {
-                    const target = others.splice(Math.floor(Math.random() * others.length), 1)[0]; //on le retire de la liste : pas 2 fois le même
+                const struck = [enemy];
+                for (let i = 0; i < COMBO_THUNDER_TARGETS * power("thunder"); i++) {
+                    const target = pickRandomEnemy(struck);
+                    if (target === null) {
+                        break;
+                    }
+                    struck.push(target); //pas 2 fois le même
                     lightningBolts.push({ x: target.x, y: target.y, endTime: performance.now() + 180 });
                     spawnParticles(target.x, target.y, ATTRIBUTES.thunder.color, 8, 200);
                     damageEnemy(target, bullet.damage * COMBO_THUNDER_DAMAGE, "enemyHit", { color: DAMAGE_COLORS.thunder });
@@ -4202,7 +4789,7 @@
                     if (next === null) {
                         break;
                     }
-                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE * power("split"), ATTRIBUTES.plant.color);
+                    shootAt(next, enemy.x, enemy.y, bullet.damage * COMBO_SPLIT_DAMAGE * power("split"), ATTRIBUTES.plant.color, [], null, bullet.stats);
                     except = except.concat([next]);
                 }
             }
@@ -4214,11 +4801,7 @@
                 const hazard = hazards[i];
                 hazard.timer -= deltaTime;
                 let isUsed = false;
-                for (const enemy of enemies.slice()) {
-                    const distance = Math.hypot(enemy.x - hazard.x, enemy.y - hazard.y);
-                    if (distance > hazard.radius + enemy.size) {
-                        continue;
-                    }
+                for (const enemy of getEnemiesNear(hazard.x, hazard.y, hazard.radius)) {
                     if (hazard.type === "fire") {
                         enemy.burnTimer = Math.max(enemy.burnTimer || 0, 0.5);
                         enemy.burnDps = Math.max(enemy.burnDps || 0, hazard.dps);
@@ -4240,10 +4823,8 @@
                 if (isUsed) {
                     spawnShockwave(hazard.x, hazard.y, hazard.color, COMBO_EXPLOSION_RADIUS);
                     spawnParticles(hazard.x, hazard.y, hazard.color, 12, 240);
-                    for (const enemy of enemies.slice()) {
-                        if (Math.hypot(enemy.x - hazard.x, enemy.y - hazard.y) <= COMBO_EXPLOSION_RADIUS + enemy.size) {
-                            damageEnemy(enemy, hazard.damage, null, { color: getDamageColor(hazard.color) });
-                        }
+                    for (const enemy of getEnemiesNear(hazard.x, hazard.y, COMBO_EXPLOSION_RADIUS)) {
+                        damageEnemy(enemy, hazard.damage, null, { color: getDamageColor(hazard.color) });
                     }
                 }
                 if (isUsed || hazard.timer <= 0) {
@@ -4254,7 +4835,7 @@
                 const echo = echoes[i];
                 echo.timer -= deltaTime;
                 if (echo.timer <= 0) {
-                    if (enemies.includes(echo.enemy)) {
+                    if (echo.enemy.alive) {
                         spawnShockwave(echo.enemy.x, echo.enemy.y, echo.color, echo.enemy.size + 12);
                         damageEnemy(echo.enemy, echo.damage, "enemyHit", { color: getDamageColor(echo.color) });
                     }
@@ -4275,10 +4856,11 @@
                 }
                 ctx.globalAlpha = Math.min(1, timeLeft / 0.1);
                 ctx.beginPath();
-                ctx.moveTo(bolt.x + (Math.random() - 0.5) * 60, -10);
+                const top = getVisibleWorldRect(10).top; //le haut de l'écran (avec le zoom)
+                ctx.moveTo(bolt.x + (Math.random() - 0.5) * 60, top);
                 const steps = 6;
                 for (let k = 1; k <= steps; k++) {
-                    const y = -10 + (bolt.y + 10) * k / steps;
+                    const y = top + (bolt.y - top) * k / steps;
                     const jitter = k === steps ? 0 : (Math.random() - 0.5) * 30; //le dernier point tombe pile sur l'ennemi
                     ctx.lineTo(bolt.x + jitter, y);
                 }
@@ -4366,7 +4948,7 @@
                     spawnParticles(enemy.x, enemy.y - enemy.size / 2, "#9be22d", 1, 30); //petites bulles vertes
                 }
                 damageEnemy(enemy, enemy.poisonDps * deltaTime, null, { color: DAMAGE_COLORS.plant, dot: true });
-                if (!enemies.includes(enemy)) {
+                if (!enemy.alive) {
                     return 0;
                 }
             }
@@ -4384,7 +4966,7 @@
                     spawnParticles(enemy.x, enemy.y + enemy.size / 2, ATTRIBUTES.war.color, 1, 30); //gouttes rouges
                 }
                 damageEnemy(enemy, enemy.bleedDps * deltaTime, null, { color: DAMAGE_COLORS.war, dot: true });
-                if (!enemies.includes(enemy)) {
+                if (!enemy.alive) {
                     return 0;
                 }
                 if (enemy.bleedTimer <= 0) {
@@ -4394,8 +4976,8 @@
             if (enemy.charmTimer > 0 && !(enemy.freezeTimer > 0)) {
                 //Charmé : il repart en arrière et blesse les ennemis qu'il touche
                 enemy.charmTimer -= deltaTime;
-                for (const other of enemies.slice()) {
-                    if (other !== enemy && !(other.charmTimer > 0) && Math.hypot(other.x - enemy.x, other.y - enemy.y) <= other.size + enemy.size) {
+                for (const other of getEnemiesNear(enemy.x, enemy.y, enemy.size)) {
+                    if (other !== enemy && !(other.charmTimer > 0)) {
                         damageEnemy(other, COMBO_CHARM_DPS * deltaTime, null, { color: DAMAGE_COLORS.love, dot: true });
                     }
                 }
@@ -5474,15 +6056,52 @@
         const treeBonusArea = document.getElementById("treeBonusArea");
         const orbitLinkArea = document.getElementById("orbitLinkArea");
         let currentTree = null;
+        let lastOpenedTree = null;      // le dernier arbre ouvert (la touche S le rouvre)
+        let justUnlockedNode = null;    // la compétence qu'on vient d'acheter (pour l'animation)
+        const godTabs = document.getElementById("godTabs");
+
+        //ONGLETS : un bouton par dieu, pour passer d'un arbre à l'autre (même ceux pas encore en orbite, en "aperçu")
+        function renderGodTabs() {
+            godTabs.innerHTML = "";
+            for (const tree of SKILL_TREES) {
+                const tab = createElementWithText("button", "godTab" + (tree === currentTree ? " active" : "") + (tree.isLocked ? " locked" : ""), "");
+                tab.style.setProperty("--god-color", tree.color);
+                tab.appendChild(createElementWithText("span", "godTabIcon", ""));
+                tab.appendChild(document.createTextNode((tree.isLocked ? "🔒 " : "") + tree.name));
+                tab.title = tree.isLocked ? tree.name + " : pas encore en orbite (aperçu)" : "Voir le skill tree de " + tree.name;
+                tab.addEventListener("click", function () {
+                    if (tree !== currentTree) {
+                        openSkillTree(tree);
+                    }
+                });
+                godTabs.appendChild(tab);
+            }
+        }
+
+        //Touche S : ouvre le dernier arbre vu (ou celui de la 1re planète), ou ferme la fenêtre
+        function toggleSkillTreeWindow() {
+            if (isGameOver || isSettingsOpen) {
+                return;
+            }
+            if (currentTree !== null) {
+                closeSkillTree();
+                return;
+            }
+            openSkillTree(lastOpenedTree || (planets.length > 0 ? planets[0].tree : SKILL_TREES[0]));
+        }
 
         function openSkillTree(tree) {
+            const wasOpen = currentTree !== null;
             currentTree = tree;
+            lastOpenedTree = tree;
             updatePause();
-            playSound("menuOpen");
+            playSound(wasOpen ? "click" : "menuOpen");
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
+            skillTreePanel.classList.toggle("treeLocked", tree.isLocked);  //dieu pas encore en orbite : arbre sombre
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
-            treeTitle.textContent = tree.name;
+            treeTitle.textContent = (tree.isLocked ? "🔒 " : "") + tree.name;
+            renderGodTabs();
             renderOrbitLinks(tree);
             showNodeInfoHint();
             renderSkillTree();
@@ -5511,6 +6130,10 @@
             bulletSpeed: function (value) { return ["Vitesse des balles", "+" + formatNumber(value * 100) + "%"]; },
             critChance: function (value) { return ["Chance de critique", "+" + formatNumber(value * 100) + "%"]; },
             critDamage: function (value) { return ["Dégâts critiques", "+" + formatNumber(value * 100) + "%"]; },
+            lifeOnHit: function (value) { return ["Vie par touche", "+" + formatNumber(value)]; },
+            maxHealthOnHit: function (value) { return ["PV max par touche", "+" + formatNumber(value)]; },
+            comboProcChance: function (value) { return ["Effet de combo au hasard", "+" + formatNumber(value * 100) + "%"]; },
+            shieldRecharge: function (value) { return ["Recharge du bouclier", "+" + formatNumber(value * 100) + "%"]; },
             dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
             shield: function () { return ["Bouclier", "Oui"]; },
             goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
@@ -5556,6 +6179,7 @@
                 totals[key] = (totals[key] || 0) + node.effect.value;
             }
             treeBonusArea.appendChild(createElementWithText("h3", "", "Stats"));
+            treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", "Les stats de tir vont à la planète " + tree.name + ". La vie et la défense vont au joueur (le triangle du milieu)."));
             for (const key of Object.keys(totals)) {
                 let row;
                 if (key.startsWith("damageVs_")) {
@@ -5575,6 +6199,8 @@
             const planet = planets.find(function (other) { return other.tree === tree; });
             orbitLinkArea.textContent = "";
             if (planet === undefined) {
+                orbitLinkArea.appendChild(createElementWithText("h3", "", "Liens d'orbite"));
+                orbitLinkArea.appendChild(createElementWithText("div", "comboNone", tree.name + " n'est pas encore en orbite : achète-le dans le shop (« Nouvelle divinité ») pour créer des liens."));
                 return;
             }
             orbitLinkArea.appendChild(createElementWithText("h3", "", "Liens d'orbite"));
@@ -5596,14 +6222,28 @@
                 button.addEventListener("click", function () {
                     tree.linkMode = mode;
                     playSound("buy");
+                    refreshStats(); //le lien "opposé" change des stats
                     renderOrbitLinks(tree);
+                    renderStatsPanel(true);
                 });
                 options.appendChild(button);
             }
             tree.linkMode = savedMode;
             orbitLinkArea.appendChild(options);
 
-            //Le résultat : les combos actifs
+            //Le résultat : la stat du lien "opposé"...
+            if (tree.linkMode === "opposite") {
+                const bonus = OPPOSITE_BONUSES[tree.element];
+                const partner = getLinkedPlanets(planet)[0];
+                const receivers = bonus.centerOnly || partner === undefined ? "pour toi (le triangle du milieu)" : "pour toi et " + partner.name;
+                const card = createElementWithText("div", "comboCard", "");
+                card.style.setProperty("--combo-color", tree.color);
+                card.appendChild(createElementWithText("strong", "", own.icon + " Lien opposé : " + bonus.name));
+                card.appendChild(document.createTextNode(bonus.description + ", " + receivers + "."));
+                orbitLinkArea.appendChild(card);
+                return;
+            }
+            //...ou les combos actifs
             const combos = getPlanetCombos(planet);
             if (combos.length === 0) {
                 const reason = tree.linkMode === "none" ? "Choisis un lien pour créer un combo." : "Même attribut : pas de combo.";
@@ -5633,15 +6273,17 @@
             for (const node of tree.nodes) {
                 for (const linkedId of node.links) {
                     const parent = findNode(tree, linkedId);
-                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                    line.setAttribute("x1", parent.x + "%");
-                    line.setAttribute("y1", parent.y + "%");
-                    line.setAttribute("x2", node.x + "%");
-                    line.setAttribute("y2", node.y + "%");
-                    if (parent.unlocked && node.unlocked) {
-                        line.classList.add("active");
+                    const isActive = parent.unlocked && node.unlocked;
+                    const isFilling = isActive && (node === justUnlockedNode || parent === justUnlockedNode);
+                    //Un lien qui vient de s'activer : d'abord le trait gris, puis le trait coloré qui se remplit par-dessus
+                    treeLinks.appendChild(createTreeLine(parent, node, isActive && !isFilling ? "active" : ""));
+                    if (isFilling) {
+                        //Il se remplit depuis la voisine déjà prise, vers la nouvelle compétence
+                        const from = node === justUnlockedNode ? parent : node;
+                        const line = createTreeLine(from, justUnlockedNode, "active filling");
+                        line.setAttribute("pathLength", "1"); //la ligne mesure "1", quelle que soit sa vraie longueur
+                        treeLinks.appendChild(line);
                     }
-                    treeLinks.appendChild(line);
                 }
             }
 
@@ -5654,6 +6296,9 @@
                 }
                 if (node.role === "notable" || node.role === "grand") {
                     button.classList.add(node.role); //"notable" ou "grand" : tailles différentes en CSS
+                }
+                if (node === justUnlockedNode) {
+                    button.classList.add("justUnlocked"); //l'étoile qu'on vient d'acheter "éclot"
                 }
                 //Une étoile + son petit nom en dessous
                 const star = document.createElement("span");
@@ -5671,14 +6316,35 @@
                         unlockNode(node);
                     }
                 });
+                //CLIC DROIT : rembourser la compétence
+                button.addEventListener("contextmenu", function (event) {
+                    event.preventDefault(); //pas le menu du navigateur
+                    refundNode(node);
+                });
                 treeNodes.appendChild(button);
             }
+            justUnlockedNode = null; //l'animation n'est jouée qu'une fois
+        }
+
+        //Une ligne SVG entre deux compétences
+        function createTreeLine(from, to, className) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", from.x + "%");
+            line.setAttribute("y1", from.y + "%");
+            line.setAttribute("x2", to.x + "%");
+            line.setAttribute("y2", to.y + "%");
+            if (className !== "") {
+                line.setAttribute("class", className);
+            }
+            return line;
         }
 
         //Petite aide quand aucune compétence n'est survolée
         function showNodeInfoHint() {
             nodeInfo.className = "empty";
-            nodeInfo.textContent = "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP.";
+            nodeInfo.textContent = currentTree.isLocked
+                ? "Aperçu : " + currentTree.name + " n'est pas encore en orbite. Survole une compétence pour voir ce qu'elle fera."
+                : "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.";
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
@@ -5707,8 +6373,18 @@
             nodeInfo.appendChild(createElementWithText("div", "infoEffect", node.description.replace("GRANDE KEYSTONE : ", "")));
 
             const chips = createElementWithText("div", "infoChips", "");
-            if (state === "unlocked") {
+            if (currentTree.isLocked) {
+                chips.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
+                chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 " + currentTree.name + " n'est pas encore en orbite"));
+            } else if (state === "unlocked") {
                 chips.appendChild(createElementWithText("span", "infoChip ok", "✔ Débloquée"));
+                if (canRefundNode(currentTree, node)) {
+                    const refund = createElementWithText("button", "refundButton", "↩ Rembourser (+" + node.cost + " XP)");
+                    refund.addEventListener("click", function () { refundNode(node); });
+                    chips.appendChild(refund);
+                } else {
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", "D'autres compétences en dépendent"));
+                }
             } else {
                 chips.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
                 if (state === "locked") {
@@ -5723,7 +6399,7 @@
         }
 
         function unlockNode(node) {
-            if (getNodeState(currentTree, node) !== "available" || xp < node.cost) {
+            if (currentTree.isLocked || getNodeState(currentTree, node) !== "available" || xp < node.cost) {
                 showNodeInfo(node);
                 playSound("denied");
                 return;
@@ -5731,10 +6407,59 @@
             playSound("buy");
             xp -= node.cost;
             node.unlocked = true;
+            justUnlockedNode = node; //pour l'animation du lien qui se remplit
             refreshStats();
             updateHud();
             renderSkillTree();
             renderStatsPanel(true); //anime les stats qui viennent d'augmenter
+            showNodeInfo(node);
+        }
+
+        //REMBOURSER : on récupère tout l'XP d'une compétence, à condition que les autres restent reliées au départ
+        function canRefundNode(tree, node) {
+            if (!node.unlocked || tree.isLocked) {
+                return false;
+            }
+            const others = tree.nodes.filter(function (other) { return other.unlocked && other !== node; });
+            if (others.length === 0) {
+                return true; //c'est la seule : on peut toujours la rendre
+            }
+            const start = tree.nodes.find(function (other) { return other.isStart; });
+            if (node === start) {
+                return false; //le départ, alors que d'autres compétences en dépendent
+            }
+            //On part du départ et on avance de voisine en voisine (seulement les compétences prises, sauf celle-ci)
+            const reached = new Set([start]);
+            const toVisit = [start];
+            while (toVisit.length > 0) {
+                const current = toVisit.pop(); //pop = retire et renvoie le dernier
+                for (const neighbor of current.neighbors) {
+                    if (neighbor.unlocked && neighbor !== node && !reached.has(neighbor)) {
+                        reached.add(neighbor);
+                        toVisit.push(neighbor);
+                    }
+                }
+            }
+            //every = "toutes" : chaque autre compétence doit encore être reliée au départ
+            return others.every(function (other) { return reached.has(other); });
+        }
+
+        function refundNode(node) {
+            if (!node.unlocked) {
+                return;
+            }
+            if (!canRefundNode(currentTree, node)) {
+                playSound("denied");
+                showToast("Impossible : d'autres compétences dépendent de celle-ci");
+                return;
+            }
+            node.unlocked = false;
+            xp += node.cost;
+            playSound("click");
+            refreshStats();
+            updateHud();
+            renderSkillTree();
+            renderStatsPanel(true);
             showNodeInfo(node);
         }
 
@@ -5882,6 +6607,9 @@
             { name: "Chance de critique", description: "+2% de chance de coup critique", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critChance", value: 0.02 } },
             { name: "Dégâts critiques", description: "+20% de dégâts critiques", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critDamage", value: 0.2 } },
             { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
+            //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades)
+            { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 40, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
+            { name: "Sauter dans le temps", description: "Débloque le saut de +30 s, puis de +100 s", baseCost: 30, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "skip" },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
             { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
@@ -5913,6 +6641,12 @@
                     const nextGod = SKILL_TREES.find(function (tree) { return tree.isLocked; }); //find = le premier qui correspond
                     description = nextGod.name + " et son skill tree rejoignent l'orbite";
                 }
+                if (item.timeUpgrade === "speed" && !isMaxed) {
+                    description = "Débloque la vitesse du jeu x" + GAME_SPEED_OPTIONS[item.level + 1];
+                }
+                if (item.timeUpgrade === "skip" && !isMaxed) {
+                    description = "Débloque le saut de +" + TIME_SKIP_OPTIONS[item.level + 1] + " s (touche T)";
+                }
 
                 const button = document.createElement("button");
                 button.className = "shopItem";
@@ -5926,6 +6660,21 @@
             }
         }
 
+        //Recopie les niveaux du shop dans timeUpgrades et met à jour les boutons de temps
+        function syncTimeUpgrades() {
+            for (const item of SHOP_ITEMS) {
+                if (item.timeUpgrade) {
+                    timeUpgrades[item.timeUpgrade] = item.level;
+                }
+            }
+            if (!getUnlockedSpeeds().includes(gameSpeed)) {
+                gameSpeed = 1;
+            }
+            renderSkipButtons();
+            renderSpeedButtons();
+            updateTimeMenuButton();
+        }
+
         function buyShopItem(item) {
             const cost = getShopItemCost(item);
             if (item.level >= item.maxLevel || gold < cost) {
@@ -5937,6 +6686,9 @@
             if (item.unlocksGod) {
                 unlockNextGod();
             }
+            if (item.timeUpgrade) {
+                syncTimeUpgrades();
+            }
             refreshStats();
             updateHud();
             renderShop();
@@ -5944,6 +6696,7 @@
         }
 
         function restartGame() {
+            runMaxHealthBonus = 0;
             computeStats();
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;
@@ -5973,12 +6726,7 @@
         document.getElementById("restartButton").addEventListener("click", restartGame);
 
         document.addEventListener("keydown", function (event) {
-            if (event.key === "r" && isGameOver && !isSettingsOpen) {
-                restartGame();
-            }
-            if (event.key === "t") {
-                skipTime(TIME_SKIP_KEY_SECONDS);
-            }
+            //(R, T et S sont gérés avec les codes de triche plus bas : taper "hestia" ne doit pas ouvrir les skills sur le "s")
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
                 if (isSettingsOpen) {
@@ -6048,11 +6796,13 @@
                     rows: [
                         ["Points de vie", Math.floor(playerHealth) + " / " + Math.floor(playerStats.maxHealth)],
                         ["Régénération", formatNumber(playerStats.regen) + " PV/s"],
-                        ["Vie par ennemi tué", "+" + formatNumber(playerStats.lifeOnKill)]
+                        ["Vie par ennemi tué", "+" + formatNumber(playerStats.lifeOnKill)],
+                        ["Vie par touche", "+" + formatNumber(playerStats.lifeOnHit)],
+                        ["PV max gagnés (partie)", "+" + formatNumber(runMaxHealthBonus)]
                     ]
                 },
                 {
-                    title: "Attaque",
+                    title: "Attaque (toi)",
                     rows: [
                         ["Dégâts par balle", playerStats.damage],
                         ["Vitesse d'attaque", formatPercent(playerStats.attackSpeed)],
@@ -6061,14 +6811,22 @@
                         ["Portée", playerStats.range + " px"],
                         ["Vitesse des balles", formatPercent(playerStats.bulletSpeed)],
                         ["Chance de critique", formatNumber(playerStats.critChance * 100) + "%"],
-                        ["Dégâts critiques", formatNumber(playerStats.critDamage * 100) + "%"]
+                        ["Dégâts critiques", formatNumber(playerStats.critDamage * 100) + "%"],
+                        ["Effet de combo au hasard", formatNumber(playerStats.comboProcChance * 100) + "% par tir"]
                     ].concat(elementBonuses) //concat = ajoute les lignes de elementBonuses à la fin
+                },
+                {
+                    title: "Planètes",
+                    rows: planets.length === 0 ? [["Aucune", "achète un dieu dans le shop"]] : planets.map(function (planet) {
+                        const stats = planet.stats;
+                        return [planet.name, formatNumber(stats.damage) + " dég. · " + formatNumber(stats.attackSpeed / PLANET_FIRE_INTERVAL) + " tir/s · " + formatNumber(stats.range) + " px"];
+                    })
                 },
                 {
                     title: "Défense",
                     rows: [
                         ["Esquive", formatPercent(playerStats.dodgeChance)],
-                        ["Bouclier", playerStats.shield > 0 ? "Oui (recharge " + SHIELD_COOLDOWN + " s)" : "Non"]
+                        ["Bouclier", playerStats.shield > 0 ? "Oui (recharge " + formatNumber(getShieldCooldown()) + " s)" : "Non"]
                     ]
                 },
                 {
@@ -6234,17 +6992,63 @@
         /////////////////////
         ////CODES DE TRICHE//  Pour tester le jeu plus vite : tape le mot au clavier pendant la partie (pas besoin de valider)
         /////////////////////
-        //(aucun code ne contient "r" ou "t", qui sont déjà des raccourcis du jeu)
+        //Les raccourcis R (rejouer), T (passer le temps) et S (skills) ne se déclenchent pas pendant qu'on tape un code
         let cheatRewardMultiplier = 1;   // "midas" : or et XP x10
         let isCheatInvincible = false;   // "achille" : on ne prend plus de dégâts
         let typedLetters = "";           // les dernières lettres tapées
+        let lastKeyTime = 0;             // pour oublier les lettres après une pause
+        const CHEAT_TYPING_PAUSE = 1500; // millisecondes : après cette pause, on recommence un nouveau mot
+
+        //Un dieu rejoint l'orbite (si besoin) et TOUT son skill tree est débloqué
+        function completeTree(tree) {
+            unlockGod(tree);
+            for (const node of tree.nodes) {
+                node.unlocked = true;
+            }
+            refreshStats();
+            if (currentTree === tree) {
+                openSkillTree(tree);
+            }
+        }
+
+        //Tout le shop au niveau maximum (donc aussi tous les dieux et toutes les options de temps)
+        function completeShop() {
+            for (const item of SHOP_ITEMS) {
+                if (item.unlocksGod) {
+                    while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) {
+                        unlockNextGod();
+                    }
+                }
+                item.level = item.maxLevel;
+            }
+            syncTimeUpgrades();
+            refreshStats();
+            if (!gameOverPanel.classList.contains("hidden")) {
+                renderShop();
+            }
+        }
+
+        //"Héphaïstos" -> "hephaistos" : sans accents ni majuscules (pour taper le nom au clavier)
+        function toCheatCode(name) {
+            return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
 
         const CHEAT_CODES = {
-            zeus: function () {          // +1000 or et +1000 XP
+            ploutos: function () {       // +1000 or et +1000 XP (Ploutos = le dieu de la richesse)
                 gold += 1000;
                 xp += 1000;
                 updateHud();
                 return "+1000 or et +1000 XP";
+            },
+            pantheon: function () {      // tous les dieux en orbite, avec tous leurs skill trees complets
+                for (const tree of SKILL_TREES) {
+                    completeTree(tree);
+                }
+                return "Tous les skill trees sont débloqués";
+            },
+            cresus: function () {        // tout le shop au maximum
+                completeShop();
+                return "Tout le shop est acheté";
             },
             midas: function () {         // or et XP gagnés x10 (retaper pour désactiver)
                 cheatRewardMultiplier = cheatRewardMultiplier === 1 ? 10 : 1;
@@ -6261,19 +7065,59 @@
                 return "Toutes les divinités sont en orbite";
             }
         };
+        //Le nom de chaque dieu (sans accents) : il rejoint l'orbite et tout son skill tree est débloqué
+        for (const tree of SKILL_TREES) {
+            CHEAT_CODES[toCheatCode(tree.name)] = function () {
+                completeTree(tree);
+                return tree.name + " : tout le skill tree est débloqué";
+            };
+        }
+
+        //Est-on peut-être en train de taper un code ? (les 2 dernières lettres ou plus forment le début d'un code)
+        function isTypingCheatCode() {
+            for (let length = 2; length <= typedLetters.length; length++) {
+                const end = typedLetters.slice(-length);
+                for (const code of Object.keys(CHEAT_CODES)) {
+                    if (code.startsWith(end)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         document.addEventListener("keydown", function (event) {
             if (event.key.length !== 1) {
                 return; //on ignore les touches spéciales (Échap, flèches...)
             }
-            typedLetters = (typedLetters + event.key.toLowerCase()).slice(-12); //on garde seulement les 12 dernières lettres
+            const key = event.key.toLowerCase();
+            const now = performance.now();
+            if (now - lastKeyTime > CHEAT_TYPING_PAUSE) {
+                typedLetters = ""; //une pause : on recommence un nouveau mot
+            }
+            lastKeyTime = now;
+            typedLetters = (typedLetters + key).slice(-12); //on garde seulement les 12 dernières lettres
             for (const code of Object.keys(CHEAT_CODES)) {
                 if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
                     const message = CHEAT_CODES[code]();
                     showToast("🎮 Code « " + code + " » : " + message);
                     playSound("buy");
                     typedLetters = "";
+                    return; //un code vient d'être tapé : pas de raccourci
                 }
+            }
+            if (isTypingCheatCode()) {
+                return; //peut-être le début d'un code : on attend la suite
+            }
+            //RACCOURCIS : R = rejouer (game over), T = passer le temps, S = skills
+            if (key === "r" && isGameOver && !isSettingsOpen) {
+                restartGame();
+            }
+            if (key === "t") {
+                skipTime(getBiggestSkip());
+            }
+            if (key === "s") {
+                toggleSkillTreeWindow();
             }
         });
 
@@ -6569,6 +7413,7 @@
             }
 
             runTimeDisplay.textContent = formatTime(runTime);
+            updateCamera(deltaTime);
             drawCanvas();
             requestAnimationFrame(gameUpdate);
         }
@@ -6589,6 +7434,7 @@
             playerHitTimer -= deltaTime;
             updateShield(deltaTime);
             updateEffects(deltaTime);
+            removeDeadEnemies(); //le ménage des ennemis morts, une seule fois par pas
         }
 
         gameStart();

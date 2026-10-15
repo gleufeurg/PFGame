@@ -52,9 +52,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Aglaure** (ESQ) | +2% de chance d'esquiver un coup | ×13 | 9 à 41 XP |
 | **Hersé** (XP) | +4% d'XP gagnée | ×12 | 13 à 37 XP |
 
+## ↔️ Lien « Opposé »
+
+**Stratégie** : 15% de chance, à chaque tir, de déclencher un effet de combo au hasard. Pour le joueur ET la planète d'en face.
+
 ## 🔗 Combos d'orbite
 
-### Quand Athéna emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Athéna emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|

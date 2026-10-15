@@ -52,9 +52,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Deimos** (FEU) | +1 dégât contre les ennemis de feu | ×5 | 17 à 49 XP |
 | **Alala** (VIE) | +0.05 PV regagné par ennemi tué | ×4 | 21 à 53 XP |
 
+## ↔️ Lien « Opposé »
+
+**Soif de sang** : +0.5 PV pour toi à chaque ennemi tué. Seulement pour le joueur (le triangle du milieu).
+
 ## 🔗 Combos d'orbite
 
-### Quand Arès emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Arès emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|

@@ -52,9 +52,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Telchine** (VIT) | +5% de vitesse d'attaque | ×7 | 13 à 33 XP |
 | **Cyclope** (CRIT) | +1% de chance de coup critique | ×7 | 9 à 29 XP |
 
+## ↔️ Lien « Opposé »
+
+**Forge** : +1 dégât par balle. Pour le joueur ET la planète d'en face.
+
 ## 🔗 Combos d'orbite
 
-### Quand Héphaïstos emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Héphaïstos emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|

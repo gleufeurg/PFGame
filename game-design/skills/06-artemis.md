@@ -51,9 +51,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Oréade** (DMG) | +0.5 dégât par balle | ×3 | 17 à 29 XP |
 | **Pléione** (VEL) | +8% de vitesse des balles | ×3 | 9 à 21 XP |
 
+## ↔️ Lien « Opposé »
+
+**Œil de la chasseresse** : +60 de portée. Pour le joueur ET la planète d'en face.
+
 ## 🔗 Combos d'orbite
 
-### Quand Artémis emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Artémis emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|

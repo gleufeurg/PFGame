@@ -52,9 +52,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Brontè** (VIT) | +5% de vitesse d'attaque | ×6 | 13 à 57 XP |
 | **Kéraunos** (AIR) | +1 dégât contre les ennemis d'air | ×5 | 9 à 49 XP |
 
+## ↔️ Lien « Opposé »
+
+**Colère de Zeus** : +50% de dégâts critiques. Pour le joueur ET la planète d'en face.
+
 ## 🔗 Combos d'orbite
 
-### Quand Zeus emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Zeus emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|

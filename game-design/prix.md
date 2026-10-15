@@ -4,7 +4,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum coûte **86 318 or**, dont 72 240 or pour les 12 dieux.
+- Tout le shop au maximum coûte **86 598 or**, dont 72 240 or pour les 12 dieux.
 - Tous les skills des 12 dieux coûtent **16 230 XP**.
 
 ## Le shop
@@ -22,7 +22,9 @@ Chaque niveau coûte plus cher que le précédent : prix = prix de départ × mu
 | Régénération (8 niv.) | +0.05 PV par seconde | ×1,6 | 12, 19, 31, 49, 79, 126, 201, 322 | 839 |
 | Balle supplémentaire (3 niv.) | +1 balle par tir | ×2,5 | 60, 150, 375 | 585 |
 | Portée (8 niv.) | +25 de portée | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171 | 494 |
+| Accélérer le temps (2 niv.) | Débloque la vitesse x2, puis x4 | ×3 | 40, 120 | 160 |
 | Vitesse des balles (6 niv.) | +15% de vitesse des balles | ×1,4 | 8, 11, 16, 22, 31, 43 | 131 |
+| Sauter dans le temps (2 niv.) | Débloque le saut de +30 s, puis de +100 s | ×3 | 30, 90 | 120 |
 
 ## Les skills
 

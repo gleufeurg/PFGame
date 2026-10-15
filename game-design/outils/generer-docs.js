@@ -13,7 +13,7 @@ const data = await p.evaluate(()=>({
   trees: SKILL_TREES.map(t=>({ name:t.name, color:t.color, element:t.element, locked:t.isLocked,
     shape: SKILL_TREES_DATA.find(d=>d.name===t.name).shape,
     nodes: t.nodes.map(n=>({id:n.id, role:n.role, label:n.label, name:n.name, description:n.description, cost:n.cost})) })),
-  attributes: ATTRIBUTES, combos: COMBOS, fusions: FUSIONS, modes: LINK_MODES,
+  attributes: ATTRIBUTES, combos: COMBOS, fusions: FUSIONS, modes: LINK_MODES, opposite: OPPOSITE_BONUSES,
   shop: SHOP_ITEMS.map(i=>({name:i.name, description:i.description, baseCost:i.baseCost, costGrowth:i.costGrowth, maxLevel:i.maxLevel})),
   costs: { SKILL_COST_BASE, SKILL_COST_PER_STEP, NOTABLE_COST_MULTIPLIER, KEYSTONE_COST, GRAND_COST }
 }));
@@ -38,7 +38,9 @@ data.trees.forEach((t, i)=>{
   md += `## 🔹 Notables\n\n| Nom | Effet | Coût |\n|---|---|---|\n` + by('notable').map(n=>`| **${n.name}** (${n.label}) | ${n.description} | ${n.cost} XP |`).join('\n') + '\n\n';
   md += `## Départ\n\n| Nom | Effet | Coût |\n|---|---|---|\n` + by('start').map(n=>`| **${n.name}** (${n.label}) | ${n.description} | ${n.cost} XP |`).join('\n') + '\n\n';
   md += `## Petites compétences\n\nElles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…\n\n| Nom | Effet | Nombre | Coût |\n|---|---|---|---|\n` + Object.entries(minors).map(([name,m])=>`| **${name}** (${m.label}) | ${m.description} | ×${m.count} | ${Math.min(...m.costs)} à ${Math.max(...m.costs)} XP |`).join('\n') + '\n\n';
-  md += `## 🔗 Combos d'orbite\n\n### Quand ${t.name} emprunte un attribut (Gauche, Droite ou Opposé)\n\n| Combo | Nom | Effet |\n|---|---|---|\n` + comboRows(data.combos, ks=>ks.includes(t.element)).join('\n') + '\n\n';
+  const opp = data.opposite[t.element];
+  md += `## ↔️ Lien « Opposé »\n\n**${opp.name}** : ${opp.description}. ${opp.centerOnly ? 'Seulement pour le joueur (le triangle du milieu).' : 'Pour le joueur ET la planète d\'en face.'}\n\n`;
+  md += `## 🔗 Combos d'orbite\n\n### Quand ${t.name} emprunte un attribut (Gauche ou Droite)\n\n| Combo | Nom | Effet |\n|---|---|---|\n` + comboRows(data.combos, ks=>ks.includes(t.element)).join('\n') + '\n\n';
   md += `### Fusions « Les deux côtés » où ${t.name} intervient\n\nQu'il soit le dieu au milieu ou une des deux voisines, son attribut fait partie de ces fusions à 3 éléments :\n\n| Fusion | Nom | Effet |\n|---|---|---|\n` + comboRows(data.fusions, ks=>ks.includes(t.element)).join('\n') + '\n';
   const file = `${String(i+1).padStart(2,'0')}-${slug(t.name)}.md`;
   fs.writeFileSync(path.join(OUT, file), md);
@@ -46,9 +48,9 @@ data.trees.forEach((t, i)=>{
 });
 // combos.md
 let cm = `# Combos d'orbite\n\nChaque dieu a un **attribut**. Dans la fenêtre de son skill tree (en bas à gauche, « Liens d'orbite »), on choisit à quelle(s) planète(s) voisine(s) il se lie. Ses **tirs** gagnent alors un effet spécial.\n\n`;
-cm += `| Option | Ce qu'elle fait | Force |\n|---|---|---|\n| **Aucun** | pas de combo | — |\n| **Gauche** | combo avec la planète d'avant dans l'orbite | ×${data.modes.left.strength} |\n| **Droite** | combo avec la planète d'après | ×${data.modes.right.strength} |\n| **Les deux côtés** | le dieu et ses 2 voisines **fusionnent** en un attribut unique, qui donne un effet spécial (voir Fusions) | ×${data.modes.both.strength} |\n| **Opposé** | combo avec la planète en face | ×${data.modes.opposite.strength} |\n\n`;
+cm += `| Option | Ce qu'elle fait | Force |\n|---|---|---|\n| **Aucun** | pas de combo | — |\n| **Gauche** | combo avec la planète d'avant dans l'orbite | ×${data.modes.left.strength} |\n| **Droite** | combo avec la planète d'après | ×${data.modes.right.strength} |\n| **Les deux côtés** | le dieu et ses 2 voisines **fusionnent** en un attribut unique, qui donne un effet spécial (voir Fusions) | ×${data.modes.both.strength} |\n| **Opposé** | pas de combo : une **stat** typique du dieu, pour le joueur et la planète d'en face (voir [statistiques.md](../statistiques.md)) | — |\n\n`;
 cm += `## Les attributs\n\n| Dieu | Attribut |\n|---|---|\n` + data.trees.map(t=>`| ${t.name} | ${att(t.element)} |`).join('\n') + '\n\n';
-cm += `## Combos (Gauche, Droite, Opposé) : attribut du dieu + attribut emprunté\n\n| Combo | Nom | Effet |\n|---|---|---|\n` + comboRows(data.combos, ()=>true).join('\n') + '\n\n';
+cm += `## Combos (Gauche, Droite) : attribut du dieu + attribut emprunté\n\n| Combo | Nom | Effet |\n|---|---|---|\n` + comboRows(data.combos, ()=>true).join('\n') + '\n\n';
 cm += `## Fusions (Les deux côtés) : attribut du dieu + attributs de ses 2 voisines\n\nL'ordre ne compte pas : 🔥 entre 🌪️ et 💧 donne la même fusion que 💧 entre 🔥 et 🌪️. Aucune fusion ne donne de statistique, seulement des effets.\n\n| Fusion | Nom | Effet |\n|---|---|---|\n` + comboRows(data.fusions, ()=>true).join('\n') + '\n';
 fs.writeFileSync(path.join(OUT, '0-combos.md'), cm);
 // README

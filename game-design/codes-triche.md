@@ -1,15 +1,17 @@
 # Codes de triche
 
-Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un menu : un message confirme le code.
+Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un menu : un message confirme le code. Après une pause de plus d'1,5 s, on recommence un nouveau mot.
 
 | Code | Effet |
 | --- | --- |
-| `zeus` | +1000 or et +1000 XP |
+| nom d'un dieu, sans accent : `hephaistos`, `poseidon`, `demeter`, `eole`, `apollon`, `artemis`, `athena`, `zeus`, `ares`, `aphrodite`, `hermes`, `hestia` | ce dieu rejoint l'orbite et tout son skill tree est débloqué |
+| `pantheon` | tous les dieux en orbite, avec tous leurs skill trees complets |
+| `olympe` | tous les dieux rejoignent l'orbite (skill trees vides) |
+| `cresus` | tout le shop au maximum (donc aussi tous les dieux et toutes les options de temps) |
+| `ploutos` | +1000 or et +1000 XP (c'était l'ancien code `zeus`) |
 | `midas` | or et XP ×10 par ennemi (retaper pour couper) |
 | `achille` | invincible (retaper pour couper) |
-| `olympe` | tous les dieux rejoignent l'orbite |
-| touche `T` | passer 30 secondes de jeu (`TIME_SKIP_KEY_SECONDS`) |
 
-Les boutons orange « ⏩ +10 s », « +30 s » et « +100 s » font la même chose (`TIME_SKIP_OPTIONS`).
+Ce ne sont pas des codes mais des raccourcis : la touche T passe le plus grand saut de temps débloqué, et les boutons orange « ⏩ » font la même chose.
 
 À retirer avant de rendre le portfolio public : tout est dans `CHEAT_CODES` dans `index.html`.

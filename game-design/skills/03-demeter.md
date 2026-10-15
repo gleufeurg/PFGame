@@ -52,9 +52,13 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Hamadryade** (XP) | +5% d'XP gagnée | ×12 | 13 à 21 XP |
 | **Mélie** (PLA) | +1 dégât contre les ennemis d'eau | ×12 | 17 à 17 XP |
 
+## ↔️ Lien « Opposé »
+
+**Sève** : +0.03 PV pour toi à chaque balle qui touche. Pour le joueur ET la planète d'en face.
+
 ## 🔗 Combos d'orbite
 
-### Quand Déméter emprunte un attribut (Gauche, Droite ou Opposé)
+### Quand Déméter emprunte un attribut (Gauche ou Droite)
 
 | Combo | Nom | Effet |
 |---|---|---|
