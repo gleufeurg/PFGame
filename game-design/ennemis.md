@@ -142,5 +142,6 @@ Le jeu est prévu pour tenir environ 10 000 ennemis :
 - **Ménage groupé :** un ennemi mort passe à `alive = false` et n'est retiré de la liste qu'une fois par pas de jeu (`removeDeadEnemies`).
 - **Images pré-dessinées :** chaque ennemi rond est une petite image dessinée une seule fois par couleur et par taille, puis recopiée (`getRoundEnemySprite`).
 - **Moins de détails quand il y en a trop :** au-delà de 1 500 ennemis (`MAX_ENEMY_SHADOWS`), les ennemis ronds n'ont plus d'ombre. Au-delà de 150 nombres de dégâts à l'écran (`MAX_DAMAGE_NUMBERS`), on n'en ajoute plus, sauf les critiques. Les ennemis hors de l'écran ne sont pas dessinés.
+- **Sur téléphone et tablette** (écran tactile, `IS_TOUCH_DEVICE`), les limites sont plus basses : plus d'ombre au-delà de 400 ennemis, 60 nombres de dégâts au maximum, 200 particules au lieu de 500 (`MAX_PARTICLES`).
 
 Mesure faite sans carte graphique (le cas le plus lent) : 10 000 ennemis prennent environ 60 ms par image, contre 870 ms avant. Avec une carte graphique, c'est nettement plus rapide.

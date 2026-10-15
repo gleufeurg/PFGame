@@ -1,2 +1,6 @@
 # Fichiers de Visual Studio (propres à chaque ordinateur)
 .vs/
+
+# Application mobile (Capacitor)
+node_modules/
+www/
