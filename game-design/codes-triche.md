@@ -12,6 +12,7 @@ Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un 
 | `midas` | or et XP ×10 par ennemi (retaper pour couper) |
 | `achille` | invincible (retaper pour couper) |
 | `thanatos` | le joueur meurt tout de suite : game over et shop, sans recommencer la partie (on garde l'or et l'XP gagnés) |
+| `harmonia` | tous les dieux passent en lien d'orbite « Les deux côtés » (Harmonie, déesse de l'harmonie) |
 
 Ce ne sont pas des codes mais des raccourcis : la touche T passe le plus grand saut de temps débloqué, et les boutons orange « ⏩ » font la même chose.
 

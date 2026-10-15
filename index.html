@@ -972,6 +972,25 @@
             animation: statPop 0.7s ease-out;
         }
 
+        .statRow.statDecreased { /*la ligne d'une stat qui vient de BAISSER s'illumine en rouge*/
+            animation: statFlashDown 1.2s ease-out;
+        }
+
+        .statRow.statDecreased .statValue {
+            animation: statPopDown 0.7s ease-out;
+        }
+
+        @keyframes statFlashDown {
+            0% { background-color: #ff4d5a55; }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes statPopDown {
+            0% { transform: scale(1.5); color: #ff5c66; }
+            60% { color: #ff5c66; }
+            100% { transform: scale(1); color: var(--ui-text); }
+        }
+
         @keyframes statFlash {
             0% { background-color: #4dff8855; }
             100% { background-color: transparent; }
@@ -1704,6 +1723,23 @@
             ctx.lineDashOffset = -visualTime * 12;    //les pointillés tournent doucement
             ctx.stroke();
             ctx.setLineDash([]);                      //on remet un trait plein pour la suite
+            if (hoveredPlanet !== null) {
+                drawPlanetRange(hoveredPlanet);
+            }
+        }
+
+        //PORTÉE D'UN DIEU : quand la souris survole sa planète, un cercle de sa couleur montre jusqu'où elle tire (depuis la planète)
+        function drawPlanetRange(planet) {
+            ctx.beginPath();
+            ctx.arc(planet.x, planet.y, planet.stats.range, 0, Math.PI * 2);
+            ctx.fillStyle = hexToRgba(planet.color, 0.06);   //zone légèrement teintée
+            ctx.fill();
+            ctx.strokeStyle = hexToRgba(planet.color, 0.7);
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 8]);
+            ctx.lineDashOffset = visualTime * 12;             //tourne dans l'autre sens que celle du joueur
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
         function drawStars() {
@@ -6928,6 +6964,16 @@
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
         let lastStatValues = {};
 
+        //Le texte d'une stat ("125%", "10 / 10", "+0.5 PV/s"...) a-t-il baissé ? On compare le 1er nombre de chaque texte.
+        function isStatLower(oldText, newText) {
+            const oldNumber = oldText.match(/-?\d+(\.\d+)?/); //match = cherche le motif (une "regex") : ici, un nombre
+            const newNumber = newText.match(/-?\d+(\.\d+)?/);
+            if (oldNumber === null || newNumber === null) {
+                return false; //pas de nombre (ex : un nom de lien) : ce n'est pas une baisse
+            }
+            return parseFloat(newNumber[0]) < parseFloat(oldNumber[0]); //parseFloat = transforme le texte en nombre à virgule
+        }
+
         //highlightChanges = true après un achat : les stats qui ont changé s'animent
         function renderStatsPanel(highlightChanges = false) {
             let html = "";
@@ -6939,7 +6985,10 @@
                     const value = String(row[1]);
                     const key = category.title + "|" + label; //le même nom de stat existe dans plusieurs sections
                     const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
-                    const rowClass = hasChanged ? "statRow statChanged" : "statRow";
+                    let rowClass = "statRow";
+                    if (hasChanged) {
+                        rowClass += isStatLower(lastStatValues[key], value) ? " statChanged statDecreased" : " statChanged"; //rouge si elle baisse, vert sinon
+                    }
                     html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
                     newStatValues[key] = value;
                 }
@@ -7142,6 +7191,16 @@
             achille: function () {       // invincible (retaper pour désactiver)
                 isCheatInvincible = !isCheatInvincible;
                 return isCheatInvincible ? "Invincible !" : "Invincibilité désactivée";
+            },
+            harmonia: function () {      // tous les dieux en lien "Les deux côtés" (Harmonie = la déesse de l'harmonie)
+                for (const tree of SKILL_TREES) {
+                    tree.linkMode = "both";
+                }
+                refreshStats();
+                if (currentTree !== null) {
+                    openSkillTree(currentTree); //redessine la fenêtre ouverte avec les nouveaux liens
+                }
+                return "Tous les dieux sont liés des deux côtés";
             },
             olympe: function () {        // toutes les divinités rejoignent l'orbite
                 while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) { //some = "au moins un"
