@@ -19,7 +19,15 @@ Un achat unique, proposé sous le shop et dans les paramètres :
 - vitesses du jeu x8 et x10 ;
 - sauts dans le temps de +500 s et +999 s.
 
-Les boutons qu'il débloque restent visibles avec un 💎 tant qu'il n'est pas acheté.
+Les boutons qu'il débloque restent visibles avec un 💎 tant qu'il n'est pas acheté. Le code de triche `penia` le retire, pour retester les pubs.
+
+## Le Pack Soutien (4,99 €)
+
+Un achat qui sert seulement à soutenir la créatrice, proposé sous le Pack Premium (shop et paramètres). Il ne donne aucun avantage de jeu :
+- le thème exclusif **« ✨ Olympe doré »** (voir [direction-artistique](direction-artistique/README.md)) ; tant qu'il n'est pas acheté, ce thème apparaît grisé avec un 🔒 dans la liste des thèmes, pour donner envie ;
+- un merci personnalisé à la fin des crédits.
+
+Le prix se change dans `SUPPORT_PRICE`. Comme le Pack Premium, il est retenu par le navigateur (clé `supporter`), et « Effacer ma progression » ne l'efface pas.
 
 ## Ce qui est en place, et ce qui manque
 
@@ -48,4 +56,4 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 
 ## Où regarder dans le code
 
-`index.html`, parties `PUBLICITÉS` et `PACK PREMIUM` : `showInterstitialAd`, `showRewardedAd`, `revivePlayer`, `renderDeathChoices`, `renderPremiumBoxes`, `unlockPremium`.
+`index.html`, parties `PUBLICITÉS` et `PACK PREMIUM` : `showInterstitialAd`, `showRewardedAd`, `revivePlayer`, `renderDeathChoices`, `PACKS` (les deux packs), `renderPremiumBoxes`, `openPurchase`, `unlockPremium`, `removePremium`, `unlockSupport`.

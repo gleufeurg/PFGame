@@ -1044,6 +1044,25 @@
             animation: statPop 0.7s ease-out;
         }
 
+        .statRow.statDecreased { /*la ligne d'une stat qui vient de BAISSER s'illumine en rouge*/
+            animation: statFlashDown 1.2s ease-out;
+        }
+
+        .statRow.statDecreased .statValue {
+            animation: statPopDown 0.7s ease-out;
+        }
+
+        @keyframes statFlashDown {
+            0% { background-color: #ff4d5a55; }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes statPopDown {
+            0% { transform: scale(1.5); color: #ff5c66; }
+            60% { color: #ff5c66; }
+            100% { transform: scale(1); color: var(--ui-text); }
+        }
+
         @keyframes statFlash {
             0% { background-color: #4dff8855; }
             100% { background-color: transparent; }
@@ -1662,6 +1681,116 @@
                 font-size: 18px;
             }
         }
+        /*PACK SOUTIEN : boîte dorée*/
+        .premiumBox.supportBox {
+            border-color: #f5c451;
+            background-color: rgba(245, 196, 81, 0.1);
+        }
+
+        .premiumBox.supportBox h3 {
+            color: #ffe39a;
+        }
+
+        /*CRÉDITS*/
+        #creditsOverlay {
+            z-index: 40; /*par-dessus les paramètres*/
+        }
+
+        .creditsPanel {
+            max-width: 520px;
+            text-align: center;
+        }
+
+        #creditsViewport { /*la "fenêtre" dans laquelle le texte défile*/
+            position: relative;
+            height: min(60vh, 460px);
+            overflow: hidden;
+            margin-bottom: 16px;
+            /*mask = le texte s'efface en douceur en haut et en bas*/
+            -webkit-mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
+        }
+
+        #creditsRoll {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%; /*commence juste sous la fenêtre*/
+            animation: creditsScroll 26s linear infinite;
+        }
+
+        #creditsViewport:hover #creditsRoll, #creditsViewport:active #creditsRoll {
+            animation-play-state: paused; /*on peut arrêter le défilement en passant la souris (ou le doigt) dessus*/
+        }
+
+        @keyframes creditsScroll { /*translateY en % = en pourcentage de la hauteur du texte lui-même*/
+            from { transform: translateY(0); }
+            to { transform: translateY(calc(-100% - min(60vh, 460px))); }
+        }
+
+        #creditsRoll h1 {
+            margin: 0 0 40px;
+            color: var(--ui-heading);
+        }
+
+        .creditsRole {
+            margin: 28px 0 4px;
+            font-size: 13px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+        }
+
+        .creditsName {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .creditsName a {
+            color: var(--ui-accent);
+        }
+
+        .creditsThanks {
+            margin-top: 60px;
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--ui-heading);
+        }
+
+        #creditsButton {
+            margin-right: auto;
+        }
+
+        /*THÈME EXCLUSIF "OLYMPE DORÉ" (Pack Soutien) : bordures dorées qui brillent et titres en or animés*/
+        body.themeOlympus .panel, body.themeOlympus #statsPanel {
+            background-size: 100% 100%, 300% 300%; /*le dégradé doré de la bordure est 3 fois plus grand que la fenêtre...*/
+            animation: olympusEdge 6s linear infinite; /*...et il glisse : la lumière fait le tour*/
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 26px rgba(245, 196, 81, 0.22);
+        }
+
+        @keyframes olympusEdge {
+            from { background-position: 0 0, 0% 50%; }
+            to { background-position: 0 0, 300% 50%; }
+        }
+
+        body.themeOlympus .panel > h1, body.themeOlympus .panel > h2, body.themeOlympus #statsPanel h2, body.themeOlympus #creditsRoll h1, body.themeOlympus .creditsThanks {
+            background: linear-gradient(90deg, #b8861b, #fff4c9, #f5c451, #b8861b); /*du texte "en or" : un dégradé...*/
+            background-size: 200% auto;
+            -webkit-background-clip: text; /*...découpé en forme de lettres*/
+            background-clip: text;
+            color: transparent;
+            animation: olympusText 4s linear infinite;
+        }
+
+        @keyframes olympusText {
+            from { background-position: 0% 50%; }
+            to { background-position: 200% 50%; }
+        }
+
+        body.themeOlympus .primaryButton, body.themeOlympus #settingsButton, body.themeOlympus #skillsButton {
+            box-shadow: 0 0 14px rgba(245, 196, 81, 0.35);
+        }
     </style>
 </head>
 <body>
@@ -1732,6 +1861,7 @@
             </div>
             <div id="shopItems"></div>
             <div id="premiumBoxShop" class="premiumBox"></div>
+            <div id="supportBoxShop" class="premiumBox supportBox"></div>
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
             <section id="contactArea">
                 <h2>Contact</h2>
@@ -1763,7 +1893,9 @@
                 <label for="muteCheckbox">Couper le son</label>
             </div>
             <div id="premiumBoxSettings" class="premiumBox"></div>
+            <div id="supportBoxSettings" class="premiumBox supportBox"></div>
             <div class="settingRow">
+                <button id="creditsButton" class="primaryButton">Crédits</button>
                 <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
             </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
@@ -1782,9 +1914,39 @@
     </div>
 
     <!-- ACHAT : en mode test, l'achat est simulé (voir PAYMENT_TEST_MODE) -->
+    <!-- CRÉDITS : le texte défile de bas en haut, comme à la fin d'un film -->
+    <div id="creditsOverlay" class="overlay hidden">
+        <div class="panel creditsPanel">
+            <div id="creditsViewport">
+                <div id="creditsRoll">
+                    <h1>Evangeline's Game</h1>
+                    <p class="creditsRole">Un jeu créé par</p>
+                    <p class="creditsName">Evangeline Lefevre</p>
+                    <p class="creditsRole">Conception et game design</p>
+                    <p class="creditsName">Evangeline Lefevre</p>
+                    <p class="creditsRole">Programmation</p>
+                    <p class="creditsName">Evangeline Lefevre</p>
+                    <p class="creditsRole">Direction artistique</p>
+                    <p class="creditsName">Evangeline Lefevre</p>
+                    <p class="creditsRole">Musique et sons</p>
+                    <p class="creditsName">Créés en direct par le navigateur (Web Audio)</p>
+                    <p class="creditsRole">Inspiré par</p>
+                    <p class="creditsName">La mythologie grecque</p>
+                    <p class="creditsRole">Polices</p>
+                    <p class="creditsName">Nunito et Rubik (Google Fonts)</p>
+                    <p class="creditsRole">Contact</p>
+                    <p class="creditsName"><a id="creditsMail" href="#">(chargement…)</a></p>
+                    <p id="creditsSupporter" class="creditsName hidden">💛 Et merci à toi, qui soutiens le jeu avec le Pack Soutien !</p>
+                    <p class="creditsThanks">Merci d'avoir joué !</p>
+                </div>
+            </div>
+            <button id="closeCreditsButton" class="primaryButton">Fermer</button>
+        </div>
+    </div>
+
     <div id="purchaseOverlay" class="overlay hidden">
         <div class="panel adPanel">
-            <h2>💎 Pack Premium</h2>
+            <h2 id="purchaseTitle">💎 Pack Premium</h2>
             <p id="purchaseText"></p>
             <button id="purchaseConfirmButton" class="primaryButton">Acheter</button>
             <button id="purchaseCancelButton" class="primaryButton">Annuler</button>
@@ -1871,6 +2033,9 @@
             ctx.drawImage(backgroundCanvas, 0, 0); //le fond, dessiné une seule fois au démarrage
             if (SPACE_BACKGROUND) {
                 drawStars();
+            }
+            if (currentThemeKey === "olympus") {
+                drawOlympusSky(); //thème exclusif : rayons de lumière et poussière d'or
             }
             applyWorldTransform(ctx, shakeX, shakeY); //à partir d'ici, on dessine le "monde", avec le zoom de la caméra
             updatePlanetPositions(); //avant les ombres : elles ont besoin de savoir où sont les planètes
@@ -2022,6 +2187,77 @@
             ctx.lineDashOffset = -visualTime * 12;    //les pointillés tournent doucement
             ctx.stroke();
             ctx.setLineDash([]);                      //on remet un trait plein pour la suite
+            if (hoveredPlanet !== null) {
+                drawPlanetRange(hoveredPlanet);
+            }
+        }
+
+        //PORTÉE D'UN DIEU : quand la souris survole sa planète, un cercle de sa couleur montre jusqu'où elle tire (depuis la planète)
+        function drawPlanetRange(planet) {
+            ctx.beginPath();
+            ctx.arc(planet.x, planet.y, planet.stats.range, 0, Math.PI * 2);
+            ctx.fillStyle = hexToRgba(planet.color, 0.06);   //zone légèrement teintée
+            ctx.fill();
+            ctx.strokeStyle = hexToRgba(planet.color, 0.7);
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 8]);
+            ctx.lineDashOffset = visualTime * 12;             //tourne dans l'autre sens que celle du joueur
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        //THÈME "OLYMPE DORÉ" : des rayons de lumière tombent du haut de l'écran en se balançant, et de la poussière d'or monte doucement
+        const OLYMPUS_RAY_COUNT = 7;
+        const OLYMPUS_DUST_COUNT = 70;
+        const OLYMPUS_GOLD = "#ffd97a";
+        const olympusDust = [];
+
+        function drawOlympusSky() {
+            ctx.save();
+            ctx.globalCompositeOperation = "lighter"; //"lighter" = les couleurs s'ajoutent : ça éclaire, comme de la lumière
+            //LES RAYONS : des triangles très fins qui partent d'au-dessus de l'écran
+            const originX = canvas.width / 2;
+            const originY = -canvas.height * 0.15;
+            const length = Math.hypot(canvas.width, canvas.height) * 1.2;
+            const light = ctx.createRadialGradient(originX, originY, 0, originX, originY, length);
+            light.addColorStop(0, "rgba(255, 228, 150, 0.9)");
+            light.addColorStop(0.6, "rgba(255, 200, 90, 0.25)");
+            light.addColorStop(1, "rgba(255, 200, 90, 0)");
+            ctx.fillStyle = light;
+            for (let i = 0; i < OLYMPUS_RAY_COUNT; i++) {
+                const spread = (i - (OLYMPUS_RAY_COUNT - 1) / 2) * 0.2;                  //les rayons s'écartent en éventail
+                const angle = Math.PI / 2 + spread + Math.sin(visualTime * 0.15 + i * 1.7) * 0.12; //ils se balancent lentement
+                const halfWidth = 0.035 + 0.02 * Math.sin(visualTime * 0.4 + i);
+                ctx.globalAlpha = 0.045 + 0.03 * Math.sin(visualTime * 0.6 + i * 2.1); //et ils "respirent"
+                ctx.beginPath();
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(originX + Math.cos(angle - halfWidth) * length, originY + Math.sin(angle - halfWidth) * length);
+                ctx.lineTo(originX + Math.cos(angle + halfWidth) * length, originY + Math.sin(angle + halfWidth) * length);
+                ctx.closePath();
+                ctx.fill();
+            }
+            //LA POUSSIÈRE D'OR : créée la première fois, puis elle monte et revient en bas quand elle sort de l'écran
+            if (olympusDust.length === 0) {
+                for (let i = 0; i < OLYMPUS_DUST_COUNT; i++) {
+                    olympusDust.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, speed: randomBetween(8, 26), size: randomBetween(1, 2.6), phase: Math.random() * Math.PI * 2 });
+                }
+            }
+            ctx.fillStyle = OLYMPUS_GOLD;
+            for (const dust of olympusDust) {
+                dust.y -= dust.speed * frameTime;
+                dust.x += Math.sin(visualTime * 0.5 + dust.phase) * 6 * frameTime; //elle ondule un peu de gauche à droite
+                if (dust.y < -5) {
+                    dust.y = canvas.height + 5;
+                    dust.x = Math.random() * canvas.width;
+                }
+                const twinkle = 0.5 + 0.5 * Math.sin(visualTime * 2 + dust.phase);
+                ctx.globalAlpha = 0.25 + 0.6 * twinkle;
+                ctx.fillRect(dust.x, dust.y, dust.size, dust.size);
+                if (dust.size > 2.2) {
+                    drawGlow(OLYMPUS_GOLD, dust.x + dust.size / 2, dust.y + dust.size / 2, dust.size * 4, 0.6 * twinkle);
+                }
+            }
+            ctx.restore(); //remet l'opacité et le mode de mélange normaux
         }
 
         function drawStars() {
@@ -2408,7 +2644,15 @@
             asexual: createTheme("Asexuel", "#151316", "#b05cd6", ["#000000", "#a3a3a3", "#ffffff", "#800080"]),
             lesbian: createTheme("Lesbien", "#1e1517", "#ef7627", ["#d52d00", "#ef7627", "#ff9a56", "#ffffff", "#d162a4", "#b55690", "#a30262"]),
             gay: createTheme("Gay", "#121d1d", "#26ceaa", ["#078d70", "#26ceaa", "#98e8c1", "#ffffff", "#7bade2", "#5049cc", "#3d1a78"]),
-            cycle: { name: "Cycle des thèmes", cycle: true } //passe tout seul d'un thème à l'autre, en fondu
+            cycle: { name: "Cycle des thèmes", cycle: true }, //passe tout seul d'un thème à l'autre, en fondu
+            //THÈME EXCLUSIF du Pack Soutien : nuit royale et or, avec des rayons de lumière et de la poussière d'or animés (drawOlympusSky)
+            olympus: {
+                name: "✨ Olympe doré",
+                supporterOnly: true,
+                background: "#140f26", backgroundLight: "#3a2a5e", shadow: "#07040f",
+                orbitColor: "rgba(255, 214, 120, 0.22)",
+                ui: { "--bg": "#140f26", "--ui-surface": "#221a3b", "--ui-surface-hover": "#2c2249", "--ui-relief": "#0c0818", "--ui-panel": "#1b1430", "--ui-overlay": "rgba(10, 6, 20, 0.62)", "--ui-text": "#fff8ea", "--ui-muted": "#c9b98f", "--ui-border": "#f5c451", "--ui-line": "rgba(245, 196, 81, 0.3)", "--ui-accent": "#f5c451", "--ui-accent-hover": "#ffd97a", "--ui-accent-dark": "#a87a12", "--ui-accent-text": "#241500", "--ui-accent-soft": "rgba(245, 196, 81, 0.12)", "--ui-accent-glow": "rgba(245, 196, 81, 0.55)", "--ui-panel-edge": "linear-gradient(120deg, #a87a12, #fff1b8, #f5c451, #a87a12, #fff1b8, #a87a12)", "--ui-heading": "#ffe39a" }
+            }
         };
         const DEFAULT_THEME = "night";
         let currentThemeKey = DEFAULT_THEME;
@@ -2419,10 +2663,11 @@
         let ORBIT_COLOR = "rgba(255, 255, 255, 0.06)";               // cercle de l'orbite des planètes
 
         function applyTheme(key) {
-            if (THEMES[key] === undefined) {
-                key = DEFAULT_THEME;
+            if (THEMES[key] === undefined || (THEMES[key].supporterOnly && !isSupporterOwned)) {
+                key = DEFAULT_THEME; //thème inconnu, ou thème du Pack Soutien sans le pack
             }
             currentThemeKey = key;
+            document.body.classList.toggle("themeOlympus", key === "olympus"); //les effets dorés de l'interface (CSS)
             try {
                 localStorage.setItem("theme", key);
             } catch (error) {
@@ -2448,7 +2693,7 @@
 
         //Les thèmes du cycle : tous les thèmes (sauf le cycle lui-même), dans l'ordre de la liste
         function getCycleThemes() {
-            return Object.keys(THEMES).filter(function (key) { return !THEMES[key].cycle; }); //filter = garde seulement ceux qui répondent "true"
+            return Object.keys(THEMES).filter(function (key) { return !THEMES[key].cycle && !THEMES[key].supporterOnly; }); //filter = garde seulement ceux qui répondent "true" (le thème exclusif n'est pas dans le cycle)
         }
 
         //Les bandes de drapeau d'un thème, sous forme de "calques" : [{ colors: [...], opacity: 0.4 }] (vide si pas de drapeau)
@@ -3416,6 +3661,13 @@
 
         function isPremium() {
             return isPremiumOwned;
+        }
+
+        //PACK SOUTIEN (voir PACK PREMIUM plus bas) : déclaré ici car le thème exclusif est appliqué dès le démarrage
+        let isSupporterOwned = false;
+        try {
+            isSupporterOwned = localStorage.getItem("supporter") === "1";
+        } catch (error) {
         }
 
         const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
@@ -7297,6 +7549,7 @@
         }
 
         document.getElementById("resetProgressButton").addEventListener("click", eraseProgress);
+
         setInterval(saveProgress, AUTO_SAVE_INTERVAL); //setInterval = refait ça toutes les AUTO_SAVE_INTERVAL millisecondes
         //Sur téléphone, le système peut fermer le jeu sans prévenir dès qu'on passe à une autre appli : on sauvegarde à ce moment-là
         document.addEventListener("visibilitychange", function () {
@@ -7313,11 +7566,49 @@
         contactMail.textContent = CONTACT_MAIL_PARTS.join("@");
         contactMail.href = "mailto:" + CONTACT_MAIL_PARTS.join("@");
 
+
+        /////////////////////
+        ////CRÉDITS//////////  Bouton dans les paramètres : le nom et le contact défilent comme à la fin d'un film
+        /////////////////////
+        const creditsOverlay = document.getElementById("creditsOverlay");
+        const creditsMail = document.getElementById("creditsMail");
+        creditsMail.textContent = CONTACT_MAIL_PARTS.join("@"); //même adresse que le contact (assemblée en morceaux, contre les robots)
+        creditsMail.href = "mailto:" + CONTACT_MAIL_PARTS.join("@");
+
+        function openCredits() {
+            document.getElementById("creditsSupporter").classList.toggle("hidden", !isSupporterOwned); //le merci n'apparaît qu'avec le Pack Soutien
+            const roll = document.getElementById("creditsRoll");
+            roll.style.animation = "none";  //relance le défilement depuis le début :
+            void roll.offsetHeight;         //lire offsetHeight oblige le navigateur à appliquer "none" tout de suite...
+            roll.style.animation = "";      //...puis on remet l'animation du CSS, qui repart de zéro
+            creditsOverlay.classList.remove("hidden");
+            playSound("menuOpen");
+        }
+
+        function closeCredits() {
+            creditsOverlay.classList.add("hidden");
+            playSound("menuClose");
+        }
+
+        function isCreditsOpen() {
+            return !creditsOverlay.classList.contains("hidden");
+        }
+
+        document.getElementById("creditsButton").addEventListener("click", openCredits);
+        document.getElementById("closeCreditsButton").addEventListener("click", closeCredits);
+        creditsOverlay.addEventListener("click", function (event) {
+            if (event.target === creditsOverlay) {
+                closeCredits(); //clic sur le fond sombre
+            }
+        });
+
         document.addEventListener("keydown", function (event) {
             //(R, T et S sont gérés avec les codes de triche plus bas : taper "hestia" ne doit pas ouvrir les skills sur le "s")
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
-                if (isSettingsOpen) {
+                if (isCreditsOpen()) {
+                    closeCredits(); //les crédits sont par-dessus les paramètres : on les ferme d'abord
+                } else if (isSettingsOpen) {
                     closeSettings();
                 } else if (currentTree !== null) {
                     closeSkillTree();
@@ -7471,27 +7762,45 @@
         const purchaseOverlay = document.getElementById("purchaseOverlay");
         //(isPremiumOwned et isPremium() sont plus haut, avant les boutons de temps qui en ont besoin)
 
-        //La boîte "Pack Premium", sous le shop et dans les paramètres
+        //PACK SOUTIEN : un achat qui sert seulement à soutenir la créatrice. Il offre le thème exclusif "Olympe doré".
+        const SUPPORT_PRICE = "4,99 €";
+        const SUPPORT_PERKS = ["Soutient directement la créatrice du jeu 💛", "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés", "Ton merci apparaît dans les crédits"];
+        //(isSupporterOwned est déclaré plus haut, avec isPremiumOwned : le thème en a besoin dès le démarrage)
+
+        //Les deux packs, décrits de la même façon : la même fonction affiche leurs boîtes et gère leur achat
+        const PACKS = {
+            premium: { title: "💎 Pack Premium", price: PREMIUM_PRICE, perks: PREMIUM_PERKS, boxIds: ["premiumBoxShop", "premiumBoxSettings"], isOwned: isPremium, buyText: "Acheter le Pack Premium", ownedText: "✔ Pack Premium acheté, merci !", unlock: unlockPremium },
+            support: { title: "💛 Pack Soutien", price: SUPPORT_PRICE, perks: SUPPORT_PERKS, boxIds: ["supportBoxShop", "supportBoxSettings"], isOwned: function () { return isSupporterOwned; }, buyText: "Me soutenir", ownedText: "✔ Merci infiniment pour ton soutien !", unlock: unlockSupport }
+        };
+        let pendingPack = null;   // le pack dont la fenêtre d'achat est ouverte
+
+        //Les boîtes des packs, sous le shop et dans les paramètres
         function renderPremiumBoxes() {
-            for (const box of [document.getElementById("premiumBoxShop"), document.getElementById("premiumBoxSettings")]) {
-                box.textContent = "";
-                box.appendChild(createElementWithText("h3", "", "💎 Pack Premium — " + PREMIUM_PRICE));
-                const list = document.createElement("ul");
-                for (const perk of PREMIUM_PERKS) {
-                    list.appendChild(createElementWithText("li", "", perk));
+            for (const packKey of Object.keys(PACKS)) {
+                const pack = PACKS[packKey];
+                for (const boxId of pack.boxIds) {
+                    const box = document.getElementById(boxId);
+                    box.textContent = "";
+                    box.appendChild(createElementWithText("h3", "", pack.title + " — " + pack.price));
+                    const list = document.createElement("ul");
+                    for (const perk of pack.perks) {
+                        list.appendChild(createElementWithText("li", "", perk));
+                    }
+                    box.appendChild(list);
+                    const button = createElementWithText("button", "adChoice", pack.isOwned() ? pack.ownedText : pack.buyText);
+                    button.disabled = pack.isOwned();
+                    button.addEventListener("click", function () { openPurchase(packKey); });
+                    box.appendChild(button);
                 }
-                box.appendChild(list);
-                const button = createElementWithText("button", "adChoice", isPremium() ? "✔ Pack Premium acheté, merci !" : "Acheter le Pack Premium");
-                button.disabled = isPremium();
-                button.addEventListener("click", openPurchase);
-                box.appendChild(button);
             }
         }
 
-        function openPurchase() {
+        function openPurchase(packKey) {
+            pendingPack = PACKS[packKey];
+            document.getElementById("purchaseTitle").textContent = pendingPack.title;
             document.getElementById("purchaseText").textContent = PAYMENT_TEST_MODE
-                ? "Mode test : l'achat est simulé, rien ne sera payé. Prix prévu : " + PREMIUM_PRICE + "."
-                : "Tu vas être redirigé vers la page de paiement (" + PREMIUM_PRICE + ").";
+                ? "Mode test : l'achat est simulé, rien ne sera payé. Prix prévu : " + pendingPack.price + "."
+                : "Tu vas être redirigé vers la page de paiement (" + pendingPack.price + ").";
             purchaseOverlay.classList.remove("hidden");
         }
 
@@ -7504,7 +7813,7 @@
             if (!PAYMENT_TEST_MODE) {
                 return; //ici : ouvrir la vraie page de paiement (voir game-design/monetisation.md)
             }
-            unlockPremium();
+            pendingPack.unlock();
         });
 
         function unlockPremium() {
@@ -7519,6 +7828,32 @@
             renderSkipButtons();
             renderSpeedButtons();
             renderDeathChoices();
+        }
+
+        //Code de triche "penia" : on perd le Pack Premium (pour retester les pubs)
+        function removePremium() {
+            isPremiumOwned = false;
+            try {
+                localStorage.removeItem("premium");
+            } catch (error) {
+            }
+            syncTimeUpgrades(); //enlève les boutons x8, x10, +500 s, +999 s (et repasse en x1 si on était en x8 ou x10)
+            renderPremiumBoxes();
+            renderDeathChoices();
+        }
+
+        function unlockSupport() {
+            isSupporterOwned = true;
+            try {
+                localStorage.setItem("supporter", "1");
+            } catch (error) {
+            }
+            playSound("buy");
+            renderThemeOptions();
+            applyTheme("olympus"); //on montre tout de suite le thème offert
+            themeSelect.value = "olympus";
+            renderPremiumBoxes();
+            showToast("💛 Merci pour ton soutien ! Thème « Olympe doré » débloqué");
         }
 
 
@@ -7687,6 +8022,16 @@
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
         let lastStatValues = {};
 
+        //Le texte d'une stat ("125%", "10 / 10", "+0.5 PV/s"...) a-t-il baissé ? On compare le 1er nombre de chaque texte.
+        function isStatLower(oldText, newText) {
+            const oldNumber = oldText.match(/-?\d+(\.\d+)?/); //match = cherche le motif (une "regex") : ici, un nombre
+            const newNumber = newText.match(/-?\d+(\.\d+)?/);
+            if (oldNumber === null || newNumber === null) {
+                return false; //pas de nombre (ex : un nom de lien) : ce n'est pas une baisse
+            }
+            return parseFloat(newNumber[0]) < parseFloat(oldNumber[0]); //parseFloat = transforme le texte en nombre à virgule
+        }
+
         //highlightChanges = true après un achat : les stats qui ont changé s'animent
         function renderStatsPanel(highlightChanges = false) {
             let html = "";
@@ -7698,7 +8043,10 @@
                     const value = String(row[1]);
                     const key = category.title + "|" + label; //le même nom de stat existe dans plusieurs sections
                     const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
-                    const rowClass = hasChanged ? "statRow statChanged" : "statRow";
+                    let rowClass = "statRow";
+                    if (hasChanged) {
+                        rowClass += isStatLower(lastStatValues[key], value) ? " statChanged statDecreased" : " statChanged"; //rouge si elle baisse, vert sinon
+                    }
                     html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
                     newStatValues[key] = value;
                 }
@@ -7901,6 +8249,20 @@
             achille: function () {       // invincible (retaper pour désactiver)
                 isCheatInvincible = !isCheatInvincible;
                 return isCheatInvincible ? "Invincible !" : "Invincibilité désactivée";
+            },
+            penia: function () {         // enlève le Pack Premium, pour retester les pubs (Penia = la déesse de la pauvreté)
+                removePremium();
+                return "Pack Premium retiré";
+            },
+            harmonia: function () {      // tous les dieux en lien "Les deux côtés" (Harmonie = la déesse de l'harmonie)
+                for (const tree of SKILL_TREES) {
+                    tree.linkMode = "both";
+                }
+                refreshStats();
+                if (currentTree !== null) {
+                    openSkillTree(currentTree); //redessine la fenêtre ouverte avec les nouveaux liens
+                }
+                return "Tous les dieux sont liés des deux côtés";
             },
             olympe: function () {        // toutes les divinités rejoignent l'orbite
                 while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) { //some = "au moins un"
@@ -8225,12 +8587,21 @@
 
         //LISTE DES THÈMES dans les Paramètres
         const themeSelect = document.getElementById("themeSelect");
-        for (const key of Object.keys(THEMES)) {
-            const option = document.createElement("option");
-            option.value = key;
-            option.textContent = THEMES[key].name;
-            themeSelect.appendChild(option);
+        //(re)remplit la liste : le thème du Pack Soutien y est, mais grisé tant qu'on n'a pas le pack (pour donner envie)
+        function renderThemeOptions() {
+            themeSelect.textContent = "";
+            for (const key of Object.keys(THEMES)) {
+                const theme = THEMES[key];
+                const isLocked = theme.supporterOnly && !isSupporterOwned;
+                const option = document.createElement("option");
+                option.value = key;
+                option.textContent = isLocked ? "🔒 " + theme.name + " (Pack Soutien)" : theme.name;
+                option.disabled = isLocked; //disabled = on ne peut pas le choisir
+                themeSelect.appendChild(option);
+            }
+            themeSelect.value = currentThemeKey;
         }
+        renderThemeOptions();
         themeSelect.addEventListener("change", function () {
             applyTheme(themeSelect.value);
             playSound("click");

@@ -69,6 +69,14 @@ Les boutons pas encore achetés restent visibles avec un cadenas. Sur la branche
 
 Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jusqu'à ce que la portée occupe environ 95 % de la demi-largeur de l'écran. Au-delà de 1000 px de portée, elle ne dézoome plus.
 
+## La portée des dieux
+
+Quand la souris survole une planète (ou pendant qu'on la touche au doigt), un cercle en pointillés de sa couleur, légèrement teinté, montre sa portée : la distance jusqu'à laquelle elle tire, mesurée depuis la planète. Le cercle rouge du joueur reste affiché autour du centre.
+
+## Les crédits
+
+Bouton « Crédits » dans les paramètres : le nom de la créatrice, ses rôles et son mail défilent de bas en haut, comme à la fin d'un film (26 s, en boucle). Passer la souris dessus (ou garder le doigt) met le défilement en pause. Échap, « Fermer » ou un clic à côté ferment les crédits. Avec le Pack Soutien, un merci s'ajoute à la fin. Le mail est le même que dans le contact (assemblé en morceaux dans le code, contre les robots).
+
 ## Le panneau des statistiques
 
 À droite, quand la fenêtre des skills ou le game over est ouvert (en bas sur écran étroit, repliable sur petit écran). Ses sections :
@@ -76,4 +84,4 @@ Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jus
 - **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. La planète du skill tree ouvert passe en premier.
 - **Défense**, **Gains** et **Ennemis**.
 
-Une stat qui vient de changer clignote.
+Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`).

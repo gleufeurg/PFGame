@@ -29,3 +29,8 @@ Images de référence pour les formes des skill trees, et les choix de style val
 - Inspiration : Outhold et The Tower.
 - Des aplats nets, sans texture.
 - Des thèmes de couleur, qui teintent aussi les boutons et le texte.
+- **Thème exclusif « Olympe doré »** (Pack Soutien, branche `monetisation`) : il doit sortir du lot, c'est le seul thème animé.
+  - Couleurs : nuit royale violette (`#140f26`) et or (`#f5c451`), texte crème, orbite dorée.
+  - Dans le jeu : 7 rayons de lumière dorés tombent du haut de l'écran en éventail, se balancent lentement et « respirent » ; 70 grains de poussière d'or montent en ondulant et scintillent (`drawOlympusSky`).
+  - Dans l'interface : la bordure dorée des fenêtres brille et la lumière en fait le tour ; les grands titres sont écrits « en or » avec un reflet qui passe ; les boutons ont un léger halo doré.
+  - Il n'est pas dans le « Cycle des thèmes ».
