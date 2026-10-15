@@ -33,3 +33,12 @@ Les boutons pas encore achetés restent visibles avec un cadenas.
 ## La caméra
 
 Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jusqu'à ce que la portée occupe environ 95 % de la demi-largeur de l'écran. Au-delà de 1000 px de portée, elle ne dézoome plus.
+
+## Le panneau des statistiques
+
+À droite, quand la fenêtre des skills ou le game over est ouvert. Ses sections :
+- **Vie** et **Attaque (toi)** : les stats du triangle du milieu.
+- **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. La planète du skill tree ouvert passe en premier.
+- **Défense**, **Gains** et **Ennemis**.
+
+Une stat qui vient de changer clignote.

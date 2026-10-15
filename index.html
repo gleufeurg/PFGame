@@ -6783,14 +6783,9 @@
 
         //Chaque catégorie = un titre + des lignes [nom, valeur]
         function getStatsCategories() {
-            const elementBonuses = [];
-            for (const element of Object.keys(playerStats.damageVs)) {
-                if (playerStats.damageVs[element] > 0) {
-                    elementBonuses.push(["Dégâts bonus vs " + ELEMENT_NAMES[element], "+" + playerStats.damageVs[element]]);
-                }
-            }
+            const elementBonuses = getElementBonusRows(playerStats);
 
-            return [
+            const categories = [
                 {
                     title: "Vie",
                     rows: [
@@ -6814,13 +6809,6 @@
                         ["Dégâts critiques", formatNumber(playerStats.critDamage * 100) + "%"],
                         ["Effet de combo au hasard", formatNumber(playerStats.comboProcChance * 100) + "% par tir"]
                     ].concat(elementBonuses) //concat = ajoute les lignes de elementBonuses à la fin
-                },
-                {
-                    title: "Planètes",
-                    rows: planets.length === 0 ? [["Aucune", "achète un dieu dans le shop"]] : planets.map(function (planet) {
-                        const stats = planet.stats;
-                        return [planet.name, formatNumber(stats.damage) + " dég. · " + formatNumber(stats.attackSpeed / PLANET_FIRE_INTERVAL) + " tir/s · " + formatNumber(stats.range) + " px"];
-                    })
                 },
                 {
                     title: "Défense",
@@ -6849,6 +6837,68 @@
                     ]
                 }
             ];
+            //Les planètes juste après l'attaque du joueur (splice(2, 0, ...) = insère à la 3e place sans rien enlever)
+            categories.splice(2, 0, ...getPlanetStatsCategories());
+            return categories;
+        }
+
+        //UNE SECTION PAR PLANÈTE, avec toutes ses stats de tir. Celle du skill tree ouvert passe en premier.
+        function getPlanetStatsCategories() {
+            if (planets.length === 0) {
+                return [{ title: "Planètes", rows: [["Aucune", "achète un dieu dans le shop"]] }];
+            }
+            const ordered = planets.slice().sort(function (a, b) { //sort : -1 = a avant b
+                return (b.tree === currentTree) - (a.tree === currentTree);
+            });
+            return ordered.map(function (planet) {
+                const stats = planet.stats;
+                const rows = [
+                    ["Dégâts par balle", formatNumber(stats.damage)],
+                    ["Vitesse d'attaque", formatPercent(stats.attackSpeed)],
+                    ["Tirs par seconde", formatNumber(stats.attackSpeed / PLANET_FIRE_INTERVAL)],
+                    ["Balles par tir", formatNumber(stats.bulletCount)],
+                    ["Portée", formatNumber(stats.range) + " px"],
+                    ["Vitesse des balles", formatPercent(stats.bulletSpeed)],
+                    ["Chance de critique", formatNumber(stats.critChance * 100) + "%"],
+                    ["Dégâts critiques", formatNumber(stats.critDamage * 100) + "%"]
+                ].concat(getElementBonusRows(stats));
+                //Les stats rares : seulement si la planète en a
+                if (stats.lifeOnHit > 0) {
+                    rows.push(["Vie par touche (pour toi)", "+" + formatNumber(stats.lifeOnHit)]);
+                }
+                if (stats.maxHealthOnHit > 0) {
+                    rows.push(["PV max par touche (pour toi)", "+" + formatNumber(stats.maxHealthOnHit)]);
+                }
+                if (stats.comboProcChance > 0) {
+                    rows.push(["Effet de combo au hasard", formatNumber(stats.comboProcChance * 100) + "% par tir"]);
+                }
+                rows.push(["Lien d'orbite", getLinkSummary(planet)]);
+                return { title: ATTRIBUTES[planet.tree.element].icon + " " + planet.name, rows: rows };
+            });
+        }
+
+        //"Dégâts bonus vs Feu : +2"... pour chaque élément où ces stats ont un bonus
+        function getElementBonusRows(stats) {
+            const rows = [];
+            for (const element of Object.keys(stats.damageVs)) {
+                if (stats.damageVs[element] > 0) {
+                    rows.push(["Dégâts bonus vs " + ELEMENT_NAMES[element], "+" + formatNumber(stats.damageVs[element])]);
+                }
+            }
+            return rows;
+        }
+
+        //Le lien choisi par la planète, et ce qu'il donne (ex : "Droite : Explosion")
+        function getLinkSummary(planet) {
+            const mode = planet.tree.linkMode;
+            if (mode === "none") {
+                return "Aucun";
+            }
+            if (mode === "opposite") {
+                return "Opposé : " + OPPOSITE_BONUSES[planet.tree.element].name;
+            }
+            const combos = getPlanetCombos(planet);
+            return LINK_MODES[mode].name + " : " + (combos.length > 0 ? combos.map(function (item) { return item.combo.name; }).join(", ") : "pas de combo");
         }
 
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
@@ -6863,10 +6913,11 @@
                 for (const row of category.rows) {
                     const label = row[0];
                     const value = String(row[1]);
-                    const hasChanged = highlightChanges && lastStatValues[label] !== undefined && lastStatValues[label] !== value;
+                    const key = category.title + "|" + label; //le même nom de stat existe dans plusieurs sections
+                    const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
                     const rowClass = hasChanged ? "statRow statChanged" : "statRow";
                     html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
-                    newStatValues[label] = value;
+                    newStatValues[key] = value;
                 }
             }
             statsContent.innerHTML = html;
