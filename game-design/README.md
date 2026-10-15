@@ -12,6 +12,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |
 | [interface.md](interface.md) | touches, améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |
 | [codes-triche.md](codes-triche.md) | les codes pour tester plus vite | écrit à la main |
+| [problemes.md](problemes.md) | les problèmes connus pas encore corrigés : pourquoi, et comment les régler | écrit à la main |
 | [direction-artistique/](direction-artistique/README.md) | les choix de style et les images de référence des formes | écrit à la main |
 | [mythologie/](mythologie/README.md) | l'arbre généalogique des dieux grecs | page autonome |
 
