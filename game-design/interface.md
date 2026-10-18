@@ -37,6 +37,12 @@ Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 
 - **Encoche et barre du téléphone** : les boutons du bord de l'écran s'en écartent (`env(safe-area-inset-...)` en CSS).
 - Quand on tourne l'écran ou qu'on change la taille de la fenêtre, le jeu se redimensionne (`resizeCanvas`).
 
+## La netteté (écrans fins)
+
+Sur un écran « fin » (téléphone, écran Retina, Windows réglé à 125 % ou 150 %), il y a plusieurs vrais pixels par pixel CSS (`window.devicePixelRatio`). Le canvas est créé avec ces vrais pixels, limité à 2 par pixel CSS (`MAX_PIXEL_RATIO`), pour que le jeu reste net sans trop ralentir. Les calculs du jeu, eux, restent en pixels CSS (`screenSize`).
+
+Option **« Graphismes nets »** dans les paramètres (cochée par défaut, retenue dans `localStorage`, clé `sharpGraphics`) : la décocher dessine avec 1 pixel par pixel CSS, plus flou mais jusqu'à 4 fois moins de pixels à dessiner, pour les téléphones lents.
+
 ## La sauvegarde
 
 La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite et ordre des planètes. Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).

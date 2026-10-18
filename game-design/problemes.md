@@ -6,21 +6,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Affichage
 
-### Le jeu peut paraître flou sur les écrans fins (les deux branches)
-
-- **Ce qu'on voit :** sur un téléphone, un écran « Retina » de Mac, ou un PC réglé à 125 % / 150 % dans Windows, tout ce qui est dessiné dans le jeu est un peu flou. Ça se voit surtout sur les **textes du canvas** (nombres de dégâts, nom des planètes, vie du joueur) et sur les bords des formes. Les menus (HTML) restent nets.
-- **Pourquoi :** un écran fin a plusieurs vrais pixels pour un pixel « CSS » (souvent 2 ou 3, c'est `window.devicePixelRatio`). Le canvas est créé à la taille CSS de l'écran (`canvas.width = window.innerWidth`), donc avec 2 à 3 fois moins de pixels que l'écran : le navigateur l'agrandit, comme une image basse résolution étirée.
-- **Que faire :** créer le canvas à la vraie résolution, puis tout dessiner à l'échelle :
-  ```js
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2); //limité à 2 pour ne pas trop ralentir
-  canvas.width = window.innerWidth * pixelRatio;
-  canvas.height = window.innerHeight * pixelRatio;
-  canvas.style.width = window.innerWidth + "px";   //la taille AFFICHÉE ne change pas
-  canvas.style.height = window.innerHeight + "px";
-  ```
-  Ensuite, multiplier par `pixelRatio` la transformation de dessin (`setTransform` dans `drawCanvas` et `applyWorldTransform`), le fond (`backgroundCanvas`, `shadowCanvas`) et la conversion souris → monde (`screenToWorld`), et utiliser `window.innerWidth` au lieu de `canvas.width` partout où on parle de la taille de l'écran.
-- **Le prix à payer :** 2 fois plus de pixels en largeur et en hauteur, c'est 4 fois plus de pixels à dessiner. Avec 10 000 ennemis, ça peut ralentir. Bonne idée : une option « Haute qualité » dans les paramètres, et un `pixelRatio` à 1 automatiquement quand il y a beaucoup d'ennemis.
-
 ### Les polices viennent d'internet (les deux branches)
 
 - **Ce qu'on voit :** sans connexion (dans l'application mobile par exemple), le jeu s'affiche avec une police de secours. Avec une connexion lente, le texte change de police au bout d'un moment. Les textes du canvas peuvent être dessinés avec la police de secours si Nunito n'est pas encore chargée.

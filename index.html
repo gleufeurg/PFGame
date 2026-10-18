@@ -1707,6 +1707,10 @@
                 <label for="muteCheckbox">Couper le son</label>
             </div>
             <div class="settingRow">
+                <input type="checkbox" id="sharpGraphicsCheckbox">
+                <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
+            </div>
+            <div class="settingRow">
                 <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
             </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
@@ -1733,9 +1737,40 @@
             return "rgb(" + red + ", " + green + ", " + blue + ")";
         }
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const center = { x: canvas.width / 2, y: canvas.height / 2 };
+        //NETTETÉ : un écran "fin" (téléphone, écran Retina, Windows à 125-150 %) a plusieurs vrais pixels par pixel CSS
+        //(window.devicePixelRatio, souvent 2 ou 3). Le canvas est donc créé avec autant de vrais pixels, sinon tout est flou.
+        //screenSize = la taille de l'écran en pixels CSS : c'est elle qu'on utilise pour tous les calculs du jeu.
+        //canvas.width / canvas.height = le nombre de VRAIS pixels du canvas (seulement pour le dessin).
+        const MAX_PIXEL_RATIO = 2;      // au-delà, 3x3 = 9 fois plus de pixels à dessiner : trop lent pour un gain à peine visible
+        const screenSize = { width: window.innerWidth, height: window.innerHeight };
+        let pixelRatio = 1;
+        const center = { x: 0, y: 0 };
+
+        //Option "Graphismes nets" (Paramètres), activée par défaut. Désactivée = plus rapide sur un téléphone lent.
+        let isSharpGraphics = true;
+        try {
+            isSharpGraphics = localStorage.getItem("sharpGraphics") !== "0";
+        } catch (error) {
+        }
+
+        function getPixelRatio() {
+            return isSharpGraphics ? Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO) : 1;
+        }
+
+        //Donne au canvas la taille de l'écran (appelé au démarrage et quand la fenêtre change de taille)
+        function applyCanvasSize() {
+            screenSize.width = window.innerWidth;
+            screenSize.height = window.innerHeight;
+            pixelRatio = getPixelRatio();
+            canvas.width = Math.round(screenSize.width * pixelRatio);    //les vrais pixels...
+            canvas.height = Math.round(screenSize.height * pixelRatio);
+            canvas.style.width = screenSize.width + "px";                 //...affichés à la taille de l'écran
+            canvas.style.height = screenSize.height + "px";
+            center.x = screenSize.width / 2;
+            center.y = screenSize.height / 2;
+        }
+
+        applyCanvasSize();
 
 
         //TÉLÉPHONE / TABLETTE : true si l'écran se pilote au doigt. Le jeu affiche alors moins d'effets (les téléphones sont moins puissants)
@@ -1755,7 +1790,7 @@
         //Le zoom visé pour la portée actuelle
         function getTargetCameraZoom() {
             const range = Math.min(playerStats.range, CAMERA_MAX_RANGE);
-            return Math.min(1, (canvas.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
+            return Math.min(1, (screenSize.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
         }
 
         function updateCamera(deltaTime) {
@@ -1769,14 +1804,21 @@
 
         //Le rectangle du monde visible à l'écran (+ une marge)
         function getVisibleWorldRect(margin) {
-            const halfWidth = canvas.width / 2 / cameraZoom + margin;
-            const halfHeight = canvas.height / 2 / cameraZoom + margin;
+            const halfWidth = screenSize.width / 2 / cameraZoom + margin;
+            const halfHeight = screenSize.height / 2 / cameraZoom + margin;
             return { left: center.x - halfWidth, right: center.x + halfWidth, top: center.y - halfHeight, bottom: center.y + halfHeight };
         }
 
-        //Le zoom du monde : agrandit (ou réduit) autour du centre de l'écran
+        //Le zoom du monde : agrandit (ou réduit) autour du centre de l'écran.
+        //Tout est multiplié par pixelRatio : on dessine en pixels CSS, et le canvas les convertit en vrais pixels.
         function applyWorldTransform(targetCtx, offsetX, offsetY) {
-            targetCtx.setTransform(cameraZoom, 0, 0, cameraZoom, center.x * (1 - cameraZoom) + offsetX, center.y * (1 - cameraZoom) + offsetY);
+            const scale = cameraZoom * pixelRatio;
+            targetCtx.setTransform(scale, 0, 0, scale, (center.x * (1 - cameraZoom) + offsetX) * pixelRatio, (center.y * (1 - cameraZoom) + offsetY) * pixelRatio);
+        }
+
+        //Dessin "à l'écran" (sans le zoom du monde), avec la secousse
+        function applyScreenTransform(targetCtx, offsetX, offsetY) {
+            targetCtx.setTransform(pixelRatio, 0, 0, pixelRatio, offsetX * pixelRatio, offsetY * pixelRatio);
         }
 
         function drawCanvas() {
@@ -1789,9 +1831,9 @@
                 shakeY = randomBetween(-strength, strength);
             }
             ctx.save(); //mémorise l'état du pinceau (position, couleurs...) pour le remettre après
-            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
+            applyScreenTransform(ctx, shakeX, shakeY);
 
-            ctx.drawImage(backgroundCanvas, 0, 0); //le fond, dessiné une seule fois au démarrage
+            ctx.drawImage(backgroundCanvas, 0, 0, screenSize.width, screenSize.height); //le fond, dessiné une seule fois au démarrage (étiré : ce sont des dégradés, ça ne se voit pas)
             if (SPACE_BACKGROUND) {
                 drawStars();
             }
@@ -1818,7 +1860,7 @@
         ////BACKGROUND////////  Background stars and galaxy effect
         //////////////////////
         const stars = []; /*stars array*/
-        const STAR_COORDINATES = { x: canvas.width, y: canvas.height }; /*Stars display boundaries, can also just put a flat number*/
+        const STAR_COORDINATES = { x: screenSize.width, y: screenSize.height }; /*Stars display boundaries, can also just put a flat number*/
         const STAR_MAX_SIZE = 4;
         const STAR_COUNT = 200; /*The amount of stars displayed*/
 
@@ -1850,12 +1892,12 @@
         ];
 
         function createBackground() {
-            backgroundCanvas.width = canvas.width;
-            backgroundCanvas.height = canvas.height;
-            shadowCanvas.width = canvas.width;
+            backgroundCanvas.width = screenSize.width;    //le fond reste en pixels CSS (dégradés flous de toute façon)
+            backgroundCanvas.height = screenSize.height;
+            shadowCanvas.width = canvas.width;            //les ombres ont des bords nets : vrais pixels, comme le jeu
             shadowCanvas.height = canvas.height;
             const bgCtx = backgroundCanvas.getContext("2d");
-            const diagonal = Math.hypot(canvas.width, canvas.height);
+            const diagonal = Math.hypot(screenSize.width, screenSize.height);
 
             if (!SPACE_BACKGROUND) {
                 createFlatBackground(bgCtx);
@@ -1867,18 +1909,18 @@
             baseGradient.addColorStop(0, "#14143f");
             baseGradient.addColorStop(1, bgColor);
             bgCtx.fillStyle = baseGradient;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
             //2. Nébuleuses : des dégradés ronds colorés, transparents sur les bords
             for (const nebula of NEBULAS) {
-                const x = nebula.x * canvas.width;
-                const y = nebula.y * canvas.height;
+                const x = nebula.x * screenSize.width;
+                const y = nebula.y * screenSize.height;
                 const radius = nebula.size * diagonal;
                 const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
                 gradient.addColorStop(0, nebula.color);
                 gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
                 bgCtx.fillStyle = gradient;
-                bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+                bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
             }
 
             //3. Ta voie lactée
@@ -1889,48 +1931,48 @@
             vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
             vignette.addColorStop(1, "rgba(0, 0, 10, 0.6)");
             bgCtx.fillStyle = vignette;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
         }
 
         //Fond façon Outhold : une couleur unie, avec un éclairage doux qui vient du haut
         function createFlatBackground(bgCtx) {
             bgCtx.fillStyle = BG_COLOR;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
             //Thème "drapeau" : des bandes horizontales de couleur, en transparence pour que le jeu reste lisible.
             //Pendant le cycle des thèmes, il peut y avoir 2 drapeaux à la fois (l'un s'efface, l'autre apparaît).
             for (const layer of BG_STRIPE_LAYERS) {
-                const stripeHeight = canvas.height / layer.colors.length;
+                const stripeHeight = screenSize.height / layer.colors.length;
                 bgCtx.globalAlpha = layer.opacity;
                 layer.colors.forEach(function (color, i) {
                     bgCtx.fillStyle = color;
-                    bgCtx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
+                    bgCtx.fillRect(0, i * stripeHeight, screenSize.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
                 });
             }
             bgCtx.globalAlpha = 1;
 
-            const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, canvas.height * 0.9);
+            const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, screenSize.height * 0.9);
             light.addColorStop(0, BG_LIGHT_COLOR);
             light.addColorStop(1, "rgba(0, 0, 0, 0)");
             bgCtx.fillStyle = light;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
-            const bottomShade = bgCtx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
+            const bottomShade = bgCtx.createLinearGradient(0, screenSize.height * 0.5, 0, screenSize.height);
             bottomShade.addColorStop(0, "rgba(0, 0, 0, 0)");
             bottomShade.addColorStop(1, "rgba(10, 8, 18, 0.35)");
             bgCtx.fillStyle = bottomShade;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
         }
 
         //targetCtx = le canvas sur lequel dessiner (ici le fond caché)
         function drawGalaxy(targetCtx) {
-            const galaxyGradient = targetCtx.createLinearGradient(0, 0, canvas.height, canvas.width);
+            const galaxyGradient = targetCtx.createLinearGradient(0, 0, screenSize.height, screenSize.width);
             galaxyGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
             galaxyGradient.addColorStop(0.5, "rgba(85, 0, 255, 0.3)")
             galaxyGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
 
             targetCtx.fillStyle = galaxyGradient;
-            targetCtx.fillRect(0, 0, canvas.width, canvas.height)
+            targetCtx.fillRect(0, 0, screenSize.width, screenSize.height)
         }
 
         //PORTÉE : un fin cercle rouge autour du joueur = jusqu'où il peut tirer
@@ -1969,7 +2011,7 @@
                 //Glisse vers la gauche, et réapparaît à droite quand elle sort de l'écran
                 star.x -= STAR_DRIFT_SPEED * star.depth * frameTime;
                 if (star.x < -STAR_MAX_SIZE) {
-                    star.x = canvas.width;
+                    star.x = screenSize.width;
                 }
                 //Scintillement : l'opacité monte et descend avec un sinus
                 const twinkle = 0.55 + 0.45 * Math.sin(visualTime * star.twinkleSpeed + star.twinklePhase);
@@ -2559,7 +2601,8 @@
                         continue;
                     }
                     const radius = getSpriteRadius(enemy.size);
-                    shadowCtx.drawImage(getShadowSprite(radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
+                    const shadowSprite = getShadowSprite(radius);
+                    shadowCtx.drawImage(shadowSprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, shadowSprite.cssWidth, shadowSprite.cssHeight);
                 } else {
                     //Les ennemis à forme spéciale (bien moins nombreux) : dessinés un par un
                     const shadow = shadowVector(enemy.size * 2.2);
@@ -2581,7 +2624,7 @@
 
             //Le canvas des ombres est déjà zoomé : on le recopie sans le zoom du monde (juste la secousse)
             ctx.save();
-            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
+            ctx.setTransform(1, 0, 0, 1, shakeX * pixelRatio, shakeY * pixelRatio); //canvas des ombres et canvas du jeu ont les mêmes vrais pixels
             ctx.globalAlpha = SHADOW_OPACITY;
             ctx.drawImage(shadowCanvas, 0, 0);
             ctx.restore();
@@ -3739,8 +3782,8 @@
         //Si la portée dépasse CAMERA_MAX_RANGE, les ennemis naissent n'importe où entre le bord de l'écran et CAMERA_MAX_RANGE du centre.
         function getSpawnDistance(angle, margin) {
             const zoom = Math.min(cameraZoom, getTargetCameraZoom());
-            const toSide = (canvas.width / 2 / zoom) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
-            const toTopOrBottom = (canvas.height / 2 / zoom) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
+            const toSide = (screenSize.width / 2 / zoom) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
+            const toTopOrBottom = (screenSize.height / 2 / zoom) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
             const outsideScreen = Math.min(toSide, toTopOrBottom) + margin; //le premier bord touché
             if (playerStats.range > CAMERA_MAX_RANGE) {
                 return randomBetween(Math.min(CAMERA_MAX_RANGE, outsideScreen), outsideScreen);
@@ -4004,14 +4047,30 @@
             return Math.max(1, Math.round(size));
         }
 
+        //Crée une petite image de (width x height) pixels CSS, avec pixelRatio fois plus de vrais pixels pour rester nette.
+        //On dessine dedans en pixels CSS (le "scale" s'occupe du reste) ; cssWidth / cssHeight = la taille où la recopier.
+        function createSpriteCanvas(width, height) {
+            const sprite = document.createElement("canvas");
+            sprite.width = Math.ceil(width * pixelRatio);
+            sprite.height = Math.ceil(height * pixelRatio);
+            sprite.cssWidth = width;
+            sprite.cssHeight = height;
+            sprite.getContext("2d").scale(pixelRatio, pixelRatio);
+            return sprite;
+        }
+
+        //Vide les petites images déjà faites (quand la netteté change : il faut les refaire à la bonne résolution)
+        function clearSpriteCaches() {
+            enemySprites.clear();
+            shadowSprites.clear();
+        }
+
         function getRoundEnemySprite(color, sideColor, radius) {
             const key = color + "|" + sideColor + "|" + radius;
             let sprite = enemySprites.get(key);
             if (sprite === undefined) {
                 const depth = Math.max(2, radius * 0.35);
-                sprite = document.createElement("canvas");
-                sprite.width = radius * 2 + SPRITE_PADDING * 2;
-                sprite.height = Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2;
+                sprite = createSpriteCanvas(radius * 2 + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2);
                 const spriteCtx = sprite.getContext("2d");
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(spriteCtx, middle, middle, radius, 0, depth, sideColor); //l'épaisseur
@@ -4030,9 +4089,7 @@
             if (sprite === undefined) {
                 const depth = Math.max(2, radius * 0.35);
                 const shadow = shadowVector(radius * 2.2);
-                sprite = document.createElement("canvas");
-                sprite.width = Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2;
-                sprite.height = Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2;
+                sprite = createSpriteCanvas(Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2);
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(sprite.getContext("2d"), middle, middle + depth, radius, shadow.x, shadow.y, SHADOW_COLOR);
                 shadowSprites.set(key, sprite);
@@ -4051,7 +4108,8 @@
                 if (isRoundEnemy(enemy)) {
                     const radius = getSpriteRadius(enemy.size);
                     const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
-                    ctx.drawImage(getRoundEnemySprite(topColor, enemy.sideColor, radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
+                    const sprite = getRoundEnemySprite(topColor, enemy.sideColor, radius);
+                    ctx.drawImage(sprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, sprite.cssWidth, sprite.cssHeight);
                 }
             }
 
@@ -4299,7 +4357,7 @@
             updatePlanetShooting(deltaTime);
 
             //MOVE & HIT
-            const maxDistance = Math.hypot(canvas.width, canvas.height) / 2 / cameraZoom + 50; //sortie de l'écran visible (avec le zoom)
+            const maxDistance = Math.hypot(screenSize.width, screenSize.height) / 2 / cameraZoom + 50; //sortie de l'écran visible (avec le zoom)
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
@@ -7961,6 +8019,19 @@
         loadSoundSettings();
         createVolumeSliders();
 
+        //GRAPHISMES NETS : dessiner avec les vrais pixels des écrans fins (voir applyCanvasSize)
+        const sharpGraphicsCheckbox = document.getElementById("sharpGraphicsCheckbox");
+        sharpGraphicsCheckbox.checked = isSharpGraphics;
+        sharpGraphicsCheckbox.addEventListener("change", function () {
+            isSharpGraphics = sharpGraphicsCheckbox.checked;
+            try {
+                localStorage.setItem("sharpGraphics", isSharpGraphics ? "1" : "0");
+            } catch (error) {
+            }
+            resizeCanvas(); //recrée le canvas avec la nouvelle résolution
+            playSound("click");
+        });
+
         //LISTE DES THÈMES dans les Paramètres
         const themeSelect = document.getElementById("themeSelect");
         for (const key of Object.keys(THEMES)) {
@@ -7982,12 +8053,13 @@
 
         //TAILLE DE L'ÉCRAN : quand la fenêtre change de taille (ou qu'on tourne le téléphone), le jeu suit
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            center.x = canvas.width / 2;   //center est un "const", mais on peut quand même changer ce qu'il y a DEDANS
-            center.y = canvas.height / 2;
-            STAR_COORDINATES.x = canvas.width;
-            STAR_COORDINATES.y = canvas.height;
+            const oldPixelRatio = pixelRatio;
+            applyCanvasSize();  //center est un "const", mais applyCanvasSize peut quand même changer ce qu'il y a DEDANS
+            STAR_COORDINATES.x = screenSize.width;
+            STAR_COORDINATES.y = screenSize.height;
+            if (pixelRatio !== oldPixelRatio) {
+                clearSpriteCaches(); //ex : fenêtre glissée sur un autre écran, ou option "Graphismes nets" changée
+            }
             createBackground(); //le fond est redessiné à la nouvelle taille
         }
 
