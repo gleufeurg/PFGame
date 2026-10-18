@@ -6,13 +6,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Affichage
 
-### Les polices viennent d'internet (les deux branches)
-
-- **Ce qu'on voit :** sans connexion (dans l'application mobile par exemple), le jeu s'affiche avec une police de secours. Avec une connexion lente, le texte change de police au bout d'un moment. Les textes du canvas peuvent être dessinés avec la police de secours si Nunito n'est pas encore chargée.
-- **Pourquoi :** Nunito et Rubik sont chargées depuis Google Fonts (`<link href="https://fonts.googleapis.com/...">` en haut de `index.html`).
-- **Autre souci :** en Europe, charger des polices depuis les serveurs de Google envoie l'adresse IP du joueur à Google. Un tribunal allemand a jugé ça contraire au RGPD en 2022.
-- **Que faire :** télécharger les fichiers `.woff2` des polices (par exemple sur google-webfonts-helper), les mettre dans un dossier `polices/` du dépôt, et remplacer le `<link>` par des règles `@font-face` qui pointent vers ces fichiers. Sur `monetisation`, ajouter ce dossier à la liste `FICHIERS` de `scripts/copier-jeu.js`. Pour le canvas, attendre `document.fonts.ready` avant de lancer le jeu.
-
 ### Sur téléphone, le jeu dézoome beaucoup (`monetisation`)
 
 - **Ce qu'on voit :** en portrait, l'écran est étroit (environ 390 px de large). Dès que la portée grandit, la caméra dézoome et les ennemis et planètes deviennent petits.
