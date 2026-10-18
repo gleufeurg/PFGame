@@ -11,6 +11,41 @@
 
 Pendant qu'on tape un code de triche, S, T et R ne se déclenchent pas : taper « hestia » n'ouvre pas les skills sur le « s ».
 
+## Au doigt (téléphone et tablette)
+
+Le jeu repère un écran tactile avec `IS_TOUCH_DEVICE` (la question CSS `pointer: coarse`).
+
+| Geste | Effet |
+| --- | --- |
+| Toucher une planète | ouvre son arbre de compétences |
+| Glisser une planète | change sa place dans l'orbite |
+| Bouton « ✦ Skills » (en bas à droite) | remplace la touche S |
+| Bouton du temps (à côté du chrono) | vitesses et sauts de temps, comme à l'ordinateur |
+| Roue crantée | paramètres (remplace Échap) |
+| 1er toucher sur une compétence | montre sa fiche (l'étoile est entourée) |
+| 2e toucher sur la même compétence | l'achète |
+| Appui long (0,55 s) sur une compétence prise | la rembourse (petite vibration) |
+| Deux doigts dans l'arbre | zoomer (pincer) ; un doigt pour le déplacer |
+
+Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 px au lieu de 8). Le zoom du navigateur (double toucher, pincer la page) est coupé.
+
+## Petits écrans
+
+- **Téléphone en portrait** (moins de 600 px de large) : les fenêtres prennent tout l'écran et défilent ; dans la fenêtre des skills, l'arbre passe en premier, les liens d'orbite et les bonus en dessous ; le shop passe sur 2 colonnes ; la roue crantée se cache pendant que l'arbre est ouvert (il a son bouton « Reprendre »).
+- **Téléphone en paysage** (moins de 500 px de haut) : mêmes idées, l'arbre prend 75 % de la hauteur. L'application Android est verrouillée en portrait.
+- **Statistiques repliables** : sur petit écran, le panneau des stats est replié au départ (juste son titre en bas) ; on touche « Statistiques ▴ » pour l'ouvrir ou le fermer.
+- **Encoche et barre du téléphone** : les boutons du bord de l'écran s'en écartent (`env(safe-area-inset-...)` en CSS).
+- Quand on tourne l'écran ou qu'on change la taille de la fenêtre, le jeu se redimensionne (`resizeCanvas`).
+
+## La sauvegarde
+
+La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite et ordre des planètes. Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).
+
+- **Quand :** à chaque changement de progression (achat, compétence, lien, planète déplacée), à chaque mort, toutes les 5 secondes, et quand on quitte ou cache le jeu (passer à une autre appli sur téléphone).
+- **Ce qui n'est pas gardé :** la partie en cours (ennemis, chrono, vie) : en revenant, on recommence une partie, avec toute sa progression.
+- **Effacer :** bouton « Effacer ma progression » dans les paramètres (avec confirmation). Efface aussi les records et les super ennemis vaincus, mais garde les réglages (son, thème) et le Pack Premium (c'est un achat).
+- À côté, d'autres clés existaient déjà : `theme`, `soundSettings`, `records`, `defeatedBosses`, `premium`.
+
 ## Le temps
 
 Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout :
@@ -26,8 +61,8 @@ Les boutons pas encore achetés restent visibles avec un cadenas.
 
 - **Onglets des dieux :** en haut, un onglet par dieu pour passer d'un arbre à l'autre.
 - **Dieux pas encore en orbite :** leur arbre s'affiche quand même, assombri et verrouillé, pour montrer au joueur ce qui l'attend. On peut le parcourir mais pas acheter.
-- **Acheter :** clic sur une compétence disponible. Le lien depuis la compétence voisine se remplit, et l'étoile éclot.
-- **Rembourser :** clic droit sur une compétence prise, ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
+- **Acheter :** clic sur une compétence disponible (au doigt : deux touchers, voir plus haut). Le lien depuis la compétence voisine se remplit, et l'étoile éclot.
+- **Rembourser :** clic droit sur une compétence prise (au doigt : appui long), ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
 - **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
 
 ## La caméra
@@ -40,7 +75,7 @@ Quand la souris survole une planète (ou pendant qu'on la touche au doigt), un c
 
 ## Le panneau des statistiques
 
-À droite, quand la fenêtre des skills ou le game over est ouvert. Ses sections :
+À droite, quand la fenêtre des skills ou le game over est ouvert (en bas sur écran étroit, repliable sur petit écran). Ses sections :
 - **Vie** et **Attaque (toi)** : les stats du triangle du milieu.
 - **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. La planète du skill tree ouvert passe en premier.
 - **Défense**, **Gains** et **Ennemis**.

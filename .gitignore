@@ -1,2 +1,8 @@
 # Fichiers de Visual Studio (propres à chaque ordinateur)
 .vs/
+
+# Application mobile (Capacitor) : elle n'existe que sur la branche monetisation.
+# Quand on revient sur portfolio, ces dossiers restent sur le disque : on les ignore pour ne pas les commiter par erreur.
+node_modules/
+www/
+android/

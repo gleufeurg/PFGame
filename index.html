@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"> <!-- pas de zoom au double-tap sur téléphone ; viewport-fit=cover : le jeu va jusque sous l'encoche -->
     <title>Evangeline's Game</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1395,6 +1395,220 @@
         #treeLinks line {
             stroke-width: 4 !important;
         }
+
+        /*BOUTON "Effacer ma progression" (Paramètres)*/
+        .dangerButton {
+            padding: 8px 14px;
+            border: 2px solid #ff6b6b;
+            border-radius: 8px;
+            background-color: transparent;
+            color: #ff6b6b;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .dangerButton:hover {
+            background-color: #ff6b6b22;
+        }
+
+        /*TÉLÉPHONE ET TABLETTE*/
+        canvas {
+            touch-action: none; /*le doigt sert au jeu (glisser une planète), pas à faire défiler ou zoomer la page*/
+        }
+
+        #skillsButton { /*bouton "Skills" en bas à droite, caché sur ordinateur*/
+            display: none;
+            position: fixed;
+            right: calc(14px + env(safe-area-inset-right)); /*env(safe-area-inset-...) = la place prise par l'encoche ou la barre du téléphone*/
+            bottom: calc(14px + env(safe-area-inset-bottom));
+            z-index: 1;
+            padding: 12px 18px;
+            border: 3px solid var(--ui-border);
+            border-radius: 12px;
+            background-color: #0b0b2ecc;
+            color: var(--ui-text);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .skillNode.touchSelected .star { /*1er toucher sur une compétence : elle est "visée", un 2e toucher l'achète*/
+            outline: 3px solid var(--tree-color);
+            outline-offset: 4px;
+        }
+
+        /*(pointer: coarse) = l'écran se pilote au doigt (pas de souris précise)*/
+        @media (pointer: coarse) {
+            #skillsButton {
+                display: block;
+            }
+
+            #hint {
+                right: 120px; /*laisse la place au bouton Skills*/
+                bottom: calc(18px + env(safe-area-inset-bottom));
+                font-size: 12px;
+            }
+
+            .shopItem, .godTab, .linkOption, .timeOption { /*les doigts sont moins précis qu'une souris : boutons un peu plus grands*/
+                min-height: 40px;
+            }
+        }
+
+        /*PETIT ÉCRAN (téléphone en portrait)*/
+        @media (max-width: 600px) {
+            #hud {
+                top: calc(8px + env(safe-area-inset-top));
+                left: calc(8px + env(safe-area-inset-left));
+            }
+
+            #settingsButton {
+                top: calc(8px + env(safe-area-inset-top));
+                right: calc(8px + env(safe-area-inset-right));
+            }
+
+            .hudValue {
+                font-size: 18px;
+            }
+
+            .hudRow {
+                min-width: 90px;
+                padding: 4px 12px 4px 8px;
+            }
+
+            .overlay {
+                align-items: flex-start; /*les fenêtres commencent en haut et défilent*/
+                padding-top: env(safe-area-inset-top);
+            }
+
+            .panel {
+                width: calc(100% - 16px);
+                max-height: calc(100% - 16px);
+                margin-top: 8px;
+                padding: 16px 14px;
+            }
+
+            #skillTreePanel {
+                padding-left: 0;
+                justify-content: center;
+            }
+
+            #skillTreePanel .panel {
+                gap: 12px;
+            }
+
+            #treeCanvas {
+                height: 55vh; /*l'arbre prend la moitié de la hauteur de l'écran*/
+                margin: 8px 0;
+            }
+
+            #nodeInfo {
+                grid-template-columns: 1fr; /*texte et pastilles l'un sous l'autre*/
+                min-height: 0;
+            }
+
+            .infoName {
+                font-size: 17px;
+            }
+
+            #shopItems {
+                grid-template-columns: 1fr 1fr; /*2 colonnes d'améliorations*/
+                gap: 8px;
+            }
+
+            .shopItem {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            #statsPanel {
+                left: 8px;
+                right: 8px;
+                bottom: calc(8px + env(safe-area-inset-bottom));
+                max-height: 32vh;
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+
+            body.statsVisible .overlay {
+                padding-bottom: calc(32vh + 16px);
+            }
+
+            .settingRow label.volumeLabel {
+                width: 90px;
+            }
+
+            #skillTreePanel .panel { /*l'arbre en premier, les liens d'orbite et les bonus en dessous*/
+                grid-template-areas: "tree" "project" "bonus";
+            }
+        }
+
+        /*PETIT ÉCRAN (largeur OU hauteur) : téléphone en portrait ou en paysage*/
+        @media (max-width: 600px), (max-height: 500px) {
+            body:has(#skillTreePanel:not(.hidden)) #settingsButton { /*:has(...) = "le body qui contient..." : la roue cache le haut de l'arbre, et l'arbre a déjà son bouton Reprendre*/
+                display: none;
+            }
+
+            #statsPanel h2 {
+                cursor: pointer;
+                margin: 0;
+                font-size: 22px;
+            }
+
+            #statsPanel h2::after { /*petite flèche : la fenêtre se replie*/
+                content: " ▾";
+                font-size: 0.7em;
+            }
+
+            body.statsCollapsed #statsPanel h2::after {
+                content: " ▴";
+            }
+
+            body.statsCollapsed #statsContent {
+                display: none;
+            }
+
+            body.statsCollapsed #statsPanel {
+                overflow: hidden;
+            }
+
+            body.statsVisible.statsCollapsed .overlay {
+                padding-bottom: 64px; /*juste la place du titre "Statistiques"*/
+            }
+        }
+
+        /*TÉLÉPHONE EN PAYSAGE (peu de hauteur)*/
+        @media (max-height: 500px) {
+            #treeCanvas {
+                height: 75vh;
+            }
+
+            .overlay {
+                align-items: flex-start;
+            }
+
+            .panel {
+                margin-top: 8px;
+                max-height: calc(100% - 16px);
+                padding: 14px 18px;
+            }
+
+            #statsPanel {
+                top: auto;
+                left: 16px;
+                width: auto;
+                max-height: 50vh;
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+
+            body.statsVisible .overlay {
+                padding-right: 0;
+                padding-bottom: calc(50vh + 16px);
+            }
+
+            .hudValue {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1416,6 +1630,8 @@
     </div>
     <div id="toast" class="hiddenToast"></div>
     <div id="hint">Clique sur une planète (ou appuie sur S) pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place dans l'orbite</div>
+    <!-- Bouton "Compétences" : visible seulement sur écran tactile (sur ordinateur, il y a la touche S) -->
+    <button id="skillsButton" aria-label="Compétences">✦ Skills</button>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
     </button>
@@ -1490,6 +1706,9 @@
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
             </div>
+            <div class="settingRow">
+                <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
+            </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
             <p class="smallText">Échap : ouvrir / fermer ce menu</p>
         </div>
@@ -1518,6 +1737,9 @@
         canvas.height = window.innerHeight;
         const center = { x: canvas.width / 2, y: canvas.height / 2 };
 
+
+        //TÉLÉPHONE / TABLETTE : true si l'écran se pilote au doigt. Le jeu affiche alors moins d'effets (les téléphones sont moins puissants)
+        const IS_TOUCH_DEVICE = window.matchMedia("(pointer: coarse)").matches; //matchMedia = pose la même question qu'un @media en CSS
 
         let visualTime = 0;   // temps "réel" pour les animations du décor (continue même en pause)
 
@@ -1806,7 +2028,7 @@
 
         //PARTICULES : petits éclats quand un ennemi meurt ou est touché
         const particles = [];
-        const MAX_PARTICLES = 500;          // au-delà, on n'en crée plus (pour ne pas ralentir le jeu)
+        const MAX_PARTICLES = IS_TOUCH_DEVICE ? 200 : 500;          // au-delà, on n'en crée plus (pour ne pas ralentir le jeu)
 
         function spawnParticles(x, y, color, count, speed) {
             for (let i = 0; i < count && particles.length < MAX_PARTICLES; i++) {
@@ -1842,7 +2064,7 @@
         const CRIT_OUTLINE_COLOR = "#ff2a2a";     // ...avec un contour rouge
         const DOT_NUMBER_INTERVAL = 0.5;          // dégâts continus (brûlure, poison...) : additionnés et affichés toutes les 0.5 s
         const PLAYER_HIT_COLOR = "#ffffff";       // les balles du joueur
-        const MAX_DAMAGE_NUMBERS = 150;           // au-delà, on n'en affiche plus (pour ne pas ralentir le jeu)
+        const MAX_DAMAGE_NUMBERS = IS_TOUCH_DEVICE ? 60 : 150;           // au-delà, on n'en affiche plus (pour ne pas ralentir le jeu)
 
         //Couleur de chaque type d'attaque. La plupart reprennent la couleur de l'attribut (ATTRIBUTES),
         //sauf la foudre en jaune, et la lumière en blanc doré (pour ne pas la confondre avec la foudre)
@@ -2317,7 +2539,7 @@
             return { x: Math.cos(SHADOW_ANGLE) * length, y: Math.sin(SHADOW_ANGLE) * length };
         }
 
-        const MAX_ENEMY_SHADOWS = 1500;        // au-delà de ce nombre d'ennemis, les ennemis ronds n'ont plus d'ombre (pour garder le jeu fluide)
+        const MAX_ENEMY_SHADOWS = IS_TOUCH_DEVICE ? 400 : 1500;        // au-delà de ce nombre d'ennemis, les ennemis ronds n'ont plus d'ombre (pour garder le jeu fluide)
 
         function drawShadows() {
             shadowCtx.setTransform(1, 0, 0, 1, 0, 0);
@@ -2487,6 +2709,7 @@
                 playerHealth += playerStats.maxHealth - oldMaxHealth;
             }
             playerHealth = Math.min(playerHealth, playerStats.maxHealth); //après un remboursement, la vie max peut baisser
+            saveProgress(); //tout ce qui change la progression (shop, compétences, liens, dieux) passe par ici
         }
 
 
@@ -2774,14 +2997,15 @@
         let PLANET_ORBIT_RADIUS = 100;              // grandit quand il y a beaucoup de planètes (voir addPlanet)
         const PLANET_SPACING = 10;                  // rayon de l'orbite par planète (12 planètes = 120)
         const PLANET_SIZE = 20;
-        const PLANET_CLICK_MARGIN = 8;            // pixels en plus autour de la planète pour cliquer plus facilement
+        const PLANET_CLICK_MARGIN = IS_TOUCH_DEVICE ? 20 : 8;            // pixels en plus autour de la planète pour cliquer plus facilement (plus au doigt)
 
         // CRÉATION (une seule fois, au démarrage) : une planète par skill tree déjà débloqué (aucun au début : elles s'achètent dans le shop)
+        //Les planètes sont remises dans l'ordre de la sauvegarde (savedPlanetOrder, voir SAUVEGARDE)
         function createPlanets() {
-            for (const tree of SKILL_TREES) {
-                if (!tree.isLocked) {
-                    addPlanet(tree);
-                }
+            const owned = SKILL_TREES.filter(function (tree) { return !tree.isLocked; });
+            owned.sort(function (a, b) { return getSavedPlanetIndex(a.name) - getSavedPlanetIndex(b.name); }); //sort = trie la liste
+            for (const tree of owned) {
+                addPlanet(tree);
             }
         }
 
@@ -2986,7 +3210,10 @@
             canvas.style.cursor = planet !== null ? "pointer" : "default";
         });
 
-        function stopDraggingPlanet() {
+        function stopDraggingPlanet(event) {
+            if (event.pointerType === "touch") {
+                hoveredPlanet = null; //au doigt, rien n'est "survolé" une fois le doigt levé
+            }
             if (draggedPlanet !== null) {
                 planetWasDragged = true; //le "click" qui suit le lâcher ne doit pas ouvrir l'arbre
                 playSound("buy");
@@ -6140,6 +6367,7 @@
             const wasOpen = currentTree !== null;
             currentTree = tree;
             lastOpenedTree = tree;
+            selectedTouchNode = null;
             updatePause();
             playSound(wasOpen ? "click" : "menuOpen");
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
@@ -6362,20 +6590,78 @@
                 button.appendChild(label);
                 button.style.left = node.x + "%";
                 button.style.top = node.y + "%";
+                if (node === selectedTouchNode) {
+                    button.classList.add("touchSelected");
+                }
                 button.addEventListener("mouseenter", function () { showNodeInfo(node); });
-                button.addEventListener("click", function () {
-                    if (!treeWasDragged) { //si on vient de déplacer l'arbre, ce n'était pas un vrai clic
-                        unlockNode(node);
+                //AU DOIGT : on retient que c'est un doigt, et un appui long (sans bouger) rembourse la compétence
+                button.addEventListener("pointerdown", function (event) {
+                    lastNodePointerType = event.pointerType; //"mouse", "touch" ou "pen"
+                    if (event.pointerType !== "touch") {
+                        return;
                     }
+                    wasLongPress = false;
+                    clearTimeout(longPressTimer);
+                    longPressTimer = setTimeout(function () {
+                        if (treeWasDragged || !node.unlocked) {
+                            return; //on déplaçait l'arbre, ou rien à rembourser
+                        }
+                        wasLongPress = true;
+                        if (navigator.vibrate) {
+                            navigator.vibrate(30); //petite vibration du téléphone (si c'est possible)
+                        }
+                        refundNode(node);
+                    }, NODE_LONG_PRESS_TIME);
                 });
-                //CLIC DROIT : rembourser la compétence
+                button.addEventListener("pointerup", cancelLongPress);
+                button.addEventListener("pointercancel", cancelLongPress);
+                button.addEventListener("pointerleave", cancelLongPress);
+                button.addEventListener("click", function () {
+                    if (treeWasDragged) { //si on vient de déplacer l'arbre, ce n'était pas un vrai clic
+                        return;
+                    }
+                    if (wasLongPress) { //l'appui long a déjà remboursé
+                        wasLongPress = false;
+                        return;
+                    }
+                    //Au doigt, pas de survol : le 1er toucher montre la description, le 2e achète
+                    if (lastNodePointerType === "touch" && selectedTouchNode !== node) {
+                        selectTouchNode(node, button);
+                        return;
+                    }
+                    unlockNode(node);
+                });
+                //CLIC DROIT : rembourser la compétence (au doigt, c'est l'appui long qui s'en charge)
                 button.addEventListener("contextmenu", function (event) {
                     event.preventDefault(); //pas le menu du navigateur
-                    refundNode(node);
+                    if (lastNodePointerType !== "touch") {
+                        refundNode(node);
+                    }
                 });
                 treeNodes.appendChild(button);
             }
             justUnlockedNode = null; //l'animation n'est jouée qu'une fois
+        }
+
+        //COMPÉTENCES AU DOIGT
+        const NODE_LONG_PRESS_TIME = 550;   // millisecondes d'appui pour rembourser
+        let selectedTouchNode = null;       // la compétence touchée une 1re fois (un 2e toucher l'achète)
+        let lastNodePointerType = "mouse";
+        let longPressTimer = null;
+        let wasLongPress = false;
+
+        function cancelLongPress() {
+            clearTimeout(longPressTimer); //clearTimeout = annule le setTimeout s'il n'a pas encore eu lieu
+        }
+
+        function selectTouchNode(node, button) {
+            selectedTouchNode = node;
+            for (const other of treeNodes.querySelectorAll(".touchSelected")) { //querySelectorAll = tous les éléments qui correspondent
+                other.classList.remove("touchSelected");
+            }
+            button.classList.add("touchSelected");
+            playSound("click");
+            showNodeInfo(node);
         }
 
         //Une ligne SVG entre deux compétences
@@ -6395,8 +6681,10 @@
         function showNodeInfoHint() {
             nodeInfo.className = "empty";
             nodeInfo.textContent = currentTree.isLocked
-                ? "Aperçu : " + currentTree.name + " n'est pas encore en orbite. Survole une compétence pour voir ce qu'elle fera."
-                : "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.";
+                ? "Aperçu : " + currentTree.name + " n'est pas encore en orbite. " + (IS_TOUCH_DEVICE ? "Touche" : "Survole") + " une compétence pour voir ce qu'elle fera."
+                : IS_TOUCH_DEVICE
+                    ? "Touche une compétence pour voir ce qu'elle fait, touche-la encore pour la débloquer avec ton XP, appui long pour la rembourser. Deux doigts pour zoomer."
+                    : "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.";
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
@@ -6444,7 +6732,7 @@
                 } else if (xp < node.cost) {
                     chips.appendChild(createElementWithText("span", "infoChip blocked", "Pas assez d'XP"));
                 } else {
-                    chips.appendChild(createElementWithText("span", "infoChip ready", "Clique pour débloquer"));
+                    chips.appendChild(createElementWithText("span", "infoChip ready", IS_TOUCH_DEVICE ? "Touche encore pour débloquer" : "Clique pour débloquer"));
                 }
             }
             nodeInfo.appendChild(chips);
@@ -6598,15 +6886,48 @@
         //CLIQUER-GLISSER = déplacement (marche aussi au doigt grâce aux "pointer events")
         let dragStart = null;
 
+        //ZOOM À DEUX DOIGTS ("pincer") : on retient la position de chaque doigt posé sur l'arbre
+        const treePointers = new Map();   // numéro du doigt -> sa position
+        let pinchStartDistance = 0;
+        let pinchStartZoom = 1;
+
+        function getPinchInfo() {
+            const points = [...treePointers.values()]; //[...] = transforme en tableau
+            return {
+                distance: Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y),
+                x: (points[0].x + points[1].x) / 2, //le milieu des deux doigts
+                y: (points[0].y + points[1].y) / 2
+            };
+        }
+
         treeCanvas.addEventListener("pointerdown", function (event) {
             if (event.target.closest("#treeZoomControls")) {
                 return; //les boutons de zoom ne déplacent pas l'arbre
+            }
+            treePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+            if (treePointers.size === 2) { //un 2e doigt : on passe en mode "pincer"
+                pinchStartDistance = getPinchInfo().distance;
+                pinchStartZoom = treeZoom;
+                dragStart = null;
+                treeWasDragged = true; //ce n'est pas un toucher sur une compétence
+                cancelLongPress();
+                return;
             }
             dragStart = { x: event.clientX, y: event.clientY, panX: treePanX, panY: treePanY };
             treeWasDragged = false;
         });
 
         window.addEventListener("pointermove", function (event) {
+            if (treePointers.has(event.pointerId)) {
+                treePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+                if (treePointers.size === 2 && pinchStartDistance > 0) {
+                    const pinch = getPinchInfo();
+                    const rect = treeCanvas.getBoundingClientRect();
+                    const wantedZoom = pinchStartZoom * pinch.distance / pinchStartDistance; //doigts 2x plus écartés = zoom x2
+                    zoomTreeAt(pinch.x - rect.left, pinch.y - rect.top, wantedZoom / treeZoom);
+                    return;
+                }
+            }
             if (dragStart === null) {
                 return;
             }
@@ -6623,10 +6944,14 @@
             }
         });
 
-        window.addEventListener("pointerup", function () {
+        function releaseTreePointer(event) {
+            treePointers.delete(event.pointerId);
             dragStart = null;
             treeCanvas.classList.remove("dragging");
-        });
+        }
+
+        window.addEventListener("pointerup", releaseTreePointer);
+        window.addEventListener("pointercancel", releaseTreePointer);
 
         //BOUTONS + / − / voir tout : zoom centré sur le milieu de la fenêtre
         document.getElementById("treeZoomIn").addEventListener("click", function () {
@@ -6676,6 +7001,7 @@
 
         function openGameOver() {
             updateRecords();
+            saveProgress();
             renderShop();
             gameOverPanel.classList.remove("hidden");
             showStatsPanel();
@@ -6776,6 +7102,119 @@
         }
 
         document.getElementById("restartButton").addEventListener("click", restartGame);
+
+
+        /////////////////////
+        ////SAUVEGARDE///////  Or, XP, shop, compétences, dieux, liens et ordre des planètes
+        /////////////////////
+        //Tout est rangé dans le navigateur (localStorage), comme le volume. Dans l'application mobile, c'est pareil :
+        //l'appli garde son propre localStorage sur le téléphone (il disparaît seulement si on désinstalle le jeu).
+        //JSON.stringify = transforme un objet en texte (localStorage ne garde que du texte), JSON.parse = l'inverse.
+        const SAVE_KEY = "progress";
+        const SAVE_VERSION = 1;             // à augmenter si un jour le format change (pour convertir les vieilles sauvegardes)
+        const AUTO_SAVE_INTERVAL = 5000;    // millisecondes : sauvegarde régulière (l'or et l'XP changent sans arrêt pendant une partie)
+        let isProgressLoaded = false;       // on ne sauvegarde rien tant que la sauvegarde n'est pas chargée (sinon on l'écraserait)
+        let isProgressErased = false;       // après "Effacer ma progression" : on ne sauvegarde plus jusqu'au rechargement
+        let savedPlanetOrder = [];          // les noms des planètes, dans l'ordre de l'orbite
+
+        function saveProgress() {
+            if (!isProgressLoaded || isProgressErased) {
+                return;
+            }
+            const data = {
+                version: SAVE_VERSION,
+                gold: gold,
+                xp: xp,
+                shop: {},   // nom de l'amélioration -> niveau
+                trees: {},  // nom du dieu -> { en orbite ?, lien, compétences prises }
+                planetOrder: planets.map(function (planet) { return planet.name; }) //map = transforme chaque élément
+            };
+            for (const item of SHOP_ITEMS) {
+                data.shop[item.name] = item.level;
+            }
+            for (const tree of SKILL_TREES) {
+                data.trees[tree.name] = {
+                    owned: !tree.isLocked,
+                    linkMode: tree.linkMode,
+                    nodes: tree.nodes.filter(function (node) { return node.unlocked; }).map(function (node) { return node.id; })
+                };
+            }
+            try {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+            } catch (error) {
+            }
+        }
+
+        //Au démarrage, AVANT de créer les planètes. Si quelque chose manque (vieille sauvegarde), on garde la valeur de départ.
+        function loadProgress() {
+            let data = null;
+            try {
+                data = JSON.parse(localStorage.getItem(SAVE_KEY));
+            } catch (error) {
+            }
+            if (data !== null && typeof data === "object") {
+                gold = Number(data.gold) || 0; //Number(...) || 0 = un nombre, ou 0 si ce n'en est pas un
+                xp = Number(data.xp) || 0;
+                const shop = data.shop || {};
+                for (const item of SHOP_ITEMS) {
+                    if (typeof shop[item.name] === "number" && !item.unlocksGod) { //le niveau "Nouvelle divinité" est recalculé plus bas
+                        item.level = clamp(Math.floor(shop[item.name]), 0, item.maxLevel);
+                    }
+                }
+                const trees = data.trees || {};
+                for (const tree of SKILL_TREES) {
+                    const saved = trees[tree.name];
+                    if (saved === undefined) {
+                        continue; //dieu ajouté au jeu après cette sauvegarde
+                    }
+                    tree.isLocked = !saved.owned;
+                    if (LINK_MODES[saved.linkMode] !== undefined) {
+                        tree.linkMode = saved.linkMode;
+                    }
+                    for (const id of saved.nodes || []) {
+                        const node = findNode(tree, id);
+                        if (node !== null) {
+                            node.unlocked = true;
+                        }
+                    }
+                }
+                savedPlanetOrder = Array.isArray(data.planetOrder) ? data.planetOrder : [];
+                const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
+                godItem.level = SKILL_TREES.filter(function (tree) { return !tree.isLocked; }).length;
+            }
+            isProgressLoaded = true;
+        }
+
+        //La place d'une planète dans la sauvegarde (une planète inconnue va à la fin)
+        function getSavedPlanetIndex(name) {
+            const index = savedPlanetOrder.indexOf(name);
+            return index === -1 ? savedPlanetOrder.length : index;
+        }
+
+        //Effacer : on vide la sauvegarde et on recharge la page. Le Pack Premium (un achat) et les réglages sont gardés.
+        function eraseProgress() {
+            if (!confirm("Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif.")) { //confirm = fenêtre OK / Annuler
+                return;
+            }
+            isProgressErased = true;
+            try {
+                localStorage.removeItem(SAVE_KEY);
+                localStorage.removeItem("records");
+                localStorage.removeItem("defeatedBosses");
+            } catch (error) {
+            }
+            location.reload(); //recharge la page : le jeu redémarre à zéro
+        }
+
+        document.getElementById("resetProgressButton").addEventListener("click", eraseProgress);
+        setInterval(saveProgress, AUTO_SAVE_INTERVAL); //setInterval = refait ça toutes les AUTO_SAVE_INTERVAL millisecondes
+        //Sur téléphone, le système peut fermer le jeu sans prévenir dès qu'on passe à une autre appli : on sauvegarde à ce moment-là
+        document.addEventListener("visibilitychange", function () {
+            if (document.hidden) {
+                saveProgress();
+            }
+        });
+        window.addEventListener("pagehide", saveProgress);
 
         //CONTACT : l'adresse est assemblée ici en morceaux, au lieu d'être écrite en entier dans la page.
         //Les robots qui ramassent les adresses mail sur les sites (pour envoyer du spam) la trouvent moins facilement.
@@ -7488,6 +7927,24 @@
 
         document.getElementById("closeSettingsButton").addEventListener("click", closeSettings);
 
+        //PETIT ÉCRAN : la fenêtre de stats se replie (on touche son titre pour l'ouvrir ou la fermer), pour laisser la place au reste
+        const SMALL_SCREEN_QUERY = window.matchMedia("(max-width: 600px), (max-height: 500px)");
+        if (SMALL_SCREEN_QUERY.matches) {
+            document.body.classList.add("statsCollapsed"); //repliée au départ
+        }
+        document.querySelector("#statsPanel h2").addEventListener("click", function () {
+            if (SMALL_SCREEN_QUERY.matches) {
+                document.body.classList.toggle("statsCollapsed"); //toggle = ajoute la classe si elle n'y est pas, l'enlève sinon
+                playSound("click");
+            }
+        });
+
+        //TÉLÉPHONE : le bouton "Skills" remplace la touche S, et l'aide parle de toucher au lieu de cliquer
+        document.getElementById("skillsButton").addEventListener("click", toggleSkillTreeWindow);
+        if (IS_TOUCH_DEVICE) {
+            document.getElementById("hint").textContent = "Touche une planète pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place";
+        }
+
         settingsPanel.addEventListener("click", function (event) {
             if (event.target === settingsPanel) {
                 closeSettings();
@@ -7523,9 +7980,26 @@
         /////////////////////
         let lastTime = performance.now();
 
+        //TAILLE DE L'ÉCRAN : quand la fenêtre change de taille (ou qu'on tourne le téléphone), le jeu suit
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            center.x = canvas.width / 2;   //center est un "const", mais on peut quand même changer ce qu'il y a DEDANS
+            center.y = canvas.height / 2;
+            STAR_COORDINATES.x = canvas.width;
+            STAR_COORDINATES.y = canvas.height;
+            createBackground(); //le fond est redessiné à la nouvelle taille
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+
         function gameStart() {
+            loadProgress();      //la sauvegarde d'abord : elle dit quels dieux sont en orbite
+            createPlanets();
+            syncTimeUpgrades();  //les boutons de temps débloqués dans le shop
             computeStats();
             playerHealth = playerStats.maxHealth;
+            updateHud();
             createStars();
             let savedTheme = DEFAULT_THEME;
             try {
@@ -7533,7 +8007,6 @@
             } catch (error) {
             }
             applyTheme(savedTheme); //dessine aussi le fond
-            createPlanets();
             requestAnimationFrame(gameUpdate);
         }
 

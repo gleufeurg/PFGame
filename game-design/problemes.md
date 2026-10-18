@@ -28,12 +28,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Autre souci :** en Europe, charger des polices depuis les serveurs de Google envoie l'adresse IP du joueur à Google. Un tribunal allemand a jugé ça contraire au RGPD en 2022.
 - **Que faire :** télécharger les fichiers `.woff2` des polices (par exemple sur google-webfonts-helper), les mettre dans un dossier `polices/` du dépôt, et remplacer le `<link>` par des règles `@font-face` qui pointent vers ces fichiers. Sur `monetisation`, ajouter ce dossier à la liste `FICHIERS` de `scripts/copier-jeu.js`. Pour le canvas, attendre `document.fonts.ready` avant de lancer le jeu.
 
-### Le jeu ne suit pas la taille de la fenêtre (`portfolio` seulement)
-
-- **Ce qu'on voit :** si on agrandit, réduit ou tourne l'écran après le chargement, le jeu n'est plus centré et le fond est coupé.
-- **Pourquoi :** la taille du canvas n'est lue qu'une fois, au démarrage.
-- **Que faire :** c'est corrigé sur `monetisation` (fonction `resizeCanvas`, appelée sur l'événement `resize`). Il suffit de la reprendre sur `portfolio`.
-
 ### Sur téléphone, le jeu dézoome beaucoup (`monetisation`)
 
 - **Ce qu'on voit :** en portrait, l'écran est étroit (environ 390 px de large). Dès que la portée grandit, la caméra dézoome et les ennemis et planètes deviennent petits.
@@ -47,11 +41,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Que faire :** l'application Android est verrouillée en portrait, donc le problème ne touche que la version web. Si besoin : en paysage, cacher les onglets des dieux derrière un menu déroulant et mettre l'arbre à côté des liens d'orbite.
 
 ## Sauvegarde
-
-### Pas de sauvegarde de la progression (`portfolio` seulement)
-
-- **Pourquoi :** la sauvegarde (`saveProgress` / `loadProgress`) a été ajoutée seulement sur `monetisation`, pour l'application mobile.
-- **Que faire :** la reprendre sur `portfolio` si on veut que les visiteurs du portfolio gardent leur partie.
 
 ### La sauvegarde peut disparaître (`monetisation`)
 
@@ -114,11 +103,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 - **Pourquoi :** un commit de `portfolio` (« Portée des dieux au survol… ») a ajouté par erreur `node_modules/`, `www/` et des fichiers Android. Ils ont été retirés au commit suivant, mais restent dans l'historique : le premier téléchargement du dépôt (clone) est plus long.
 - **Que faire :** rien d'urgent. Pour vraiment les effacer de l'historique, il faudrait réécrire l'historique de `portfolio` (outil `git filter-repo`) puis forcer l'envoi, ce qui oblige à re-télécharger le dépôt partout.
-
-### Changer de branche peut faire commiter des fichiers par erreur (`portfolio`)
-
-- **Pourquoi :** sur `monetisation`, `.gitignore` ignore `node_modules/` et `www/`, et `android/.gitignore` ignore les fichiers générés de l'appli. Quand on passe sur `portfolio`, ces fichiers restent dans le dossier, mais `portfolio` ne les ignore pas : GitHub Desktop les propose dans « Changes ».
-- **Que faire :** ajouter `node_modules/`, `www/` et `android/` au `.gitignore` de `portfolio`. En attendant, décocher ces fichiers dans GitHub Desktop avant de commiter.
 
 ### Avertissement de sécurité de npm (`monetisation`)
 
