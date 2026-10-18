@@ -6,41 +6,13 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Affichage
 
-### Le jeu peut paraître flou sur les écrans fins (les deux branches)
-
-- **Ce qu'on voit :** sur un téléphone, un écran « Retina » de Mac, ou un PC réglé à 125 % / 150 % dans Windows, tout ce qui est dessiné dans le jeu est un peu flou. Ça se voit surtout sur les **textes du canvas** (nombres de dégâts, nom des planètes, vie du joueur) et sur les bords des formes. Les menus (HTML) restent nets.
-- **Pourquoi :** un écran fin a plusieurs vrais pixels pour un pixel « CSS » (souvent 2 ou 3, c'est `window.devicePixelRatio`). Le canvas est créé à la taille CSS de l'écran (`canvas.width = window.innerWidth`), donc avec 2 à 3 fois moins de pixels que l'écran : le navigateur l'agrandit, comme une image basse résolution étirée.
-- **Que faire :** créer le canvas à la vraie résolution, puis tout dessiner à l'échelle :
-  ```js
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2); //limité à 2 pour ne pas trop ralentir
-  canvas.width = window.innerWidth * pixelRatio;
-  canvas.height = window.innerHeight * pixelRatio;
-  canvas.style.width = window.innerWidth + "px";   //la taille AFFICHÉE ne change pas
-  canvas.style.height = window.innerHeight + "px";
-  ```
-  Ensuite, multiplier par `pixelRatio` la transformation de dessin (`setTransform` dans `drawCanvas` et `applyWorldTransform`), le fond (`backgroundCanvas`, `shadowCanvas`) et la conversion souris → monde (`screenToWorld`), et utiliser `window.innerWidth` au lieu de `canvas.width` partout où on parle de la taille de l'écran.
-- **Le prix à payer :** 2 fois plus de pixels en largeur et en hauteur, c'est 4 fois plus de pixels à dessiner. Avec 10 000 ennemis, ça peut ralentir. Bonne idée : une option « Haute qualité » dans les paramètres, et un `pixelRatio` à 1 automatiquement quand il y a beaucoup d'ennemis.
-
-### Les polices viennent d'internet (les deux branches)
-
-- **Ce qu'on voit :** sans connexion (dans l'application mobile par exemple), le jeu s'affiche avec une police de secours. Avec une connexion lente, le texte change de police au bout d'un moment. Les textes du canvas peuvent être dessinés avec la police de secours si Nunito n'est pas encore chargée.
-- **Pourquoi :** Nunito et Rubik sont chargées depuis Google Fonts (`<link href="https://fonts.googleapis.com/...">` en haut de `index.html`).
-- **Autre souci :** en Europe, charger des polices depuis les serveurs de Google envoie l'adresse IP du joueur à Google. Un tribunal allemand a jugé ça contraire au RGPD en 2022.
-- **Que faire :** télécharger les fichiers `.woff2` des polices (par exemple sur google-webfonts-helper), les mettre dans un dossier `polices/` du dépôt, et remplacer le `<link>` par des règles `@font-face` qui pointent vers ces fichiers. Sur `monetisation`, ajouter ce dossier à la liste `FICHIERS` de `scripts/copier-jeu.js`. Pour le canvas, attendre `document.fonts.ready` avant de lancer le jeu.
-
-### Le jeu ne suit pas la taille de la fenêtre (`portfolio` seulement)
-
-- **Ce qu'on voit :** si on agrandit, réduit ou tourne l'écran après le chargement, le jeu n'est plus centré et le fond est coupé.
-- **Pourquoi :** la taille du canvas n'est lue qu'une fois, au démarrage.
-- **Que faire :** c'est corrigé sur `monetisation` (fonction `resizeCanvas`, appelée sur l'événement `resize`). Il suffit de la reprendre sur `portfolio`.
-
-### Sur téléphone, le jeu dézoome beaucoup (`monetisation`)
+### Sur téléphone, le jeu dézoome beaucoup (les deux branches)
 
 - **Ce qu'on voit :** en portrait, l'écran est étroit (environ 390 px de large). Dès que la portée grandit, la caméra dézoome et les ennemis et planètes deviennent petits.
 - **Pourquoi :** la caméra garde toute la portée visible dans la largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`). C'est le comportement voulu, mais sur un écran étroit, il dézoome très vite.
 - **Que faire (choix de game design) :** sur téléphone, accepter que la portée sorte un peu de l'écran sur les côtés (ratio plus grand), ou se baser sur la hauteur en portrait, ou permettre de zoomer à deux doigts dans le jeu.
 
-### Le téléphone en paysage est à l'étroit (`monetisation`)
+### Le téléphone en paysage est à l'étroit (les deux branches)
 
 - **Ce qu'on voit :** dans la version web en paysage, la fenêtre des skills ne montre qu'une partie de l'arbre et il faut faire défiler.
 - **Pourquoi :** 390 px de hauteur, c'est très peu pour les onglets des dieux, le titre et l'arbre.
@@ -48,17 +20,11 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Sauvegarde
 
-### Pas de sauvegarde de la progression (`portfolio` seulement)
+### La sauvegarde n'est pas en ligne (les deux branches)
 
-- **Pourquoi :** la sauvegarde (`saveProgress` / `loadProgress`) a été ajoutée seulement sur `monetisation`, pour l'application mobile.
-- **Que faire :** la reprendre sur `portfolio` si on veut que les visiteurs du portfolio gardent leur partie.
-
-### La sauvegarde peut disparaître (`monetisation`)
-
-- **Ce qu'on voit :** dans un navigateur, la progression peut être perdue.
-- **Pourquoi :** `localStorage` est effacé si le joueur vide les données de navigation, en navigation privée, ou par Safari sur iPhone après 7 jours sans visite. La partie en cours (ennemis, chrono) n'est jamais sauvegardée. Dans l'application mobile, le stockage est bien plus stable (il ne part qu'avec la désinstallation).
-- **Que faire :** pour la version web, ajouter un export / import de sauvegarde (un texte à copier-coller) dans les paramètres. Plus tard, une sauvegarde en ligne (Google Play Games, ou un petit serveur).
-
+- **Ce qu'on voit :** la progression reste dans le navigateur (ou l'application) de l'appareil. Elle est perdue si le joueur vide ses données de navigation, joue en navigation privée, ou sur iPhone si Safari efface les données d'un site non visité depuis 7 jours. La partie en cours (ennemis, chrono) n'est jamais sauvegardée.
+- **Déjà en place :** le bouton « Exporter ma sauvegarde » des paramètres donne un code à garder, à recoller avec « Importer » (voir [interface.md](interface.md)). Mais le joueur doit y penser lui-même.
+- **Que faire :** une sauvegarde en ligne, automatique : Google Play Games (sauvegardes dans le cloud) dans l'application Android, ou un petit serveur avec un compte joueur pour le web.
 ## Monétisation (`monetisation`)
 
 ### Les achats peuvent être « piratés »
@@ -83,25 +49,10 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Jeu
 
-### Les codes de triche sont dans la version publique (les deux branches)
-
-- **Pourquoi :** `CHEAT_CODES` est toujours actif : n'importe quel joueur qui connaît un code peut tout débloquer. Sur `monetisation`, `penia` peut aussi retirer le Pack Premium.
-- **Que faire :** avant de publier, ajouter une constante `CHEATS_ENABLED = false` et ne lire les codes que si elle vaut `true`. Pour tester, il suffit de la remettre à `true`.
-
 ### Les codes de triche ne marchent pas sur téléphone (`monetisation`)
 
-- **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone.
-- **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché (par exemple : toucher 5 fois la version du jeu dans les paramètres), visible seulement quand `CHEATS_ENABLED` vaut `true`.
-
-### Une stat qui baisse s'affiche toujours en rouge (les deux branches)
-
-- **Pourquoi :** `isStatLower` compare juste les nombres : si un nombre baisse, c'est rouge. Mais pour certaines stats, baisser est une bonne nouvelle (par exemple dans la section « Ennemis »).
-- **Que faire :** marquer ces stats comme « plus bas = mieux » dans `getStatsCategories`, et inverser la couleur pour elles.
-
-### Le contact contient encore un texte provisoire (les deux branches)
-
-- **Ce qu'on voit :** dans l'écran de game over, la ligne « LinkedIn / Portfolio : ... ».
-- **Que faire :** mettre les vrais liens, ou retirer la ligne.
+- **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone. En plus, ils sont volontairement coupés dans l'application et sur le site en ligne (`CHEATS_ENABLED`, voir [codes-triche.md](codes-triche.md)).
+- **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché dans les paramètres, affiché seulement quand `CHEATS_ENABLED` vaut `true`, et une façon de l'activer dans l'application de test (par exemple une constante à passer à `true` avant de lancer `npm run sync`).
 
 ### Performances avec énormément d'ennemis (les deux branches)
 
@@ -114,11 +65,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 - **Pourquoi :** un commit de `portfolio` (« Portée des dieux au survol… ») a ajouté par erreur `node_modules/`, `www/` et des fichiers Android. Ils ont été retirés au commit suivant, mais restent dans l'historique : le premier téléchargement du dépôt (clone) est plus long.
 - **Que faire :** rien d'urgent. Pour vraiment les effacer de l'historique, il faudrait réécrire l'historique de `portfolio` (outil `git filter-repo`) puis forcer l'envoi, ce qui oblige à re-télécharger le dépôt partout.
-
-### Changer de branche peut faire commiter des fichiers par erreur (`portfolio`)
-
-- **Pourquoi :** sur `monetisation`, `.gitignore` ignore `node_modules/` et `www/`, et `android/.gitignore` ignore les fichiers générés de l'appli. Quand on passe sur `portfolio`, ces fichiers restent dans le dossier, mais `portfolio` ne les ignore pas : GitHub Desktop les propose dans « Changes ».
-- **Que faire :** ajouter `node_modules/`, `www/` et `android/` au `.gitignore` de `portfolio`. En attendant, décocher ces fichiers dans GitHub Desktop avant de commiter.
 
 ### Avertissement de sécurité de npm (`monetisation`)
 

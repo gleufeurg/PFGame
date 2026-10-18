@@ -28,6 +28,7 @@ Images de référence pour les formes des skill trees, et les choix de style val
 
 - Inspiration : Outhold et The Tower.
 - Des aplats nets, sans texture.
+- Polices : **Nunito** (titres, chiffres, textes du jeu) et **Rubik** (texte courant), sous licence libre OFL. Les fichiers sont dans le dossier `polices/` du dépôt (pas sur Google Fonts) : le jeu marche hors ligne. Si on ajoute une police, il faut aussi la déclarer avec un `@font-face` en haut de `index.html`.
 - Des thèmes de couleur, qui teintent aussi les boutons et le texte.
 - **Thème exclusif « Olympe doré »** (Pack Soutien, branche `monetisation`) : il doit sortir du lot, c'est le seul thème animé.
   - Couleurs : nuit royale violette (`#140f26`) et or (`#f5c451`), texte crème, orbite dorée.

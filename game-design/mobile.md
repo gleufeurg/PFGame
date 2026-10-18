@@ -9,7 +9,7 @@ Le jeu reste **un seul fichier `index.html`**. Pour en faire une application And
 | `package.json` | la liste des outils (Capacitor 8.5.3) et les commandes `npm run ...` | oui |
 | `package-lock.json` | les versions exactes installées (créé par `npm install`, ne pas modifier à la main) | oui |
 | `capacitor.config.json` | le nom de l'appli (`appName`) et son identifiant (`appId`) | oui |
-| `scripts/copier-jeu.js` | copie `index.html` dans `www/` | oui |
+| `scripts/copier-jeu.js` | copie `index.html` et le dossier `polices/` dans `www/` | oui |
 | `android/` | le projet Android, ouvert par Android Studio | oui |
 | `www/` | la copie du jeu mise dans l'appli (recréée à chaque fois) | non |
 | `node_modules/` | les outils téléchargés par `npm install` | non |
@@ -45,7 +45,7 @@ L'application Android est **verrouillée en portrait** (`android:screenOrientati
    ```
    npm run android
    ```
-   Cette commande copie `index.html` dans l'appli (`www/` puis `android/`) et ouvre le projet dans Android Studio.
+   Cette commande copie `index.html` (et les polices) dans l'appli (`www/` puis `android/`) et ouvre le projet dans Android Studio.
 2. Dans Android Studio, attendre la fin de la barre de chargement en bas (« Gradle sync », la première fois c'est long).
 3. En haut, choisir ton téléphone dans la liste des appareils, puis cliquer sur le **triangle vert ▶ (Run)**. L'appli s'installe et s'ouvre sur le téléphone. Elle reste installée ensuite, comme une vraie appli.
 
@@ -67,8 +67,9 @@ Voir [interface.md](interface.md) : commandes au doigt, petits écrans, sauvegar
 
 ## Limites actuelles
 
-- **Polices** : Nunito et Rubik viennent de Google Fonts, donc d'internet. Sans connexion, le jeu marche mais avec une police de secours.
-- **Netteté** : le canvas est à la taille « CSS » de l'écran, pas à sa vraie résolution. Sur les écrans très fins, le jeu peut paraître un peu flou (en échange, il est plus rapide).
+- Les polices sont dans l'appli (dossier `polices/`) : le jeu marche entièrement hors ligne.
+- Le jeu est dessiné à la vraie résolution de l'écran (2 vrais pixels par pixel CSS au maximum). Sur un téléphone lent, décocher « Graphismes nets » dans les paramètres.
+- Les autres problèmes connus sont dans [problemes.md](problemes.md).
 - **Pubs et Pack Premium** : toujours en mode test (`ADS_TEST_MODE`, `PAYMENT_TEST_MODE`), voir [monetisation.md](monetisation.md).
 
 ## La suite (pour publier)

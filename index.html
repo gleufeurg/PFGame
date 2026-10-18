@@ -4,9 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"> <!-- pas de zoom au double-tap sur téléphone ; viewport-fit=cover : le jeu va jusque sous l'encoche -->
     <title>Evangeline's Game</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <style>
+        /*POLICES : rangées dans le dossier polices/ du jeu (au lieu de Google Fonts sur internet).
+          Le jeu marche donc sans connexion (application mobile), et l'adresse IP des joueurs n'est pas envoyée à Google (RGPD).
+          Chaque police est coupée en 2 fichiers : "latin" (français, anglais...) et "latin-ext" (autres langues à accents).
+          unicode-range = les caractères que contient le fichier : le navigateur ne télécharge que ceux dont il a besoin.*/
+        @font-face {
+            font-family: "Nunito";
+            font-style: normal;
+            font-weight: 200 1000; /*une police "variable" : un seul fichier pour toutes les épaisseurs*/
+            font-display: swap;
+            src: url("polices/nunito-latin-wght-normal.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: "Nunito";
+            font-style: normal;
+            font-weight: 200 1000; /*une police "variable" : un seul fichier pour toutes les épaisseurs*/
+            font-display: swap;
+            src: url("polices/nunito-latin-ext-wght-normal.woff2") format("woff2");
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+        @font-face {
+            font-family: "Rubik";
+            font-style: normal;
+            font-weight: 200 1000; /*une police "variable" : un seul fichier pour toutes les épaisseurs*/
+            font-display: swap;
+            src: url("polices/rubik-latin-wght-normal.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+        @font-face {
+            font-family: "Rubik";
+            font-style: normal;
+            font-weight: 200 1000; /*une police "variable" : un seul fichier pour toutes les épaisseurs*/
+            font-display: swap;
+            src: url("polices/rubik-latin-ext-wght-normal.woff2") format("woff2");
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+    </style>
     <style>
         body { /*pré-réglages du body, là où se trouve le canvas du jeu*/
             margin: 0; /* pas de marge automatique*/
@@ -1791,6 +1826,47 @@
         body.themeOlympus .primaryButton, body.themeOlympus #settingsButton, body.themeOlympus #skillsButton {
             box-shadow: 0 0 14px rgba(245, 196, 81, 0.35);
         }
+
+        /*CODE DE SAUVEGARDE (Paramètres)*/
+        .saveRow {
+            flex-wrap: wrap; /*les 3 boutons passent à la ligne s'il n'y a pas la place*/
+        }
+
+        #saveCodeOverlay {
+            z-index: 40; /*par-dessus les paramètres*/
+        }
+
+        .saveCodePanel {
+            max-width: 520px;
+        }
+
+        #saveCodeArea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 2px solid var(--ui-line);
+            border-radius: 8px;
+            background-color: var(--ui-surface);
+            color: var(--ui-text);
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            word-break: break-all; /*le code est un seul long "mot" : on le coupe n'importe où*/
+            resize: vertical;
+        }
+
+        .saveCodeButtons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        /*CONTACT (écran de game over)*/
+        .contactInfo {
+            padding: 12px 16px;
+            border-radius: 8px;
+            background-color: var(--ui-surface);
+            line-height: 1.8;
+            word-break: break-word; /*les longues adresses passent à la ligne sur téléphone*/
+        }
     </style>
 </head>
 <body>
@@ -1865,9 +1941,9 @@
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
             <section id="contactArea">
                 <h2>Contact</h2>
-                <div class="placeholder">
+                <div class="contactInfo">
                     Mail : <a id="contactMail" href="#">(chargement…)</a><br>
-                    LinkedIn / Portfolio : ...
+                    Portfolio : <a href="https://titouanlefevreportfolio.squarespace.com" target="_blank" rel="noopener">titouanlefevreportfolio.squarespace.com</a>
                 </div>
             </section>
         </div>
@@ -1878,6 +1954,19 @@
         <h2>Statistiques</h2>
         <div id="statsContent"></div>
     </aside>
+
+    <!-- CODE DE SAUVEGARDE : pour garder sa progression ailleurs, ou la passer sur un autre appareil -->
+    <div id="saveCodeOverlay" class="overlay hidden">
+        <div class="panel saveCodePanel">
+            <h2 id="saveCodeTitle">Ma sauvegarde</h2>
+            <p id="saveCodeText" class="smallText"></p>
+            <textarea id="saveCodeArea" rows="6" spellcheck="false"></textarea>
+            <div class="saveCodeButtons">
+                <button id="saveCodeActionButton" class="primaryButton">Copier</button>
+                <button id="saveCodeCloseButton" class="primaryButton">Fermer</button>
+            </div>
+        </div>
+    </div>
 
     <!-- PARAMÈTRES : roue crantée en haut à droite, ou touche Échap -->
     <div id="settingsPanel" class="overlay hidden">
@@ -1892,10 +1981,16 @@
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
             </div>
+            <div class="settingRow">
+                <input type="checkbox" id="sharpGraphicsCheckbox">
+                <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
+            </div>
             <div id="premiumBoxSettings" class="premiumBox"></div>
             <div id="supportBoxSettings" class="premiumBox supportBox"></div>
-            <div class="settingRow">
+            <div class="settingRow saveRow">
                 <button id="creditsButton" class="primaryButton">Crédits</button>
+                <button id="exportSaveButton" class="primaryButton">Exporter ma sauvegarde</button>
+                <button id="importSaveButton" class="primaryButton">Importer</button>
                 <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
             </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
@@ -1972,9 +2067,40 @@
             return "rgb(" + red + ", " + green + ", " + blue + ")";
         }
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const center = { x: canvas.width / 2, y: canvas.height / 2 };
+        //NETTETÉ : un écran "fin" (téléphone, écran Retina, Windows à 125-150 %) a plusieurs vrais pixels par pixel CSS
+        //(window.devicePixelRatio, souvent 2 ou 3). Le canvas est donc créé avec autant de vrais pixels, sinon tout est flou.
+        //screenSize = la taille de l'écran en pixels CSS : c'est elle qu'on utilise pour tous les calculs du jeu.
+        //canvas.width / canvas.height = le nombre de VRAIS pixels du canvas (seulement pour le dessin).
+        const MAX_PIXEL_RATIO = 2;      // au-delà, 3x3 = 9 fois plus de pixels à dessiner : trop lent pour un gain à peine visible
+        const screenSize = { width: window.innerWidth, height: window.innerHeight };
+        let pixelRatio = 1;
+        const center = { x: 0, y: 0 };
+
+        //Option "Graphismes nets" (Paramètres), activée par défaut. Désactivée = plus rapide sur un téléphone lent.
+        let isSharpGraphics = true;
+        try {
+            isSharpGraphics = localStorage.getItem("sharpGraphics") !== "0";
+        } catch (error) {
+        }
+
+        function getPixelRatio() {
+            return isSharpGraphics ? Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO) : 1;
+        }
+
+        //Donne au canvas la taille de l'écran (appelé au démarrage et quand la fenêtre change de taille)
+        function applyCanvasSize() {
+            screenSize.width = window.innerWidth;
+            screenSize.height = window.innerHeight;
+            pixelRatio = getPixelRatio();
+            canvas.width = Math.round(screenSize.width * pixelRatio);    //les vrais pixels...
+            canvas.height = Math.round(screenSize.height * pixelRatio);
+            canvas.style.width = screenSize.width + "px";                 //...affichés à la taille de l'écran
+            canvas.style.height = screenSize.height + "px";
+            center.x = screenSize.width / 2;
+            center.y = screenSize.height / 2;
+        }
+
+        applyCanvasSize();
 
 
         //TÉLÉPHONE / TABLETTE : true si l'écran se pilote au doigt. Le jeu affiche alors moins d'effets (les téléphones sont moins puissants)
@@ -1994,7 +2120,7 @@
         //Le zoom visé pour la portée actuelle
         function getTargetCameraZoom() {
             const range = Math.min(playerStats.range, CAMERA_MAX_RANGE);
-            return Math.min(1, (canvas.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
+            return Math.min(1, (screenSize.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
         }
 
         function updateCamera(deltaTime) {
@@ -2008,14 +2134,21 @@
 
         //Le rectangle du monde visible à l'écran (+ une marge)
         function getVisibleWorldRect(margin) {
-            const halfWidth = canvas.width / 2 / cameraZoom + margin;
-            const halfHeight = canvas.height / 2 / cameraZoom + margin;
+            const halfWidth = screenSize.width / 2 / cameraZoom + margin;
+            const halfHeight = screenSize.height / 2 / cameraZoom + margin;
             return { left: center.x - halfWidth, right: center.x + halfWidth, top: center.y - halfHeight, bottom: center.y + halfHeight };
         }
 
-        //Le zoom du monde : agrandit (ou réduit) autour du centre de l'écran
+        //Le zoom du monde : agrandit (ou réduit) autour du centre de l'écran.
+        //Tout est multiplié par pixelRatio : on dessine en pixels CSS, et le canvas les convertit en vrais pixels.
         function applyWorldTransform(targetCtx, offsetX, offsetY) {
-            targetCtx.setTransform(cameraZoom, 0, 0, cameraZoom, center.x * (1 - cameraZoom) + offsetX, center.y * (1 - cameraZoom) + offsetY);
+            const scale = cameraZoom * pixelRatio;
+            targetCtx.setTransform(scale, 0, 0, scale, (center.x * (1 - cameraZoom) + offsetX) * pixelRatio, (center.y * (1 - cameraZoom) + offsetY) * pixelRatio);
+        }
+
+        //Dessin "à l'écran" (sans le zoom du monde), avec la secousse
+        function applyScreenTransform(targetCtx, offsetX, offsetY) {
+            targetCtx.setTransform(pixelRatio, 0, 0, pixelRatio, offsetX * pixelRatio, offsetY * pixelRatio);
         }
 
         function drawCanvas() {
@@ -2028,9 +2161,9 @@
                 shakeY = randomBetween(-strength, strength);
             }
             ctx.save(); //mémorise l'état du pinceau (position, couleurs...) pour le remettre après
-            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
+            applyScreenTransform(ctx, shakeX, shakeY);
 
-            ctx.drawImage(backgroundCanvas, 0, 0); //le fond, dessiné une seule fois au démarrage
+            ctx.drawImage(backgroundCanvas, 0, 0, screenSize.width, screenSize.height); //le fond, dessiné une seule fois au démarrage (étiré : ce sont des dégradés, ça ne se voit pas)
             if (SPACE_BACKGROUND) {
                 drawStars();
             }
@@ -2060,7 +2193,7 @@
         ////BACKGROUND////////  Background stars and galaxy effect
         //////////////////////
         const stars = []; /*stars array*/
-        const STAR_COORDINATES = { x: canvas.width, y: canvas.height }; /*Stars display boundaries, can also just put a flat number*/
+        const STAR_COORDINATES = { x: screenSize.width, y: screenSize.height }; /*Stars display boundaries, can also just put a flat number*/
         const STAR_MAX_SIZE = 4;
         const STAR_COUNT = 200; /*The amount of stars displayed*/
 
@@ -2092,12 +2225,12 @@
         ];
 
         function createBackground() {
-            backgroundCanvas.width = canvas.width;
-            backgroundCanvas.height = canvas.height;
-            shadowCanvas.width = canvas.width;
+            backgroundCanvas.width = screenSize.width;    //le fond reste en pixels CSS (dégradés flous de toute façon)
+            backgroundCanvas.height = screenSize.height;
+            shadowCanvas.width = canvas.width;            //les ombres ont des bords nets : vrais pixels, comme le jeu
             shadowCanvas.height = canvas.height;
             const bgCtx = backgroundCanvas.getContext("2d");
-            const diagonal = Math.hypot(canvas.width, canvas.height);
+            const diagonal = Math.hypot(screenSize.width, screenSize.height);
 
             if (!SPACE_BACKGROUND) {
                 createFlatBackground(bgCtx);
@@ -2109,18 +2242,18 @@
             baseGradient.addColorStop(0, "#14143f");
             baseGradient.addColorStop(1, bgColor);
             bgCtx.fillStyle = baseGradient;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
             //2. Nébuleuses : des dégradés ronds colorés, transparents sur les bords
             for (const nebula of NEBULAS) {
-                const x = nebula.x * canvas.width;
-                const y = nebula.y * canvas.height;
+                const x = nebula.x * screenSize.width;
+                const y = nebula.y * screenSize.height;
                 const radius = nebula.size * diagonal;
                 const gradient = bgCtx.createRadialGradient(x, y, 0, x, y, radius);
                 gradient.addColorStop(0, nebula.color);
                 gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
                 bgCtx.fillStyle = gradient;
-                bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+                bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
             }
 
             //3. Ta voie lactée
@@ -2131,48 +2264,48 @@
             vignette.addColorStop(0, "rgba(0, 0, 0, 0)");
             vignette.addColorStop(1, "rgba(0, 0, 10, 0.6)");
             bgCtx.fillStyle = vignette;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
         }
 
         //Fond façon Outhold : une couleur unie, avec un éclairage doux qui vient du haut
         function createFlatBackground(bgCtx) {
             bgCtx.fillStyle = BG_COLOR;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
             //Thème "drapeau" : des bandes horizontales de couleur, en transparence pour que le jeu reste lisible.
             //Pendant le cycle des thèmes, il peut y avoir 2 drapeaux à la fois (l'un s'efface, l'autre apparaît).
             for (const layer of BG_STRIPE_LAYERS) {
-                const stripeHeight = canvas.height / layer.colors.length;
+                const stripeHeight = screenSize.height / layer.colors.length;
                 bgCtx.globalAlpha = layer.opacity;
                 layer.colors.forEach(function (color, i) {
                     bgCtx.fillStyle = color;
-                    bgCtx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
+                    bgCtx.fillRect(0, i * stripeHeight, screenSize.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
                 });
             }
             bgCtx.globalAlpha = 1;
 
-            const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, canvas.height * 0.9);
+            const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, screenSize.height * 0.9);
             light.addColorStop(0, BG_LIGHT_COLOR);
             light.addColorStop(1, "rgba(0, 0, 0, 0)");
             bgCtx.fillStyle = light;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
-            const bottomShade = bgCtx.createLinearGradient(0, canvas.height * 0.5, 0, canvas.height);
+            const bottomShade = bgCtx.createLinearGradient(0, screenSize.height * 0.5, 0, screenSize.height);
             bottomShade.addColorStop(0, "rgba(0, 0, 0, 0)");
             bottomShade.addColorStop(1, "rgba(10, 8, 18, 0.35)");
             bgCtx.fillStyle = bottomShade;
-            bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+            bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
         }
 
         //targetCtx = le canvas sur lequel dessiner (ici le fond caché)
         function drawGalaxy(targetCtx) {
-            const galaxyGradient = targetCtx.createLinearGradient(0, 0, canvas.height, canvas.width);
+            const galaxyGradient = targetCtx.createLinearGradient(0, 0, screenSize.height, screenSize.width);
             galaxyGradient.addColorStop(0, "rgba(0, 0, 0, 0)")
             galaxyGradient.addColorStop(0.5, "rgba(85, 0, 255, 0.3)")
             galaxyGradient.addColorStop(1, "rgba(0, 0, 0, 0)")
 
             targetCtx.fillStyle = galaxyGradient;
-            targetCtx.fillRect(0, 0, canvas.width, canvas.height)
+            targetCtx.fillRect(0, 0, screenSize.width, screenSize.height)
         }
 
         //PORTÉE : un fin cercle rouge autour du joueur = jusqu'où il peut tirer
@@ -2216,9 +2349,9 @@
             ctx.save();
             ctx.globalCompositeOperation = "lighter"; //"lighter" = les couleurs s'ajoutent : ça éclaire, comme de la lumière
             //LES RAYONS : des triangles très fins qui partent d'au-dessus de l'écran
-            const originX = canvas.width / 2;
-            const originY = -canvas.height * 0.15;
-            const length = Math.hypot(canvas.width, canvas.height) * 1.2;
+            const originX = screenSize.width / 2;
+            const originY = -screenSize.height * 0.15;
+            const length = Math.hypot(screenSize.width, screenSize.height) * 1.2;
             const light = ctx.createRadialGradient(originX, originY, 0, originX, originY, length);
             light.addColorStop(0, "rgba(255, 228, 150, 0.9)");
             light.addColorStop(0.6, "rgba(255, 200, 90, 0.25)");
@@ -2239,7 +2372,7 @@
             //LA POUSSIÈRE D'OR : créée la première fois, puis elle monte et revient en bas quand elle sort de l'écran
             if (olympusDust.length === 0) {
                 for (let i = 0; i < OLYMPUS_DUST_COUNT; i++) {
-                    olympusDust.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, speed: randomBetween(8, 26), size: randomBetween(1, 2.6), phase: Math.random() * Math.PI * 2 });
+                    olympusDust.push({ x: Math.random() * screenSize.width, y: Math.random() * screenSize.height, speed: randomBetween(8, 26), size: randomBetween(1, 2.6), phase: Math.random() * Math.PI * 2 });
                 }
             }
             ctx.fillStyle = OLYMPUS_GOLD;
@@ -2247,8 +2380,8 @@
                 dust.y -= dust.speed * frameTime;
                 dust.x += Math.sin(visualTime * 0.5 + dust.phase) * 6 * frameTime; //elle ondule un peu de gauche à droite
                 if (dust.y < -5) {
-                    dust.y = canvas.height + 5;
-                    dust.x = Math.random() * canvas.width;
+                    dust.y = screenSize.height + 5;
+                    dust.x = Math.random() * screenSize.width;
                 }
                 const twinkle = 0.5 + 0.5 * Math.sin(visualTime * 2 + dust.phase);
                 ctx.globalAlpha = 0.25 + 0.6 * twinkle;
@@ -2265,7 +2398,7 @@
                 //Glisse vers la gauche, et réapparaît à droite quand elle sort de l'écran
                 star.x -= STAR_DRIFT_SPEED * star.depth * frameTime;
                 if (star.x < -STAR_MAX_SIZE) {
-                    star.x = canvas.width;
+                    star.x = screenSize.width;
                 }
                 //Scintillement : l'opacité monte et descend avec un sinus
                 const twinkle = 0.55 + 0.45 * Math.sin(visualTime * star.twinkleSpeed + star.twinklePhase);
@@ -2864,7 +2997,8 @@
                         continue;
                     }
                     const radius = getSpriteRadius(enemy.size);
-                    shadowCtx.drawImage(getShadowSprite(radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
+                    const shadowSprite = getShadowSprite(radius);
+                    shadowCtx.drawImage(shadowSprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, shadowSprite.cssWidth, shadowSprite.cssHeight);
                 } else {
                     //Les ennemis à forme spéciale (bien moins nombreux) : dessinés un par un
                     const shadow = shadowVector(enemy.size * 2.2);
@@ -2886,7 +3020,7 @@
 
             //Le canvas des ombres est déjà zoomé : on le recopie sans le zoom du monde (juste la secousse)
             ctx.save();
-            ctx.setTransform(1, 0, 0, 1, shakeX, shakeY);
+            ctx.setTransform(1, 0, 0, 1, shakeX * pixelRatio, shakeY * pixelRatio); //canvas des ombres et canvas du jeu ont les mêmes vrais pixels
             ctx.globalAlpha = SHADOW_OPACITY;
             ctx.drawImage(shadowCanvas, 0, 0);
             ctx.restore();
@@ -4073,8 +4207,8 @@
         //Si la portée dépasse CAMERA_MAX_RANGE, les ennemis naissent n'importe où entre le bord de l'écran et CAMERA_MAX_RANGE du centre.
         function getSpawnDistance(angle, margin) {
             const zoom = Math.min(cameraZoom, getTargetCameraZoom());
-            const toSide = (canvas.width / 2 / zoom) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
-            const toTopOrBottom = (canvas.height / 2 / zoom) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
+            const toSide = (screenSize.width / 2 / zoom) / Math.max(Math.abs(Math.cos(angle)), 0.0001);   // jusqu'au bord gauche ou droit
+            const toTopOrBottom = (screenSize.height / 2 / zoom) / Math.max(Math.abs(Math.sin(angle)), 0.0001); // jusqu'au bord haut ou bas
             const outsideScreen = Math.min(toSide, toTopOrBottom) + margin; //le premier bord touché
             if (playerStats.range > CAMERA_MAX_RANGE) {
                 return randomBetween(Math.min(CAMERA_MAX_RANGE, outsideScreen), outsideScreen);
@@ -4338,14 +4472,30 @@
             return Math.max(1, Math.round(size));
         }
 
+        //Crée une petite image de (width x height) pixels CSS, avec pixelRatio fois plus de vrais pixels pour rester nette.
+        //On dessine dedans en pixels CSS (le "scale" s'occupe du reste) ; cssWidth / cssHeight = la taille où la recopier.
+        function createSpriteCanvas(width, height) {
+            const sprite = document.createElement("canvas");
+            sprite.width = Math.ceil(width * pixelRatio);
+            sprite.height = Math.ceil(height * pixelRatio);
+            sprite.cssWidth = width;
+            sprite.cssHeight = height;
+            sprite.getContext("2d").scale(pixelRatio, pixelRatio);
+            return sprite;
+        }
+
+        //Vide les petites images déjà faites (quand la netteté change : il faut les refaire à la bonne résolution)
+        function clearSpriteCaches() {
+            enemySprites.clear();
+            shadowSprites.clear();
+        }
+
         function getRoundEnemySprite(color, sideColor, radius) {
             const key = color + "|" + sideColor + "|" + radius;
             let sprite = enemySprites.get(key);
             if (sprite === undefined) {
                 const depth = Math.max(2, radius * 0.35);
-                sprite = document.createElement("canvas");
-                sprite.width = radius * 2 + SPRITE_PADDING * 2;
-                sprite.height = Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2;
+                sprite = createSpriteCanvas(radius * 2 + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2);
                 const spriteCtx = sprite.getContext("2d");
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(spriteCtx, middle, middle, radius, 0, depth, sideColor); //l'épaisseur
@@ -4364,9 +4514,7 @@
             if (sprite === undefined) {
                 const depth = Math.max(2, radius * 0.35);
                 const shadow = shadowVector(radius * 2.2);
-                sprite = document.createElement("canvas");
-                sprite.width = Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2;
-                sprite.height = Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2;
+                sprite = createSpriteCanvas(Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2);
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(sprite.getContext("2d"), middle, middle + depth, radius, shadow.x, shadow.y, SHADOW_COLOR);
                 shadowSprites.set(key, sprite);
@@ -4385,7 +4533,8 @@
                 if (isRoundEnemy(enemy)) {
                     const radius = getSpriteRadius(enemy.size);
                     const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
-                    ctx.drawImage(getRoundEnemySprite(topColor, enemy.sideColor, radius), enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING);
+                    const sprite = getRoundEnemySprite(topColor, enemy.sideColor, radius);
+                    ctx.drawImage(sprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, sprite.cssWidth, sprite.cssHeight);
                 }
             }
 
@@ -4633,7 +4782,7 @@
             updatePlanetShooting(deltaTime);
 
             //MOVE & HIT
-            const maxDistance = Math.hypot(canvas.width, canvas.height) / 2 / cameraZoom + 50; //sortie de l'écran visible (avec le zoom)
+            const maxDistance = Math.hypot(screenSize.width, screenSize.height) / 2 / cameraZoom + 50; //sortie de l'écran visible (avec le zoom)
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
@@ -7550,6 +7699,131 @@
 
         document.getElementById("resetProgressButton").addEventListener("click", eraseProgress);
 
+        //CODE DE SAUVEGARDE : toute la progression dans un texte à copier quelque part (mail, notes...), puis à recoller
+        //(sur un autre navigateur, un autre appareil, ou après avoir vidé les données). C'est la sécurité si localStorage est effacé.
+        //Les achats (packs) et les réglages (son, thème) ne sont PAS dans le code : seulement la progression du jeu.
+        const SAVE_CODE_PREFIX = "PFG1:";                                  // pour reconnaître un vrai code (1 = version du format)
+        const SAVE_CODE_KEYS = [SAVE_KEY, "records", "defeatedBosses"];   // les clés de localStorage mises dans le code
+        const saveCodeOverlay = document.getElementById("saveCodeOverlay");
+        const saveCodeArea = document.getElementById("saveCodeArea");
+        const saveCodeActionButton = document.getElementById("saveCodeActionButton");
+        let saveCodeMode = "export";   // "export" (on montre le code) ou "import" (on en colle un)
+
+        //Texte -> base64 (des lettres et chiffres sans accents, faciles à copier). btoa ne connaît pas les accents ("Héphaïstos"),
+        //donc on passe d'abord par les octets UTF-8 avec TextEncoder.
+        function textToBase64(text) {
+            let binary = "";
+            for (const byte of new TextEncoder().encode(text)) {
+                binary += String.fromCharCode(byte);
+            }
+            return btoa(binary);
+        }
+
+        function base64ToText(base64) {
+            const binary = atob(base64);
+            const bytes = Uint8Array.from(binary, function (character) { return character.charCodeAt(0); });
+            return new TextDecoder().decode(bytes);
+        }
+
+        function createSaveCode() {
+            saveProgress(); //la toute dernière progression
+            const data = {};
+            for (const key of SAVE_CODE_KEYS) {
+                try {
+                    data[key] = localStorage.getItem(key); //null si la clé n'existe pas
+                } catch (error) {
+                }
+            }
+            return SAVE_CODE_PREFIX + textToBase64(JSON.stringify(data));
+        }
+
+        //Renvoie les données du code, ou null s'il n'est pas valide
+        function readSaveCode(code) {
+            code = code.replace(/\s/g, ""); //enlève les espaces et retours à la ligne ajoutés en copiant
+            if (!code.startsWith(SAVE_CODE_PREFIX)) {
+                return null;
+            }
+            try {
+                const data = JSON.parse(base64ToText(code.slice(SAVE_CODE_PREFIX.length)));
+                JSON.parse(data[SAVE_KEY]); //la progression doit elle-même être du JSON valide
+                return data;
+            } catch (error) {
+                return null; //code abîmé (mal copié)
+            }
+        }
+
+        function openSaveCode(mode) {
+            saveCodeMode = mode;
+            const isExport = mode === "export";
+            document.getElementById("saveCodeTitle").textContent = isExport ? "Exporter ma sauvegarde" : "Importer une sauvegarde";
+            document.getElementById("saveCodeText").textContent = isExport
+                ? "Copie ce code et garde-le (mail, notes...). Tu pourras le recoller avec « Importer » sur n'importe quel appareil pour retrouver ta progression."
+                : "Colle ici un code de sauvegarde. Attention : il remplace ta progression actuelle.";
+            saveCodeArea.value = isExport ? createSaveCode() : "";
+            saveCodeArea.readOnly = isExport;
+            saveCodeActionButton.textContent = isExport ? "Copier" : "Charger";
+            saveCodeOverlay.classList.remove("hidden");
+            if (isExport) {
+                saveCodeArea.select(); //tout le texte est sélectionné : prêt à être copié
+            } else {
+                saveCodeArea.focus();
+            }
+            playSound("menuOpen");
+        }
+
+        function closeSaveCode() {
+            saveCodeOverlay.classList.add("hidden");
+            playSound("menuClose");
+        }
+
+        function isSaveCodeOpen() {
+            return !saveCodeOverlay.classList.contains("hidden");
+        }
+
+        saveCodeActionButton.addEventListener("click", function () {
+            if (saveCodeMode === "export") {
+                saveCodeArea.select();
+                //navigator.clipboard = le presse-papiers. Il peut être refusé (page ouverte depuis un fichier) : le texte reste sélectionné, Ctrl+C marche
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(saveCodeArea.value).then(function () {
+                        showToast("📋 Code copié !");
+                    }).catch(function () {
+                        showToast("Copie impossible ici : fais Ctrl+C (le code est sélectionné)");
+                    });
+                }
+                return;
+            }
+            const data = readSaveCode(saveCodeArea.value);
+            if (data === null) {
+                playSound("denied");
+                showToast("Ce code n'est pas valide (il est peut-être incomplet)");
+                return;
+            }
+            if (!confirm("Remplacer ta progression actuelle par celle de ce code ?")) {
+                return;
+            }
+            isProgressErased = true; //on bloque la sauvegarde automatique : elle écraserait le code avec l'ancienne progression
+            try {
+                for (const key of SAVE_CODE_KEYS) {
+                    if (typeof data[key] === "string") {
+                        localStorage.setItem(key, data[key]);
+                    } else {
+                        localStorage.removeItem(key);
+                    }
+                }
+            } catch (error) {
+            }
+            location.reload(); //le jeu redémarre et charge la progression importée
+        });
+
+        document.getElementById("exportSaveButton").addEventListener("click", function () { openSaveCode("export"); });
+        document.getElementById("importSaveButton").addEventListener("click", function () { openSaveCode("import"); });
+        document.getElementById("saveCodeCloseButton").addEventListener("click", closeSaveCode);
+        saveCodeOverlay.addEventListener("click", function (event) {
+            if (event.target === saveCodeOverlay) {
+                closeSaveCode();
+            }
+        });
         setInterval(saveProgress, AUTO_SAVE_INTERVAL); //setInterval = refait ça toutes les AUTO_SAVE_INTERVAL millisecondes
         //Sur téléphone, le système peut fermer le jeu sans prévenir dès qu'on passe à une autre appli : on sauvegarde à ce moment-là
         document.addEventListener("visibilitychange", function () {
@@ -7608,6 +7882,8 @@
             if (event.key === "Escape") {
                 if (isCreditsOpen()) {
                     closeCredits(); //les crédits sont par-dessus les paramètres : on les ferme d'abord
+                } else if (isSaveCodeOpen()) {
+                    closeSaveCode(); //la fenêtre du code est par-dessus les paramètres : on la ferme d'abord
                 } else if (isSettingsOpen) {
                     closeSettings();
                 } else if (currentTree !== null) {
@@ -8022,6 +8298,9 @@
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
         let lastStatValues = {};
 
+        //Les stats pour lesquelles un nombre PLUS BAS est mieux (ex : moins de secondes de recharge) : la couleur est inversée
+        const LOWER_IS_BETTER_STATS = new Set(["Bouclier"]); //Set = une liste où l'on cherche vite avec .has(...)
+
         //Le texte d'une stat ("125%", "10 / 10", "+0.5 PV/s"...) a-t-il baissé ? On compare le 1er nombre de chaque texte.
         function isStatLower(oldText, newText) {
             const oldNumber = oldText.match(/-?\d+(\.\d+)?/); //match = cherche le motif (une "regex") : ici, un nombre
@@ -8045,7 +8324,8 @@
                     const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
                     let rowClass = "statRow";
                     if (hasChanged) {
-                        rowClass += isStatLower(lastStatValues[key], value) ? " statChanged statDecreased" : " statChanged"; //rouge si elle baisse, vert sinon
+                        const isWorse = LOWER_IS_BETTER_STATS.has(label) ? isStatLower(value, lastStatValues[key]) : isStatLower(lastStatValues[key], value);
+                        rowClass += isWorse ? " statChanged statDecreased" : " statChanged"; //rouge si elle empire, vert sinon
                     }
                     html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
                     newStatValues[key] = value;
@@ -8292,28 +8572,31 @@
             return false;
         }
 
+        //CODES DE TRICHE : actifs seulement quand le jeu est ouvert depuis l'ordinateur (le fichier index.html, ou un serveur local).
+        //Sur le site en ligne et dans l'application, les joueurs ne peuvent pas les utiliser.
+        //Pour tester en ligne quand même : console du navigateur (F12) -> localStorage.setItem("triche", "1"), puis recharger la page.
+        function areCheatsAllowed() {
+            const isNativeApp = window.Capacitor !== undefined && window.Capacitor.isNativePlatform(); //l'application mobile (Capacitor)
+            const isLocalServer = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+            let isForced = false;
+            try {
+                isForced = localStorage.getItem("triche") === "1";
+            } catch (error) {
+            }
+            return location.protocol === "file:" || (isLocalServer && !isNativeApp) || isForced;
+        }
+        const CHEATS_ENABLED = areCheatsAllowed();
+
         document.addEventListener("keydown", function (event) {
             if (event.key.length !== 1) {
                 return; //on ignore les touches spéciales (Échap, flèches...)
             }
+            if (event.target.matches("input, textarea, select")) {
+                return; //on écrit dans un champ (ex : code de sauvegarde) : pas de raccourci ni de code
+            }
             const key = event.key.toLowerCase();
-            const now = performance.now();
-            if (now - lastKeyTime > CHEAT_TYPING_PAUSE) {
-                typedLetters = ""; //une pause : on recommence un nouveau mot
-            }
-            lastKeyTime = now;
-            typedLetters = (typedLetters + key).slice(-12); //on garde seulement les 12 dernières lettres
-            for (const code of Object.keys(CHEAT_CODES)) {
-                if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
-                    const message = CHEAT_CODES[code]();
-                    showToast("🎮 Code « " + code + " » : " + message);
-                    playSound("buy");
-                    typedLetters = "";
-                    return; //un code vient d'être tapé : pas de raccourci
-                }
-            }
-            if (isTypingCheatCode()) {
-                return; //peut-être le début d'un code : on attend la suite
+            if (CHEATS_ENABLED && checkCheatCode(key)) {
+                return; //un code vient d'être tapé, ou on est peut-être en train d'en taper un : pas de raccourci
             }
             //RACCOURCIS : R = rejouer (game over), T = passer le temps, S = skills
             if (key === "r" && isGameOver && !isSettingsOpen) {
@@ -8326,6 +8609,26 @@
                 toggleSkillTreeWindow();
             }
         });
+
+        //Ajoute la lettre aux dernières lettres tapées. Renvoie true si un code vient d'être tapé ou est peut-être en cours.
+        function checkCheatCode(key) {
+            const now = performance.now();
+            if (now - lastKeyTime > CHEAT_TYPING_PAUSE) {
+                typedLetters = ""; //une pause : on recommence un nouveau mot
+            }
+            lastKeyTime = now;
+            typedLetters = (typedLetters + key).slice(-12); //on garde seulement les 12 dernières lettres
+            for (const code of Object.keys(CHEAT_CODES)) {
+                if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
+                    const message = CHEAT_CODES[code]();
+                    showToast("🎮 Code « " + code + " » : " + message);
+                    playSound("buy");
+                    typedLetters = "";
+                    return true; //un code vient d'être tapé
+                }
+            }
+            return isTypingCheatCode(); //peut-être le début d'un code : on attend la suite
+        }
 
         //Le navigateur n'autorise le son qu'après une action du joueur
         document.addEventListener("pointerdown", initAudio);
@@ -8585,6 +8888,19 @@
         loadSoundSettings();
         createVolumeSliders();
 
+        //GRAPHISMES NETS : dessiner avec les vrais pixels des écrans fins (voir applyCanvasSize)
+        const sharpGraphicsCheckbox = document.getElementById("sharpGraphicsCheckbox");
+        sharpGraphicsCheckbox.checked = isSharpGraphics;
+        sharpGraphicsCheckbox.addEventListener("change", function () {
+            isSharpGraphics = sharpGraphicsCheckbox.checked;
+            try {
+                localStorage.setItem("sharpGraphics", isSharpGraphics ? "1" : "0");
+            } catch (error) {
+            }
+            resizeCanvas(); //recrée le canvas avec la nouvelle résolution
+            playSound("click");
+        });
+
         //LISTE DES THÈMES dans les Paramètres
         const themeSelect = document.getElementById("themeSelect");
         //(re)remplit la liste : le thème du Pack Soutien y est, mais grisé tant qu'on n'a pas le pack (pour donner envie)
@@ -8615,12 +8931,13 @@
 
         //TAILLE DE L'ÉCRAN : quand la fenêtre change de taille (ou qu'on tourne le téléphone), le jeu suit
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            center.x = canvas.width / 2;   //center est un "const", mais on peut quand même changer ce qu'il y a DEDANS
-            center.y = canvas.height / 2;
-            STAR_COORDINATES.x = canvas.width;
-            STAR_COORDINATES.y = canvas.height;
+            const oldPixelRatio = pixelRatio;
+            applyCanvasSize();  //center est un "const", mais applyCanvasSize peut quand même changer ce qu'il y a DEDANS
+            STAR_COORDINATES.x = screenSize.width;
+            STAR_COORDINATES.y = screenSize.height;
+            if (pixelRatio !== oldPixelRatio) {
+                clearSpriteCaches(); //ex : fenêtre glissée sur un autre écran, ou option "Graphismes nets" changée
+            }
             createBackground(); //le fond est redessiné à la nouvelle taille
         }
 
@@ -8687,7 +9004,14 @@
             removeDeadEnemies(); //le ménage des ennemis morts, une seule fois par pas
         }
 
-        gameStart();
+        //On attend que les polices soient prêtes (au plus 1,5 s) : sinon les textes du canvas (dégâts, noms) seraient dessinés
+        //avec une police de secours. Promise.race = "le premier des deux qui finit" ; .then(...) = "quand c'est fini, fais ça".
+        const FONT_WAIT_MAX = 1500;
+        Promise.race([
+            Promise.all([document.fonts.load("800 15px Nunito"), document.fonts.load("400 16px Rubik")]),
+            new Promise(function (resolve) { setTimeout(resolve, FONT_WAIT_MAX); })
+        ]).catch(function () {
+        }).then(gameStart); //même en cas d'erreur (catch), le jeu démarre
     </script>
 </body>
 </html>
