@@ -54,16 +54,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone. En plus, ils sont volontairement coupés dans l'application et sur le site en ligne (`CHEATS_ENABLED`, voir [codes-triche.md](codes-triche.md)).
 - **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché dans les paramètres, affiché seulement quand `CHEATS_ENABLED` vaut `true`, et une façon de l'activer dans l'application de test (par exemple une constante à passer à `true` avant de lancer `npm run sync`).
 
-### Une stat qui baisse s'affiche toujours en rouge (les deux branches)
-
-- **Pourquoi :** `isStatLower` compare juste les nombres : si un nombre baisse, c'est rouge. Mais pour certaines stats, baisser est une bonne nouvelle (par exemple dans la section « Ennemis »).
-- **Que faire :** marquer ces stats comme « plus bas = mieux » dans `getStatsCategories`, et inverser la couleur pour elles.
-
-### Le contact contient encore un texte provisoire (les deux branches)
-
-- **Ce qu'on voit :** dans l'écran de game over, la ligne « LinkedIn / Portfolio : ... ».
-- **Que faire :** mettre les vrais liens, ou retirer la ligne.
-
 ### Performances avec énormément d'ennemis (les deux branches)
 
 - **Ce qu'on sait :** avec 10 000 ennemis, une image prend environ 60 ms sur un ordinateur de test sans carte graphique (environ 16 images par seconde). Sur un vrai ordinateur, c'est bien plus rapide, mais **le jeu n'a pas encore été testé sur un vrai téléphone**.

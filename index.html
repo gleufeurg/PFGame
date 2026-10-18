@@ -1676,6 +1676,14 @@
             gap: 10px;
             margin-top: 12px;
         }
+        /*CONTACT (écran de game over)*/
+        .contactInfo {
+            padding: 12px 16px;
+            border-radius: 8px;
+            background-color: var(--ui-surface);
+            line-height: 1.8;
+            word-break: break-word; /*les longues adresses passent à la ligne sur téléphone*/
+        }
     </style>
 </head>
 <body>
@@ -1746,9 +1754,9 @@
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
             <section id="contactArea">
                 <h2>Contact</h2>
-                <div class="placeholder">
+                <div class="contactInfo">
                     Mail : <a id="contactMail" href="#">(chargement…)</a><br>
-                    LinkedIn / Portfolio : ...
+                    Portfolio : <a href="https://titouanlefevreportfolio.squarespace.com" target="_blank" rel="noopener">titouanlefevreportfolio.squarespace.com</a>
                 </div>
             </section>
         </div>
@@ -7671,6 +7679,9 @@
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
         let lastStatValues = {};
 
+        //Les stats pour lesquelles un nombre PLUS BAS est mieux (ex : moins de secondes de recharge) : la couleur est inversée
+        const LOWER_IS_BETTER_STATS = new Set(["Bouclier"]); //Set = une liste où l'on cherche vite avec .has(...)
+
         //Le texte d'une stat ("125%", "10 / 10", "+0.5 PV/s"...) a-t-il baissé ? On compare le 1er nombre de chaque texte.
         function isStatLower(oldText, newText) {
             const oldNumber = oldText.match(/-?\d+(\.\d+)?/); //match = cherche le motif (une "regex") : ici, un nombre
@@ -7694,7 +7705,8 @@
                     const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
                     let rowClass = "statRow";
                     if (hasChanged) {
-                        rowClass += isStatLower(lastStatValues[key], value) ? " statChanged statDecreased" : " statChanged"; //rouge si elle baisse, vert sinon
+                        const isWorse = LOWER_IS_BETTER_STATS.has(label) ? isStatLower(value, lastStatValues[key]) : isStatLower(lastStatValues[key], value);
+                        rowClass += isWorse ? " statChanged statDecreased" : " statChanged"; //rouge si elle empire, vert sinon
                     }
                     html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
                     newStatValues[key] = value;

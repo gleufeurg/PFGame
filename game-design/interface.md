@@ -87,4 +87,4 @@ Quand la souris survole une planète (ou pendant qu'on la touche au doigt), un c
 - **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. La planète du skill tree ouvert passe en premier.
 - **Défense**, **Gains** et **Ennemis**.
 
-Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`).
+Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`). Pour les stats où un nombre plus bas est mieux (la recharge du bouclier), la couleur est inversée (`LOWER_IS_BETTER_STATS`).
