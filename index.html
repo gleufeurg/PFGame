@@ -1644,6 +1644,38 @@
                 font-size: 18px;
             }
         }
+        /*CODE DE SAUVEGARDE (Paramètres)*/
+        .saveRow {
+            flex-wrap: wrap; /*les 3 boutons passent à la ligne s'il n'y a pas la place*/
+        }
+
+        #saveCodeOverlay {
+            z-index: 40; /*par-dessus les paramètres*/
+        }
+
+        .saveCodePanel {
+            max-width: 520px;
+        }
+
+        #saveCodeArea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 2px solid var(--ui-line);
+            border-radius: 8px;
+            background-color: var(--ui-surface);
+            color: var(--ui-text);
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            word-break: break-all; /*le code est un seul long "mot" : on le coupe n'importe où*/
+            resize: vertical;
+        }
+
+        .saveCodeButtons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body>
@@ -1728,6 +1760,19 @@
         <div id="statsContent"></div>
     </aside>
 
+    <!-- CODE DE SAUVEGARDE : pour garder sa progression ailleurs, ou la passer sur un autre appareil -->
+    <div id="saveCodeOverlay" class="overlay hidden">
+        <div class="panel saveCodePanel">
+            <h2 id="saveCodeTitle">Ma sauvegarde</h2>
+            <p id="saveCodeText" class="smallText"></p>
+            <textarea id="saveCodeArea" rows="6" spellcheck="false"></textarea>
+            <div class="saveCodeButtons">
+                <button id="saveCodeActionButton" class="primaryButton">Copier</button>
+                <button id="saveCodeCloseButton" class="primaryButton">Fermer</button>
+            </div>
+        </div>
+    </div>
+
     <!-- PARAMÈTRES : roue crantée en haut à droite, ou touche Échap -->
     <div id="settingsPanel" class="overlay hidden">
         <div class="panel">
@@ -1745,7 +1790,9 @@
                 <input type="checkbox" id="sharpGraphicsCheckbox">
                 <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
             </div>
-            <div class="settingRow">
+            <div class="settingRow saveRow">
+                <button id="exportSaveButton" class="primaryButton">Exporter ma sauvegarde</button>
+                <button id="importSaveButton" class="primaryButton">Importer</button>
                 <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
             </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
@@ -7300,6 +7347,132 @@
         }
 
         document.getElementById("resetProgressButton").addEventListener("click", eraseProgress);
+
+        //CODE DE SAUVEGARDE : toute la progression dans un texte à copier quelque part (mail, notes...), puis à recoller
+        //(sur un autre navigateur, un autre appareil, ou après avoir vidé les données). C'est la sécurité si localStorage est effacé.
+        //Les achats (packs) et les réglages (son, thème) ne sont PAS dans le code : seulement la progression du jeu.
+        const SAVE_CODE_PREFIX = "PFG1:";                                  // pour reconnaître un vrai code (1 = version du format)
+        const SAVE_CODE_KEYS = [SAVE_KEY, "records", "defeatedBosses"];   // les clés de localStorage mises dans le code
+        const saveCodeOverlay = document.getElementById("saveCodeOverlay");
+        const saveCodeArea = document.getElementById("saveCodeArea");
+        const saveCodeActionButton = document.getElementById("saveCodeActionButton");
+        let saveCodeMode = "export";   // "export" (on montre le code) ou "import" (on en colle un)
+
+        //Texte -> base64 (des lettres et chiffres sans accents, faciles à copier). btoa ne connaît pas les accents ("Héphaïstos"),
+        //donc on passe d'abord par les octets UTF-8 avec TextEncoder.
+        function textToBase64(text) {
+            let binary = "";
+            for (const byte of new TextEncoder().encode(text)) {
+                binary += String.fromCharCode(byte);
+            }
+            return btoa(binary);
+        }
+
+        function base64ToText(base64) {
+            const binary = atob(base64);
+            const bytes = Uint8Array.from(binary, function (character) { return character.charCodeAt(0); });
+            return new TextDecoder().decode(bytes);
+        }
+
+        function createSaveCode() {
+            saveProgress(); //la toute dernière progression
+            const data = {};
+            for (const key of SAVE_CODE_KEYS) {
+                try {
+                    data[key] = localStorage.getItem(key); //null si la clé n'existe pas
+                } catch (error) {
+                }
+            }
+            return SAVE_CODE_PREFIX + textToBase64(JSON.stringify(data));
+        }
+
+        //Renvoie les données du code, ou null s'il n'est pas valide
+        function readSaveCode(code) {
+            code = code.replace(/\s/g, ""); //enlève les espaces et retours à la ligne ajoutés en copiant
+            if (!code.startsWith(SAVE_CODE_PREFIX)) {
+                return null;
+            }
+            try {
+                const data = JSON.parse(base64ToText(code.slice(SAVE_CODE_PREFIX.length)));
+                JSON.parse(data[SAVE_KEY]); //la progression doit elle-même être du JSON valide
+                return data;
+            } catch (error) {
+                return null; //code abîmé (mal copié)
+            }
+        }
+
+        function openSaveCode(mode) {
+            saveCodeMode = mode;
+            const isExport = mode === "export";
+            document.getElementById("saveCodeTitle").textContent = isExport ? "Exporter ma sauvegarde" : "Importer une sauvegarde";
+            document.getElementById("saveCodeText").textContent = isExport
+                ? "Copie ce code et garde-le (mail, notes...). Tu pourras le recoller avec « Importer » sur n'importe quel appareil pour retrouver ta progression."
+                : "Colle ici un code de sauvegarde. Attention : il remplace ta progression actuelle.";
+            saveCodeArea.value = isExport ? createSaveCode() : "";
+            saveCodeArea.readOnly = isExport;
+            saveCodeActionButton.textContent = isExport ? "Copier" : "Charger";
+            saveCodeOverlay.classList.remove("hidden");
+            if (isExport) {
+                saveCodeArea.select(); //tout le texte est sélectionné : prêt à être copié
+            } else {
+                saveCodeArea.focus();
+            }
+            playSound("menuOpen");
+        }
+
+        function closeSaveCode() {
+            saveCodeOverlay.classList.add("hidden");
+            playSound("menuClose");
+        }
+
+        function isSaveCodeOpen() {
+            return !saveCodeOverlay.classList.contains("hidden");
+        }
+
+        saveCodeActionButton.addEventListener("click", function () {
+            if (saveCodeMode === "export") {
+                saveCodeArea.select();
+                //navigator.clipboard = le presse-papiers. Il peut être refusé (page ouverte depuis un fichier) : le texte reste sélectionné, Ctrl+C marche
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(saveCodeArea.value).then(function () {
+                        showToast("📋 Code copié !");
+                    }).catch(function () {
+                        showToast("Copie impossible ici : fais Ctrl+C (le code est sélectionné)");
+                    });
+                }
+                return;
+            }
+            const data = readSaveCode(saveCodeArea.value);
+            if (data === null) {
+                playSound("denied");
+                showToast("Ce code n'est pas valide (il est peut-être incomplet)");
+                return;
+            }
+            if (!confirm("Remplacer ta progression actuelle par celle de ce code ?")) {
+                return;
+            }
+            isProgressErased = true; //on bloque la sauvegarde automatique : elle écraserait le code avec l'ancienne progression
+            try {
+                for (const key of SAVE_CODE_KEYS) {
+                    if (typeof data[key] === "string") {
+                        localStorage.setItem(key, data[key]);
+                    } else {
+                        localStorage.removeItem(key);
+                    }
+                }
+            } catch (error) {
+            }
+            location.reload(); //le jeu redémarre et charge la progression importée
+        });
+
+        document.getElementById("exportSaveButton").addEventListener("click", function () { openSaveCode("export"); });
+        document.getElementById("importSaveButton").addEventListener("click", function () { openSaveCode("import"); });
+        document.getElementById("saveCodeCloseButton").addEventListener("click", closeSaveCode);
+        saveCodeOverlay.addEventListener("click", function (event) {
+            if (event.target === saveCodeOverlay) {
+                closeSaveCode();
+            }
+        });
         setInterval(saveProgress, AUTO_SAVE_INTERVAL); //setInterval = refait ça toutes les AUTO_SAVE_INTERVAL millisecondes
         //Sur téléphone, le système peut fermer le jeu sans prévenir dès qu'on passe à une autre appli : on sauvegarde à ce moment-là
         document.addEventListener("visibilitychange", function () {
@@ -7320,7 +7493,9 @@
             //(R, T et S sont gérés avec les codes de triche plus bas : taper "hestia" ne doit pas ouvrir les skills sur le "s")
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
-                if (isSettingsOpen) {
+                if (isSaveCodeOpen()) {
+                    closeSaveCode(); //la fenêtre du code est par-dessus les paramètres : on la ferme d'abord
+                } else if (isSettingsOpen) {
                     closeSettings();
                 } else if (currentTree !== null) {
                     closeSkillTree();
@@ -7762,28 +7937,31 @@
             return false;
         }
 
+        //CODES DE TRICHE : actifs seulement quand le jeu est ouvert depuis l'ordinateur (le fichier index.html, ou un serveur local).
+        //Sur le site en ligne et dans l'application, les joueurs ne peuvent pas les utiliser.
+        //Pour tester en ligne quand même : console du navigateur (F12) -> localStorage.setItem("triche", "1"), puis recharger la page.
+        function areCheatsAllowed() {
+            const isNativeApp = window.Capacitor !== undefined && window.Capacitor.isNativePlatform(); //l'application mobile (Capacitor)
+            const isLocalServer = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+            let isForced = false;
+            try {
+                isForced = localStorage.getItem("triche") === "1";
+            } catch (error) {
+            }
+            return location.protocol === "file:" || (isLocalServer && !isNativeApp) || isForced;
+        }
+        const CHEATS_ENABLED = areCheatsAllowed();
+
         document.addEventListener("keydown", function (event) {
             if (event.key.length !== 1) {
                 return; //on ignore les touches spéciales (Échap, flèches...)
             }
+            if (event.target.matches("input, textarea, select")) {
+                return; //on écrit dans un champ (ex : code de sauvegarde) : pas de raccourci ni de code
+            }
             const key = event.key.toLowerCase();
-            const now = performance.now();
-            if (now - lastKeyTime > CHEAT_TYPING_PAUSE) {
-                typedLetters = ""; //une pause : on recommence un nouveau mot
-            }
-            lastKeyTime = now;
-            typedLetters = (typedLetters + key).slice(-12); //on garde seulement les 12 dernières lettres
-            for (const code of Object.keys(CHEAT_CODES)) {
-                if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
-                    const message = CHEAT_CODES[code]();
-                    showToast("🎮 Code « " + code + " » : " + message);
-                    playSound("buy");
-                    typedLetters = "";
-                    return; //un code vient d'être tapé : pas de raccourci
-                }
-            }
-            if (isTypingCheatCode()) {
-                return; //peut-être le début d'un code : on attend la suite
+            if (CHEATS_ENABLED && checkCheatCode(key)) {
+                return; //un code vient d'être tapé, ou on est peut-être en train d'en taper un : pas de raccourci
             }
             //RACCOURCIS : R = rejouer (game over), T = passer le temps, S = skills
             if (key === "r" && isGameOver && !isSettingsOpen) {
@@ -7796,6 +7974,26 @@
                 toggleSkillTreeWindow();
             }
         });
+
+        //Ajoute la lettre aux dernières lettres tapées. Renvoie true si un code vient d'être tapé ou est peut-être en cours.
+        function checkCheatCode(key) {
+            const now = performance.now();
+            if (now - lastKeyTime > CHEAT_TYPING_PAUSE) {
+                typedLetters = ""; //une pause : on recommence un nouveau mot
+            }
+            lastKeyTime = now;
+            typedLetters = (typedLetters + key).slice(-12); //on garde seulement les 12 dernières lettres
+            for (const code of Object.keys(CHEAT_CODES)) {
+                if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
+                    const message = CHEAT_CODES[code]();
+                    showToast("🎮 Code « " + code + " » : " + message);
+                    playSound("buy");
+                    typedLetters = "";
+                    return true; //un code vient d'être tapé
+                }
+            }
+            return isTypingCheatCode(); //peut-être le début d'un code : on attend la suite
+        }
 
         //Le navigateur n'autorise le son qu'après une action du joueur
         document.addEventListener("pointerdown", initAudio);

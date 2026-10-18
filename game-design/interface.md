@@ -49,6 +49,7 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 - **Quand :** à chaque changement de progression (achat, compétence, lien, planète déplacée), à chaque mort, toutes les 5 secondes, et quand on quitte ou cache le jeu (passer à une autre appli sur téléphone).
 - **Ce qui n'est pas gardé :** la partie en cours (ennemis, chrono, vie) : en revenant, on recommence une partie, avec toute sa progression.
+- **Exporter / importer :** bouton « Exporter ma sauvegarde » dans les paramètres : un code (texte commençant par `PFG1:`) à copier et garder. « Importer » le recolle, sur n'importe quel appareil ou navigateur, et remplace la progression actuelle (avec confirmation). Le code contient la progression, les records et les super ennemis vaincus, mais pas les achats ni les réglages. Un code abîmé (mal copié) est refusé.
 - **Effacer :** bouton « Effacer ma progression » dans les paramètres (avec confirmation). Efface aussi les records et les super ennemis vaincus, mais garde les réglages (son, thème) et le Pack Premium (c'est un achat).
 - À côté, d'autres clés existaient déjà : `theme`, `soundSettings`, `records`, `defeatedBosses`, `premium`.
 

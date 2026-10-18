@@ -20,12 +20,11 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Sauvegarde
 
-### La sauvegarde peut disparaître (`monetisation`)
+### La sauvegarde n'est pas en ligne (les deux branches)
 
-- **Ce qu'on voit :** dans un navigateur, la progression peut être perdue.
-- **Pourquoi :** `localStorage` est effacé si le joueur vide les données de navigation, en navigation privée, ou par Safari sur iPhone après 7 jours sans visite. La partie en cours (ennemis, chrono) n'est jamais sauvegardée. Dans l'application mobile, le stockage est bien plus stable (il ne part qu'avec la désinstallation).
-- **Que faire :** pour la version web, ajouter un export / import de sauvegarde (un texte à copier-coller) dans les paramètres. Plus tard, une sauvegarde en ligne (Google Play Games, ou un petit serveur).
-
+- **Ce qu'on voit :** la progression reste dans le navigateur (ou l'application) de l'appareil. Elle est perdue si le joueur vide ses données de navigation, joue en navigation privée, ou sur iPhone si Safari efface les données d'un site non visité depuis 7 jours. La partie en cours (ennemis, chrono) n'est jamais sauvegardée.
+- **Déjà en place :** le bouton « Exporter ma sauvegarde » des paramètres donne un code à garder, à recoller avec « Importer » (voir [interface.md](interface.md)). Mais le joueur doit y penser lui-même.
+- **Que faire :** une sauvegarde en ligne, automatique : Google Play Games (sauvegardes dans le cloud) dans l'application Android, ou un petit serveur avec un compte joueur pour le web.
 ## Monétisation (`monetisation`)
 
 ### Les achats peuvent être « piratés »
@@ -50,15 +49,10 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Jeu
 
-### Les codes de triche sont dans la version publique (les deux branches)
-
-- **Pourquoi :** `CHEAT_CODES` est toujours actif : n'importe quel joueur qui connaît un code peut tout débloquer. Sur `monetisation`, `penia` peut aussi retirer le Pack Premium.
-- **Que faire :** avant de publier, ajouter une constante `CHEATS_ENABLED = false` et ne lire les codes que si elle vaut `true`. Pour tester, il suffit de la remettre à `true`.
-
 ### Les codes de triche ne marchent pas sur téléphone (`monetisation`)
 
-- **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone.
-- **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché (par exemple : toucher 5 fois la version du jeu dans les paramètres), visible seulement quand `CHEATS_ENABLED` vaut `true`.
+- **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone. En plus, ils sont volontairement coupés dans l'application et sur le site en ligne (`CHEATS_ENABLED`, voir [codes-triche.md](codes-triche.md)).
+- **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché dans les paramètres, affiché seulement quand `CHEATS_ENABLED` vaut `true`, et une façon de l'activer dans l'application de test (par exemple une constante à passer à `true` avant de lancer `npm run sync`).
 
 ### Une stat qui baisse s'affiche toujours en rouge (les deux branches)
 
