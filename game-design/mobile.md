@@ -47,17 +47,20 @@ L'application Android est **verrouillée en portrait** (`android:screenOrientati
    ```
    Cette commande copie `index.html` (et les polices) dans l'appli (`www/` puis `android/`) et ouvre le projet dans Android Studio.
 2. Dans Android Studio, attendre la fin de la barre de chargement en bas (« Gradle sync », la première fois c'est long).
+   Si Android Studio ne s'ouvre pas tout seul (« Unable to launch Android Studio ») : l'ouvrir à la main, **Open**, et choisir le dossier `android` qui est dans le dossier du jeu (pas le dossier du jeu entier). Il reste ensuite dans la liste des projets récents.
 3. En haut, choisir ton téléphone dans la liste des appareils, puis cliquer sur le **triangle vert ▶ (Run)**. L'appli s'installe et s'ouvre sur le téléphone. Elle reste installée ensuite, comme une vraie appli.
 
 Pas de téléphone sous la main ? Dans Android Studio, **Device Manager** permet de créer un téléphone virtuel (émulateur).
 
 ### Après une modification du jeu
 
-Le jeu dans l'appli est une **copie** : après avoir changé `index.html`, il faut recopier.
-```
-npm run sync
-```
-puis ▶ Run dans Android Studio. (Ne jamais modifier les fichiers de `www/` ou de `android/app/src/main/assets/` : ils sont écrasés à chaque copie.)
+Le jeu dans l'appli est une **copie** de `index.html` et des polices. Cette copie est **automatique** : à chaque ▶ Run (ou à chaque compilation), Android Studio lance d'abord la tâche `copierLeJeu` (fichier `android/app/copier-jeu.gradle`), qui fait `npm install` puis `npm run sync`.
+
+Donc, après une modification (la tienne ou un push de Claude) : **Pull** dans GitHub Desktop, puis **▶ Run** dans Android Studio. C'est tout.
+
+- Si Android Studio dit que `npm` est introuvable : redémarrer le PC (après l'installation de Node.js), puis relancer Android Studio.
+- On peut toujours faire la copie à la main avec `npm run sync`.
+- Ne jamais modifier les fichiers de `www/` ou de `android/app/src/main/assets/` : ils sont écrasés à chaque copie.
 
 Astuce : pour tester vite les commandes tactiles sans téléphone, ouvrir `index.html` dans Chrome, F12, puis l'icône téléphone/tablette en haut à gauche des outils (« Toggle device toolbar ») et recharger la page.
 

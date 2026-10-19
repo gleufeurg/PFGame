@@ -1,0 +1,20 @@
+// RECOPIE AUTOMATIQUE DU JEU
+// Avant chaque compilation (le bouton ▶ d'Android Studio), on fait la même chose que "npm run sync" :
+// on installe les briques npm si package.json a changé, puis on recopie index.html et les polices dans l'appli.
+// Il suffit donc de faire Pull dans GitHub Desktop, puis ▶ : plus besoin de taper de commande.
+// (Si Android Studio dit que "npm" est introuvable : redémarrer le PC après l'installation de Node.js.)
+def dossierDuJeu = rootProject.projectDir.parentFile   // le dossier PFGame (le dossier android/ est dedans)
+def commande = "npm install --prefer-offline --no-audit --no-fund && npm run build && npx cap sync android"
+
+tasks.register("copierLeJeu", Exec) {
+    group = "pfgame"
+    description = "Recopie index.html et les polices dans l'application (comme npm run sync)"
+    workingDir dossierDuJeu
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        commandLine "cmd", "/c", commande     // Windows
+    } else {
+        commandLine "sh", "-c", commande      // Mac (pour l'iPhone) et Linux
+    }
+}
+
+preBuild.dependsOn("copierLeJeu")   // preBuild = la toute première étape de la compilation Android

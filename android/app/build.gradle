@@ -43,6 +43,7 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+apply from: 'copier-jeu.gradle'   // recopie automatiquement le jeu avant chaque compilation
 
 try {
     def servicesJSON = file('google-services.json')
