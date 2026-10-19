@@ -55,7 +55,7 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 | Application | `ca-app-pub-4961484052300810~2811879981` | `android/app/src/main/AndroidManifest.xml` |
 | Bloc Interstitiel (pub après la mort) | `ca-app-pub-4961484052300810/2223802607` | `ADMOB_AD_IDS.real.android.interstitial` dans `index.html` |
 | Bloc Avec récompense « ressusciter » | pas encore créé | `ADMOB_AD_IDS.real.android.rewardedRevive` |
-| Bloc Avec récompense « doubler les récompenses » | pas encore créé | `ADMOB_AD_IDS.real.android.rewardedDouble` |
+| Bloc Avec récompense « doubler les récompenses » | `ca-app-pub-4961484052300810/1745465464` | `ADMOB_AD_IDS.real.android.rewardedDouble` |
 
 Ressusciter et doubler sont deux choix séparés : chacun lance sa propre pub. Un joueur qui veut les deux regarde 2 pubs.
 
