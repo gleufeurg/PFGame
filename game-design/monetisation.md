@@ -41,8 +41,8 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 - **Pendant une pub :** la musique du jeu se coupe, et reprend après.
 - **Aujourd'hui (`ADS_TEST_MODE = true`) :** l'appli montre les pubs d'exemple officielles de Google, sans risque.
 - **Pour passer aux vraies pubs :**
-  1. Dans AdMob : créer l'appli Android, puis 2 blocs d'annonces : un **Interstitiel** et un **Avec récompense** (le même sert à ressusciter et à doubler).
-  2. Dans `index.html`, partie `ADMOB` : recopier les 2 ID de blocs (avec un `/`) dans `ADMOB_AD_IDS.real.android`.
+  1. Dans AdMob : créer l'appli Android, puis 3 blocs d'annonces : un **Interstitiel** (après la mort) et deux **Avec récompense** (un pour ressusciter, un pour doubler).
+  2. Dans `index.html`, partie `ADMOB` : recopier les 3 ID de blocs (avec un `/`) dans `ADMOB_AD_IDS.real.android`.
   3. Dans `android/app/src/main/AndroidManifest.xml` : remplacer l'ID d'application de test par le tien (avec un `~`), dans la ligne `com.google.android.gms.ads.APPLICATION_ID`.
   4. Passer `ADS_TEST_MODE` à `false`, puis `npm run sync`.
   5. ⚠️ Ne jamais cliquer sur ses propres vraies pubs : Google peut fermer le compte. Pour tester une version avec les vrais ID, ajouter son téléphone comme « appareil de test » dans AdMob (Paramètres → Appareils de test).
@@ -54,7 +54,10 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 | --- | --- | --- |
 | Application | `ca-app-pub-4961484052300810~2811879981` | `android/app/src/main/AndroidManifest.xml` |
 | Bloc Interstitiel (pub après la mort) | `ca-app-pub-4961484052300810/2223802607` | `ADMOB_AD_IDS.real.android.interstitial` dans `index.html` |
-| Bloc Avec récompense (ressusciter, doubler) | pas encore créé | `ADMOB_AD_IDS.real.android.rewarded` |
+| Bloc Avec récompense « ressusciter » | pas encore créé | `ADMOB_AD_IDS.real.android.rewardedRevive` |
+| Bloc Avec récompense « doubler les récompenses » | pas encore créé | `ADMOB_AD_IDS.real.android.rewardedDouble` |
+
+Ressusciter et doubler sont deux choix séparés : chacun lance sa propre pub. Un joueur qui veut les deux regarde 2 pubs.
 
 Ces ID ne sont pas secrets : ils sont lisibles dans toute appli publiée.
 

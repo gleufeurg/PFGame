@@ -7925,12 +7925,13 @@
         //⚠️ Ne JAMAIS cliquer sur ses vraies pubs : Google peut fermer le compte AdMob.
         const ADMOB_AD_IDS = {
             test: {
-                android: { interstitial: "ca-app-pub-3940256099942544/1033173712", rewarded: "ca-app-pub-3940256099942544/5224354917" },
-                ios: { interstitial: "ca-app-pub-3940256099942544/4411468910", rewarded: "ca-app-pub-3940256099942544/1712485313" }
+                android: { interstitial: "ca-app-pub-3940256099942544/1033173712", rewardedRevive: "ca-app-pub-3940256099942544/5224354917", rewardedDouble: "ca-app-pub-3940256099942544/5224354917" },
+                ios: { interstitial: "ca-app-pub-3940256099942544/4411468910", rewardedRevive: "ca-app-pub-3940256099942544/1712485313", rewardedDouble: "ca-app-pub-3940256099942544/1712485313" }
             },
+            //Un bloc par pub : AdMob compte alors séparément les résurrections et les doublements (et ce que chacun rapporte)
             real: { //tes ID AdMob (compte ca-app-pub-4961484052300810). "" = bloc pas encore créé
-                android: { interstitial: "ca-app-pub-4961484052300810/2223802607", rewarded: "" },
-                ios: { interstitial: "", rewarded: "" }
+                android: { interstitial: "ca-app-pub-4961484052300810/2223802607", rewardedRevive: "", rewardedDouble: "" },
+                ios: { interstitial: "", rewardedRevive: "", rewardedDouble: "" }
             }
         };
         let isAdMobReady = false;        // AdMob démarré et consentement demandé
@@ -7988,7 +7989,7 @@
             }
         }
 
-        //Charge puis affiche une pub AdMob. kind = "interstitial" ou "rewarded".
+        //Charge puis affiche une pub AdMob. kind = "interstitial", "rewardedRevive" (ressusciter) ou "rewardedDouble" (doubler).
         //onEnd(wasShown, rewarded) est appelée à la fin, dans tous les cas (pub vue, fermée, ou impossible à charger).
         async function showAdMobAd(kind, onEnd) {
             if (!isAdMobReady || !canRequestAdMobAds) {
@@ -8051,7 +8052,8 @@
                 return;
             }
             if (IS_NATIVE_APP) {
-                showAdMobAd("rewarded", function (wasShown, rewarded) {
+                const kind = name === "revive" ? "rewardedRevive" : "rewardedDouble"; //chaque choix a sa propre pub (et son bloc AdMob)
+                showAdMobAd(kind, function (wasShown, rewarded) {
                     if (rewarded) {
                         onReward();
                     } else if (wasShown) {
