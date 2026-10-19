@@ -34,13 +34,15 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ### Pubs et paiements encore en mode test
 
-- **Pourquoi :** `ADS_TEST_MODE` et `PAYMENT_TEST_MODE` sont à `true` : fausses pubs, achats simulés.
-- **Que faire :** étapes 2 et 3 de [mobile.md](mobile.md) (AdMob, achats intégrés).
+- **Pourquoi :** `ADS_TEST_MODE` et `PAYMENT_TEST_MODE` sont à `true`. Dans l'appli, les pubs AdMob sont branchées mais montrent les pubs d'exemple de Google ; sur le web, c'est une fausse pub. Les achats sont simulés partout.
+- **Que faire :** pour les pubs, mettre les vrais ID AdMob (voir [monetisation.md](monetisation.md)) ; pour les achats, l'étape 3 de [mobile.md](mobile.md) (achats intégrés).
+- **Pas encore vérifié :** l'appli avec AdMob n'a pas encore été compilée ni lancée sur un vrai téléphone (le code a été testé avec un plugin simulé). À faire avec Android Studio : `npm install`, `npm run android`, ▶ Run.
 
-### Pas de fenêtre de consentement (RGPD)
+### Fenêtre de consentement (RGPD) seulement dans l'application
 
-- **Pourquoi :** en Europe, il faut demander l'accord du joueur avant d'afficher des pubs personnalisées.
-- **Que faire :** avec AdMob, utiliser l'outil de consentement de Google (UMP, « User Messaging Platform ») ; sur le web, un outil de consentement certifié par Google. Il faudra aussi une page de **règles de confidentialité** (obligatoire sur les stores).
+- **Déjà en place :** dans l'appli, la fenêtre de consentement de Google (UMP) s'affiche avant les pubs AdMob, et un bouton des paramètres permet de changer d'avis.
+- **Ce qui manque :** sur le site web, il n'y a pas de fenêtre de consentement (ce n'est pas grave tant que le site n'a que la fausse pub de test). Il manque aussi une page de **règles de confidentialité**, obligatoire sur les stores.
+- **Que faire :** écrire la page de règles de confidentialité (elle peut être publiée sur le site GitHub Pages) ; si un jour le site web affiche de vraies pubs, ajouter un outil de consentement certifié par Google.
 
 ### L'application n'a pas encore d'identité
 

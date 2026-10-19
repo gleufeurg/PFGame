@@ -33,7 +33,22 @@ Le prix se change dans `SUPPORT_PRICE`. Comme le Pack Premium, il est retenu par
 
 Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché** : il faut des comptes chez des services externes.
 
-### Les pubs
+### Les pubs dans l'application mobile (AdMob)
+
+- **En place :** le plugin `@capacitor-community/admob` (partie `ADMOB` de `index.html`). Dans l'appli, les 3 pubs (après la mort, ressusciter, doubler) sont des pubs AdMob. Une pub qui ne peut pas se charger (pas de réseau, aucune pub disponible) ne bloque jamais le jeu : après une mort, on va directement au shop ; pour une pub récompensée, un message demande de réessayer.
+- **Consentement RGPD :** au premier lancement en Europe, la fenêtre de consentement de Google s'affiche (`requestConsentInfo`, `showConsentForm`). Le bouton « Mes choix de confidentialité (pubs) » des paramètres permet de changer d'avis : il n'apparaît que dans l'appli, quand Google le demande.
+- **iPhone :** la question d'Apple « Autoriser le suivi ? » est posée après le consentement.
+- **Pendant une pub :** la musique du jeu se coupe, et reprend après.
+- **Aujourd'hui (`ADS_TEST_MODE = true`) :** l'appli montre les pubs d'exemple officielles de Google, sans risque.
+- **Pour passer aux vraies pubs :**
+  1. Dans AdMob : créer l'appli Android, puis 2 blocs d'annonces : un **Interstitiel** et un **Avec récompense** (le même sert à ressusciter et à doubler).
+  2. Dans `index.html`, partie `ADMOB` : recopier les 2 ID de blocs (avec un `/`) dans `ADMOB_AD_IDS.real.android`.
+  3. Dans `android/app/src/main/AndroidManifest.xml` : remplacer l'ID d'application de test par le tien (avec un `~`), dans la ligne `com.google.android.gms.ads.APPLICATION_ID`.
+  4. Passer `ADS_TEST_MODE` à `false`, puis `npm run sync`.
+  5. ⚠️ Ne jamais cliquer sur ses propres vraies pubs : Google peut fermer le compte. Pour tester une version avec les vrais ID, ajouter son téléphone comme « appareil de test » dans AdMob (Paramètres → Appareils de test).
+  6. Plus tard, AdMob demandera un fichier `app-ads.txt` sur le site indiqué dans la fiche du Play Store.
+
+### Les pubs sur le site web
 
 - **Aujourd'hui :** une fausse pub de 5 s (`ADS_TEST_MODE = true`), pour tester tout le parcours.
 - **Le code sait déjà utiliser** l'API « H5 Games Ads » de Google (la fonction `adBreak`), faite pour les jeux web.

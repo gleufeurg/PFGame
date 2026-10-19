@@ -75,7 +75,7 @@ Voir [interface.md](interface.md) : commandes au doigt, petits écrans, sauvegar
 ## La suite (pour publier)
 
 1. **Étape 1 (fait)** : tactile, petits écrans, sauvegarde, projet Capacitor Android.
-2. **Étape 2** : vraies pubs dans l'appli avec **AdMob** (le système de pubs de Google pour les applis, différent des pubs web) via un plugin Capacitor.
+2. **Étape 2 (fait, en mode test)** : pubs **AdMob** dans l'appli, avec la fenêtre de consentement RGPD (plugin `@capacitor-community/admob`). Il reste à mettre tes vrais ID AdMob : voir [monetisation.md](monetisation.md). Pour l'iPhone, il faudra aussi ajouter l'ID d'application AdMob (`GADApplicationIdentifier`), les `SKAdNetworkItems` et la phrase `NSUserTrackingUsageDescription` dans `ios/App/App/Info.plist` (voir le README du plugin).
 3. **Étape 3** : vrais achats « intégrés » (Google Play Billing et achats Apple) pour le Pack Premium. Les stores prennent 15 % (programme pour petits développeurs) et obligent à passer par leur système de paiement pour un achat dans un jeu.
 4. **Étape 4 : publier.**
    - **Play Store** : compte Google Play Console (25 $ une fois). Un compte personnel récent doit d'abord faire un test fermé avec **au moins 12 testeurs pendant 14 jours** avant de pouvoir publier. Il faut aussi une icône, des captures d'écran, une description et une page de **règles de confidentialité** (obligatoire avec des pubs).

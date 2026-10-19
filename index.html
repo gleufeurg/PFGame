@@ -1985,6 +1985,7 @@
                 <input type="checkbox" id="sharpGraphicsCheckbox">
                 <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
             </div>
+            <button id="adPrivacyButton" class="primaryButton hidden">Mes choix de confidentialité (pubs)</button>
             <div id="premiumBoxSettings" class="premiumBox"></div>
             <div id="supportBoxSettings" class="premiumBox supportBox"></div>
             <div class="settingRow saveRow">
@@ -7898,10 +7899,12 @@
         /////////////////////
         ////PUBLICITÉS///////  Après chaque mort, et pour ressusciter ou doubler ses récompenses
         /////////////////////
-        //Le jeu utilise l'API "H5 Games Ads" de Google (la fonction adBreak) si elle est chargée dans la page.
-        //Sinon (ou en mode test), il affiche une fausse pub de quelques secondes, pour tester tout le parcours.
+        //Trois cas :
+        //- dans l'APPLICATION mobile : les pubs AdMob (plugin Capacitor "@capacitor-community/admob"), voir la partie ADMOB plus bas ;
+        //- sur le WEB, si l'API "H5 Games Ads" de Google (la fonction adBreak) est chargée dans la page : ses pubs ;
+        //- sinon (ou en mode test sur le web) : une fausse pub de quelques secondes, pour tester tout le parcours.
         //Pour brancher de vraies pubs : voir game-design/monetisation.md
-        const ADS_TEST_MODE = true;           // true = fausse pub de test, même si l'API de Google est là
+        const ADS_TEST_MODE = true;           // true = pubs de TEST : dans l'appli, les pubs d'exemple de Google ; sur le web, la fausse pub
         const AD_TEST_DURATION = 5;           // secondes de fausse pub
         const adOverlay = document.getElementById("adOverlay");
         const adCountdown = document.getElementById("adCountdown");
@@ -7912,10 +7915,121 @@
             return !ADS_TEST_MODE && typeof window.adBreak === "function";
         }
 
+
+        //ADMOB : les pubs dans l'application mobile (Android, plus tard iPhone)
+        //window.Capacitor n'existe que dans l'appli : c'est Capacitor qui l'ajoute. Sur le site web, ce code ne fait rien.
+        const IS_NATIVE_APP = window.Capacitor !== undefined && window.Capacitor.isNativePlatform();
+        //registerPlugin("AdMob") = l'objet qui parle au code Android/iPhone du plugin (comme un GetComponent vers du code natif)
+        const AdMob = IS_NATIVE_APP ? window.Capacitor.registerPlugin("AdMob") : null;
+        //Les "blocs d'annonces" créés dans AdMob. En mode test : les ID d'exemple officiels de Google (on peut cliquer dessus sans risque).
+        //⚠️ Ne JAMAIS cliquer sur ses vraies pubs : Google peut fermer le compte AdMob.
+        const ADMOB_AD_IDS = {
+            test: {
+                android: { interstitial: "ca-app-pub-3940256099942544/1033173712", rewarded: "ca-app-pub-3940256099942544/5224354917" },
+                ios: { interstitial: "ca-app-pub-3940256099942544/4411468910", rewarded: "ca-app-pub-3940256099942544/1712485313" }
+            },
+            real: { //à remplir avec tes ID AdMob (ils ressemblent à "ca-app-pub-1234567890123456/1234567890")
+                android: { interstitial: "", rewarded: "" },
+                ios: { interstitial: "", rewarded: "" }
+            }
+        };
+        let isAdMobReady = false;        // AdMob démarré et consentement demandé
+        let canRequestAdMobAds = false;  // le joueur a répondu à la fenêtre de consentement (ou elle n'est pas nécessaire)
+        let adMobAdEnd = null;           // la fonction à appeler quand la pub en cours se termine
+        let adMobRewardEarned = false;   // la pub récompensée a-t-elle été regardée jusqu'au bout ?
+
+        function getAdMobAdId(kind) {
+            const platform = window.Capacitor.getPlatform(); //"android" ou "ios"
+            const ids = ADS_TEST_MODE ? ADMOB_AD_IDS.test : ADMOB_AD_IDS.real;
+            return ids[platform][kind];
+        }
+
+        //AU DÉMARRAGE DE L'APPLI. "async" = la fonction peut attendre (await) une réponse sans bloquer le jeu,
+        //exactement comme async / await en C#. try / catch : si quelque chose échoue, le jeu continue sans pub.
+        async function initAdMob() {
+            try {
+                await AdMob.initialize({});
+                //RGPD : Google sait si le joueur est en Europe et affiche la fenêtre de consentement si besoin
+                let consent = await AdMob.requestConsentInfo();
+                if (consent.status === "REQUIRED" && consent.isConsentFormAvailable) {
+                    consent = await AdMob.showConsentForm();
+                }
+                canRequestAdMobAds = consent.canRequestAds;
+                //Le bouton "Mes choix de confidentialité" doit exister si le joueur peut changer d'avis (obligatoire en Europe)
+                document.getElementById("adPrivacyButton").classList.toggle("hidden", consent.privacyOptionsRequirementStatus !== "REQUIRED");
+                //iPhone : Apple impose de demander "Autoriser le suivi ?" avant les pubs personnalisées
+                if (window.Capacitor.getPlatform() === "ios") {
+                    const tracking = await AdMob.trackingAuthorizationStatus();
+                    if (tracking.status === "notDetermined") {
+                        await AdMob.requestTrackingAuthorization();
+                    }
+                }
+                //Les "événements" de fin de pub : le plugin appelle ces fonctions quand la pub se ferme (comme des events C#)
+                AdMob.addListener("interstitialAdDismissed", function () { endAdMobAd(true); });
+                AdMob.addListener("interstitialAdFailedToShow", function () { endAdMobAd(false); });
+                AdMob.addListener("onRewardedVideoAdReward", function () { adMobRewardEarned = true; });
+                AdMob.addListener("onRewardedVideoAdDismissed", function () { endAdMobAd(true); });
+                AdMob.addListener("onRewardedVideoAdFailedToShow", function () { endAdMobAd(false); });
+                isAdMobReady = true;
+            } catch (error) {
+                console.warn("AdMob n'a pas pu démarrer :", error);
+            }
+        }
+
+        //La pub en cours est finie (wasShown = false si elle n'a pas pu s'afficher)
+        function endAdMobAd(wasShown) {
+            const end = adMobAdEnd;
+            adMobAdEnd = null; //une seule fin par pub, même si deux événements arrivent
+            if (audioContext !== null) {
+                audioContext.resume(); //la musique du jeu reprend
+            }
+            if (end !== null) {
+                end(wasShown, adMobRewardEarned);
+            }
+        }
+
+        //Charge puis affiche une pub AdMob. kind = "interstitial" ou "rewarded".
+        //onEnd(wasShown, rewarded) est appelée à la fin, dans tous les cas (pub vue, fermée, ou impossible à charger).
+        async function showAdMobAd(kind, onEnd) {
+            if (!isAdMobReady || !canRequestAdMobAds) {
+                onEnd(false, false);
+                return;
+            }
+            adMobRewardEarned = false;
+            adMobAdEnd = onEnd;
+            if (audioContext !== null) {
+                audioContext.suspend(); //pas de musique du jeu par-dessus le son de la pub
+            }
+            const options = { adId: getAdMobAdId(kind), isTesting: ADS_TEST_MODE };
+            try {
+                if (kind === "interstitial") {
+                    await AdMob.prepareInterstitial(options);  //télécharge la pub (1 ou 2 secondes)
+                    await AdMob.showInterstitial();
+                } else {
+                    await AdMob.prepareRewardVideoAd(options);
+                    await AdMob.showRewardVideoAd();
+                }
+            } catch (error) {
+                endAdMobAd(false); //pas de pub disponible (pas de réseau, aucune pub à montrer...)
+            }
+        }
+
+        document.getElementById("adPrivacyButton").addEventListener("click", function () {
+            AdMob.showPrivacyOptionsForm().catch(function () { showToast("Impossible d'ouvrir les choix de confidentialité"); });
+        });
+
+        if (IS_NATIVE_APP) {
+            initAdMob();
+        }
+
         //Pub "entre deux écrans" (après une mort). onDone est appelé quand la pub est finie.
         function showInterstitialAd(onDone) {
             if (isPremium()) {
                 onDone(); //Pack Premium : pas de pub
+                return;
+            }
+            if (IS_NATIVE_APP) {
+                showAdMobAd("interstitial", function () { onDone(); }); //qu'elle ait pu s'afficher ou non, le jeu continue
                 return;
             }
             if (canUseGoogleAds()) {
@@ -7929,6 +8043,18 @@
         function showRewardedAd(name, onReward, onCancel) {
             if (isPremium()) {
                 onReward(); //Pack Premium : la récompense sans la pub
+                return;
+            }
+            if (IS_NATIVE_APP) {
+                showAdMobAd("rewarded", function (wasShown, rewarded) {
+                    if (rewarded) {
+                        onReward();
+                    } else if (wasShown) {
+                        onCancel(); //pub fermée avant la fin
+                    } else {
+                        showToast("Aucune pub disponible pour l'instant : réessaie dans un moment");
+                    }
+                });
                 return;
             }
             if (canUseGoogleAds()) {
