@@ -9,11 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- AdMob : l'ID de l'APPLICATION (avec un ~). Ici l'ID de test officiel de Google.
-             À remplacer par ton vrai ID AdMob avant la publication (voir game-design/mobile.md). -->
+        <!-- AdMob : l'ID de l'APPLICATION (avec un ~), celui de l'appli Android créée dans AdMob.
+             Les pubs restent des pubs de test tant que ADS_TEST_MODE vaut true dans index.html. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-4961484052300810~2811879981"/>
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"

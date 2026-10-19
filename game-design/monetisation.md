@@ -48,6 +48,16 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
   5. ⚠️ Ne jamais cliquer sur ses propres vraies pubs : Google peut fermer le compte. Pour tester une version avec les vrais ID, ajouter son téléphone comme « appareil de test » dans AdMob (Paramètres → Appareils de test).
   6. Plus tard, AdMob demandera un fichier `app-ads.txt` sur le site indiqué dans la fiche du Play Store.
 
+**Les ID AdMob du jeu (Android)**
+
+| Quoi | ID | Où il est dans le code |
+| --- | --- | --- |
+| Application | `ca-app-pub-4961484052300810~2811879981` | `android/app/src/main/AndroidManifest.xml` |
+| Bloc Interstitiel (pub après la mort) | `ca-app-pub-4961484052300810/2223802607` | `ADMOB_AD_IDS.real.android.interstitial` dans `index.html` |
+| Bloc Avec récompense (ressusciter, doubler) | pas encore créé | `ADMOB_AD_IDS.real.android.rewarded` |
+
+Ces ID ne sont pas secrets : ils sont lisibles dans toute appli publiée.
+
 ### Les pubs sur le site web
 
 - **Aujourd'hui :** une fausse pub de 5 s (`ADS_TEST_MODE = true`), pour tester tout le parcours.

@@ -7928,8 +7928,8 @@
                 android: { interstitial: "ca-app-pub-3940256099942544/1033173712", rewarded: "ca-app-pub-3940256099942544/5224354917" },
                 ios: { interstitial: "ca-app-pub-3940256099942544/4411468910", rewarded: "ca-app-pub-3940256099942544/1712485313" }
             },
-            real: { //à remplir avec tes ID AdMob (ils ressemblent à "ca-app-pub-1234567890123456/1234567890")
-                android: { interstitial: "", rewarded: "" },
+            real: { //tes ID AdMob (compte ca-app-pub-4961484052300810). "" = bloc pas encore créé
+                android: { interstitial: "ca-app-pub-4961484052300810/2223802607", rewarded: "" },
                 ios: { interstitial: "", rewarded: "" }
             }
         };
@@ -8001,6 +8001,11 @@
                 audioContext.suspend(); //pas de musique du jeu par-dessus le son de la pub
             }
             const options = { adId: getAdMobAdId(kind), isTesting: ADS_TEST_MODE };
+            if (options.adId === "") {
+                console.warn("Pas d'ID AdMob pour ce type de pub : " + kind); //bloc d'annonces pas encore créé dans AdMob
+                endAdMobAd(false);
+                return;
+            }
             try {
                 if (kind === "interstitial") {
                     await AdMob.prepareInterstitial(options);  //télécharge la pub (1 ou 2 secondes)
