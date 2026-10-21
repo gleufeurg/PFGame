@@ -1,10 +1,13 @@
 // RECOPIE AUTOMATIQUE DU JEU
-// Avant chaque compilation (le bouton ▶ d'Android Studio), on fait la même chose que "npm run sync" :
-// on installe les briques npm si package.json a changé, puis on recopie index.html et les polices dans l'appli.
+// Avant chaque compilation (le bouton ▶ d'Android Studio) : on installe les briques npm si package.json a changé,
+// puis on recopie index.html et les polices dans l'appli ("npx cap copy").
+// ⚠️ Surtout pas "npx cap sync" ici : il supprime et recrée le dossier capacitor-cordova-android-plugins
+// PENDANT la compilation, ce qui la fait échouer (FileNotFoundException sur aar-metadata.properties).
+// Si un nouveau plugin Capacitor est ajouté, lancer une fois "npm run sync" à la main (Android Studio fermé, ou avant le ▶).
 // Il suffit donc de faire Pull dans GitHub Desktop, puis ▶ : plus besoin de taper de commande.
 // (Si Android Studio dit que "npm" est introuvable : redémarrer le PC après l'installation de Node.js.)
 def dossierDuJeu = rootProject.projectDir.parentFile   // le dossier PFGame (le dossier android/ est dedans)
-def commande = "npm install --prefer-offline --no-audit --no-fund && npm run build && npx cap sync android"
+def commande = "npm install --prefer-offline --no-audit --no-fund && npm run build && npx cap copy android"
 
 tasks.register("copierLeJeu", Exec) {
     group = "pfgame"

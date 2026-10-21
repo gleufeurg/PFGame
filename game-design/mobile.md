@@ -54,12 +54,13 @@ Pas de téléphone sous la main ? Dans Android Studio, **Device Manager** permet
 
 ### Après une modification du jeu
 
-Le jeu dans l'appli est une **copie** de `index.html` et des polices. Cette copie est **automatique** : à chaque ▶ Run (ou à chaque compilation), Android Studio lance d'abord la tâche `copierLeJeu` (fichier `android/app/copier-jeu.gradle`), qui fait `npm install` puis `npm run sync`.
+Le jeu dans l'appli est une **copie** de `index.html` et des polices. Cette copie est **automatique** : à chaque ▶ Run (ou à chaque compilation), Android Studio lance d'abord la tâche `copierLeJeu` (fichier `android/app/copier-jeu.gradle`), qui fait `npm install`, `npm run build` puis `npx cap copy android` (la copie du jeu, sans toucher aux plugins).
 
 Donc, après une modification (la tienne ou un push de Claude) : **Pull** dans GitHub Desktop, puis **▶ Run** dans Android Studio. C'est tout.
 
 - Si Android Studio dit que `npm` est introuvable : redémarrer le PC (après l'installation de Node.js), puis relancer Android Studio.
-- On peut toujours faire la copie à la main avec `npm run sync`.
+- On peut toujours faire la copie à la main avec `npm run sync`. C'est **obligatoire une fois** quand un nouveau plugin Capacitor est ajouté (la tâche automatique ne met pas à jour la liste des plugins), à faire avant le ▶.
+- Si une compilation échoue avec un fichier introuvable dans un dossier `build` : **Build → Clean Project**, puis ▶.
 - Ne jamais modifier les fichiers de `www/` ou de `android/app/src/main/assets/` : ils sont écrasés à chaque copie.
 
 Astuce : pour tester vite les commandes tactiles sans téléphone, ouvrir `index.html` dans Chrome, F12, puis l'icône téléphone/tablette en haut à gauche des outils (« Toggle device toolbar ») et recharger la page.
