@@ -252,17 +252,44 @@
             opacity: 0;
         }
 
-        @media (max-width: 600px) { /*petit écran : on descend la barre sous l'or et l'XP pour ne pas les recouvrir*/
+        @media (max-width: 600px) { /*petit écran (téléphone) : la barre reste tout en haut, entre l'or/XP et la roue crantée*/
             #topBar {
-                top: 104px;
+                top: calc(8px + env(safe-area-inset-top)); /*env(safe-area-inset-top) = la place de l'encoche / barre d'état*/
+                height: 44px;
+                /*Centrée SANS transform : un élément avec "transform" devient le repère de ses enfants en position: fixed,
+                  et le menu du temps (plus bas) se calerait sur la barre au lieu de l'écran*/
+                left: 0;
+                right: 0;
+                width: fit-content; /*fit-content = juste la largeur de son contenu*/
+                margin: 0 auto;     /*auto à gauche et à droite = centrée*/
+                transform: none;
             }
 
-            #toast {
-                top: 164px;
+            #runTimeDisplay {
+                font-size: 22px;
             }
 
-            #skipButtons {
-                flex-direction: column; /*sur téléphone, les boutons s'empilent*/
+            #timeControls {
+                left: calc(100% + 8px);
+            }
+
+            #toast { /*sous l'or et l'XP, pour ne pas les recouvrir*/
+                top: calc(108px + env(safe-area-inset-top));
+                max-width: calc(100% - 32px);
+                text-align: center;
+            }
+
+            #timeMenu { /*le menu du temps prend toute la largeur de l'écran, sous la barre : tous ses boutons restent visibles*/
+                position: fixed;
+                top: calc(60px + env(safe-area-inset-top));
+                left: 8px;
+                right: 8px;
+                max-height: calc(100vh - 80px);
+                overflow-y: auto;
+            }
+
+            #skipButtons, #speedButtons {
+                flex-wrap: wrap; /*les boutons passent à la ligne au lieu de sortir de l'écran*/
             }
         }
 
@@ -7833,6 +7860,7 @@
             }
         });
         window.addEventListener("pagehide", saveProgress);
+        document.addEventListener("pause", saveProgress); //"pause" = événement envoyé par l'application mobile quand elle passe en arrière-plan
 
         //CONTACT : l'adresse est assemblée ici en morceaux, au lieu d'être écrite en entier dans la page.
         //Les robots qui ramassent les adresses mail sur les sites (pour envoyer du spam) la trouvent moins facilement.
@@ -8775,6 +8803,29 @@
         //Le navigateur n'autorise le son qu'après une action du joueur
         document.addEventListener("pointerdown", initAudio);
         document.addEventListener("keydown", initAudio);
+
+        //ARRIÈRE-PLAN : quand le jeu n'est plus à l'écran (autre appli, écran éteint, onglet caché), tout le son s'arrête.
+        //suspend() = met le "moteur audio" en pause (la musique s'arrête exactement où elle en était), resume() = il repart.
+        function setAudioPausedInBackground(isHidden) {
+            if (audioContext === null) {
+                return;
+            }
+            if (isHidden) {
+                audioContext.suspend();
+            } else if (canResumeAudio()) {
+                audioContext.resume();
+            }
+        }
+
+        //Le son peut-il reprendre ? (sur la branche monetisation : pas pendant une pub)
+        function canResumeAudio() {
+            return true;
+        }
+
+        document.addEventListener("visibilitychange", function () { setAudioPausedInBackground(document.hidden); });
+        //"pause" / "resume" = événements envoyés par l'application mobile (Capacitor) quand elle passe en arrière-plan ou revient
+        document.addEventListener("pause", function () { setAudioPausedInBackground(true); });
+        document.addEventListener("resume", function () { setAudioPausedInBackground(false); });
 
 
         /////////////////////
