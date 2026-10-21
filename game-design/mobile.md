@@ -9,7 +9,7 @@ Le jeu reste **un seul fichier `index.html`**. Pour en faire une application And
 | `package.json` | la liste des outils (Capacitor 8.5.3) et les commandes `npm run ...` | oui |
 | `package-lock.json` | les versions exactes installées (créé par `npm install`, ne pas modifier à la main) | oui |
 | `capacitor.config.json` | le nom de l'appli (`appName`) et son identifiant (`appId`) | oui |
-| `scripts/copier-jeu.js` | copie `index.html` et le dossier `polices/` dans `www/` | oui |
+| `scripts/copier-jeu.js` | copie `index.html` et le dossier `polices/` dans `www/`, et y ajoute `capacitor.js` (la bibliothèque `@capacitor/core`, qui donne accès aux plugins comme AdMob) | oui |
 | `android/` | le projet Android, ouvert par Android Studio | oui |
 | `www/` | la copie du jeu mise dans l'appli (recréée à chaque fois) | non |
 | `node_modules/` | les outils téléchargés par `npm install` | non |

@@ -36,7 +36,7 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 - **Pourquoi :** `ADS_TEST_MODE` et `PAYMENT_TEST_MODE` sont à `true`. Dans l'appli, les pubs AdMob sont branchées mais montrent les pubs d'exemple de Google ; sur le web, c'est une fausse pub. Les achats sont simulés partout.
 - **Que faire :** pour les pubs, mettre les vrais ID AdMob (voir [monetisation.md](monetisation.md)) ; pour les achats, l'étape 3 de [mobile.md](mobile.md) (achats intégrés).
-- **Pas encore vérifié :** l'appli avec AdMob n'a pas encore été compilée ni lancée sur un vrai téléphone (le code a été testé avec un plugin simulé). À faire avec Android Studio : `npm install`, `npm run android`, ▶ Run.
+- **À vérifier sur le téléphone :** l'appli se compile et se lance sur un Samsung Galaxy A36. Le premier essai a montré qu'il manquait `capacitor.js` (corrigé) ; il reste à confirmer que les pubs de test s'affichent.
 
 ### Fenêtre de consentement (RGPD) seulement dans l'application
 

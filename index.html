@@ -7918,9 +7918,18 @@
 
         //ADMOB : les pubs dans l'application mobile (Android, plus tard iPhone)
         //window.Capacitor n'existe que dans l'appli : c'est Capacitor qui l'ajoute. Sur le site web, ce code ne fait rien.
-        const IS_NATIVE_APP = window.Capacitor !== undefined && window.Capacitor.isNativePlatform();
-        //registerPlugin("AdMob") = l'objet qui parle au code Android/iPhone du plugin (comme un GetComponent vers du code natif)
-        const AdMob = IS_NATIVE_APP ? window.Capacitor.registerPlugin("AdMob") : null;
+        const IS_NATIVE_APP = window.Capacitor !== undefined && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform();
+        //registerPlugin("AdMob") = l'objet qui parle au code Android/iPhone du plugin (comme un GetComponent vers du code natif).
+        //registerPlugin vient de capacitor.js, que scripts/copier-jeu.js ajoute dans l'appli.
+        //try / catch : si les pubs ne peuvent pas démarrer, le jeu doit quand même se lancer (sans pubs).
+        let AdMob = null;
+        if (IS_NATIVE_APP) {
+            try {
+                AdMob = window.Capacitor.registerPlugin("AdMob");
+            } catch (error) {
+                console.error("Plugin AdMob introuvable : le jeu tourne sans pubs.", error);
+            }
+        }
         //Les "blocs d'annonces" créés dans AdMob. En mode test : les ID d'exemple officiels de Google (on peut cliquer dessus sans risque).
         //⚠️ Ne JAMAIS cliquer sur ses vraies pubs : Google peut fermer le compte AdMob.
         const ADMOB_AD_IDS = {
@@ -8024,7 +8033,7 @@
             AdMob.showPrivacyOptionsForm().catch(function () { showToast("Impossible d'ouvrir les choix de confidentialité"); });
         });
 
-        if (IS_NATIVE_APP) {
+        if (AdMob !== null) {
             initAdMob();
         }
 
@@ -8709,7 +8718,7 @@
         //Sur le site en ligne et dans l'application, les joueurs ne peuvent pas les utiliser.
         //Pour tester en ligne quand même : console du navigateur (F12) -> localStorage.setItem("triche", "1"), puis recharger la page.
         function areCheatsAllowed() {
-            const isNativeApp = window.Capacitor !== undefined && window.Capacitor.isNativePlatform(); //l'application mobile (Capacitor)
+            const isNativeApp = window.Capacitor !== undefined; //l'application mobile (Capacitor ajoute window.Capacitor)
             const isLocalServer = location.hostname === "localhost" || location.hostname === "127.0.0.1";
             let isForced = false;
             try {
