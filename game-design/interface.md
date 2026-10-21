@@ -36,6 +36,8 @@ Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 
 - **Statistiques repliables** : sur petit écran, le panneau des stats est replié au départ (juste son titre en bas) ; on touche « Statistiques ▴ » pour l'ouvrir ou le fermer.
 - **Encoche et barre du téléphone** : les boutons du bord de l'écran s'en écartent (`env(safe-area-inset-...)` en CSS).
 - Quand on tourne l'écran ou qu'on change la taille de la fenêtre, le jeu se redimensionne (`resizeCanvas`).
+- **Barre du haut sur téléphone :** le chrono et le bouton du temps restent tout en haut, entre l'or/XP et la roue crantée. Le menu du temps s'ouvre en dessous, sur toute la largeur de l'écran, et ses boutons passent à la ligne si besoin.
+- **En arrière-plan** (autre appli, écran éteint, onglet caché) : tout le son s'arrête (`setAudioPausedInBackground`) et la progression est sauvegardée ; le son reprend au retour.
 
 ## La netteté (écrans fins)
 
