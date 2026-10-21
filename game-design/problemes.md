@@ -40,7 +40,8 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ### Fenêtre de consentement (RGPD) seulement dans l'application
 
-- **Déjà en place :** dans l'appli, la fenêtre de consentement de Google (UMP) s'affiche avant les pubs AdMob, et un bouton des paramètres permet de changer d'avis.
+- **Déjà en place :** dans l'appli, le code demande le consentement à Google (UMP) avant les pubs AdMob, et un bouton des paramètres permet de changer d'avis.
+- **À faire dans AdMob :** créer et publier le **message RGPD** (Confidentialité et messages → RGPD). Sans lui, aucune fenêtre ne s'affiche (vu sur le téléphone).
 - **Ce qui manque :** sur le site web, il n'y a pas de fenêtre de consentement (ce n'est pas grave tant que le site n'a que la fausse pub de test). Il manque aussi une page de **règles de confidentialité**, obligatoire sur les stores.
 - **Que faire :** écrire la page de règles de confidentialité (elle peut être publiée sur le site GitHub Pages) ; si un jour le site web affiche de vraies pubs, ajouter un outil de consentement certifié par Google.
 

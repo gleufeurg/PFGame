@@ -37,6 +37,8 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 
 - **En place :** le plugin `@capacitor-community/admob` (partie `ADMOB` de `index.html`). Dans l'appli, les 3 pubs (après la mort, ressusciter, doubler) sont des pubs AdMob. Une pub qui ne peut pas se charger (pas de réseau, aucune pub disponible) ne bloque jamais le jeu : après une mort, on va directement au shop ; pour une pub récompensée, un message demande de réessayer.
 - **Consentement RGPD :** au premier lancement en Europe, la fenêtre de consentement de Google s'affiche (`requestConsentInfo`, `showConsentForm`). Le bouton « Mes choix de confidentialité (pubs) » des paramètres permet de changer d'avis : il n'apparaît que dans l'appli, quand Google le demande.
+- **⚠️ La fenêtre de consentement n'existe que si elle est créée dans AdMob :** menu **Confidentialité et messages** → **RGPD** (Règlement européen) → **Créer un message** → choisir l'appli, les langues, puis **Publier**. Sans ce message, Google ne montre aucune fenêtre ; en mode test, le jeu affiche quand même les pubs d'exemple, mais **il faut ce message avant la publication**.
+- **Pour vérifier :** téléphone branché, jeu ouvert, Chrome sur le PC → `chrome://inspect` → **inspect** → onglet Console : les lignes « AdMob, consentement : … » et « AdMob, chargement de la pub : … » disent ce que Google répond.
 - **iPhone :** la question d'Apple « Autoriser le suivi ? » est posée après le consentement.
 - **Pendant une pub :** la musique du jeu se coupe, et reprend après.
 - **Aujourd'hui (`ADS_TEST_MODE = true`) :** l'appli montre les pubs d'exemple officielles de Google, sans risque.

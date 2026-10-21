@@ -7987,21 +7987,6 @@
         async function initAdMob() {
             try {
                 await AdMob.initialize({});
-                //RGPD : Google sait si le joueur est en Europe et affiche la fenêtre de consentement si besoin
-                let consent = await AdMob.requestConsentInfo();
-                if (consent.status === "REQUIRED" && consent.isConsentFormAvailable) {
-                    consent = await AdMob.showConsentForm();
-                }
-                canRequestAdMobAds = consent.canRequestAds;
-                //Le bouton "Mes choix de confidentialité" doit exister si le joueur peut changer d'avis (obligatoire en Europe)
-                document.getElementById("adPrivacyButton").classList.toggle("hidden", consent.privacyOptionsRequirementStatus !== "REQUIRED");
-                //iPhone : Apple impose de demander "Autoriser le suivi ?" avant les pubs personnalisées
-                if (window.Capacitor.getPlatform() === "ios") {
-                    const tracking = await AdMob.trackingAuthorizationStatus();
-                    if (tracking.status === "notDetermined") {
-                        await AdMob.requestTrackingAuthorization();
-                    }
-                }
                 //Les "événements" de fin de pub : le plugin appelle ces fonctions quand la pub se ferme (comme des events C#)
                 AdMob.addListener("interstitialAdDismissed", function () { endAdMobAd(true); });
                 AdMob.addListener("interstitialAdFailedToShow", function () { endAdMobAd(false); });
@@ -8011,6 +7996,32 @@
                 isAdMobReady = true;
             } catch (error) {
                 console.warn("AdMob n'a pas pu démarrer :", error);
+                return;
+            }
+            //RGPD : Google sait si le joueur est en Europe et affiche la fenêtre de consentement si besoin.
+            //⚠️ La fenêtre n'existe que si un "message RGPD" est créé et publié dans AdMob (Confidentialité et messages).
+            try {
+                let consent = await AdMob.requestConsentInfo();
+                console.log("AdMob, consentement :", JSON.stringify(consent)); //visible avec chrome://inspect
+                if (consent.status === "REQUIRED" && consent.isConsentFormAvailable) {
+                    consent = await AdMob.showConsentForm();
+                    console.log("AdMob, après la fenêtre :", JSON.stringify(consent));
+                }
+                //En mode test, on montre les pubs d'exemple même si la fenêtre n'a pas pu s'afficher (message RGPD pas encore créé)
+                canRequestAdMobAds = consent.canRequestAds || ADS_TEST_MODE;
+                //Le bouton "Mes choix de confidentialité" doit exister si le joueur peut changer d'avis (obligatoire en Europe)
+                document.getElementById("adPrivacyButton").classList.toggle("hidden", consent.privacyOptionsRequirementStatus !== "REQUIRED");
+                //iPhone : Apple impose de demander "Autoriser le suivi ?" avant les pubs personnalisées
+                if (window.Capacitor.getPlatform() === "ios") {
+                    const tracking = await AdMob.trackingAuthorizationStatus();
+                    if (tracking.status === "notDetermined") {
+                        await AdMob.requestTrackingAuthorization();
+                    }
+                }
+            } catch (error) {
+                //Pas de réponse de Google (pas de réseau, message RGPD absent...) : on essaie quand même de demander des pubs
+                console.warn("AdMob, consentement impossible à obtenir :", error);
+                canRequestAdMobAds = true;
             }
         }
 
@@ -8018,8 +8029,8 @@
         function endAdMobAd(wasShown) {
             const end = adMobAdEnd;
             adMobAdEnd = null; //une seule fin par pub, même si deux événements arrivent
-            if (audioContext !== null) {
-                audioContext.resume(); //la musique du jeu reprend
+            if (audioContext !== null && !document.hidden) {
+                audioContext.resume(); //la musique du jeu reprend (sauf si l'appli est passée en arrière-plan)
             }
             if (end !== null) {
                 end(wasShown, adMobRewardEarned);
@@ -8039,6 +8050,7 @@
                 audioContext.suspend(); //pas de musique du jeu par-dessus le son de la pub
             }
             const options = { adId: getAdMobAdId(kind), isTesting: ADS_TEST_MODE };
+            console.log("AdMob, chargement de la pub :", kind, options.adId);
             if (options.adId === "") {
                 console.warn("Pas d'ID AdMob pour ce type de pub : " + kind); //bloc d'annonces pas encore créé dans AdMob
                 endAdMobAd(false);
@@ -8053,6 +8065,7 @@
                     await AdMob.showRewardVideoAd();
                 }
             } catch (error) {
+                console.warn("AdMob, pub impossible :", kind, error); //visible avec chrome://inspect
                 endAdMobAd(false); //pas de pub disponible (pas de réseau, aucune pub à montrer...)
             }
         }
@@ -8817,9 +8830,9 @@
             }
         }
 
-        //Le son peut-il reprendre ? (sur la branche monetisation : pas pendant une pub)
+        //Le son peut-il reprendre ? Pas pendant une pub AdMob (elle a son propre son)
         function canResumeAudio() {
-            return true;
+            return adMobAdEnd === null;
         }
 
         document.addEventListener("visibilitychange", function () { setAudioPausedInBackground(document.hidden); });
