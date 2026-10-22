@@ -55,6 +55,14 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 - **Effacer :** bouton « Effacer ma progression » dans les paramètres (avec confirmation). Efface aussi les records et les super ennemis vaincus, mais garde les réglages (son, thème) et le Pack Premium (c'est un achat).
 - À côté, d'autres clés existaient déjà : `theme`, `soundSettings`, `records`, `defeatedBosses`, `premium`.
 
+## Pause dans les menus
+
+Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (cochée par défaut, clé `pauseInMenus`) : cochée, le jeu s'arrête quand la fenêtre des skills ou les paramètres sont ouverts ; décochée, il continue. Si le joueur meurt pendant qu'il regarde ses skills, la fenêtre se ferme et le shop s'affiche.
+
+## Aide à l'écran
+
+L'ancienne phrase d'aide en bas de l'écran (« Clique sur une planète… ») a été retirée : elle reviendra seulement dans le tutoriel, au moment d'acheter la première planète.
+
 ## Le temps
 
 Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout :
@@ -68,8 +76,8 @@ Les boutons pas encore achetés restent visibles avec un cadenas.
 
 ## La fenêtre des skills
 
-- **Onglets des dieux :** en haut, un onglet par dieu pour passer d'un arbre à l'autre.
-- **Dieux pas encore en orbite :** leur arbre s'affiche quand même, assombri et verrouillé, pour montrer au joueur ce qui l'attend. On peut le parcourir mais pas acheter.
+- **Passer d'un dieu à l'autre :** flèches **‹ ›** de chaque côté du nom du dieu, **glisser le doigt** (ou la souris) vers la gauche ou la droite sur la fenêtre (en dehors de l'arbre, où glisser sert à le déplacer), ou **flèches ← →** du clavier. On parcourt les dieux en orbite, plus le prochain dieu à acheter (en aperçu). Les autres dieux ne sont pas affichés, pour ne pas surcharger la fenêtre.
+- **Prochain dieu (pas encore en orbite) :** son arbre s'affiche quand même, assombri et verrouillé, pour montrer au joueur ce qui l'attend. On peut le parcourir mais pas acheter.
 - **Acheter :** clic sur une compétence disponible (au doigt : deux touchers, voir plus haut). Le lien depuis la compétence voisine se remplit, et l'étoile éclot.
 - **Rembourser :** clic droit sur une compétence prise (au doigt : appui long), ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
 - **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
