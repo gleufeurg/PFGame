@@ -1107,7 +1107,7 @@
             accent-color: var(--ui-accent); /*couleur du curseur*/
         }
 
-        #themeSelect { /*liste déroulante des thèmes*/
+        #themeSelect, #languageSelect { /*listes déroulantes des thèmes et des langues*/
             flex: 1;
             padding: 6px 10px;
             border: 2px solid var(--ui-line);
@@ -1332,7 +1332,7 @@
             color: var(--ui-accent);
         }
 
-        #themeSelect {
+        #themeSelect, #languageSelect {
             border-color: var(--ui-accent);
         }
 
@@ -1837,6 +1837,10 @@
             <h2>Paramètres</h2>
             <div id="volumeSliders"></div>
             <div class="settingRow">
+                <label for="languageSelect" class="volumeLabel">Langue</label>
+                <select id="languageSelect"></select>
+            </div>
+            <div class="settingRow">
                 <label for="themeSelect" class="volumeLabel">Thème</label>
                 <select id="themeSelect"></select>
             </div>
@@ -1862,7 +1866,117 @@
         </div>
     </div>
 
+    <!-- LANGUES : une traduction par fichier (dossier langues/). Chaque fichier ajoute sa langue dans window.TRADUCTIONS. -->
+    <script src="langues/en.js"></script>
+    <script src="langues/it.js"></script>
+    <script src="langues/de.js"></script>
+    <script src="langues/zh.js"></script>
+    <script src="langues/ja.js"></script>
     <script>
+        /////////////
+        ////LANGUES//  Le jeu est écrit en français ; t("texte") renvoie ce texte dans la langue choisie
+        /////////////
+        //Comment ça marche : chaque fichier langues/xx.js contient un "dictionnaire" { "texte français": "traduction" }.
+        //t("Portée") cherche "Portée" dans le dictionnaire de la langue choisie. Pas trouvé ? On garde le français.
+        //Les morceaux variables s'écrivent entre accolades : t("{name} arrive !", { name: boss.name }) -> "Cerberus is coming!"
+        //⚠️ Tout NOUVEAU texte affiché au joueur doit passer par t(), et être ajouté dans chaque fichier de langues/ (voir game-design/langues.md).
+        const LANGUAGES = { fr: "Français", en: "English", it: "Italiano", de: "Deutsch", zh: "中文", ja: "日本語" };
+        const TRANSLATIONS = window.TRADUCTIONS || {};
+        const MISSING_TRANSLATIONS = new Set(); // textes sans traduction (utile pour vérifier qu'il n'en manque pas)
+
+        //La langue : celle choisie dans les paramètres, sinon celle du téléphone / navigateur, sinon l'anglais
+        function detectLanguage() {
+            try {
+                const saved = localStorage.getItem("language");
+                if (LANGUAGES[saved] !== undefined) {
+                    return saved;
+                }
+            } catch (error) {
+            }
+            for (const language of navigator.languages || [navigator.language || ""]) { //ex : "fr-FR", "en-US", "zh-CN"
+                const code = String(language).slice(0, 2).toLowerCase(); //les 2 premières lettres : "fr", "en", "zh"...
+                if (LANGUAGES[code] !== undefined) {
+                    return code;
+                }
+            }
+            return "en"; //langue inconnue : l'anglais, compris par le plus de joueurs
+        }
+        const currentLanguage = detectLanguage();
+        document.documentElement.lang = currentLanguage; //<html lang="...">
+
+        function t(text, values) {
+            let result = text;
+            if (currentLanguage !== "fr") {
+                const dictionary = TRANSLATIONS[currentLanguage] || {};
+                if (typeof dictionary[text] === "string" && dictionary[text] !== "") {
+                    result = dictionary[text];
+                } else {
+                    MISSING_TRANSLATIONS.add(text);
+                }
+            }
+            if (values !== undefined) {
+                for (const key of Object.keys(values)) {
+                    result = result.split("{" + key + "}").join(values[key]); //split + join = remplace TOUTES les {clé}
+                }
+            }
+            return result;
+        }
+
+        //Traduit sur place des champs d'une liste ou d'un objet (ex : le nom et la description de chaque combo)
+        function translateFields(collection, fields) {
+            for (const item of Object.values(collection)) { //Object.values = les valeurs (marche aussi pour un tableau)
+                for (const field of fields) {
+                    if (typeof item[field] === "string") {
+                        item[field] = t(item[field]);
+                    }
+                }
+            }
+        }
+
+        //Traduit sur place toutes les valeurs d'un objet { clé: "texte" }
+        function translateValues(object) {
+            for (const key of Object.keys(object)) {
+                object[key] = t(object[key]);
+            }
+        }
+
+        //Les textes écrits directement dans la page HTML (titres, boutons, paramètres...) et les infobulles
+        function translatePage() {
+            if (currentLanguage === "fr") {
+                return;
+            }
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); //parcourt tous les morceaux de texte
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+            for (const node of textNodes) {
+                if (node.parentElement === null || node.parentElement.closest("script, style") !== null) {
+                    continue;
+                }
+                const text = node.nodeValue.replace(/\s+/g, " ").trim(); //les espaces et retours à la ligne en trop ne comptent pas
+                if (text === "" || !/[A-Za-zÀ-ÿ]/.test(text)) {
+                    continue; //pas de lettre : rien à traduire (nombres, symboles)
+                }
+                const translated = t(text);
+                if (translated !== text) {
+                    const before = node.nodeValue.match(/^\s*/)[0]; //garde les espaces autour
+                    const after = node.nodeValue.match(/\s*$/)[0];
+                    node.nodeValue = before + translated + after;
+                }
+            }
+            for (const element of document.querySelectorAll("[title], [aria-label]")) {
+                for (const attribute of ["title", "aria-label"]) {
+                    const value = element.getAttribute(attribute);
+                    if (value !== null && value.trim() !== "") {
+                        element.setAttribute(attribute, t(value));
+                    }
+                }
+            }
+        }
+        translatePage();
+
+
         /////////////
         ////CANVAS///
         /////////////
@@ -2536,6 +2650,7 @@
             gay: createTheme("Gay", "#121d1d", "#26ceaa", ["#078d70", "#26ceaa", "#98e8c1", "#ffffff", "#7bade2", "#5049cc", "#3d1a78"]),
             cycle: { name: "Cycle des thèmes", cycle: true } //passe tout seul d'un thème à l'autre, en fondu
         };
+        translateFields(THEMES, ["name"]);
         const DEFAULT_THEME = "night";
         let currentThemeKey = DEFAULT_THEME;
         let BG_COLOR = THEMES[DEFAULT_THEME].background;            // fond uni
@@ -3197,7 +3312,7 @@
         //Les planètes sont remises dans l'ordre de la sauvegarde (savedPlanetOrder, voir SAUVEGARDE)
         function createPlanets() {
             const owned = SKILL_TREES.filter(function (tree) { return !tree.isLocked; });
-            owned.sort(function (a, b) { return getSavedPlanetIndex(a.name) - getSavedPlanetIndex(b.name); }); //sort = trie la liste
+            owned.sort(function (a, b) { return getSavedPlanetIndex(a.id) - getSavedPlanetIndex(b.id); }); //sort = trie la liste
             for (const tree of owned) {
                 addPlanet(tree);
             }
@@ -3207,7 +3322,8 @@
             PLANET_ORBIT_RADIUS = Math.max(100, (planets.length + 1) * PLANET_SPACING); //plus de planètes = orbite plus grande, pour qu'elles ne se touchent pas
             planets.push({
                 //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
-                name: tree.name,
+                id: tree.id,         // nom français : sert à la sauvegarde (ordre des planètes)
+                name: tree.name,     // nom affiché, dans la langue du joueur
                 color: tree.color,
                 sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
                 size: PLANET_SIZE,
@@ -3238,7 +3354,7 @@
             const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
             godItem.level = SKILL_TREES.filter(function (other) { return !other.isLocked; }).length;
             refreshStats();
-            showToast("✨ " + tree.name + " rejoint l'orbite !");
+            showToast(t("✨ {name} rejoint l'orbite !", { name: tree.name }));
         }
 
         let hoveredPlanet = null;   // la planète sous la souris (elle se soulève et brille)
@@ -3579,7 +3695,7 @@
             }
 
             playSound("skip");
-            showToast("⏩ +" + seconds + " s : " + spawnedCount + " ennemis arrivent !");
+            showToast(t("⏩ +{seconds} s : {count} ennemis arrivent !", { seconds: seconds, count: spawnedCount }));
             checkBossSchedule(); //un super ennemi dont l'heure est passée pendant le saut arrive aussitôt (son annonce remplace le message)
         }
 
@@ -3594,7 +3710,7 @@
                 button.className = "skipButton";
                 button.disabled = !isUnlocked;
                 button.textContent = (isUnlocked ? "⏩ +" : "🔒 +") + seconds + " s";
-                button.title = isUnlocked ? "Passer " + seconds + " secondes" : "À débloquer dans le shop : « Sauter dans le temps »";
+                button.title = isUnlocked ? t("Passer {seconds} secondes", { seconds: seconds }) : t("À débloquer dans le shop : « Sauter dans le temps »");
                 button.addEventListener("click", function () { skipTime(seconds); });
                 skipButtons.appendChild(button);
             }
@@ -3617,7 +3733,7 @@
                 }
                 button.disabled = !isUnlocked;
                 button.textContent = (isUnlocked ? "x" : "🔒 x") + speed;
-                button.title = isUnlocked ? "Vitesse du jeu x" + speed : "À débloquer dans le shop : « Accélérer le temps »";
+                button.title = isUnlocked ? t("Vitesse du jeu x{speed}", { speed: speed }) : t("À débloquer dans le shop : « Accélérer le temps »");
                 button.addEventListener("click", function () { setGameSpeed(speed); });
                 speedButtons.appendChild(button);
             }
@@ -3735,6 +3851,7 @@
             { movement: "zigzag", time: 300, name: "Zigzag" },     // 5:00
             { movement: "wave", time: 600, name: "Onduleux" }      // 10:00
         ];
+        translateFields(MOVEMENT_UNLOCKS, ["name"]);
         const MOVEMENT_VARIATION_TIME = 750;  // 12:30 : à partir de là, chaque ennemi spécial varie son mouvement (vitesse, arrêts, forme...)
         const movementsIntroducedThisRun = new Set(); // les mouvements dont le 1er ennemi est déjà apparu pendant cette partie
 
@@ -3749,12 +3866,12 @@
                 if (runTime >= unlock.time && !movementsIntroducedThisRun.has(unlock.movement)) {
                     movementsIntroducedThisRun.add(unlock.movement);
                     spawnEnemy(unlock.movement);
-                    showToast("🌀 Nouveau mouvement : " + unlock.name);
+                    showToast(t("🌀 Nouveau mouvement : {name}", { name: unlock.name }));
                 }
             }
             if (runTime >= MOVEMENT_VARIATION_TIME && !movementsIntroducedThisRun.has("variation")) {
                 movementsIntroducedThisRun.add("variation");
-                showToast("🌀 Les mouvements deviennent imprévisibles !");
+                showToast(t("🌀 Les mouvements deviennent imprévisibles !"));
             }
         }
         const SPECIAL_OUTLINE_COLOR = "#ffe14d"; // contour jaune des ennemis à mouvement spécial
@@ -3999,6 +4116,7 @@
             { id: "python", name: "Python", time: 420, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 8, sides: 7, gold: 180, xp: 180 },
             { id: "cronos", name: "Cronos", time: 480, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 8, sides: 12, gold: 260, xp: 260 }
         ];
+        translateFields(BOSSES, ["name"]);
         //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie
         const BOSS_RANDOM_CHANCE_START = 0.001;     // 0.1% au début
         const BOSS_RANDOM_CHANCE_PER_SECOND = 0.00002; // +0.002% par seconde de jeu (≈ 0.7% à 5 minutes)
@@ -4059,7 +4177,7 @@
                 if (!defeatedBossIds.has(boss.id) && !bossesSpawnedThisRun.has(boss.id) && runTime >= boss.time) {
                     bossesSpawnedThisRun.add(boss.id);
                     spawnBoss(boss);
-                    showToast("⚠️ " + boss.name + " arrive !");
+                    showToast(t("⚠️ {name} arrive !", { name: boss.name }));
                     playSound("bossArrive");
                 }
             }
@@ -4083,7 +4201,7 @@
             if (!defeatedBossIds.has(enemy.boss.id)) {
                 defeatedBossIds.add(enemy.boss.id);
                 saveDefeatedBosses();
-                showToast("🏆 " + enemy.boss.name + (enemy.boss.feminine ? " est vaincue !" : " est vaincu !"));
+                showToast(t(enemy.boss.feminine ? "🏆 {name} est vaincue !" : "🏆 {name} est vaincu !", { name: enemy.boss.name }));
                 playSound("bossDefeated");
             }
         }
@@ -4610,6 +4728,7 @@
             swift: { name: "Plume", icon: "🪶", color: "#6a7dff" },
             hearth: { name: "Foyer", icon: "🕯️", color: "#c4734a" }
         };
+        translateFields(ATTRIBUTES, ["name"]);
 
         //Les options de lien. strength = force des effets (opposé = plus fort, car la planète est loin).
         //"Les deux côtés" ne donne pas 2 attributs : le dieu et ses 2 voisines fusionnent en UN attribut unique (3 éléments).
@@ -4620,6 +4739,7 @@
             both: { name: "Les deux côtés", strength: 1 },       // le dieu et ses 2 voisines FUSIONNENT en un attribut unique (voir FUSIONS)
             opposite: { name: "Opposé", strength: 1 }           // pas de combo : une STAT typique du dieu (voir OPPOSITE_BONUSES)
         };
+        translateFields(LINK_MODES, ["name"]);
 
         //LIEN "OPPOSÉ" : au lieu d'un combo, la planète qui choisit le lien reçoit une STAT typique du dieu d'en face.
         //Le lien traverse le milieu : le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur
@@ -4638,6 +4758,7 @@
             swift: { name: "Messager", description: "+50% de vitesse des balles", effects: [{ stat: "bulletSpeed", value: 0.5 }] },
             hearth: { name: "Foyer", description: "+0.15 PV régénérés par seconde pour toi", centerOnly: true, effects: [{ stat: "regen", value: 0.15 }] }
         };
+        translateFields(OPPOSITE_BONUSES, ["name", "description"]);
 
         //Le nom de chaque effet de combo (pour l'Égide d'Athéna, qui en déclenche un au hasard)
         const EFFECT_NAMES = {
@@ -4648,6 +4769,7 @@
             poisonZone: "Flaque toxique", mine: "Graine explosive", blackhole: "Trou noir", nova: "Nova", echo: "Écho", confuse: "Confusion",
             rewind: "Retour en arrière", thunder: "Foudre", bleed: "Saignement", charm: "Charme", boomerang: "Boomerang"
         };
+        translateValues(EFFECT_NAMES);
 
         //LES COMBOS : la clé = les 2 attributs dans l'ordre alphabétique, reliés par "+" (voir getComboKey)
         //effects = ce que font les balles (voir applyComboEffects). Tous les combos possibles sont là (12 attributs = 66 combos).
@@ -5929,6 +6051,9 @@
             }
         };
 
+        translateFields(COMBOS, ["name", "description"]);
+        translateFields(FUSIONS, ["name", "description"]);
+
         //Le contenu de chaque arbre : 1 arbre = 1 planète = 1 projet.
         //Au départ, aucune planète ne tourne autour du joueur : elles s'achètent toutes dans le shop ("Nouvelle divinité"), dans l'ordre de cette liste.
         //label = texte court dans le rond ; effect = ce que la compétence améliore (voir BASE_STATS)
@@ -6351,6 +6476,15 @@
         ];
 
         //Assemble la forme (TREE_SHAPES) et le contenu (skills) de chaque arbre
+        //"GRANDE KEYSTONE : +3 dégâts par balle" : on traduit l'étiquette et l'effet séparément (l'effet existe aussi ailleurs)
+        const GRAND_KEYSTONE_PREFIX = "GRANDE KEYSTONE : ";
+        function translateSkillDescription(description) {
+            if (description.startsWith(GRAND_KEYSTONE_PREFIX)) {
+                return t(GRAND_KEYSTONE_PREFIX) + t(description.slice(GRAND_KEYSTONE_PREFIX.length));
+            }
+            return t(description);
+        }
+
         const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
 
         //COÛTS (en XP) : coût de base + un supplément par "pas" depuis le départ
@@ -6434,7 +6568,8 @@
                     minorCounts[minor.name] = (minorCounts[minor.name] || 0) + 1;
                     skill = {
                         label: minor.label,
-                        name: minor.name + " " + ROMAN_NUMERALS[minorCounts[minor.name] - 1],
+                        name: t(minor.name) + " " + ROMAN_NUMERALS[minorCounts[minor.name] - 1], //le nom est traduit ici (avant le numéro)
+                        isNameTranslated: true,
                         description: minor.description,
                         effect: minor.effect
                     };
@@ -6451,9 +6586,9 @@
                     isStart: layout.role === "start",
                     neighbors: [], //rempli juste après : toutes les compétences reliées, dans les deux sens
                     isKeystone: layout.role === "keystone" || layout.role === "grand",
-                    label: skill.label,
-                    name: skill.name,
-                    description: skill.description,
+                    label: t(skill.label),
+                    name: skill.isNameTranslated ? skill.name : t(skill.name),
+                    description: translateSkillDescription(skill.description),
                     effect: skill.effect,
                     unlocked: false
                 });
@@ -6468,7 +6603,8 @@
             }
 
             warnCrossingLinks(treeData.name, nodes);
-            return { name: treeData.name, color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes };
+            //id = le nom français (ne change jamais : sauvegarde, codes de triche) ; name = le nom affiché, dans la langue du joueur
+            return { id: treeData.name, name: t(treeData.name), color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes };
         }
 
         //VÉRIFICATION : prévient dans la console (F12) si deux liens d'un arbre se croisent, pour corriger la forme
@@ -6646,7 +6782,7 @@
         //Comment écrire chaque bonus. value = le total de toutes les compétences débloquées pour cette stat
         const BONUS_FORMATS = {
             maxHealth: function (value) { return ["PV max", "+" + formatNumber(value)]; },
-            regen: function (value) { return ["Régénération", "+" + formatNumber(value) + " PV/s"]; },
+            regen: function (value) { return ["Régénération", "+" + formatNumber(value) + " " + t("PV/s")]; },
             lifeOnKill: function (value) { return ["Vie par ennemi tué", "+" + formatNumber(value)]; },
             damage: function (value) { return ["Dégâts par balle", "+" + formatNumber(value)]; },
             attackSpeed: function (value) { return ["Vitesse d'attaque", "+" + formatNumber(value * 100) + "%"]; },
@@ -6660,7 +6796,7 @@
             comboProcChance: function (value) { return ["Effet de combo au hasard", "+" + formatNumber(value * 100) + "%"]; },
             shieldRecharge: function (value) { return ["Recharge du bouclier", "+" + formatNumber(value * 100) + "%"]; },
             dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
-            shield: function () { return ["Bouclier", "Oui"]; },
+            shield: function () { return ["Bouclier", t("Oui")]; },
             goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
             xpMultiplier: function (value) { return ["XP gagnée", "+" + formatNumber(value * 100) + "%"]; }
         };
@@ -6668,11 +6804,11 @@
         //COLONNE DE DROITE : tout ce que cet arbre nous apporte (progression, pouvoirs, total des stats)
         function renderTreeBonus(tree) {
             treeBonusArea.textContent = "";
-            treeBonusArea.appendChild(createElementWithText("h2", "", "Bonus de " + tree.name));
+            treeBonusArea.appendChild(createElementWithText("h2", "", t("Bonus de {name}", { name: tree.name })));
 
             const unlockedNodes = tree.nodes.filter(function (node) { return node.unlocked; });
             const spentXp = unlockedNodes.reduce(function (total, node) { return total + node.cost; }, 0); //reduce = additionne tout
-            const progress = createElementWithText("div", "bonusProgress", unlockedNodes.length + " / " + tree.nodes.length + " compétences · " + spentXp + " XP investis");
+            const progress = createElementWithText("div", "bonusProgress", t("{count} / {total} compétences · {xp} XP investis", { count: unlockedNodes.length, total: tree.nodes.length, xp: spentXp }));
             const bar = createElementWithText("div", "bonusBar", "");
             const fill = document.createElement("span");
             fill.style.width = (unlockedNodes.length / tree.nodes.length * 100) + "%";
@@ -6681,18 +6817,18 @@
             treeBonusArea.appendChild(progress);
 
             if (unlockedNodes.length === 0) {
-                treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", "Aucune compétence débloquée pour l'instant. Commence par l'étoile de départ !"));
+                treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", t("Aucune compétence débloquée pour l'instant. Commence par l'étoile de départ !")));
                 return;
             }
 
             //POUVOIRS : les keystones et la grande keystone débloquées, avec leur nom
             const powers = unlockedNodes.filter(function (node) { return node.isKeystone; });
             if (powers.length > 0) {
-                treeBonusArea.appendChild(createElementWithText("h3", "", "Pouvoirs"));
+                treeBonusArea.appendChild(createElementWithText("h3", "", t("Pouvoirs")));
                 for (const node of powers) {
                     const power = createElementWithText("div", "bonusPower", "");
                     power.appendChild(createElementWithText("strong", "", node.name + (node.role === "grand" ? " ★" : "")));
-                    power.appendChild(createElementWithText("span", "", node.description.replace("GRANDE KEYSTONE : ", "")));
+                    power.appendChild(createElementWithText("span", "", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
                     treeBonusArea.appendChild(power);
                 }
             }
@@ -6703,14 +6839,15 @@
                 const key = node.effect.stat === "damageVs" ? "damageVs_" + node.effect.element : node.effect.stat;
                 totals[key] = (totals[key] || 0) + node.effect.value;
             }
-            treeBonusArea.appendChild(createElementWithText("h3", "", "Stats"));
-            treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", "Les stats de tir vont à la planète " + tree.name + ". La vie et la défense vont au joueur (le triangle du milieu)."));
+            treeBonusArea.appendChild(createElementWithText("h3", "", t("Stats")));
+            treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", t("Les stats de tir vont à la planète {name}. La vie et la défense vont au joueur (le triangle du milieu).", { name: tree.name })));
             for (const key of Object.keys(totals)) {
                 let row;
                 if (key.startsWith("damageVs_")) {
-                    row = ["Dégâts vs " + ELEMENT_NAMES[key.slice(9)], "+" + formatNumber(totals[key])]; //slice(9) = le texte après "damageVs_"
+                    row = [t("Dégâts vs {element}", { element: ELEMENT_NAMES[key.slice(9)] }), "+" + formatNumber(totals[key])]; //slice(9) = le texte après "damageVs_"
                 } else {
                     row = BONUS_FORMATS[key](totals[key]);
+                    row[0] = t(row[0]); //le nom de la stat, dans la langue du joueur
                 }
                 const line = createElementWithText("div", "bonusStat", "");
                 line.appendChild(createElementWithText("span", "", row[0]));
@@ -6724,13 +6861,13 @@
             const planet = planets.find(function (other) { return other.tree === tree; });
             orbitLinkArea.textContent = "";
             if (planet === undefined) {
-                orbitLinkArea.appendChild(createElementWithText("h3", "", "Liens d'orbite"));
-                orbitLinkArea.appendChild(createElementWithText("div", "comboNone", tree.name + " n'est pas encore en orbite : achète-le dans le shop (« Nouvelle divinité ») pour créer des liens."));
+                orbitLinkArea.appendChild(createElementWithText("h3", "", t("Liens d'orbite")));
+                orbitLinkArea.appendChild(createElementWithText("div", "comboNone", t("{name} n'est pas encore en orbite : achète-le dans le shop (« Nouvelle divinité ») pour créer des liens.", { name: tree.name })));
                 return;
             }
-            orbitLinkArea.appendChild(createElementWithText("h3", "", "Liens d'orbite"));
+            orbitLinkArea.appendChild(createElementWithText("h3", "", t("Liens d'orbite")));
             const own = ATTRIBUTES[tree.element];
-            const element = createElementWithText("div", "linkElement", "Attribut de " + tree.name + " : ");
+            const element = createElementWithText("div", "linkElement", t("Attribut de {name} : ", { name: tree.name }));
             element.appendChild(createElementWithText("strong", "", own.icon + " " + own.name));
             orbitLinkArea.appendChild(element);
 
@@ -6761,15 +6898,15 @@
                 const partner = getLinkedPlanets(planet)[0];
                 const card = createElementWithText("div", "comboCard", "");
                 if (partner === undefined) {
-                    card.appendChild(createElementWithText("strong", "", "Lien opposé"));
-                    card.appendChild(document.createTextNode("Aucune planète en face pour l'instant : pas de bonus."));
+                    card.appendChild(createElementWithText("strong", "", t("Lien opposé")));
+                    card.appendChild(document.createTextNode(t("Aucune planète en face pour l'instant : pas de bonus.")));
                     orbitLinkArea.appendChild(card);
                     return;
                 }
                 const bonus = OPPOSITE_BONUSES[partner.tree.element]; //le bonus du dieu d'EN FACE
-                const receivers = bonus.centerOnly ? "pour toi (le triangle du milieu)" : "pour toi et " + tree.name;
+                const receivers = bonus.centerOnly ? t("pour toi (le triangle du milieu)") : t("pour toi et {name}", { name: tree.name });
                 card.style.setProperty("--combo-color", partner.color);
-                card.appendChild(createElementWithText("strong", "", ATTRIBUTES[partner.tree.element].icon + " Lien opposé avec " + partner.name + " : " + bonus.name));
+                card.appendChild(createElementWithText("strong", "", ATTRIBUTES[partner.tree.element].icon + " " + t("Lien opposé avec {name} : {bonus}", { name: partner.name, bonus: bonus.name })));
                 card.appendChild(document.createTextNode(bonus.description + ", " + receivers + "."));
                 orbitLinkArea.appendChild(card);
                 return;
@@ -6777,15 +6914,15 @@
             //...ou les combos actifs
             const combos = getPlanetCombos(planet);
             if (combos.length === 0) {
-                const reason = tree.linkMode === "none" ? "Choisis un lien pour créer un combo." : "Même attribut : pas de combo.";
+                const reason = tree.linkMode === "none" ? t("Choisis un lien pour créer un combo.") : t("Même attribut : pas de combo.");
                 orbitLinkArea.appendChild(createElementWithText("div", "comboNone", reason));
             }
             for (const item of combos) {
                 const card = createElementWithText("div", "comboCard", "");
                 card.style.setProperty("--combo-color", getComboColor(item));
-                const strength = item.strength === 1 ? "" : " (force x" + item.strength + ")";
+                const strength = item.strength === 1 ? "" : " " + t("(force x{strength})", { strength: item.strength });
                 const title = item.fusion
-                    ? "Fusion " + item.fusion.map(function (key) { return ATTRIBUTES[key].icon; }).join(" + ") + " → " + item.combo.name
+                    ? t("Fusion") + " " + item.fusion.map(function (key) { return ATTRIBUTES[key].icon; }).join(" + ") + " → " + item.combo.name
                     : own.icon + " + " + ATTRIBUTES[item.attribute].icon + "  " + item.combo.name;
                 card.appendChild(createElementWithText("strong", "", title));
                 card.appendChild(document.createTextNode(item.combo.description + strength)); //createTextNode = un simple morceau de texte
@@ -6932,13 +7069,14 @@
         function showNodeInfoHint() {
             nodeInfo.className = "empty";
             nodeInfo.textContent = currentTree.isLocked
-                ? "Aperçu : " + currentTree.name + " n'est pas encore en orbite. " + (IS_TOUCH_DEVICE ? "Touche" : "Survole") + " une compétence pour voir ce qu'elle fera."
+                ? t(IS_TOUCH_DEVICE ? "Aperçu : {name} n'est pas encore en orbite. Touche une compétence pour voir ce qu'elle fera." : "Aperçu : {name} n'est pas encore en orbite. Survole une compétence pour voir ce qu'elle fera.", { name: currentTree.name })
                 : IS_TOUCH_DEVICE
-                    ? "Touche une compétence pour voir ce qu'elle fait, touche-la encore pour la débloquer avec ton XP, appui long pour la rembourser. Deux doigts pour zoomer."
-                    : "Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.";
+                    ? t("Touche une compétence pour voir ce qu'elle fait, touche-la encore pour la débloquer avec ton XP, appui long pour la rembourser. Deux doigts pour zoomer.")
+                    : t("Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.");
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
+        translateValues(ROLE_NAMES);
 
         //Crée un élément avec une classe et un texte (plus court que 3 lignes à chaque fois)
         function createElementWithText(tag, className, text) {
@@ -6961,29 +7099,29 @@
             nodeInfo.appendChild(title);
 
             //L'effet, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
-            nodeInfo.appendChild(createElementWithText("div", "infoEffect", node.description.replace("GRANDE KEYSTONE : ", "")));
+            nodeInfo.appendChild(createElementWithText("div", "infoEffect", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
 
             const chips = createElementWithText("div", "infoChips", "");
             if (currentTree.isLocked) {
                 chips.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
-                chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 " + currentTree.name + " n'est pas encore en orbite"));
+                chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 " + t("{name} n'est pas encore en orbite", { name: currentTree.name })));
             } else if (state === "unlocked") {
-                chips.appendChild(createElementWithText("span", "infoChip ok", "✔ Débloquée"));
+                chips.appendChild(createElementWithText("span", "infoChip ok", t("✔ Débloquée")));
                 if (canRefundNode(currentTree, node)) {
-                    const refund = createElementWithText("button", "refundButton", "↩ Rembourser (+" + node.cost + " XP)");
+                    const refund = createElementWithText("button", "refundButton", t("↩ Rembourser (+{xp} XP)", { xp: node.cost }));
                     refund.addEventListener("click", function () { refundNode(node); });
                     chips.appendChild(refund);
                 } else {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", "D'autres compétences en dépendent"));
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("D'autres compétences en dépendent")));
                 }
             } else {
                 chips.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
                 if (state === "locked") {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 Débloque une voisine d'abord"));
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("🔒 Débloque une voisine d'abord")));
                 } else if (xp < node.cost) {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", "Pas assez d'XP"));
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("Pas assez d'XP")));
                 } else {
-                    chips.appendChild(createElementWithText("span", "infoChip ready", IS_TOUCH_DEVICE ? "Touche encore pour débloquer" : "Clique pour débloquer"));
+                    chips.appendChild(createElementWithText("span", "infoChip ready", IS_TOUCH_DEVICE ? t("Touche encore pour débloquer") : t("Clique pour débloquer")));
                 }
             }
             nodeInfo.appendChild(chips);
@@ -7041,7 +7179,7 @@
             }
             if (!canRefundNode(currentTree, node)) {
                 playSound("denied");
-                showToast("Impossible : d'autres compétences dépendent de celle-ci");
+                showToast(t("Impossible : d'autres compétences dépendent de celle-ci"));
                 return;
             }
             node.unlocked = false;
@@ -7242,6 +7380,11 @@
             { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
 
+        for (const item of SHOP_ITEMS) {
+            item.id = item.name; //le nom français : sert à la sauvegarde, ne change jamais
+        }
+        translateFields(SHOP_ITEMS, ["name", "description"]);
+
         const gameOverPanel = document.getElementById("gameOverPanel");
         const shopGold = document.getElementById("shopGold");
         const shopItems = document.getElementById("shopItems");
@@ -7271,22 +7414,22 @@
                 let description = item.description;
                 if (item.unlocksGod && !isMaxed) {
                     const nextGod = SKILL_TREES.find(function (tree) { return tree.isLocked; }); //find = le premier qui correspond
-                    description = nextGod.name + " et son skill tree rejoignent l'orbite";
+                    description = t("{name} et son skill tree rejoignent l'orbite", { name: nextGod.name });
                 }
                 if (item.timeUpgrade === "speed" && !isMaxed) {
-                    description = "Débloque la vitesse du jeu x" + GAME_SPEED_OPTIONS[item.level + 1];
+                    description = t("Débloque la vitesse du jeu x{speed}", { speed: GAME_SPEED_OPTIONS[item.level + 1] });
                 }
                 if (item.timeUpgrade === "skip" && !isMaxed) {
-                    description = "Débloque le saut de +" + TIME_SKIP_OPTIONS[item.level] + " s (touche T)";
+                    description = t("Débloque le saut de +{seconds} s (touche T)", { seconds: TIME_SKIP_OPTIONS[item.level] });
                 }
 
                 const button = document.createElement("button");
                 button.className = "shopItem";
                 button.disabled = isMaxed || gold < cost;
                 button.innerHTML =
-                    "<strong>" + item.name + "</strong> (niv. " + item.level + "/" + item.maxLevel + ")<br>" +
+                    "<strong>" + item.name + "</strong> " + t("(niv. {level}/{max})", { level: item.level, max: item.maxLevel }) + "<br>" +
                     description + "<br>" +
-                    "<span class='cost'>" + (isMaxed ? "MAX" : cost + " or") + "</span>";
+                    "<span class='cost'>" + (isMaxed ? t("MAX") : t("{cost} or", { cost: cost })) + "</span>";
                 button.addEventListener("click", function () { buyShopItem(item); });
                 shopItems.appendChild(button);
             }
@@ -7381,13 +7524,13 @@
                 xp: xp,
                 shop: {},   // nom de l'amélioration -> niveau
                 trees: {},  // nom du dieu -> { en orbite ?, lien, compétences prises }
-                planetOrder: planets.map(function (planet) { return planet.name; }) //map = transforme chaque élément
+                planetOrder: planets.map(function (planet) { return planet.id; }) //map = transforme chaque élément
             };
             for (const item of SHOP_ITEMS) {
-                data.shop[item.name] = item.level;
+                data.shop[item.id] = item.level;
             }
             for (const tree of SKILL_TREES) {
-                data.trees[tree.name] = {
+                data.trees[tree.id] = {
                     owned: !tree.isLocked,
                     linkMode: tree.linkMode,
                     nodes: tree.nodes.filter(function (node) { return node.unlocked; }).map(function (node) { return node.id; })
@@ -7411,13 +7554,13 @@
                 xp = Number(data.xp) || 0;
                 const shop = data.shop || {};
                 for (const item of SHOP_ITEMS) {
-                    if (typeof shop[item.name] === "number" && !item.unlocksGod) { //le niveau "Nouvelle divinité" est recalculé plus bas
-                        item.level = clamp(Math.floor(shop[item.name]), 0, item.maxLevel);
+                    if (typeof shop[item.id] === "number" && !item.unlocksGod) { //le niveau "Nouvelle divinité" est recalculé plus bas
+                        item.level = clamp(Math.floor(shop[item.id]), 0, item.maxLevel);
                     }
                 }
                 const trees = data.trees || {};
                 for (const tree of SKILL_TREES) {
-                    const saved = trees[tree.name];
+                    const saved = trees[tree.id];
                     if (saved === undefined) {
                         continue; //dieu ajouté au jeu après cette sauvegarde
                     }
@@ -7447,7 +7590,7 @@
 
         //Effacer : on vide la sauvegarde et on recharge la page. Le Pack Premium (un achat) et les réglages sont gardés.
         function eraseProgress() {
-            if (!confirm("Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif.")) { //confirm = fenêtre OK / Annuler
+            if (!confirm(t("Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif."))) { //confirm = fenêtre OK / Annuler
                 return;
             }
             isProgressErased = true;
@@ -7518,13 +7661,13 @@
         function openSaveCode(mode) {
             saveCodeMode = mode;
             const isExport = mode === "export";
-            document.getElementById("saveCodeTitle").textContent = isExport ? "Exporter ma sauvegarde" : "Importer une sauvegarde";
+            document.getElementById("saveCodeTitle").textContent = isExport ? t("Exporter ma sauvegarde") : t("Importer une sauvegarde");
             document.getElementById("saveCodeText").textContent = isExport
-                ? "Copie ce code et garde-le (mail, notes...). Tu pourras le recoller avec « Importer » sur n'importe quel appareil pour retrouver ta progression."
-                : "Colle ici un code de sauvegarde. Attention : il remplace ta progression actuelle.";
+                ? t("Copie ce code et garde-le (mail, notes...). Tu pourras le recoller avec « Importer » sur n'importe quel appareil pour retrouver ta progression.")
+                : t("Colle ici un code de sauvegarde. Attention : il remplace ta progression actuelle.");
             saveCodeArea.value = isExport ? createSaveCode() : "";
             saveCodeArea.readOnly = isExport;
-            saveCodeActionButton.textContent = isExport ? "Copier" : "Charger";
+            saveCodeActionButton.textContent = isExport ? t("Copier") : t("Charger");
             saveCodeOverlay.classList.remove("hidden");
             if (isExport) {
                 saveCodeArea.select(); //tout le texte est sélectionné : prêt à être copié
@@ -7549,9 +7692,9 @@
                 //navigator.clipboard = le presse-papiers. Il peut être refusé (page ouverte depuis un fichier) : le texte reste sélectionné, Ctrl+C marche
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(saveCodeArea.value).then(function () {
-                        showToast("📋 Code copié !");
+                        showToast(t("📋 Code copié !"));
                     }).catch(function () {
-                        showToast("Copie impossible ici : fais Ctrl+C (le code est sélectionné)");
+                        showToast(t("Copie impossible ici : fais Ctrl+C (le code est sélectionné)"));
                     });
                 }
                 return;
@@ -7559,10 +7702,10 @@
             const data = readSaveCode(saveCodeArea.value);
             if (data === null) {
                 playSound("denied");
-                showToast("Ce code n'est pas valide (il est peut-être incomplet)");
+                showToast(t("Ce code n'est pas valide (il est peut-être incomplet)"));
                 return;
             }
-            if (!confirm("Remplacer ta progression actuelle par celle de ce code ?")) {
+            if (!confirm(t("Remplacer ta progression actuelle par celle de ce code ?"))) {
                 return;
             }
             isProgressErased = true; //on bloque la sauvegarde automatique : elle écraserait le code avec l'ancienne progression
@@ -7627,6 +7770,7 @@
         const statsPanel = document.getElementById("statsPanel");
         const statsContent = document.getElementById("statsContent");
         const ELEMENT_NAMES = { water: "Eau", fire: "Feu", plant: "Plante", air: "Air" };
+        translateValues(ELEMENT_NAMES);
 
         //RECORDS (gardés dans le navigateur, comme le volume)
         let killsThisRun = 0;
@@ -7668,53 +7812,53 @@
 
             const categories = [
                 {
-                    title: "Vie",
+                    title: t("Vie"),
                     rows: [
                         ["Points de vie", Math.floor(playerHealth) + " / " + Math.floor(playerStats.maxHealth)],
-                        ["Régénération", formatNumber(playerStats.regen) + " PV/s"],
+                        ["Régénération", formatNumber(playerStats.regen) + " " + t("PV/s")],
                         ["Vie par ennemi tué", "+" + formatNumber(playerStats.lifeOnKill)],
                         ["Vie par touche", "+" + formatNumber(playerStats.lifeOnHit)],
                         ["PV max gagnés (partie)", "+" + formatNumber(runMaxHealthBonus)]
                     ]
                 },
                 {
-                    title: "Attaque (toi)",
+                    title: t("Attaque (toi)"),
                     rows: [
                         ["Dégâts par balle", playerStats.damage],
                         ["Vitesse d'attaque", formatPercent(playerStats.attackSpeed)],
                         ["Tirs par seconde", formatNumber(playerStats.attackSpeed / BASE_FIRE_INTERVAL)],
                         ["Balles par tir", playerStats.bulletCount],
-                        ["Portée", playerStats.range + " px"],
+                        ["Portée", playerStats.range + " " + t("px")],
                         ["Vitesse des balles", formatPercent(playerStats.bulletSpeed)],
                         ["Chance de critique", formatNumber(playerStats.critChance * 100) + "%"],
                         ["Dégâts critiques", formatNumber(playerStats.critDamage * 100) + "%"],
-                        ["Effet de combo au hasard", formatNumber(playerStats.comboProcChance * 100) + "% par tir"]
+                        ["Effet de combo au hasard", t("{percent}% par tir", { percent: formatNumber(playerStats.comboProcChance * 100) })]
                     ].concat(elementBonuses) //concat = ajoute les lignes de elementBonuses à la fin
                 },
                 {
-                    title: "Défense",
+                    title: t("Défense"),
                     rows: [
                         ["Esquive", formatPercent(playerStats.dodgeChance)],
-                        ["Bouclier", playerStats.shield > 0 ? "Oui (recharge " + formatNumber(getShieldCooldown()) + " s)" : "Non"]
+                        ["Bouclier", playerStats.shield > 0 ? t("Oui (recharge {seconds} s)", { seconds: formatNumber(getShieldCooldown()) }) : t("Non")]
                     ]
                 },
                 {
-                    title: "Gains",
+                    title: t("Gains"),
                     rows: [
                         ["Or gagné", formatPercent(playerStats.goldMultiplier)],
                         ["XP gagnée", formatPercent(playerStats.xpMultiplier)]
                     ]
                 },
                 {
-                    title: "Ennemis",
+                    title: t("Ennemis"),
                     rows: [
                         ["Ennemis tués (partie)", killsThisRun],
                         ["Record d'ennemis tués", bestKills],
                         ["Temps (partie)", formatTime(runTime)],
                         ["Meilleur temps", formatTime(bestTime)],
-                        ["Apparition", "1 toutes les " + formatNumber(getEnemySpawnInterval()) + " s"],
+                        ["Apparition", t("1 toutes les {seconds} s", { seconds: formatNumber(getEnemySpawnInterval()) })],
                         ["Super ennemis vaincus", defeatedBossIds.size + " / " + BOSSES.length],
-                        ["Prochain super ennemi", getNextBoss() === null ? "Tous vaincus !" : getNextBoss().name + " (" + formatTime(getNextBoss().time) + ")"]
+                        ["Prochain super ennemi", getNextBoss() === null ? t("Tous vaincus !") : getNextBoss().name + " (" + formatTime(getNextBoss().time) + ")"]
                     ]
                 }
             ];
@@ -7726,7 +7870,7 @@
         //UNE SECTION PAR PLANÈTE, avec toutes ses stats de tir. Celle du skill tree ouvert passe en premier.
         function getPlanetStatsCategories() {
             if (planets.length === 0) {
-                return [{ title: "Planètes", rows: [["Aucune", "achète un dieu dans le shop"]] }];
+                return [{ title: t("Planètes"), rows: [["Aucune", t("achète un dieu dans le shop")]] }];
             }
             const ordered = planets.slice().sort(function (a, b) { //sort : -1 = a avant b
                 return (b.tree === currentTree) - (a.tree === currentTree);
@@ -7738,7 +7882,7 @@
                     ["Vitesse d'attaque", formatPercent(stats.attackSpeed)],
                     ["Tirs par seconde", formatNumber(stats.attackSpeed / PLANET_FIRE_INTERVAL)],
                     ["Balles par tir", formatNumber(stats.bulletCount)],
-                    ["Portée", formatNumber(stats.range) + " px"],
+                    ["Portée", formatNumber(stats.range) + " " + t("px")],
                     ["Vitesse des balles", formatPercent(stats.bulletSpeed)],
                     ["Chance de critique", formatNumber(stats.critChance * 100) + "%"],
                     ["Dégâts critiques", formatNumber(stats.critDamage * 100) + "%"]
@@ -7751,7 +7895,7 @@
                     rows.push(["PV max par touche (pour toi)", "+" + formatNumber(stats.maxHealthOnHit)]);
                 }
                 if (stats.comboProcChance > 0) {
-                    rows.push(["Effet de combo au hasard", formatNumber(stats.comboProcChance * 100) + "% par tir"]);
+                    rows.push(["Effet de combo au hasard", t("{percent}% par tir", { percent: formatNumber(stats.comboProcChance * 100) })]);
                 }
                 rows.push(["Lien d'orbite", getLinkSummary(planet)]);
                 return { title: ATTRIBUTES[planet.tree.element].icon + " " + planet.name, rows: rows };
@@ -7763,7 +7907,7 @@
             const rows = [];
             for (const element of Object.keys(stats.damageVs)) {
                 if (stats.damageVs[element] > 0) {
-                    rows.push(["Dégâts bonus vs " + ELEMENT_NAMES[element], "+" + formatNumber(stats.damageVs[element])]);
+                    rows.push([t("Dégâts bonus vs {element}", { element: ELEMENT_NAMES[element] }), "+" + formatNumber(stats.damageVs[element]), true]); //true = nom déjà traduit
                 }
             }
             return rows;
@@ -7773,14 +7917,14 @@
         function getLinkSummary(planet) {
             const mode = planet.tree.linkMode;
             if (mode === "none") {
-                return "Aucun";
+                return t("Aucun");
             }
             if (mode === "opposite") {
                 const partner = getLinkedPlanets(planet)[0];
-                return partner === undefined ? "Opposé : personne en face" : "Opposé : " + OPPOSITE_BONUSES[partner.tree.element].name + " (de " + partner.name + ")";
+                return partner === undefined ? t("Opposé : personne en face") : t("Opposé : {bonus} (de {name})", { bonus: OPPOSITE_BONUSES[partner.tree.element].name, name: partner.name });
             }
             const combos = getPlanetCombos(planet);
-            return LINK_MODES[mode].name + " : " + (combos.length > 0 ? combos.map(function (item) { return item.combo.name; }).join(", ") : "pas de combo");
+            return LINK_MODES[mode].name + " : " + (combos.length > 0 ? combos.map(function (item) { return item.combo.name; }).join(", ") : t("pas de combo"));
         }
 
         //Les valeurs affichées la dernière fois, pour savoir lesquelles ont changé ({ "Portée": "300 px", ... })
@@ -7806,7 +7950,8 @@
             for (const category of getStatsCategories()) {
                 html += "<h3>" + category.title + "</h3>";
                 for (const row of category.rows) {
-                    const label = row[0];
+                    const label = row[0]; //en français : sert de clé (stats qui ont changé, LOWER_IS_BETTER_STATS)
+                    const shownLabel = row[2] === true ? label : t(label); //le nom affiché, dans la langue du joueur
                     const value = String(row[1]);
                     const key = category.title + "|" + label; //le même nom de stat existe dans plusieurs sections
                     const hasChanged = highlightChanges && lastStatValues[key] !== undefined && lastStatValues[key] !== value;
@@ -7815,7 +7960,7 @@
                         const isWorse = LOWER_IS_BETTER_STATS.has(label) ? isStatLower(value, lastStatValues[key]) : isStatLower(lastStatValues[key], value);
                         rowClass += isWorse ? " statChanged statDecreased" : " statChanged"; //rouge si elle empire, vert sinon
                     }
-                    html += "<div class='" + rowClass + "'><span>" + label + "</span><span class='statValue'>" + value + "</span></div>";
+                    html += "<div class='" + rowClass + "'><span>" + shownLabel + "</span><span class='statValue'>" + value + "</span></div>";
                     newStatValues[key] = value;
                 }
             }
@@ -7854,6 +7999,7 @@
             { key: "sfx", label: "Effets du jeu" },
             { key: "music", label: "Musique" }
         ];
+        translateFields(SOUND_CHANNELS, ["label"]);
         const SOUND_MIN_GAP = 0.04;      // secondes minimum entre 2 fois le même son (évite le bruit quand plein de balles touchent)
         let audioContext = null;         // le "moteur audio", créé au premier clic/touche (les navigateurs l'exigent)
         let masterGain = null;           // le volume général : tous les sons passent par lui
@@ -7988,21 +8134,21 @@
                 gold += 1000;
                 xp += 1000;
                 updateHud();
-                return "+1000 or et +1000 XP";
+                return t("+1000 or et +1000 XP");
             },
             pantheon: function () {      // tous les dieux en orbite, avec tous leurs skill trees complets
                 for (const tree of SKILL_TREES) {
                     completeTree(tree);
                 }
-                return "Tous les skill trees sont débloqués";
+                return t("Tous les skill trees sont débloqués");
             },
             cresus: function () {        // tout le shop au maximum
                 completeShop();
-                return "Tout le shop est acheté";
+                return t("Tout le shop est acheté");
             },
             midas: function () {         // or et XP gagnés x10 (retaper pour désactiver)
                 cheatRewardMultiplier = cheatRewardMultiplier === 1 ? 10 : 1;
-                return "Or et XP x" + cheatRewardMultiplier;
+                return t("Or et XP x{multiplier}", { multiplier: cheatRewardMultiplier });
             },
             thanatos: function () {      // le joueur meurt tout de suite (game over, sans recommencer : on garde ce qu'on a gagné)
                 if (currentTree !== null) {
@@ -8012,11 +8158,11 @@
                     closeSettings();
                 }
                 killPlayer();
-                return "Le joueur est mort";
+                return t("Le joueur est mort");
             },
             achille: function () {       // invincible (retaper pour désactiver)
                 isCheatInvincible = !isCheatInvincible;
-                return isCheatInvincible ? "Invincible !" : "Invincibilité désactivée";
+                return isCheatInvincible ? t("Invincible !") : t("Invincibilité désactivée");
             },
             harmonia: function () {      // tous les dieux en lien "Les deux côtés" (Harmonie = la déesse de l'harmonie)
                 for (const tree of SKILL_TREES) {
@@ -8026,20 +8172,20 @@
                 if (currentTree !== null) {
                     openSkillTree(currentTree); //redessine la fenêtre ouverte avec les nouveaux liens
                 }
-                return "Tous les dieux sont liés des deux côtés";
+                return t("Tous les dieux sont liés des deux côtés");
             },
             olympe: function () {        // toutes les divinités rejoignent l'orbite
                 while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) { //some = "au moins un"
                     unlockNextGod();
                 }
-                return "Toutes les divinités sont en orbite";
+                return t("Toutes les divinités sont en orbite");
             }
         };
         //Le nom de chaque dieu (sans accents) : il rejoint l'orbite et tout son skill tree est débloqué
         for (const tree of SKILL_TREES) {
-            CHEAT_CODES[toCheatCode(tree.name)] = function () {
+            CHEAT_CODES[toCheatCode(tree.id)] = function () { //le code reste le nom français (hephaistos...) dans toutes les langues
                 completeTree(tree);
-                return tree.name + " : tout le skill tree est débloqué";
+                return t("{name} : tout le skill tree est débloqué", { name: tree.name });
             };
         }
 
@@ -8105,7 +8251,7 @@
             for (const code of Object.keys(CHEAT_CODES)) {
                 if (typedLetters.endsWith(code)) { //endsWith = "le texte finit par..."
                     const message = CHEAT_CODES[code]();
-                    showToast("🎮 Code « " + code + " » : " + message);
+                    showToast(t("🎮 Code « {code} » : {message}", { code: code, message: message }));
                     playSound("buy");
                     typedLetters = "";
                     return true; //un code vient d'être tapé
@@ -8428,6 +8574,24 @@
         themeSelect.addEventListener("change", function () {
             applyTheme(themeSelect.value);
             playSound("click");
+        });
+
+        //LISTE DES LANGUES dans les Paramètres : changer de langue sauvegarde, puis recharge le jeu dans la nouvelle langue
+        const languageSelect = document.getElementById("languageSelect");
+        for (const code of Object.keys(LANGUAGES)) {
+            const option = document.createElement("option");
+            option.value = code;
+            option.textContent = LANGUAGES[code]; //chaque langue est écrite dans sa propre langue
+            languageSelect.appendChild(option);
+        }
+        languageSelect.value = currentLanguage;
+        languageSelect.addEventListener("change", function () {
+            saveProgress();
+            try {
+                localStorage.setItem("language", languageSelect.value);
+            } catch (error) {
+            }
+            location.reload(); //recharge la page : tout le jeu s'affiche dans la nouvelle langue
         });
 
 
