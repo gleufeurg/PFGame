@@ -1229,6 +1229,6 @@ window.TRADUCTIONS.zh = {
     "💰 Doubler les récompenses de ce round : +{gold} or, +{xp} XP": "💰 本轮奖励翻倍：+{gold} 金币，+{xp} 经验",
     "💰 Récompenses doublées !": "💰 奖励已翻倍！",
     "📋 Code copié !": "📋 代码已复制！",
-    "🔒 Débloque une voisine d'abord": "🔒 先解锁一个相邻的技能",
-    "🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "🔒 还没有入轨：在商店购买「新神祇」来解锁这位神"
+    "Débloque une voisine d'abord": "先解锁一个相邻的技能",
+    "Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "还没有入轨：在商店购买「新神祇」来解锁这位神"
 };

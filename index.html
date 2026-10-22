@@ -1231,6 +1231,21 @@
             background-color: var(--ui-accent);
         }
 
+        /*ce qui est BLOQUÉ (pas encore acheté) : gris, sans icône*/
+        .skipButton:disabled,
+        .speedButton:disabled {
+            background-color: var(--ui-relief);
+            color: var(--ui-muted);
+            box-shadow: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #treeTitle.locked {
+            color: var(--ui-muted);
+        }
+
         #timeMenu {
             border: none;
             border-radius: 12px;
@@ -1790,7 +1805,7 @@
                     <button id="closeTreeButton" class="primaryButton" title="Touche S">Reprendre ▶</button>
                 </div>
                 <div id="treeCanvas">
-                    <div id="lockedTreeBanner">🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu</div>
+                    <div id="lockedTreeBanner">Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu</div>
                     <div id="treeWorld">
                         <svg id="treeLinks"></svg>
                         <div id="treeNodes"></div>
@@ -3721,7 +3736,7 @@
                 const button = document.createElement("button");
                 button.className = "skipButton";
                 button.disabled = !isUnlocked;
-                button.textContent = (isUnlocked ? "⏩ +" : "🔒 +") + seconds + " s";
+                button.textContent = (isUnlocked ? "⏩ +" : "+") + seconds + " s"; //bloqué : pas d'icône, le bouton est gris (CSS :disabled)
                 button.title = isUnlocked ? t("Passer {seconds} secondes", { seconds: seconds }) : t("À débloquer dans le shop : « Sauter dans le temps »");
                 button.addEventListener("click", function () { skipTime(seconds); });
                 skipButtons.appendChild(button);
@@ -3744,7 +3759,7 @@
                     button.classList.add("active");
                 }
                 button.disabled = !isUnlocked;
-                button.textContent = (isUnlocked ? "x" : "🔒 x") + speed;
+                button.textContent = "x" + speed;
                 button.title = isUnlocked ? t("Vitesse du jeu x{speed}", { speed: speed }) : t("À débloquer dans le shop : « Accélérer le temps »");
                 button.addEventListener("click", function () { setGameSpeed(speed); });
                 speedButtons.appendChild(button);
@@ -6773,7 +6788,8 @@
             skillTreePanel.classList.toggle("treeLocked", tree.isLocked);  //dieu pas encore en orbite : arbre sombre
             projectTitle.textContent = tree.project.title;
             projectContent.innerHTML = tree.project.html;
-            treeTitle.textContent = (tree.isLocked ? "🔒 " : "") + tree.name;
+            treeTitle.textContent = tree.name;
+            treeTitle.classList.toggle("locked", tree.isLocked); //dieu pas encore en orbite : titre gris
             updateGodNav();
             renderOrbitLinks(tree);
             showNodeInfoHint();
@@ -7116,7 +7132,7 @@
             const chips = createElementWithText("div", "infoChips", "");
             if (currentTree.isLocked) {
                 chips.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
-                chips.appendChild(createElementWithText("span", "infoChip blocked", "🔒 " + t("{name} n'est pas encore en orbite", { name: currentTree.name })));
+                chips.appendChild(createElementWithText("span", "infoChip blocked", t("{name} n'est pas encore en orbite", { name: currentTree.name })));
             } else if (state === "unlocked") {
                 chips.appendChild(createElementWithText("span", "infoChip ok", t("✔ Débloquée")));
                 if (canRefundNode(currentTree, node)) {
@@ -7129,7 +7145,7 @@
             } else {
                 chips.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
                 if (state === "locked") {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("🔒 Débloque une voisine d'abord")));
+                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("Débloque une voisine d'abord")));
                 } else if (xp < node.cost) {
                     chips.appendChild(createElementWithText("span", "infoChip blocked", t("Pas assez d'XP")));
                 } else {

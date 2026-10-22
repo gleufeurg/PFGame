@@ -76,7 +76,7 @@ Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout 
 | Accélérer le temps | vitesse x2 | vitesse x4 | — |
 | Sauter dans le temps | saut de +10 s | saut de +30 s | saut de +100 s |
 
-Les boutons pas encore achetés restent visibles avec un cadenas.
+Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 
 ## La fenêtre des skills
 
