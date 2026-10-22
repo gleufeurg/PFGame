@@ -2082,7 +2082,8 @@
         const TRANSLATIONS = window.TRADUCTIONS || {};
         const MISSING_TRANSLATIONS = new Set(); // textes sans traduction (utile pour vérifier qu'il n'en manque pas)
 
-        //La langue : celle choisie dans les paramètres, sinon celle du téléphone / navigateur, sinon l'anglais
+        //La langue : celle choisie dans les paramètres, sinon l'anglais (la langue par défaut, comprise par le plus de joueurs)
+        const DEFAULT_LANGUAGE = "en";
         function detectLanguage() {
             try {
                 const saved = localStorage.getItem("language");
@@ -2091,13 +2092,7 @@
                 }
             } catch (error) {
             }
-            for (const language of navigator.languages || [navigator.language || ""]) { //ex : "fr-FR", "en-US", "zh-CN"
-                const code = String(language).slice(0, 2).toLowerCase(); //les 2 premières lettres : "fr", "en", "zh"...
-                if (LANGUAGES[code] !== undefined) {
-                    return code;
-                }
-            }
-            return "en"; //langue inconnue : l'anglais, compris par le plus de joueurs
+            return DEFAULT_LANGUAGE;
         }
         const currentLanguage = detectLanguage();
         document.documentElement.lang = currentLanguage; //<html lang="...">

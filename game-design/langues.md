@@ -5,8 +5,7 @@ Le jeu existe en 6 langues : français (la langue d'origine), anglais, italien, 
 ## Quelle langue au démarrage ?
 
 1. Celle choisie par le joueur dans les **Paramètres** (liste « Langue »), retenue par le navigateur (clé `language` du `localStorage`).
-2. Sinon, la langue du téléphone ou du navigateur (`navigator.languages`) si le jeu la connaît.
-3. Sinon, l'**anglais** (compris par le plus de joueurs).
+2. Sinon, l'**anglais**, la langue par défaut (`DEFAULT_LANGUAGE`), même si le téléphone est réglé dans une autre langue.
 
 Changer de langue sauvegarde la partie puis recharge la page.
 
