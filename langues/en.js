@@ -1229,6 +1229,6 @@ window.TRADUCTIONS.en = {
     "💰 Doubler les récompenses de ce round : +{gold} or, +{xp} XP": "💰 Double this round's rewards: +{gold} gold, +{xp} XP",
     "💰 Récompenses doublées !": "💰 Rewards doubled!",
     "📋 Code copié !": "📋 Code copied!",
-    "🔒 Débloque une voisine d'abord": "🔒 Unlock a neighboring skill first",
-    "🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "🔒 Not in orbit yet: buy \"New deity\" in the shop to unlock this god"
+    "Débloque une voisine d'abord": "Unlock a neighboring skill first",
+    "Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "Not in orbit yet: buy \"New deity\" in the shop to unlock this god"
 };

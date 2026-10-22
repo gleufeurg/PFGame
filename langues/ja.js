@@ -1229,6 +1229,6 @@ window.TRADUCTIONS.ja = {
     "💰 Doubler les récompenses de ce round : +{gold} or, +{xp} XP": "💰 このラウンドの報酬を2倍に：+{gold}ゴールド、+{xp} XP",
     "💰 Récompenses doublées !": "💰 報酬が2倍になった！",
     "📋 Code copié !": "📋 コードをコピーした！",
-    "🔒 Débloque une voisine d'abord": "🔒 先にとなりのスキルを解放してね",
-    "🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "🔒 まだ軌道にいないよ：ショップで「新しい神」を買うとこの神を解放できるよ"
+    "Débloque une voisine d'abord": "先にとなりのスキルを解放してね",
+    "Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "まだ軌道にいないよ：ショップで「新しい神」を買うとこの神を解放できるよ"
 };

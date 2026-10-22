@@ -76,7 +76,11 @@ Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout 
 | Accélérer le temps | vitesse x2 | vitesse x4 | — |
 | Sauter dans le temps | saut de +10 s | saut de +30 s | saut de +100 s |
 
+<<<<<<< HEAD
 Les boutons pas encore achetés restent visibles avec un cadenas. Sur la branche `monetisation`, le Pack Premium ajoute les vitesses x8 et x10 et les sauts de +500 s et +999 s (boutons marqués 💎, voir [monetisation.md](monetisation.md)).
+=======
+Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
+>>>>>>> portfolio
 
 ## La fenêtre des skills
 

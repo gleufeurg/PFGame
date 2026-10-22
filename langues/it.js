@@ -1229,6 +1229,6 @@ window.TRADUCTIONS.it = {
     "💰 Doubler les récompenses de ce round : +{gold} or, +{xp} XP": "💰 Raddoppia le ricompense di questo round: +{gold} oro, +{xp} XP",
     "💰 Récompenses doublées !": "💰 Ricompense raddoppiate!",
     "📋 Code copié !": "📋 Codice copiato!",
-    "🔒 Débloque une voisine d'abord": "🔒 Prima sblocca un'abilità vicina",
-    "🔒 Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "🔒 Non ancora in orbita: compra «Nuova divinità» nello shop per sbloccare questo dio"
+    "Débloque une voisine d'abord": "Prima sblocca un'abilità vicina",
+    "Pas encore en orbite : achète « Nouvelle divinité » dans le shop pour débloquer ce dieu": "Non ancora in orbita: compra «Nuova divinità» nello shop per sbloccare questo dio"
 };
