@@ -1727,77 +1727,6 @@
             color: #ffe39a;
         }
 
-        /*CRÉDITS*/
-        #creditsOverlay {
-            z-index: 40; /*par-dessus les paramètres*/
-        }
-
-        .creditsPanel {
-            max-width: 520px;
-            text-align: center;
-        }
-
-        #creditsViewport { /*la "fenêtre" dans laquelle le texte défile*/
-            position: relative;
-            height: min(60vh, 460px);
-            overflow: hidden;
-            margin-bottom: 16px;
-            /*mask = le texte s'efface en douceur en haut et en bas*/
-            -webkit-mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
-            mask-image: linear-gradient(transparent, black 15%, black 85%, transparent);
-        }
-
-        #creditsRoll {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 100%; /*commence juste sous la fenêtre*/
-            animation: creditsScroll 26s linear infinite;
-        }
-
-        #creditsViewport:hover #creditsRoll, #creditsViewport:active #creditsRoll {
-            animation-play-state: paused; /*on peut arrêter le défilement en passant la souris (ou le doigt) dessus*/
-        }
-
-        @keyframes creditsScroll { /*translateY en % = en pourcentage de la hauteur du texte lui-même*/
-            from { transform: translateY(0); }
-            to { transform: translateY(calc(-100% - min(60vh, 460px))); }
-        }
-
-        #creditsRoll h1 {
-            margin: 0 0 40px;
-            color: var(--ui-heading);
-        }
-
-        .creditsRole {
-            margin: 28px 0 4px;
-            font-size: 13px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--ui-muted);
-        }
-
-        .creditsName {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .creditsName a {
-            color: var(--ui-accent);
-        }
-
-        .creditsThanks {
-            margin-top: 60px;
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--ui-heading);
-        }
-
-        #creditsButton {
-            margin-right: auto;
-        }
-
         /*THÈME EXCLUSIF "OLYMPE DORÉ" (Pack Soutien) : bordures dorées qui brillent et titres en or animés*/
         body.themeOlympus .panel, body.themeOlympus #statsPanel {
             background-size: 100% 100%, 300% 300%; /*le dégradé doré de la bordure est 3 fois plus grand que la fenêtre...*/
@@ -1810,7 +1739,7 @@
             to { background-position: 0 0, 300% 50%; }
         }
 
-        body.themeOlympus .panel > h1, body.themeOlympus .panel > h2, body.themeOlympus #statsPanel h2, body.themeOlympus #creditsRoll h1, body.themeOlympus .creditsThanks {
+        body.themeOlympus .panel > h1, body.themeOlympus .panel > h2, body.themeOlympus #statsPanel h2 {
             background: linear-gradient(90deg, #b8861b, #fff4c9, #f5c451, #b8861b); /*du texte "en or" : un dégradé...*/
             background-size: 200% auto;
             -webkit-background-clip: text; /*...découpé en forme de lettres*/
@@ -1915,6 +1844,31 @@
                 font-size: 22px;
             }
         }
+        /*À PROPOS (bas des paramètres) : nom de la créatrice et contact*/
+        #aboutArea {
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid var(--ui-line);
+        }
+
+        .aboutName {
+            margin: 0 0 6px;
+            font-size: 17px;
+        }
+
+        #supporterThanks {
+            margin: 0 0 6px;
+            color: #ffe39a;
+            font-weight: 700;
+        }
+
+        #aboutArea #contactArea {
+            margin-top: 14px;
+        }
+
+        #aboutArea #contactArea h3 {
+            margin: 0 0 8px;
+        }
     </style>
 </head>
 <body>
@@ -1986,16 +1940,7 @@
                 <button id="doubleRewardsButton" class="adChoice"></button>
             </div>
             <div id="shopItems"></div>
-            <div id="premiumBoxShop" class="premiumBox"></div>
-            <div id="supportBoxShop" class="premiumBox supportBox"></div>
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
-            <section id="contactArea">
-                <h2>Contact</h2>
-                <div class="contactInfo">
-                    Mail : <a id="contactMail" href="#">(chargement…)</a><br>
-                    Portfolio : <a href="https://titouanlefevreportfolio.squarespace.com" target="_blank" rel="noopener">titouanlefevreportfolio.squarespace.com</a>
-                </div>
-            </section>
         </div>
     </div>
 
@@ -2043,13 +1988,24 @@
             <div id="premiumBoxSettings" class="premiumBox"></div>
             <div id="supportBoxSettings" class="premiumBox supportBox"></div>
             <div class="settingRow saveRow">
-                <button id="creditsButton" class="primaryButton">Crédits</button>
                 <button id="exportSaveButton" class="primaryButton">Exporter ma sauvegarde</button>
                 <button id="importSaveButton" class="primaryButton">Importer</button>
                 <button id="resetProgressButton" class="dangerButton">Effacer ma progression</button>
             </div>
             <button id="closeSettingsButton" class="primaryButton">Reprendre ▶</button>
             <p class="smallText">Échap : ouvrir / fermer ce menu</p>
+            <!-- À PROPOS : le nom de la créatrice, puis le contact -->
+            <section id="aboutArea">
+                <p class="aboutName">Un jeu créé par <strong>Evangeline Lefevre</strong></p>
+                <p id="supporterThanks" class="hidden">💛 Merci pour ton soutien !</p>
+                <section id="contactArea">
+                    <h3>Contact</h3>
+                    <div class="contactInfo">
+                        Mail : <a id="contactMail" href="#">(chargement…)</a><br>
+                        Portfolio : <a href="https://titouanlefevreportfolio.squarespace.com" target="_blank" rel="noopener">titouanlefevreportfolio.squarespace.com</a>
+                    </div>
+                </section>
+            </section>
         </div>
     </div>
 
@@ -2064,36 +2020,6 @@
     </div>
 
     <!-- ACHAT : en mode test, l'achat est simulé (voir PAYMENT_TEST_MODE) -->
-    <!-- CRÉDITS : le texte défile de bas en haut, comme à la fin d'un film -->
-    <div id="creditsOverlay" class="overlay hidden">
-        <div class="panel creditsPanel">
-            <div id="creditsViewport">
-                <div id="creditsRoll">
-                    <h1>Evangeline's Game</h1>
-                    <p class="creditsRole">Un jeu créé par</p>
-                    <p class="creditsName">Evangeline Lefevre</p>
-                    <p class="creditsRole">Conception et game design</p>
-                    <p class="creditsName">Evangeline Lefevre</p>
-                    <p class="creditsRole">Programmation</p>
-                    <p class="creditsName">Evangeline Lefevre</p>
-                    <p class="creditsRole">Direction artistique</p>
-                    <p class="creditsName">Evangeline Lefevre</p>
-                    <p class="creditsRole">Musique et sons</p>
-                    <p class="creditsName">Créés en direct par le navigateur (Web Audio)</p>
-                    <p class="creditsRole">Inspiré par</p>
-                    <p class="creditsName">La mythologie grecque</p>
-                    <p class="creditsRole">Polices</p>
-                    <p class="creditsName">Nunito et Rubik (Google Fonts)</p>
-                    <p class="creditsRole">Contact</p>
-                    <p class="creditsName"><a id="creditsMail" href="#">(chargement…)</a></p>
-                    <p id="creditsSupporter" class="creditsName hidden">💛 Et merci à toi, qui soutiens le jeu avec le Pack Soutien !</p>
-                    <p class="creditsThanks">Merci d'avoir joué !</p>
-                </div>
-            </div>
-            <button id="closeCreditsButton" class="primaryButton">Fermer</button>
-        </div>
-    </div>
-
     <div id="purchaseOverlay" class="overlay hidden">
         <div class="panel adPanel">
             <h2 id="purchaseTitle">💎 Pack Premium</h2>
@@ -7948,49 +7874,11 @@
         contactMail.textContent = CONTACT_MAIL_PARTS.join("@");
         contactMail.href = "mailto:" + CONTACT_MAIL_PARTS.join("@");
 
-
-        /////////////////////
-        ////CRÉDITS//////////  Bouton dans les paramètres : le nom et le contact défilent comme à la fin d'un film
-        /////////////////////
-        const creditsOverlay = document.getElementById("creditsOverlay");
-        const creditsMail = document.getElementById("creditsMail");
-        creditsMail.textContent = CONTACT_MAIL_PARTS.join("@"); //même adresse que le contact (assemblée en morceaux, contre les robots)
-        creditsMail.href = "mailto:" + CONTACT_MAIL_PARTS.join("@");
-
-        function openCredits() {
-            document.getElementById("creditsSupporter").classList.toggle("hidden", !isSupporterOwned); //le merci n'apparaît qu'avec le Pack Soutien
-            const roll = document.getElementById("creditsRoll");
-            roll.style.animation = "none";  //relance le défilement depuis le début :
-            void roll.offsetHeight;         //lire offsetHeight oblige le navigateur à appliquer "none" tout de suite...
-            roll.style.animation = "";      //...puis on remet l'animation du CSS, qui repart de zéro
-            creditsOverlay.classList.remove("hidden");
-            playSound("menuOpen");
-        }
-
-        function closeCredits() {
-            creditsOverlay.classList.add("hidden");
-            playSound("menuClose");
-        }
-
-        function isCreditsOpen() {
-            return !creditsOverlay.classList.contains("hidden");
-        }
-
-        document.getElementById("creditsButton").addEventListener("click", openCredits);
-        document.getElementById("closeCreditsButton").addEventListener("click", closeCredits);
-        creditsOverlay.addEventListener("click", function (event) {
-            if (event.target === creditsOverlay) {
-                closeCredits(); //clic sur le fond sombre
-            }
-        });
-
         document.addEventListener("keydown", function (event) {
             //(R, T et S sont gérés avec les codes de triche plus bas : taper "hestia" ne doit pas ouvrir les skills sur le "s")
             //Échap : ferme le menu ouvert, sinon ouvre les paramètres
             if (event.key === "Escape") {
-                if (isCreditsOpen()) {
-                    closeCredits(); //les crédits sont par-dessus les paramètres : on les ferme d'abord
-                } else if (isSaveCodeOpen()) {
+                if (isSaveCodeOpen()) {
                     closeSaveCode(); //la fenêtre du code est par-dessus les paramètres : on la ferme d'abord
                 } else if (isSettingsOpen) {
                     closeSettings();
@@ -8098,9 +7986,10 @@
                     }
                 }
             } catch (error) {
-                //Pas de réponse de Google (pas de réseau, message RGPD absent...) : on essaie quand même de demander des pubs
+                //Pas de réponse de Google (pas de réseau, message RGPD absent...) : en mode test, on montre quand même les pubs
+                //d'exemple ; dans la vraie version, PAS de pub sans consentement (obligatoire en Europe : RGPD)
                 console.warn("AdMob, consentement impossible à obtenir :", error);
-                canRequestAdMobAds = true;
+                canRequestAdMobAds = ADS_TEST_MODE;
             }
         }
 
@@ -8302,18 +8191,19 @@
 
         //PACK SOUTIEN : un achat qui sert seulement à soutenir la créatrice. Il offre le thème exclusif "Olympe doré".
         const SUPPORT_PRICE = "4,99 €";
-        const SUPPORT_PERKS = ["Soutient directement la créatrice du jeu 💛", "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés", "Ton merci apparaît dans les crédits"];
+        const SUPPORT_PERKS = ["Soutient directement la créatrice du jeu 💛", "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés", "Un merci spécial sous ton nom de joueur, dans les paramètres"];
         //(isSupporterOwned est déclaré plus haut, avec isPremiumOwned : le thème en a besoin dès le démarrage)
 
         //Les deux packs, décrits de la même façon : la même fonction affiche leurs boîtes et gère leur achat
         const PACKS = {
-            premium: { title: "💎 Pack Premium", price: PREMIUM_PRICE, perks: PREMIUM_PERKS, boxIds: ["premiumBoxShop", "premiumBoxSettings"], isOwned: isPremium, buyText: "Acheter le Pack Premium", ownedText: "✔ Pack Premium acheté, merci !", unlock: unlockPremium },
-            support: { title: "💛 Pack Soutien", price: SUPPORT_PRICE, perks: SUPPORT_PERKS, boxIds: ["supportBoxShop", "supportBoxSettings"], isOwned: function () { return isSupporterOwned; }, buyText: "Me soutenir", ownedText: "✔ Merci infiniment pour ton soutien !", unlock: unlockSupport }
+            premium: { title: "💎 Pack Premium", price: PREMIUM_PRICE, perks: PREMIUM_PERKS, boxIds: ["premiumBoxSettings"], isOwned: isPremium, buyText: "Acheter le Pack Premium", ownedText: "✔ Pack Premium acheté, merci !", unlock: unlockPremium },
+            support: { title: "💛 Pack Soutien", price: SUPPORT_PRICE, perks: SUPPORT_PERKS, boxIds: ["supportBoxSettings"], isOwned: function () { return isSupporterOwned; }, buyText: "Me soutenir", ownedText: "✔ Merci infiniment pour ton soutien !", unlock: unlockSupport }
         };
         let pendingPack = null;   // le pack dont la fenêtre d'achat est ouverte
 
-        //Les boîtes des packs, sous le shop et dans les paramètres
+        //Les boîtes des packs, dans les paramètres (et le merci du Pack Soutien, sous le nom de la créatrice)
         function renderPremiumBoxes() {
+            document.getElementById("supporterThanks").classList.toggle("hidden", !isSupporterOwned);
             for (const packKey of Object.keys(PACKS)) {
                 const pack = PACKS[packKey];
                 for (const boxId of pack.boxIds) {

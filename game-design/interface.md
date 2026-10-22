@@ -90,9 +90,9 @@ Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jus
 
 Quand la souris survole une planète (ou pendant qu'on la touche au doigt), un cercle en pointillés de sa couleur, légèrement teinté, montre sa portée : la distance jusqu'à laquelle elle tire, mesurée depuis la planète. Le cercle rouge du joueur reste affiché autour du centre.
 
-## Les crédits
+## À propos (bas des paramètres)
 
-Bouton « Crédits » dans les paramètres : le nom de la créatrice, ses rôles et son mail défilent de bas en haut, comme à la fin d'un film (26 s, en boucle). Passer la souris dessus (ou garder le doigt) met le défilement en pause. Échap, « Fermer » ou un clic à côté ferment les crédits. Avec le Pack Soutien, un merci s'ajoute à la fin. Le mail est le même que dans le contact (assemblé en morceaux dans le code, contre les robots).
+Tout en bas des paramètres : « Un jeu créé par Evangeline Lefevre », puis le contact (mail et portfolio). Avec le Pack Soutien, un « 💛 Merci pour ton soutien ! » s'ajoute sous le nom. (Il n'y a plus de fenêtre de crédits qui défile ; sur la branche `portfolio`, le contact reste sur l'écran de game over.)
 
 ## Le panneau des statistiques
 

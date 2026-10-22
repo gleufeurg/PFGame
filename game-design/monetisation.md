@@ -14,7 +14,7 @@ Une pub récompensée fermée avant la fin ne donne rien.
 
 ## Le Pack Premium (2,99 €)
 
-Un achat unique, proposé sous le shop et dans les paramètres :
+Un achat unique, proposé dans les paramètres (plus dans le menu de mort, pour qu'il reste léger) :
 - plus aucune pub (la résurrection et le doublement se font sans pub) ;
 - vitesses du jeu x8 et x10 ;
 - sauts dans le temps de +500 s et +999 s.
@@ -23,9 +23,9 @@ Les boutons qu'il débloque restent visibles avec un 💎 tant qu'il n'est pas a
 
 ## Le Pack Soutien (4,99 €)
 
-Un achat qui sert seulement à soutenir la créatrice, proposé sous le Pack Premium (shop et paramètres). Il ne donne aucun avantage de jeu :
+Un achat qui sert seulement à soutenir la créatrice, proposé sous le Pack Premium, dans les paramètres. Il ne donne aucun avantage de jeu :
 - le thème exclusif **« ✨ Olympe doré »** (voir [direction-artistique](direction-artistique/README.md)) ; tant qu'il n'est pas acheté, ce thème apparaît grisé avec un 🔒 dans la liste des thèmes, pour donner envie ;
-- un merci personnalisé à la fin des crédits.
+- un « 💛 Merci pour ton soutien ! » sous le nom de la créatrice, en bas des paramètres.
 
 Le prix se change dans `SUPPORT_PRICE`. Comme le Pack Premium, il est retenu par le navigateur (clé `supporter`), et « Effacer ma progression » ne l'efface pas.
 
@@ -37,7 +37,7 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 
 - **En place :** le plugin `@capacitor-community/admob` (partie `ADMOB` de `index.html`). Dans l'appli, les 3 pubs (après la mort, ressusciter, doubler) sont des pubs AdMob. Une pub qui ne peut pas se charger (pas de réseau, aucune pub disponible) ne bloque jamais le jeu : après une mort, on va directement au shop ; pour une pub récompensée, un message demande de réessayer.
 - **Consentement RGPD :** au premier lancement en Europe, la fenêtre de consentement de Google s'affiche (`requestConsentInfo`, `showConsentForm`). Le bouton « Mes choix de confidentialité (pubs) » des paramètres permet de changer d'avis : il n'apparaît que dans l'appli, quand Google le demande.
-- **⚠️ La fenêtre de consentement n'existe que si elle est créée dans AdMob :** menu **Confidentialité et messages** → **RGPD** (Règlement européen) → **Créer un message** → choisir l'appli, les langues, puis **Publier**. Sans ce message, Google ne montre aucune fenêtre ; en mode test, le jeu affiche quand même les pubs d'exemple, mais **il faut ce message avant la publication**.
+- **⚠️ La fenêtre de consentement n'existe que si elle est créée dans AdMob :** menu **Confidentialité et messages** → **RGPD** (Règlement européen) → **Créer un message** → choisir l'appli, les langues, puis **Publier**. Sans ce message, Google ne montre aucune fenêtre ; en mode test, le jeu affiche quand même les pubs d'exemple ; dans la vraie version (`ADS_TEST_MODE = false`), **aucune pub n'est demandée sans réponse de Google sur le consentement**. Il faut donc ce message avant la publication.
 - **Pour vérifier :** téléphone branché, jeu ouvert, Chrome sur le PC → `chrome://inspect` → **inspect** → onglet Console : les lignes « AdMob, consentement : … » et « AdMob, chargement de la pub : … » disent ce que Google répond.
 - **iPhone :** la question d'Apple « Autoriser le suivi ? » est posée après le consentement.
 - **Pendant une pub :** la musique du jeu se coupe, et reprend après.
