@@ -293,16 +293,6 @@
             }
         }
 
-        #hint { /*petite aide en bas de l'écran*/
-            position: fixed;
-            bottom: 16px;
-            left: 0;
-            right: 0;
-            font-size: 14px;
-            color: var(--ui-muted);
-            pointer-events: none;
-        }
-
         #settingsButton { /*roue crantée en haut à droite*/
             position: fixed;
             top: 12px;
@@ -700,43 +690,33 @@
             100% { transform: scale(1); }
         }
 
-        /*ONGLETS DES DIEUX : passer d'un skill tree à l'autre*/
-        #godTabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 10px;
+        /*NAVIGATION ENTRE LES DIEUX : ‹ nom du dieu ›*/
+        #skillTreePanel .panel {
+            touch-action: pan-y; /*le navigateur ne garde que le défilement vertical : glisser à l'horizontale change de dieu*/
         }
 
-        .godTab {
+        #godNav {
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 3px 7px;
-            border: 2px solid var(--ui-border);
-            border-radius: 8px;
-            background-color: var(--ui-surface);
-            color: var(--ui-text);
-            font: inherit;
-            font-size: 12px;
+            gap: 10px;
+        }
+
+        .godNavButton {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--tree-color);
+            border-radius: 50%;
+            background-color: transparent;
+            color: var(--tree-color);
+            font-size: 24px;
             font-weight: 800;
+            line-height: 1;
             cursor: pointer;
         }
 
-        .godTab .godTabIcon { /*un petit losange de la couleur du dieu, comme sa planète*/
-            width: 9px;
-            height: 9px;
-            transform: rotate(45deg);
-            background-color: var(--god-color);
-        }
-
-        .godTab.active {
-            border-color: var(--god-color);
-            color: var(--god-color);
-        }
-
-        .godTab.locked {
-            opacity: 0.55;
+        .godNavButton:disabled {
+            opacity: 0.3;
+            cursor: default;
         }
 
         /*ARBRE D'UN DIEU PAS ENCORE EN ORBITE : sombre, on peut le regarder mais pas y toucher*/
@@ -1576,13 +1556,7 @@
                 display: block;
             }
 
-            #hint {
-                right: 120px; /*laisse la place au bouton Skills*/
-                bottom: calc(18px + env(safe-area-inset-bottom));
-                font-size: 12px;
-            }
-
-            .shopItem, .godTab, .linkOption, .timeOption { /*les doigts sont moins précis qu'une souris : boutons un peu plus grands*/
+            .shopItem, .linkOption, .timeOption { /*les doigts sont moins précis qu'une souris : boutons un peu plus grands*/
                 min-height: 40px;
             }
         }
@@ -1894,6 +1868,53 @@
             line-height: 1.8;
             word-break: break-word; /*les longues adresses passent à la ligne sur téléphone*/
         }
+        /*INTERFACE PLUS AÉRÉE : plus d'espace entre les éléments, surtout dans le menu de mort (shop)*/
+        #gameOverPanel .panel > * + * {
+            margin-top: 18px; /*"* + *" = chaque élément qui suit un autre : un espace régulier entre eux*/
+        }
+
+        #shopItems {
+            gap: 14px;
+        }
+
+        .shopItem {
+            padding: 14px 16px;
+            line-height: 1.45;
+        }
+
+        .settingRow {
+            margin: 18px 0;
+        }
+
+        #settingsPanel .panel > h2 {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            #shopItems {
+                gap: 10px;
+            }
+
+            .shopItem {
+                padding: 12px;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+            #gameOverPanel .panel > * + * {
+                margin-top: 14px;
+            }
+
+            #skillTreePanel .panel {
+                gap: 18px;
+            }
+
+            .godNavButton {
+                width: 36px;
+                height: 36px;
+                font-size: 22px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1914,7 +1935,6 @@
         </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
-    <div id="hint">Clique sur une planète (ou appuie sur S) pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place dans l'orbite</div>
     <!-- Bouton "Compétences" : visible seulement sur écran tactile (sur ordinateur, il y a la touche S) -->
     <button id="skillsButton" aria-label="Compétences">✦ Skills</button>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
@@ -1929,9 +1949,12 @@
                 <div id="orbitLinkArea"></div>
             </section>
             <section id="treeArea">
-                <div id="godTabs"></div>
                 <div class="treeHeader">
-                    <h2 id="treeTitle"></h2>
+                    <div id="godNav"> <!-- flèches pour passer d'un dieu à l'autre (ou glisser le doigt, ou flèches du clavier) -->
+                        <button id="prevGodButton" class="godNavButton" aria-label="Dieu précédent" title="Dieu précédent (←)">‹</button>
+                        <h2 id="treeTitle"></h2>
+                        <button id="nextGodButton" class="godNavButton" aria-label="Dieu suivant" title="Dieu suivant (→)">›</button>
+                    </div>
                     <span>XP disponible : <span id="treeXp">0</span></span>
                     <button id="closeTreeButton" class="primaryButton" title="Touche S">Reprendre ▶</button>
                 </div>
@@ -2007,6 +2030,10 @@
             <div class="settingRow">
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
+            </div>
+            <div class="settingRow">
+                <input type="checkbox" id="pauseInMenusCheckbox">
+                <label for="pauseInMenusCheckbox">Mettre le jeu en pause dans les menus <span class="smallText">(paramètres et skills)</span></label>
             </div>
             <div class="settingRow">
                 <input type="checkbox" id="sharpGraphicsCheckbox">
@@ -3246,8 +3273,15 @@
         let isSettingsOpen = false;
 
         //Le jeu est en pause tant qu'un des menus est ouvert
+        //Option des paramètres "Mettre le jeu en pause dans les menus" (cochée par défaut, retenue par le navigateur)
+        let pauseInMenus = true;
+        try {
+            pauseInMenus = localStorage.getItem("pauseInMenus") !== "0";
+        } catch (error) {
+        }
+
         function updatePause() {
-            isPaused = isSettingsOpen || currentTree !== null;
+            isPaused = pauseInMenus && (isSettingsOpen || currentTree !== null);
         }
 
         //BOUCLIER : bloque un coup, puis se recharge pendant SHIELD_COOLDOWN secondes
@@ -6840,25 +6874,67 @@
         let currentTree = null;
         let lastOpenedTree = null;      // le dernier arbre ouvert (la touche S le rouvre)
         let justUnlockedNode = null;    // la compétence qu'on vient d'acheter (pour l'animation)
-        const godTabs = document.getElementById("godTabs");
+        const prevGodButton = document.getElementById("prevGodButton");
+        const nextGodButton = document.getElementById("nextGodButton");
 
-        //ONGLETS : un bouton par dieu, pour passer d'un arbre à l'autre (même ceux pas encore en orbite, en "aperçu")
-        function renderGodTabs() {
-            godTabs.innerHTML = "";
-            for (const tree of SKILL_TREES) {
-                const tab = createElementWithText("button", "godTab" + (tree === currentTree ? " active" : "") + (tree.isLocked ? " locked" : ""), "");
-                tab.style.setProperty("--god-color", tree.color);
-                tab.appendChild(createElementWithText("span", "godTabIcon", ""));
-                tab.appendChild(document.createTextNode((tree.isLocked ? "🔒 " : "") + tree.name));
-                tab.title = tree.isLocked ? tree.name + " : pas encore en orbite (aperçu)" : "Voir le skill tree de " + tree.name;
-                tab.addEventListener("click", function () {
-                    if (tree !== currentTree) {
-                        openSkillTree(tree);
-                    }
-                });
-                godTabs.appendChild(tab);
-            }
+        //Les arbres qu'on peut parcourir avec les flèches : les dieux en orbite, plus le PROCHAIN dieu à acheter (en aperçu, sombre)
+        function getBrowsableTrees() {
+            const owned = SKILL_TREES.filter(function (tree) { return !tree.isLocked; });
+            const nextLocked = SKILL_TREES.find(function (tree) { return tree.isLocked; });
+            return nextLocked === undefined ? owned : owned.concat([nextLocked]); //concat = ajoute à la fin de la liste
         }
+
+        //Flèches ‹ › : grisées s'il n'y a qu'un seul arbre à voir
+        function updateGodNav() {
+            const onlyOne = getBrowsableTrees().length <= 1;
+            prevGodButton.disabled = onlyOne;
+            nextGodButton.disabled = onlyOne;
+        }
+
+        //direction = -1 (précédent) ou +1 (suivant). Arrivé au bout, on repart de l'autre côté.
+        function showAdjacentTree(direction) {
+            const trees = getBrowsableTrees();
+            if (currentTree === null || trees.length <= 1) {
+                return;
+            }
+            const index = trees.indexOf(currentTree);
+            const next = trees[(index + direction + trees.length) % trees.length]; //% = reste de la division : on "boucle"
+            openSkillTree(next);
+        }
+
+        prevGodButton.addEventListener("click", function () { showAdjacentTree(-1); });
+        nextGodButton.addEventListener("click", function () { showAdjacentTree(1); });
+
+        //GLISSER LE DOIGT (ou la souris) vers la gauche ou la droite sur la fenêtre, en dehors de l'arbre lui-même
+        //(dans l'arbre, glisser sert déjà à le déplacer)
+        const SWIPE_MIN_DISTANCE = 60;   // pixels à parcourir à l'horizontale
+        let swipeStart = null;
+        document.getElementById("skillTreePanel").addEventListener("pointerdown", function (event) {
+            swipeStart = event.target.closest("#treeCanvas, button, input, a") === null ? { x: event.clientX, y: event.clientY } : null;
+        });
+        document.getElementById("skillTreePanel").addEventListener("pointerup", function (event) {
+            if (swipeStart === null) {
+                return;
+            }
+            const dx = event.clientX - swipeStart.x;
+            const dy = event.clientY - swipeStart.y;
+            swipeStart = null;
+            if (Math.abs(dx) > SWIPE_MIN_DISTANCE && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                showAdjacentTree(dx < 0 ? 1 : -1); //doigt vers la gauche = dieu suivant (comme tourner une page)
+            }
+        });
+
+        //FLÈCHES DU CLAVIER ← → quand la fenêtre des skills est ouverte
+        document.addEventListener("keydown", function (event) {
+            if (currentTree === null || isSettingsOpen || event.target.matches("input, textarea, select")) {
+                return;
+            }
+            if (event.key === "ArrowLeft") {
+                showAdjacentTree(-1);
+            } else if (event.key === "ArrowRight") {
+                showAdjacentTree(1);
+            }
+        });
 
         //Touche S : ouvre le dernier arbre vu (ou celui de la 1re planète), ou ferme la fenêtre
         function toggleSkillTreeWindow() {
@@ -6882,7 +6958,7 @@
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
             skillTreePanel.classList.toggle("treeLocked", tree.isLocked);  //dieu pas encore en orbite : arbre sombre
             treeTitle.textContent = (tree.isLocked ? "🔒 " : "") + tree.name;
-            renderGodTabs();
+            updateGodNav();
             renderOrbitLinks(tree);
             showNodeInfoHint();
             renderSkillTree();
@@ -7507,6 +7583,9 @@
         }
 
         function openGameOver() {
+            if (currentTree !== null) {
+                closeSkillTree(); //le jeu tournait pendant qu'on regardait les skills (option "pause dans les menus" décochée)
+            }
             updateRecords();
             saveProgress();
             hasDoubledThisDeath = false; //une nouvelle mort : on peut de nouveau doubler les récompenses
@@ -9074,9 +9153,6 @@
 
         //TÉLÉPHONE : le bouton "Skills" remplace la touche S, et l'aide parle de toucher au lieu de cliquer
         document.getElementById("skillsButton").addEventListener("click", toggleSkillTreeWindow);
-        if (IS_TOUCH_DEVICE) {
-            document.getElementById("hint").textContent = "Touche une planète pour ouvrir son arbre de compétences, fais-la glisser pour changer sa place";
-        }
 
         settingsPanel.addEventListener("click", function (event) {
             if (event.target === settingsPanel) {
@@ -9093,6 +9169,19 @@
 
         loadSoundSettings();
         createVolumeSliders();
+
+        //PAUSE DANS LES MENUS : décoché, le jeu continue pendant qu'on regarde les skills ou les paramètres
+        const pauseInMenusCheckbox = document.getElementById("pauseInMenusCheckbox");
+        pauseInMenusCheckbox.checked = pauseInMenus;
+        pauseInMenusCheckbox.addEventListener("change", function () {
+            pauseInMenus = pauseInMenusCheckbox.checked;
+            try {
+                localStorage.setItem("pauseInMenus", pauseInMenus ? "1" : "0");
+            } catch (error) {
+            }
+            updatePause();
+            playSound("click");
+        });
 
         //GRAPHISMES NETS : dessiner avec les vrais pixels des écrans fins (voir applyCanvasSize)
         const sharpGraphicsCheckbox = document.getElementById("sharpGraphicsCheckbox");
