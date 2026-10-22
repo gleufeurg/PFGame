@@ -55,6 +55,10 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 - **Effacer :** bouton « Effacer ma progression » dans les paramètres (avec confirmation). Efface aussi les records et les super ennemis vaincus, mais garde les réglages (son, thème) et le Pack Premium (c'est un achat).
 - À côté, d'autres clés existaient déjà : `theme`, `soundSettings`, `records`, `defeatedBosses`, `premium`.
 
+## Langue
+
+Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu prend la langue du téléphone ou du navigateur (l'anglais s'il ne la connaît pas). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
+
 ## Pause dans les menus
 
 Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (cochée par défaut, clé `pauseInMenus`) : cochée, le jeu s'arrête quand la fenêtre des skills ou les paramètres sont ouverts ; décochée, il continue. Si le joueur meurt pendant qu'il regarde ses skills, la fenêtre se ferme et le shop s'affiche.
