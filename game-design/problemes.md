@@ -45,10 +45,11 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Ce qui manque :** sur le site web, il n'y a pas de fenêtre de consentement (ce n'est pas grave tant que le site n'a que la fausse pub de test). Il manque aussi une page de **règles de confidentialité**, obligatoire sur les stores.
 - **Que faire :** écrire la page de règles de confidentialité (elle peut être publiée sur le site GitHub Pages) ; si un jour le site web affiche de vraies pubs, ajouter un outil de consentement certifié par Google.
 
-### L'application n'a pas encore d'identité
+### L'application n'a pas encore d'icône
 
-- **Pourquoi :** le nom (« PFGame ») et l'identifiant (`fr.evangelinelefevre.pfgame`) sont provisoires, et l'icône et l'écran de démarrage sont ceux de Capacitor par défaut.
-- **Que faire :** choisir le nom et l'identifiant avant la première publication (l'identifiant ne pourra plus changer, voir [mobile.md](mobile.md)), puis créer l'icône et l'écran de démarrage (l'outil `@capacitor/assets` les génère à partir d'une image).
+- **Déjà fait :** le nom, « Geometry : Idle defense », et l'identifiant définitif, `fr.evangelinelefevre.geometryidledefense`.
+- **Pourquoi c'est encore là :** l'icône et l'écran de démarrage sont ceux de Capacitor par défaut.
+- **Que faire :** créer l'icône et l'écran de démarrage (l'outil `@capacitor/assets` les génère à partir d'une image).
 
 ## Jeu
 

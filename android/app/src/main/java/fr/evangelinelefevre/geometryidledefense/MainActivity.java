@@ -1,4 +1,4 @@
-package fr.evangelinelefevre.pfgame;
+package fr.evangelinelefevre.geometryidledefense;
 
 import com.getcapacitor.BridgeActivity;
 

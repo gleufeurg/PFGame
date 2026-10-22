@@ -14,7 +14,7 @@ Le jeu reste **un seul fichier `index.html`**. Pour en faire une application And
 | `www/` | la copie du jeu mise dans l'appli (recréée à chaque fois) | non |
 | `node_modules/` | les outils téléchargés par `npm install` | non |
 
-⚠️ **L'identifiant `fr.evangelinelefevre.pfgame`** (`appId`) est le « nom unique » de l'appli sur le Play Store et l'App Store. On peut le changer maintenant, mais **plus jamais après la première publication**. Le nom affiché sous l'icône (`appName`, « PFGame » pour l'instant) peut, lui, changer quand on veut. Pour changer l'un ou l'autre : modifier `capacitor.config.json` **et** `android/app/src/main/res/values/strings.xml` (et `applicationId` dans `android/app/build.gradle` pour l'identifiant).
+⚠️ **L'identifiant `fr.evangelinelefevre.geometryidledefense`** (`appId`) est le « nom unique » de l'appli sur le Play Store et l'App Store. Il ne pourra **plus jamais changer après la première publication**. Le nom affiché sous l'icône (`appName`, « Geometry : Idle defense ») peut, lui, changer quand on veut. Pour changer l'un ou l'autre : modifier `capacitor.config.json` **et** `android/app/src/main/res/values/strings.xml` (et `applicationId` dans `android/app/build.gradle` pour l'identifiant).
 
 L'application Android est **verrouillée en portrait** (`android:screenOrientation="portrait"` dans `android/app/src/main/AndroidManifest.xml`).
 

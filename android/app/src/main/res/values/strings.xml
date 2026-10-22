@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">PFGame</string>
-    <string name="title_activity_main">PFGame</string>
-    <string name="package_name">fr.evangelinelefevre.pfgame</string>
-    <string name="custom_url_scheme">fr.evangelinelefevre.pfgame</string>
+    <string name="app_name">Geometry : Idle defense</string>
+    <string name="title_activity_main">Geometry : Idle defense</string>
+    <string name="package_name">fr.evangelinelefevre.geometryidledefense</string>
+    <string name="custom_url_scheme">fr.evangelinelefevre.geometryidledefense</string>
 </resources>

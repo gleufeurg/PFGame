@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "fr.evangelinelefevre.pfgame"
+    namespace = "fr.evangelinelefevre.geometryidledefense"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "fr.evangelinelefevre.pfgame"
+        applicationId "fr.evangelinelefevre.geometryidledefense"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
