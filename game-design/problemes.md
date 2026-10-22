@@ -42,8 +42,9 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 - **Déjà en place :** dans l'appli, le code demande le consentement à Google (UMP) avant les pubs AdMob, et un bouton des paramètres permet de changer d'avis.
 - **À faire dans AdMob :** créer et publier le **message RGPD** (Confidentialité et messages → RGPD). Sans lui, aucune fenêtre ne s'affiche (vu sur le téléphone).
-- **Ce qui manque :** sur le site web, il n'y a pas de fenêtre de consentement (ce n'est pas grave tant que le site n'a que la fausse pub de test). Il manque aussi une page de **règles de confidentialité**, obligatoire sur les stores.
-- **Que faire :** écrire la page de règles de confidentialité (elle peut être publiée sur le site GitHub Pages) ; si un jour le site web affiche de vraies pubs, ajouter un outil de consentement certifié par Google.
+- **Déjà fait :** la page de **règles de confidentialité** (`confidentialite.html`, en français et en anglais), à donner dans AdMob et dans la Play Console.
+- **Ce qui manque :** sur le site web, il n'y a pas de fenêtre de consentement (ce n'est pas grave tant que le site n'a que la fausse pub de test).
+- **Que faire :** créer le message RGPD dans AdMob (étapes dans [monetisation.md](monetisation.md)) ; si un jour le site web affiche de vraies pubs, ajouter un outil de consentement certifié par Google.
 
 ### L'application n'a pas encore d'icône
 

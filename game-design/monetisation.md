@@ -37,7 +37,15 @@ Le code est prêt, mais **aucune vraie pub ni aucun vrai paiement n'est branché
 
 - **En place :** le plugin `@capacitor-community/admob` (partie `ADMOB` de `index.html`). Dans l'appli, les 3 pubs (après la mort, ressusciter, doubler) sont des pubs AdMob. Une pub qui ne peut pas se charger (pas de réseau, aucune pub disponible) ne bloque jamais le jeu : après une mort, on va directement au shop ; pour une pub récompensée, un message demande de réessayer.
 - **Consentement RGPD :** au premier lancement en Europe, la fenêtre de consentement de Google s'affiche (`requestConsentInfo`, `showConsentForm`). Le bouton « Mes choix de confidentialité (pubs) » des paramètres permet de changer d'avis : il n'apparaît que dans l'appli, quand Google le demande.
-- **⚠️ La fenêtre de consentement n'existe que si elle est créée dans AdMob :** menu **Confidentialité et messages** → **RGPD** (Règlement européen) → **Créer un message** → choisir l'appli, les langues, puis **Publier**. Sans ce message, Google ne montre aucune fenêtre ; en mode test, le jeu affiche quand même les pubs d'exemple ; dans la vraie version (`ADS_TEST_MODE = false`), **aucune pub n'est demandée sans réponse de Google sur le consentement**. Il faut donc ce message avant la publication.
+- **⚠️ La fenêtre de consentement n'existe que si elle est créée dans AdMob.** Sans ce message, Google ne montre aucune fenêtre. En mode test, le jeu affiche quand même les pubs d'exemple, mais dans la vraie version (`ADS_TEST_MODE = false`), **aucune pub n'est demandée sans réponse de Google sur le consentement**. Il faut donc ce message avant la publication. Les étapes :
+  1. Sur [admob.google.com](https://admob.google.com), menu de gauche **Confidentialité et messages**.
+  2. Carte **Réglementations européennes** (RGPD) → **Créer un message**.
+  3. **Sélectionner des applications** : cocher l'appli Android. Pour chaque appli, AdMob demande l'**URL des règles de confidentialité** : `https://gleufeurg.github.io/PFGame/confidentialite.html` (la page `confidentialite.html` du dépôt).
+  4. **Langues** : ajouter français, anglais, italien et allemand (les langues européennes du jeu). Le chinois et le japonais ne sont pas nécessaires : la fenêtre ne s'affiche qu'en Europe.
+  5. **Options de l'utilisateur** : garder **Accepter** et **Gérer les options** ; cocher aussi **Ne pas accepter** (bouton « refuser » aussi visible que « accepter », recommandé par la CNIL).
+  6. Le style (couleurs, logo) est facultatif. Le logo de l'appli peut être ajouté plus tard.
+  7. En haut à droite : **Publier**. Le message est actif en quelques minutes. Sur le téléphone, désinstaller puis réinstaller l'appli pour revoir la fenêtre (le choix est retenu).
+  - Dans **Réglementations européennes** → **Paramètres**, la liste des partenaires publicitaires par défaut (« partenaires couramment utilisés ») convient.
 - **Pour vérifier :** téléphone branché, jeu ouvert, Chrome sur le PC → `chrome://inspect` → **inspect** → onglet Console : les lignes « AdMob, consentement : … » et « AdMob, chargement de la pub : … » disent ce que Google répond.
 - **iPhone :** la question d'Apple « Autoriser le suivi ? » est posée après le consentement.
 - **Pendant une pub :** la musique du jeu se coupe, et reprend après.
