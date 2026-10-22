@@ -1541,6 +1541,18 @@
                 min-height: 0;
             }
 
+            .infoChips { /*les pastilles passent SOUS le texte (sinon elles créent une 2e colonne qui sort de l'écran)*/
+                grid-column: 1;
+                grid-row: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+            }
+
+            .infoChip {
+                white-space: normal; /*un texte long (allemand...) passe à la ligne au lieu de dépasser*/
+            }
+
             .infoName {
                 font-size: 17px;
             }
@@ -2440,7 +2452,7 @@
                 if (number.text !== undefined) {
                     size = DAMAGE_NUMBER_SIZE - 1; //un libellé (pas un nombre) : un peu plus petit
                 }
-                ctx.font = "900 " + size / Math.sqrt(cameraZoom) + "px Nunito"; //quand la caméra dézoome, le texte rétrécit moins que le reste
+                ctx.font = "900 " + size / Math.sqrt(cameraZoom) + "px Nunito, sans-serif"; //quand la caméra dézoome, le texte rétrécit moins que le reste
                 ctx.lineWidth = number.isCrit ? 5 : 3;
                 ctx.strokeStyle = number.isCrit ? CRIT_OUTLINE_COLOR : "rgba(0, 0, 0, 0.65)";
                 const text = number.text !== undefined ? number.text : formatDamage(number.amount) + (number.isCrit ? "!" : "");
@@ -3263,7 +3275,7 @@
         function drawPlayerHealth() {
             const healthText = Math.floor(playerHealth); //pas de virgule : 9.9 -> 9 (la régénération continue de s'accumuler en dessous)
             const y = center.y + HEALTH_TEXT_OFFSET_Y;
-            ctx.font = "800 22px Nunito";
+            ctx.font = "800 22px Nunito, sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle"; //le y du texte = le milieu des lettres, pas le bas
             ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
@@ -3458,7 +3470,7 @@
 
                 //Son nom au-dessus d'elle quand on la survole
                 if (isHovered) {
-                    ctx.font = "800 15px Nunito";
+                    ctx.font = "800 15px Nunito, sans-serif";
                     ctx.textAlign = "center";
                     ctx.fillStyle = CANVAS_TEXT_COLOR;
                     //Du côté extérieur de l'orbite : au-dessus si la planète est en haut, en dessous si elle est en bas
@@ -4294,7 +4306,7 @@
             ctx.fillStyle = enemy.color;
             ctx.fillRect(x, y, width * healthPercent, BOSS_BAR_HEIGHT);
 
-            ctx.font = "800 14px Nunito";
+            ctx.font = "800 14px Nunito, sans-serif";
             ctx.textAlign = "center";
             ctx.fillStyle = CANVAS_TEXT_COLOR;
             ctx.fillText(enemy.boss.name, enemy.x, y - 6);

@@ -49,6 +49,16 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ## Jeu
 
+### Les traductions n'ont pas été relues (les deux branches)
+
+- **Pourquoi :** l'anglais, l'italien, l'allemand, le chinois et le japonais ont été traduits par IA. Les noms mythologiques et les petites étiquettes des compétences (3 à 5 lettres) sont les plus à risque.
+- **Que faire :** avant la sortie, faire relire chaque fichier de `langues/` par quelqu'un dont c'est la langue (ou des joueurs testeurs), et vérifier que les textes longs (allemand surtout) tiennent sur petit écran.
+
+### Les projets du portfolio restent en français (`portfolio`)
+
+- **Pourquoi :** le titre et la description de chaque projet (dans les skill trees) sont écrits en HTML dans `SKILL_TREES_DATA` et ne passent pas par `t()`.
+- **Que faire :** si on veut un portfolio multilingue, ajouter une version par langue de chaque projet (par exemple `project: { fr: {...}, en: {...} }`).
+
 ### Les codes de triche ne marchent pas sur téléphone (`monetisation`)
 
 - **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone. En plus, ils sont volontairement coupés dans l'application et sur le site en ligne (`CHEATS_ENABLED`, voir [codes-triche.md](codes-triche.md)).
