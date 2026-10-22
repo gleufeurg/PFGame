@@ -57,7 +57,7 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 ## Langue
 
-Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu prend la langue du téléphone ou du navigateur (l'anglais s'il ne la connaît pas). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
+Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu est en anglais (la langue par défaut). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
 
 ## Pause dans les menus
 
