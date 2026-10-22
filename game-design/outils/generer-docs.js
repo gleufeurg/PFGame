@@ -6,7 +6,7 @@ const { chromium } = require('playwright');
 const fs = require('fs'); const path = require('path');
 const ROOT = path.join(__dirname, '..', '..');
 const OUT = path.join(ROOT, 'game-design', 'skills');
-(async () => { const b = await chromium.launch(); const p = await b.newPage();
+(async () => { const b = await chromium.launch(); const p = await b.newPage({ locale: 'fr-FR' }); // les docs sont en français (sinon le jeu prendrait la langue de l'ordinateur)
 await p.route(/^https?:/, r => r.abort()); // pas besoin d'internet : seules les données comptent
 await p.goto('file://' + path.join(ROOT, 'index.html')); await p.waitForTimeout(400);
 const data = await p.evaluate(()=>({
