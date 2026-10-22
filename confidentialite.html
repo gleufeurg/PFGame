@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Geometry : Idle defense – Confidentialité / Privacy</title>
+    <style>
+        body { margin: 0; padding: 24px 16px; background: #12161d; color: #e9edf2; font: 16px/1.6 system-ui, sans-serif; }
+        main { max-width: 760px; margin: 0 auto; }
+        h1 { color: #ff8a1f; line-height: 1.2; }
+        h2 { color: #ffb36b; margin-top: 32px; }
+        a { color: #7fd4ff; }
+        .lang { padding: 8px 0 24px; border-bottom: 1px solid #2c3440; }
+        .small { color: #9aa6b4; font-size: 14px; }
+    </style>
+</head>
+<body>
+<main>
+    <!-- Page "Règles de confidentialité", obligatoire pour le Play Store, l'App Store et le message RGPD d'AdMob.
+         Son adresse (sur GitHub Pages) est à donner dans la Play Console et dans AdMob. Voir game-design/monetisation.md -->
+    <h1>Geometry : Idle defense</h1>
+    <p class="small">Dernière mise à jour / Last updated: 22/10/2026</p>
+
+    <section class="lang" lang="fr">
+        <h2>Règles de confidentialité</h2>
+        <p>Geometry : Idle defense est un jeu créé par Evangeline Lefevre. Cette page explique quelles données sont utilisées quand tu joues.</p>
+        <h3>Ta progression</h3>
+        <p>Ta sauvegarde (or, XP, améliorations, records) et tes réglages (son, thème, langue) sont enregistrés <strong>uniquement sur ton appareil</strong>. Il n'y a pas de compte joueur, et ces données ne sont jamais envoyées à un serveur. Désinstaller le jeu ou effacer ses données les supprime.</p>
+        <h3>Publicités (application mobile)</h3>
+        <p>L'application affiche des publicités grâce à <strong>Google AdMob</strong>. Pour afficher, mesurer et (si tu l'acceptes) personnaliser les publicités, Google peut collecter des informations sur ton appareil, comme l'identifiant publicitaire, l'adresse IP et des données d'utilisation. Dans l'Espace économique européen, au Royaume-Uni et en Suisse, ton consentement est demandé au premier lancement ; tu peux changer d'avis à tout moment avec le bouton « Mes choix de confidentialité » des paramètres du jeu.</p>
+        <p>Pour en savoir plus : <a href="https://policies.google.com/technologies/partner-sites">comment Google utilise les données des applications partenaires</a>.</p>
+        <h3>Achats</h3>
+        <p>Les achats dans le jeu passent par le Google Play Store (ou l'App Store). Je ne reçois jamais tes informations de paiement.</p>
+        <h3>Enfants</h3>
+        <p>Le jeu ne s'adresse pas spécialement aux enfants de moins de 13 ans, et ne collecte pas sciemment leurs données.</p>
+        <h3>Contact</h3>
+        <p>Une question ? Écris-moi : <span class="mail">evangelinelefevre002 [at] gmail.com</span></p>
+    </section>
+
+    <section lang="en">
+        <h2>Privacy policy</h2>
+        <p>Geometry : Idle defense is a game made by Evangeline Lefevre. This page explains which data is used when you play.</p>
+        <h3>Your progress</h3>
+        <p>Your save (gold, XP, upgrades, records) and your settings (sound, theme, language) are stored <strong>only on your device</strong>. There is no player account, and this data is never sent to a server. Uninstalling the game or clearing its data deletes it.</p>
+        <h3>Ads (mobile app)</h3>
+        <p>The app shows ads through <strong>Google AdMob</strong>. To show, measure and (if you agree) personalize ads, Google may collect information about your device, such as the advertising ID, IP address and usage data. In the European Economic Area, the United Kingdom and Switzerland, your consent is asked at first launch; you can change your mind at any time with the "My privacy choices" button in the game settings.</p>
+        <p>Learn more: <a href="https://policies.google.com/technologies/partner-sites">how Google uses data from partner apps</a>.</p>
+        <h3>Purchases</h3>
+        <p>In-game purchases go through the Google Play Store (or the App Store). I never receive your payment details.</p>
+        <h3>Children</h3>
+        <p>The game is not specifically directed at children under 13 and does not knowingly collect their data.</p>
+        <h3>Contact</h3>
+        <p>Any question? Write to me: <span class="mail">evangelinelefevre002 [at] gmail.com</span></p>
+    </section>
+</main>
+<script>
+    //L'adresse mail est assemblée ici (comme dans le jeu) pour que les robots qui ramassent les adresses ne la trouvent pas
+    const MAIL = ["evangelinelefevre002", "gmail.com"].join("@");
+    for (const element of document.querySelectorAll(".mail")) {
+        element.innerHTML = '<a href="mailto:' + MAIL + '">' + MAIL + "</a>";
+    }
+</script>
+</body>
+</html>
