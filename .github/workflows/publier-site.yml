@@ -1,0 +1,46 @@
+# Publie le site du jeu (GitHub Pages) avec SEULEMENT les fichiers du jeu :
+# CLAUDE.md, game-design/, README.md... restent dans le dépôt mais ne sont pas sur le site.
+# Se lance tout seul à chaque push sur la branche portfolio (et à la main : onglet Actions > "Publier le site" > Run workflow).
+# Voir game-design/site-web.md
+name: Publier le site
+
+on:
+  push:
+    branches: [portfolio]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      # La liste des fichiers du site : ajoute ici tout nouveau fichier ou dossier dont le jeu a besoin (images, sons...)
+      - name: Préparer le dossier du site (seulement le jeu)
+        run: |
+          mkdir _site
+          cp index.html confidentialite.html _site/
+          cp -r langues polices _site/
+          ls -R _site
+
+      - name: Envoyer le dossier du site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Mettre le site en ligne
+        id: deploiement
+        uses: actions/deploy-pages@v4
