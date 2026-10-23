@@ -2173,6 +2173,9 @@
         //Les morceaux variables s'écrivent entre accolades : t("{name} arrive !", { name: boss.name }) -> "Cerberus is coming!"
         //⚠️ Tout NOUVEAU texte affiché au joueur doit passer par t(), et être ajouté dans chaque fichier de langues/ (voir game-design/langues.md).
         const LANGUAGES = { fr: "Français", en: "English", it: "Italiano", de: "Deutsch", zh: "中文", ja: "日本語" };
+        //Les langues proposées aux joueurs. Les autres sont CACHÉES (pas supprimées : leurs fichiers de langues/ restent à jour) :
+        //pour en remettre une, il suffit d'ajouter son code ici, ex : ["fr", "en", "it"]
+        const VISIBLE_LANGUAGES = ["fr", "en"];
         const TRANSLATIONS = window.TRADUCTIONS || {};
         const MISSING_TRANSLATIONS = new Set(); // textes sans traduction (utile pour vérifier qu'il n'en manque pas)
 
@@ -2181,7 +2184,7 @@
         function detectLanguage() {
             try {
                 const saved = localStorage.getItem("language");
-                if (LANGUAGES[saved] !== undefined) {
+                if (VISIBLE_LANGUAGES.includes(saved)) { //une langue cachée choisie avant (ex : "de") -> la langue par défaut
                     return saved;
                 }
             } catch (error) {
@@ -11175,7 +11178,7 @@
 
         //LISTE DES LANGUES dans les Paramètres : changer de langue sauvegarde, puis recharge le jeu dans la nouvelle langue
         const languageSelect = document.getElementById("languageSelect");
-        for (const code of Object.keys(LANGUAGES)) {
+        for (const code of VISIBLE_LANGUAGES) {
             const option = document.createElement("option");
             option.value = code;
             option.textContent = LANGUAGES[code]; //chaque langue est écrite dans sa propre langue
