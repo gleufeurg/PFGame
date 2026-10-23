@@ -6856,8 +6856,9 @@
                     [292, 246], [330, 216], [366, 188, "notable"], [404, 166], [442, 164, "notable"],
                     [466, 184, "keystone"], [432, 192], [410, 214], [408, 240], [426, 258]
                 ].map(toPercent));
-                //L'écume : une petite branche qui monte du départ, à gauche (compétences de portée de la vague, voir extraSkills)
-                b.chain("low1", "spray", [[28, 228], [24, 192, "notable"], [34, 156], [52, 124, "notable"]].map(toPercent));
+                //L'écume : une petite branche qui s'envole du "C" de la 1re crête, en haut à gauche, comme les embruns d'une vague
+                //(compétences de portée de la vague, voir extraSkills)
+                b.chain("top4", "spray", [[88, 122], [64, 108, "notable"], [44, 88], [30, 62, "notable"]].map(toPercent));
                 //Les deux rangées se touchent, comme sur le dessin
                 b.layout["top7"].links.push("low5");
                 b.layout["top15"].links.push("low14");
