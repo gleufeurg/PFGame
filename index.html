@@ -8866,6 +8866,18 @@
             }
         }
 
+        //Code "ragnarok" : tout ce qui se débloque dans le jeu
+        function unlockEverything() {
+            completeShop();
+            for (const tree of SKILL_TREES) {
+                completeTree(tree);
+            }
+            for (const boss of BOSSES) {
+                defeatedBossIds.add(boss.id); //les paliers de tous les super ennemis
+            }
+            saveDefeatedBosses();
+        }
+
         //Tout le shop au niveau maximum (donc aussi tous les dieux et toutes les options de temps)
         function completeShop() {
             for (const item of SHOP_ITEMS) {
@@ -8932,6 +8944,10 @@
                     openSkillTree(currentTree); //redessine la fenêtre ouverte avec les nouveaux liens
                 }
                 return t("Tous les dieux sont liés des deux côtés");
+            },
+            ragnarok: function () {      // TOUT le jeu débloqué : shop au maximum, tous les dieux et leurs skill trees, tous les super ennemis vaincus (paliers)
+                unlockEverything();
+                return t("Tout le jeu est débloqué");
             },
             olympe: function () {        // toutes les divinités rejoignent l'orbite
                 while (SKILL_TREES.some(function (tree) { return tree.isLocked; })) { //some = "au moins un"

@@ -2,7 +2,7 @@
 
 - Le dossier `game-design/` contient la documentation de game design (voir `game-design/README.md`). À chaque changement dans le jeu, mets à jour les documents concernés dans le même commit :
   - skills, shop, combos, prix : relance `node game-design/outils/generer-docs.js` ;
-  - ennemis, statistiques, interface, codes de triche, direction artistique : modifie le fichier à la main.
+  - ennemis, statistiques, formules (`formules.md`, dès qu'un calcul change), interface, codes de triche, direction artistique : modifie le fichier à la main.
 - Réponds en français, et explique simplement : la développeuse débute en JavaScript (elle vient de C# et d'Unity).
 - Deux branches : `portfolio` (le jeu-portfolio, sans pub) et `monetisation` (sans la partie portfolio, avec pubs et Pack Premium, voir `game-design/monetisation.md`). Un changement de gameplay demandé « sur les 2 branches » se fait d'abord sur `portfolio`, puis on fusionne `portfolio` dans `monetisation` (`git merge portfolio`).
 - Sur `monetisation`, l'application mobile (Capacitor, voir `game-design/mobile.md`) n'est qu'une copie de `index.html` : on code toujours dans `index.html`, jamais dans `www/` ni dans `android/app/src/main/assets/` (recopiés par `npm run sync`). Un changement d'interface doit marcher à la souris ET au doigt (`IS_TOUCH_DEVICE`), sur grand et petit écran, et toute nouvelle progression doit être ajoutée à la sauvegarde (`saveProgress` / `loadProgress`).

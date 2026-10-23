@@ -1352,5 +1352,6 @@ window.TRADUCTIONS.de = {
     "⚠️ {name} arrive dans {seconds} s": "⚠️ {name} kommt in {seconds} s",
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 Neuer Gegner: {name} in {seconds} s",
     "⚔️ Cri de guerre !": "⚔️ Kriegsschrei!",
-    "Après {name} ({time})": "Nach {name} ({time})"
+    "Après {name} ({time})": "Nach {name} ({time})",
+    "Tout le jeu est débloqué": "Das ganze Spiel ist freigeschaltet"
 };

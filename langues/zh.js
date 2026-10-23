@@ -1352,5 +1352,6 @@ window.TRADUCTIONS.zh = {
     "⚠️ {name} arrive dans {seconds} s": "⚠️ {name} 将在 {seconds} 秒后到来",
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 新敌人：{name}，{seconds} 秒后到来",
     "⚔️ Cri de guerre !": "⚔️ 战吼！",
-    "Après {name} ({time})": "{name} 之后（{time}）"
+    "Après {name} ({time})": "{name} 之后（{time}）",
+    "Tout le jeu est débloqué": "整个游戏已解锁"
 };
