@@ -59,6 +59,17 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu est en anglais (la langue par défaut). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
 
+## Graphismes : simples ou élevés
+
+Liste « Graphismes » dans les paramètres, retenue par le navigateur (clé `graphicsQuality`) :
+
+- **Élevés** (par défaut) : les plus belles animations, par exemple la vraie vague de Poséidon.
+- **Simples** : des effets plus légers, pour un appareil lent, par exemple deux anneaux pour la vague.
+
+Le jeu lui-même (dégâts, poussée, règles) est **exactement le même** dans les deux modes : seul le dessin change. C'est différent de « Graphismes nets », qui règle la finesse des pixels sur les écrans fins.
+
+**Règle :** les nouvelles animations élaborées se dessinent seulement en graphismes élevés (`isHighGraphics`), avec une version simple pour l'autre mode.
+
 ## Balles à tête chercheuse
 
 Case à cocher dans les paramètres, cochée par défaut, retenue par le navigateur (clé `homingBullets`).

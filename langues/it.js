@@ -1377,5 +1377,8 @@ window.TRADUCTIONS.it = {
     "HOULE": "ONDATA",
     "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "Risacca: l'onda arriva più lontano, del 50% della gittata di tiro di Poseidone",
     "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "Mareggiata: l'onda arriva ancora più lontano, di un altro 50% della gittata di tiro di Poseidone",
-    "Portée de la vague (part de la portée de tir)": "Gittata dell'onda (quota della gittata di tiro)"
+    "Portée de la vague (part de la portée de tir)": "Gittata dell'onda (quota della gittata di tiro)",
+    "Graphismes": "Grafica",
+    "Élevés (plus belles animations)": "Alta (animazioni più belle)",
+    "Simples (plus rapide)": "Semplice (più veloce)"
 };

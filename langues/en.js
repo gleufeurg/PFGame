@@ -1377,5 +1377,8 @@ window.TRADUCTIONS.en = {
     "HOULE": "SWELL",
     "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "Surf: the wave reaches farther, by 50% of Poseidon's firing range",
     "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "Swell: the wave reaches even farther, by another 50% of Poseidon's firing range",
-    "Portée de la vague (part de la portée de tir)": "Wave range (share of firing range)"
+    "Portée de la vague (part de la portée de tir)": "Wave range (share of firing range)",
+    "Graphismes": "Graphics",
+    "Élevés (plus belles animations)": "High (nicer animations)",
+    "Simples (plus rapide)": "Simple (faster)"
 };
