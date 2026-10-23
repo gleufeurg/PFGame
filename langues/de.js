@@ -1368,5 +1368,14 @@ window.TRADUCTIONS.de = {
     "Lanternes": "Laternen",
     "Dernière étoile": "Letzter Stern",
     "Balles à tête chercheuse": "Zielsuchende Kugeln",
-    "(décoché : les balles partent tout droit vers l'ennemi visé)": "(aus: Kugeln fliegen geradeaus auf den anvisierten Gegner zu)"
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "(aus: Kugeln fliegen geradeaus auf den anvisierten Gegner zu)",
+    "Cymo": "Kymo",
+    "Cymopolée": "Kymopoleia",
+    "Rhodé": "Rhode",
+    "Benthésicymé": "Benthesikyme",
+    "RESSAC": "GISCHT",
+    "HOULE": "DÜNUNG",
+    "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "Brandung: Die Welle reicht weiter, um 50% von Poseidons Schussreichweite",
+    "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "Dünung: Die Welle reicht noch weiter, um weitere 50% von Poseidons Schussreichweite",
+    "Portée de la vague (part de la portée de tir)": "Wellenreichweite (Anteil der Schussreichweite)"
 };
