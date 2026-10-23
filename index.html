@@ -2845,6 +2845,7 @@
                 localStorage.setItem("scene", currentSceneKey);
             } catch (error) {
             }
+            document.getElementById("sceneSelect").value = currentSceneKey; //la liste des Paramètres montre le bon décor
             applyTheme(currentThemeKey); //recalcule les couleurs (ombres, orbite) et redessine le fond
         }
 
