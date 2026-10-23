@@ -2093,6 +2093,10 @@
                 <label for="pauseInMenusCheckbox">Mettre le jeu en pause dans les menus <span class="smallText">(paramètres et skills)</span></label>
             </div>
             <div class="settingRow">
+                <input type="checkbox" id="homingBulletsCheckbox">
+                <label for="homingBulletsCheckbox">Balles à tête chercheuse <span class="smallText">(décoché : les balles partent tout droit vers l'ennemi visé)</span></label>
+            </div>
+            <div class="settingRow">
                 <input type="checkbox" id="sharpGraphicsCheckbox">
                 <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
             </div>
@@ -5445,6 +5449,12 @@
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
 
+        //BALLES À TÊTE CHERCHEUSE (option des Paramètres, cochée par défaut, retenue par le navigateur)
+        let homingBullets = true;
+        try {
+            homingBullets = localStorage.getItem("homingBullets") !== "0";
+        } catch (error) {
+        }
         const BOUNCE_RANGE = 180;            // distance max d'un rebond (Artémis), en pixels
         const MIN_SHOOTER_SPEED = 0.15;      // une planète tire toujours au moins à 15% de la cadence normale (Héphaïstos est lent)
 
@@ -5475,6 +5485,7 @@
                 const bullet = shootAt(followsTarget ? target : null, x + sideX, y + sideY, getShotDamage(stats), color, effects, ringColor, stats);
                 bullet.dirX = dirX;
                 bullet.dirY = dirY;
+                bullet.homing = homingBullets; //option des Paramètres : suit-elle sa cible après le tir ?
                 bullet.wallX = sideX;  //elle vise la cible + son écart, pour garder la forme du mur
                 bullet.wallY = sideY;
                 bullet.proc = proc;
@@ -5665,8 +5676,10 @@
                 const bullet = bullets[i];
                 const bulletSpeed = BASE_BULLET_SPEED * Math.max(0.2, bullet.stats.bulletSpeed) * (bullet.speedFactor || 1); //chaque tireur a sa vitesse de balles
 
-                //La balle suit sa cible tant qu'elle est vivante (en gardant son écart dans le mur), sinon elle continue tout droit
-                if (bullet.target !== null && bullet.target.alive) {
+                //La balle suit sa cible tant qu'elle est vivante (en gardant son écart dans le mur), sinon elle continue tout droit.
+                //Option "Balles à tête chercheuse" décochée : les tirs normaux gardent leur direction de départ (homing = false) ;
+                //les balles spéciales (rebonds d'Artémis, éclats des combos...) suivent toujours leur cible.
+                if (bullet.target !== null && bullet.target.alive && bullet.homing !== false) {
                     const dx = bullet.target.x + bullet.wallX - bullet.x;
                     const dy = bullet.target.y + bullet.wallY - bullet.y;
                     const distance = Math.hypot(dx, dy);
@@ -5694,6 +5707,7 @@
                         //Rebond (Artémis) : la balle repart vers l'ennemi le plus proche qu'elle n'a pas encore touché
                         bullet.bounceLeft--;
                         bullet.target = nextTarget;
+                        bullet.homing = true; //un rebond est une balle spéciale : elle file vers sa nouvelle cible
                         bullet.wallX = 0;
                         bullet.wallY = 0;
                     } else if (bullet.pierceLeft > 0) {
@@ -10543,6 +10557,18 @@
             } catch (error) {
             }
             updatePause();
+            playSound("click");
+        });
+
+        //BALLES À TÊTE CHERCHEUSE : décoché, les tirs normaux partent tout droit vers l'ennemi visé et ne le suivent plus
+        const homingBulletsCheckbox = document.getElementById("homingBulletsCheckbox");
+        homingBulletsCheckbox.checked = homingBullets;
+        homingBulletsCheckbox.addEventListener("change", function () {
+            homingBullets = homingBulletsCheckbox.checked;
+            try {
+                localStorage.setItem("homingBullets", homingBullets ? "1" : "0");
+            } catch (error) {
+            }
             playSound("click");
         });
 

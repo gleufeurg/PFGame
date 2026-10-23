@@ -59,6 +59,14 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu est en anglais (la langue par défaut). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
 
+## Balles à tête chercheuse
+
+Case à cocher dans les paramètres, cochée par défaut, retenue par le navigateur (clé `homingBullets`).
+
+- **Cochée :** une balle suit l'ennemi visé tant qu'il est vivant.
+- **Décochée :** les tirs normaux (du joueur et des planètes) partent tout droit vers l'endroit où était l'ennemi au moment du tir, et ne tournent plus. Un ennemi qui se déplace sur le côté peut donc être raté.
+- **Les balles spéciales suivent toujours leur cible**, même décochée : rebonds d'Artémis, et rebonds, éclats et divisions des combos d'orbite.
+
 ## Musique
 
 La musique est générée en direct par le navigateur (pas de fichier audio) : des accords en nappes, une basse, et de petites notes qui scintillent avec de l'écho. 5 morceaux calmes et un peu mélancoliques (`MUSIC_TRACKS`, partie `MUSIC` de `index.html`) :

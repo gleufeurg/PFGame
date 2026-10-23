@@ -1366,5 +1366,7 @@ window.TRADUCTIONS.de = {
     "Marée basse": "Ebbe",
     "Neige lente": "Langsamer Schnee",
     "Lanternes": "Laternen",
-    "Dernière étoile": "Letzter Stern"
+    "Dernière étoile": "Letzter Stern",
+    "Balles à tête chercheuse": "Zielsuchende Kugeln",
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "(aus: Kugeln fliegen geradeaus auf den anvisierten Gegner zu)"
 };
