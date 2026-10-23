@@ -36,6 +36,15 @@ Images de référence pour les formes des skill trees, et les choix de style val
   - Dans l'interface : la bordure dorée des fenêtres brille et la lumière en fait le tour ; les grands titres sont écrits « en or » avec un reflet qui passe ; les boutons ont un léger halo doré.
   - Il n'est pas dans le « Cycle des thèmes ».
 
+## Les animations des pouvoirs (graphismes élevés / simples)
+
+Réglage « Graphismes » des paramètres (`isHighGraphics`). En graphismes simples, chaque pouvoir garde un effet léger, les ondes de choc d'origine.
+
+| Pouvoir | Graphismes élevés | Graphismes simples | Son |
+| --- | --- | --- | --- |
+| Vague de Poséidon | une nappe d'eau bleue derrière le front, une crête d'écume blanche qui ondule, des éclaboussures (`drawTideWaves`) | deux anneaux bleus qui grandissent au rythme de la vague | une vague qui gonfle, déferle et se retire (`playWaveSound`) |
+| Rayon de vie de Déméter | une floraison : un halo d'herbe lumineuse qui grandit, 22 pétales et feuilles qui s'envolent en tournant, un rayon de lumière verte jusqu'au joueur, des petites croix de soin qui montent autour de lui (`drawBloomEffects`) ; les ennemis immobilisés sont entourés de lianes enroulées avec des feuilles (`drawRootVines`) | une onde verte autour de Déméter et une autour du joueur ; un anneau vert autour des ennemis immobilisés | un petit carillon qui monte (do, mi, sol, do) et un léger bruissement de feuilles (`playBloomSound`) |
+
 ## Les thèmes drapeaux
 
 Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.

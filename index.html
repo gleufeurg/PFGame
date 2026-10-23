@@ -2393,6 +2393,7 @@
             drawHazards();           //ce qui est au sol (braises, graines...) passe sous les ennemis
             drawSpawnWarning();      //la flèche au bord de l'écran : un ennemi spécial va arriver par là
             drawTideWaves();         //la vague de Poséidon (graphismes élevés)
+            drawBloomEffects();      //la floraison de Déméter (graphismes élevés)
             drawEnemies();
             drawBullets();
             drawEffects();
@@ -4144,6 +4145,7 @@
                 x: 0,
                 y: 0
             });
+            updatePlanetPositions(); //sa vraie place tout de suite (sinon elle serait en (0, 0) jusqu'à la prochaine image)
         }
 
         //Une nouvelle divinité rejoint l'orbite (achetée dans le shop)
@@ -5408,11 +5410,15 @@
 
                 //Pouvoirs des dieux : liane (vert épais), frêle (bleu en pointillés), conducteur (petits éclairs bleus)
                 if (enemy.rootTimer > 0) {
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size + 4, 0, Math.PI * 2);
-                    ctx.strokeStyle = ATTRIBUTES.plant.color;
-                    ctx.lineWidth = 3.5;
-                    ctx.stroke();
+                    if (isHighGraphics) {
+                        drawRootVines(enemy); //des lianes enroulées autour de lui
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, enemy.size + 4, 0, Math.PI * 2);
+                        ctx.strokeStyle = ATTRIBUTES.plant.color;
+                        ctx.lineWidth = 3.5;
+                        ctx.stroke();
+                    }
                 }
                 if (enemy.fragileTimer > 0) {
                     ctx.setLineDash([2, 5]);
@@ -6774,6 +6780,7 @@
             }
             updatePendingBolts();
             updateTideWaves(deltaTime);
+            updateBloomEffects(deltaTime);
         }
 
         //APHRODITE : une onde rose autour d'elle charme les ennemis (sauf les super ennemis) : ils font demi-tour et blessent leurs alliés
@@ -6808,9 +6815,18 @@
             const radius = Math.max(60, stats.bloomRadius);
             if (stats.bloomHeal > 0) {
                 healPlayer(stats.bloomHeal);
-                spawnShockwave(center.x, center.y, ATTRIBUTES.plant.color, PLAYER_RADIUS * 2.5);
             }
-            spawnShockwave(planet.x, planet.y, ATTRIBUTES.plant.color, radius);
+            if (isHighGraphics) {
+                //Graphismes élevés : une floraison (pétales qui s'envolent en tournant) et un rayon de vie vers le joueur
+                bloomEffects.push({ x: planet.x, y: planet.y, radius: radius, time: 0, heal: stats.bloomHeal > 0, seed: Math.random() * 100 });
+            } else {
+                //Graphismes simples : les ondes vertes d'origine
+                if (stats.bloomHeal > 0) {
+                    spawnShockwave(center.x, center.y, ATTRIBUTES.plant.color, PLAYER_RADIUS * 2.5);
+                }
+                spawnShockwave(planet.x, planet.y, ATTRIBUTES.plant.color, radius);
+            }
+            playSound("bloom");
             const touched = getEnemiesNear(planet.x, planet.y, radius);
             for (const enemy of touched) {
                 enemy.weakTimer = Math.max(enemy.weakTimer || 0, WEAKEN_FROM_BLOOM);
@@ -6830,6 +6846,131 @@
                     break;
                 }
                 hazards.push({ type: "vine", x: enemy.x, y: enemy.y, radius: 16, timer: VINE_LIFETIME, duration: VINE_BASE_DURATION + stats.vineDuration, color: ATTRIBUTES.plant.color, target: enemy });
+            }
+        }
+
+        //FLORAISON DE DÉMÉTER (graphismes élevés) : chaque rayon de vie fait
+        //- une floraison : des pétales et des feuilles qui s'envolent de Déméter en tournant, jusqu'au bord de son rayon ;
+        //- un anneau d'herbe lumineuse qui grandit, doux et transparent ;
+        //- un rayon de lumière verte de Déméter vers le joueur, avec des petites croix de soin qui montent autour de lui.
+        const BLOOM_DURATION = 1.2;          // secondes
+        const BLOOM_PETALS = 22;
+        const BLOOM_PETAL_COLORS = ["#7be37b", "#b8f5a0", "#ffd1e3", "#fff6c2", "#55dd55"];
+        const bloomEffects = [];
+
+        function updateBloomEffects(deltaTime) {
+            for (let i = bloomEffects.length - 1; i >= 0; i--) {
+                bloomEffects[i].time += deltaTime;
+                if (bloomEffects[i].time >= BLOOM_DURATION) {
+                    bloomEffects.splice(i, 1);
+                }
+            }
+        }
+
+        function drawBloomEffects() {
+            for (const bloom of bloomEffects) {
+                const t = bloom.time / BLOOM_DURATION;                 //avancement de 0 à 1
+                const grow = 1 - (1 - t) * (1 - t) * (1 - t);          //part vite puis ralentit (comme une fleur qui s'ouvre)
+                const fade = 1 - t;
+                //L'anneau lumineux : un dégradé vert qui grandit et s'efface
+                const r = bloom.radius * grow;
+                const halo = ctx.createRadialGradient(bloom.x, bloom.y, r * 0.6, bloom.x, bloom.y, r + 6);
+                halo.addColorStop(0, "rgba(85, 221, 85, 0)");
+                halo.addColorStop(0.85, "rgba(120, 230, 110, 0.28)");
+                halo.addColorStop(1, "rgba(200, 255, 190, 0)");
+                ctx.globalAlpha = fade;
+                ctx.fillStyle = halo;
+                ctx.beginPath();
+                ctx.arc(bloom.x, bloom.y, r + 6, 0, Math.PI * 2);
+                ctx.fill();
+                //Les pétales : de petites ellipses qui s'envolent en spirale et tournent sur elles-mêmes
+                for (let k = 0; k < BLOOM_PETALS; k++) {
+                    const random = seededRandom(bloom.seed + k * 7.3);
+                    const angle = k / BLOOM_PETALS * Math.PI * 2 + grow * (1.2 + random) ; //ils tournent en s'éloignant
+                    const distance = bloom.radius * grow * (0.55 + random * 0.45);
+                    const x = bloom.x + Math.cos(angle) * distance;
+                    const y = bloom.y + Math.sin(angle) * distance;
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(angle + bloom.time * (4 + random * 6));
+                    ctx.globalAlpha = fade * (0.6 + random * 0.4);
+                    ctx.fillStyle = BLOOM_PETAL_COLORS[k % BLOOM_PETAL_COLORS.length];
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 5 + random * 3, 2.4, 0, 0, Math.PI * 2); //ellipse(x, y, rayon large, rayon étroit, rotation, début, fin)
+                    ctx.fill();
+                    ctx.restore();
+                }
+                //Le rayon de vie vers le joueur, puis les croix de soin qui montent autour de lui
+                if (bloom.heal) {
+                    const beam = Math.min(1, t * 3);                    //le rayon file en 0.4 s
+                    const endX = bloom.x + (center.x - bloom.x) * beam;
+                    const endY = bloom.y + (center.y - bloom.y) * beam;
+                    ctx.lineCap = "round";
+                    ctx.strokeStyle = "#b8f5a0";
+                    ctx.lineWidth = 7;
+                    ctx.globalAlpha = fade * 0.25;
+                    ctx.beginPath();
+                    ctx.moveTo(bloom.x, bloom.y);
+                    ctx.lineTo(endX, endY);
+                    ctx.stroke();
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    ctx.globalAlpha = fade * 0.7;
+                    ctx.stroke();
+                    if (t > 0.3) {
+                        const rise = (t - 0.3) / 0.7;
+                        ctx.fillStyle = "#9dff8a";
+                        for (let k = 0; k < 6; k++) {
+                            const angle = k / 6 * Math.PI * 2 + bloom.seed;
+                            const x = center.x + Math.cos(angle) * (PLAYER_RADIUS + 6);
+                            const y = center.y + Math.sin(angle) * (PLAYER_RADIUS + 6) * 0.6 - rise * 28;
+                            ctx.globalAlpha = (1 - rise) * 0.9;
+                            ctx.fillRect(x - 4, y - 1.2, 8, 2.4); //une petite croix "+"
+                            ctx.fillRect(x - 1.2, y - 4, 2.4, 8);
+                        }
+                        drawGlow(ATTRIBUTES.plant.color, center.x, center.y, PLAYER_RADIUS * 2.4, (1 - rise) * 0.6);
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        //LIANES ENROULÉES (graphismes élevés) : autour d'un ennemi immobilisé, des tiges qui s'enroulent avec des feuilles
+        function drawRootVines(enemy) {
+            const radius = enemy.size + 4;
+            ctx.lineCap = "round";
+            for (let k = 0; k < 3; k++) {
+                const start = k * Math.PI * 2 / 3 + visualTime * 0.6;
+                ctx.beginPath();
+                for (let step = 0; step <= 14; step++) {
+                    const angle = start + step * 0.22;
+                    const wobble = Math.sin(step * 1.3 + k) * 2.5; //la tige ondule en s'enroulant
+                    const x = enemy.x + Math.cos(angle) * (radius + wobble);
+                    const y = enemy.y + Math.sin(angle) * (radius + wobble);
+                    if (step === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.strokeStyle = "#2f8a2f";
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
+                ctx.strokeStyle = "#7be37b";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                //Une feuille au bout de chaque tige
+                const leafAngle = start + 14 * 0.22;
+                const leafX = enemy.x + Math.cos(leafAngle) * (radius + 3);
+                const leafY = enemy.y + Math.sin(leafAngle) * (radius + 3);
+                ctx.save();
+                ctx.translate(leafX, leafY);
+                ctx.rotate(leafAngle + Math.PI / 4);
+                ctx.fillStyle = "#55dd55";
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 4.5, 2.2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
             }
         }
 
@@ -9042,6 +9183,7 @@
             warCryTimer = 0;
             tideShieldTimer = 0;
             tideWaves.length = 0;
+            bloomEffects.length = 0;
             pendingBolts.length = 0;
             lightningArcs.length = 0;
             shockwaves.length = 0;
@@ -10112,6 +10254,32 @@
             playTone(140, 70, 0.5, "sine", volume * 0.15, 0, output);
         }
 
+        //UN SON DE FLORAISON (Déméter) : des petites notes douces qui montent (comme un carillon), et un léger bruissement
+        //de feuilles (du bruit très aigu et très doux, qui gonfle puis s'efface)
+        function playBloomSound(output) {
+            const notes = [72, 76, 79, 84]; //do, mi, sol, do : un accord majeur joué note par note, en montant
+            notes.forEach(function (note, i) {
+                const frequency = 440 * Math.pow(2, (note - 69) / 12);
+                playTone(frequency, frequency, 0.9, "sine", 0.07, i * 0.08, output);
+            });
+            const startTime = audioContext.currentTime;
+            const source = audioContext.createBufferSource();
+            source.buffer = getNoiseBuffer();
+            const filter = audioContext.createBiquadFilter();
+            filter.type = "bandpass";
+            filter.frequency.value = 4500;
+            filter.Q.value = 1.2;
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.12, startTime + 0.25);
+            gain.gain.linearRampToValueAtTime(0, startTime + 0.9);
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(output);
+            source.start(startTime, Math.random() * 1.5); //commence à un endroit au hasard du bruit : jamais tout à fait le même
+            source.stop(startTime + 0.9);
+        }
+
         //La liste des sons : category = "ui" (menus) ou "sfx" (jeu). Modifie les nombres pour changer les sons.
         //play(out) reçoit la sortie de sa catégorie et la donne à playTone
         const SOUNDS = {
@@ -10129,7 +10297,8 @@
             buy: { category: "ui", play: function (out) { playTone(660, 660, 0.08, "square", 0.12, 0, out); playTone(990, 990, 0.12, "square", 0.12, 0.08, out); } },
             denied: { category: "ui", play: function (out) { playTone(160, 120, 0.15, "sawtooth", 0.15, 0, out); } },
             click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } },
-            tideWave: { category: "sfx", play: function (out) { playWaveSound(out); } }
+            tideWave: { category: "sfx", play: function (out) { playWaveSound(out); } },
+            bloom: { category: "sfx", play: function (out) { playBloomSound(out); } }
         };
 
         function playSound(name) {
