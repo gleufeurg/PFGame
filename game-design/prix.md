@@ -5,7 +5,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
 - Tout le shop au maximum coûte **86 673 or**, dont 72 240 or pour les 12 dieux.
-- Tous les skills des 12 dieux coûtent **16 488 XP**.
+- Tous les skills des 12 dieux coûtent **16 508 XP**.
 
 ## Le shop
 
@@ -40,7 +40,7 @@ Un skill coûte plus cher quand il est loin du départ : chaque lien à parcouri
 
 | Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre |
 | --- | --- | --- | --- | --- | --- |
-| Poséidon | 40 | 25 | 10 | 3 + 1 | 2 182 |
+| Poséidon | 40 | 25 | 10 | 3 + 1 | 2 202 |
 | Éole | 45 | 32 | 8 | 3 + 1 | 2 117 |
 | Athéna | 51 | 38 | 8 | 3 + 1 | 1 677 |
 | Apollon | 49 | 36 | 8 | 3 + 1 | 1 455 |
@@ -89,7 +89,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 74 | Hécate | Keystone | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran |
 | 150 | Etna | Grande keystone | GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins |
 
-### Poséidon (40 skills · 2 182 XP)
+### Poséidon (40 skills · 2 202 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -107,27 +107,27 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 37 | Océanide I | Mineure | +0.02 PV régénérés par seconde |
 | 38 | Glaucos | Notable | Ennemis frêles : +5% de dégâts subis |
 | 44 | Galatée | Notable | +40 de portée (la vague va aussi plus loin) |
-| 45 | Cymo | Mineure | +20 de portée |
 | 45 | Néréide I, VI | Mineure | +1 PV max, chacun |
 | 45 | Océanide III | Mineure | +0.02 PV régénérés par seconde |
+| 49 | Cymo | Mineure | +20 de portée |
 | 49 | Naïade III | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 49 | Océanide VI | Mineure | +0.02 PV régénérés par seconde |
 | 53 | Naïade VI | Mineure | Ennemis frêles : +2% de dégâts subis |
-| 53 | Rhodé | Mineure | +30 de portée |
 | 57 | Néréide IV | Mineure | +1 PV max |
+| 57 | Rhodé | Mineure | +30 de portée |
 | 61 | Néréide VII | Mineure | +1 PV max |
 | 62 | Doris | Notable | +0.05 PV régénérés par seconde |
 | 62 | Leucothée | Notable | La vague revient 15% plus souvent |
 | 72 | Céto | Keystone | Ennemis frêles : +15% de dégâts subis |
 | 73 | Océanide VII | Mineure | +0.02 PV régénérés par seconde |
-| 74 | Cymopolée | Notable | Ressac : +60 de portée (la vague va aussi plus loin) |
 | 77 | Naïade VII | Mineure | Ennemis frêles : +2% de dégâts subis |
+| 80 | Cymopolée | Notable | Ressac : +60 de portée (la vague va aussi plus loin) |
 | 80 | Protée | Notable | +10% de chance d'esquiver un coup |
 | 81 | Néréide VIII | Mineure | +1 PV max |
 | 82 | Amphitrite | Keystone | Bouclier des marées : chaque vague te rend invincible pendant 2 s |
 | 85 | Océanide VIII | Mineure | +0.02 PV régénérés par seconde |
-| 86 | Benthésicymé | Notable | Houle : +80 de portée (la vague va aussi plus loin) |
 | 86 | Palémon | Notable | +30 de recul de la vague |
+| 92 | Benthésicymé | Notable | Houle : +80 de portée (la vague va aussi plus loin) |
 | 92 | Triton | Keystone | La vague revient 40% plus souvent, et +80 de portée |
 | 98 | Nérée | Notable | +3 PV max |
 | 150 | Océanos | Grande keystone | GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s |

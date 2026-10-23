@@ -7250,9 +7250,9 @@
                     [292, 246], [330, 216], [366, 188, "notable"], [404, 166], [442, 164, "notable"],
                     [466, 184, "keystone"], [432, 192], [410, 214], [408, 240], [426, 258]
                 ].map(toPercent));
-                //L'écume : une branche qui part de Doris (la crête en haut à gauche) et redescend en courbe,
+                //L'écume : une branche reliée à la Néréide I (la crête en haut à gauche) qui redescend en courbe,
                 //comme la face d'une vague vue de profil (compétences de portée de la vague, voir extraSkills)
-                b.chain("top3", "spray", [[100, 98], [78, 110, "notable"], [64, 134], [56, 166, "notable"]].map(toPercent));
+                b.chain("top2", "spray", [[100, 98], [78, 110, "notable"], [64, 134], [56, 166, "notable"]].map(toPercent));
                 //Les deux rangées se touchent, comme sur le dessin
                 b.layout["top7"].links.push("low5");
                 b.layout["top15"].links.push("low14");
