@@ -2,9 +2,11 @@
 
 Le jeu existe en 6 langues : français (la langue d'origine), anglais, italien, allemand, chinois (simplifié) et japonais.
 
+**Seuls le français et l'anglais sont proposés aux joueurs** (`VISIBLE_LANGUAGES` dans `index.html`). L'italien, l'allemand, le chinois et le japonais sont **cachés, pas supprimés** : leurs fichiers de `langues/` restent dans le jeu et sont toujours tenus à jour (chaque nouveau texte y est ajouté). Pour remettre une langue, ajouter son code dans `VISIBLE_LANGUAGES` (ex : `["fr", "en", "it"]`). Un joueur qui avait choisi une langue cachée repasse en anglais.
+
 ## Quelle langue au démarrage ?
 
-1. Celle choisie par le joueur dans les **Paramètres** (liste « Langue »), retenue par le navigateur (clé `language` du `localStorage`).
+1. Celle choisie par le joueur dans les **Paramètres** (liste « Langue »), retenue par le navigateur (clé `language` du `localStorage`), si elle n'est pas cachée.
 2. Sinon, l'**anglais**, la langue par défaut (`DEFAULT_LANGUAGE`), même si le téléphone est réglé dans une autre langue.
 
 Changer de langue sauvegarde la partie puis recharge la page.
