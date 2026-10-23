@@ -13,34 +13,34 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Gaïa** (GAÏA) | +1 PV regagné par ennemi tué | 150 XP |
+| **Gaïa** (GAÏA) | +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Karpos** (ARBRE) | +50% d'XP gagnée | 68 XP |
-| **Triptolème** (SYMB) | +0.3 PV regagnés par ennemi tué | 68 XP |
-| **Pan** (FORÊT) | +2 dégâts par balle | 68 XP |
+| **Karpos** (ARBRE) | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) | 68 XP |
+| **Triptolème** (MOISS) | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent | 68 XP |
+| **Pan** (FORÊT) | +60 de rayon du rayon de vie et +2 lianes | 68 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Thallo** (XP) | +10% d'XP gagnée | 20 XP |
-| **Auxo** (XP) | +20% d'XP gagnée | 38 XP |
+| **Auxo** (SOIN) | Le rayon de vie soigne 0.5 PV de plus | 38 XP |
 | **Chloris** (REG) | +0.05 PV régénérés par seconde | 20 XP |
 | **Aristée** (VIE) | +0.2 PV regagnés par ennemi tué | 38 XP |
-| **Iasion** (PLA) | +1 dégât contre les ennemis d'eau | 20 XP |
-| **Eubouleus** (PLA) | +2 dégâts contre les ennemis d'eau | 38 XP |
-| **Carpo** (XP) | +15% d'XP gagnée | 20 XP |
-| **Anthée** (PV) | +2.5 PV max | 38 XP |
+| **Iasion** (FLEUR) | +25 de rayon du rayon de vie | 20 XP |
+| **Eubouleus** (LIANE) | +1 liane à chaque rayon de vie | 38 XP |
+| **Carpo** (FLEUR) | Le rayon de vie revient 15% plus souvent | 20 XP |
+| **Anthée** (LIANE) | Les lianes immobilisent 1 s de plus | 38 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Perséphone** (VIE) | +0.1 PV regagné par ennemi tué | 5 XP |
+| **Perséphone** (VIE) | Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s) | 5 XP |
 
 ## Petites compétences
 
@@ -50,7 +50,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Dryade** (VIE) | +0.05 PV regagné par ennemi tué | ×12 | 9 à 21 XP |
 | **Hamadryade** (XP) | +5% d'XP gagnée | ×12 | 13 à 21 XP |
-| **Mélie** (PLA) | +1 dégât contre les ennemis d'eau | ×12 | 17 à 17 XP |
+| **Mélie** (FLEUR) | +8 de rayon du rayon de vie | ×12 | 17 à 17 XP |
 
 ## ↔️ Lien « Opposé » vers Déméter
 

@@ -13,34 +13,34 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Phanès** (PHANÈS) | +0.5 PV régénérés par seconde | 150 XP |
+| **Phanès** (PHANÈS) | charme +1.5 s, et le rayon de charme revient 2 fois plus souvent | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Pandémos** (FOULE) | +5 PV max | 76 XP |
-| **Ourania** (CIEL) | +0.2 PV régénérés par seconde | 76 XP |
-| **Cythérée** (CYTHÈRE) | +10% de chance d'esquiver un coup | 62 XP |
+| **Pandémos** (FOULE) | Foule : +50 de rayon de charme | 76 XP |
+| **Ourania** (CIEL) | Les ennemis charmés blessent 2 fois plus leurs alliés | 76 XP |
+| **Cythérée** (CYTHÈRE) | Le rayon de charme revient 40% plus souvent | 62 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Peitho** (REG) | +0.05 PV régénérés par seconde | 32 XP |
+| **Peitho** (CHARME) | Charme : +0.5 s | 32 XP |
 | **Antéros** (ESQ) | +5% de chance d'esquiver un coup | 44 XP |
-| **Adonis** (PV) | +2 PV max | 32 XP |
-| **Psyché** (REG) | +0.1 PV régénérés par seconde | 44 XP |
+| **Adonis** (CHARME) | +20 de rayon de charme | 32 XP |
+| **Psyché** (CHARME) | Le rayon de charme revient 15% plus souvent | 44 XP |
 | **Hymen** (VIE) | +0.2 PV regagné par ennemi tué | 32 XP |
 | **Euphrosyne** (PV) | +3 PV max | 32 XP |
-| **Hermaphrodite** (ESQ) | +5% de chance d'esquiver un coup | 26 XP |
-| **Rhodos** (REG) | +0.05 PV régénérés par seconde | 32 XP |
+| **Hermaphrodite** (CHARME) | Charme : +0.5 s | 26 XP |
+| **Rhodos** (CHARME) | Le rayon de charme revient 15% plus souvent | 32 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Éros** (PV) | +2 PV max | 5 XP |
+| **Éros** (CHARME) | Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) | 5 XP |
 
 ## Petites compétences
 
@@ -49,7 +49,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
 | **Charis** (PV) | +1 PV max | ×9 | 9 à 37 XP |
-| **Himéros** (REG) | +0.02 PV régénérés par seconde | ×9 | 13 à 33 XP |
+| **Himéros** (CHARME) | +6 de rayon de charme | ×9 | 13 à 33 XP |
 | **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×8 | 9 à 37 XP |
 
 ## ↔️ Lien « Opposé » vers Aphrodite

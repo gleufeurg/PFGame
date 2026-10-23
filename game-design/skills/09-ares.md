@@ -13,15 +13,15 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Kères** (KÈRES) | +4 dégâts par balle | 150 XP |
+| **Kères** (KÈRES) | chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Kyknos** (CYGNE) | +2 dégâts par balle | 74 XP |
-| **Œnomaos** (CHAR) | +25% de vitesse d'attaque | 74 XP |
-| **Phlégyas** (SANG) | +0.5 PV regagné par ennemi tué | 64 XP |
+| **Kyknos** (CYGNE) | Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours | 74 XP |
+| **Œnomaos** (CHAR) | Cri de guerre 2 fois plus fort | 74 XP |
+| **Phlégyas** (SANG) | Le cri de guerre revient 30% plus souvent et dure 1 s de plus | 64 XP |
 
 ## 🔹 Notables
 
@@ -29,18 +29,18 @@
 |---|---|---|
 | **Éris** (DMG) | +1 dégât par balle | 68 XP |
 | **Kydoimos** (VIT) | +10% de vitesse d'attaque | 50 XP |
-| **Makhai** (FEU) | +2 dégâts contre les ennemis de feu | 68 XP |
+| **Makhai** (CRI) | Cri de guerre : +1 s | 68 XP |
 | **Polémos** (DMG) | +1 dégât par balle | 50 XP |
 | **Penthésilée** (VIE) | +0.2 PV regagné par ennemi tué | 44 XP |
-| **Otréra** (PV) | +2 PV max | 44 XP |
+| **Otréra** (CRI) | Le cri de guerre revient 15% plus souvent | 44 XP |
 | **Antiope** (VIT) | +10% de vitesse d'attaque | 14 XP |
-| **Androktasiai** (EAU) | +2 dégâts contre les ennemis d'eau | 14 XP |
+| **Androktasiai** (CRI) | Cri de guerre 50% plus fort | 14 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Ényo** (DMG) | +1 dégât par balle | 5 XP |
+| **Ényo** (CRI) | Cri de guerre : toutes les 12 s, toi et toutes les planètes faites +15% de dégâts, +4% de chance de critique et +20% de dégâts critiques pendant 4 s | 5 XP |
 
 ## Petites compétences
 
@@ -49,7 +49,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
 | **Phobos** (DMG) | +0.5 dégât par balle | ×5 | 25 à 53 XP |
-| **Deimos** (FEU) | +1 dégât contre les ennemis de feu | ×5 | 17 à 49 XP |
+| **Deimos** (CRI) | Cri de guerre : +0.3 s | ×5 | 17 à 49 XP |
 | **Alala** (VIE) | +0.05 PV regagné par ennemi tué | ×4 | 21 à 53 XP |
 
 ## ↔️ Lien « Opposé » vers Arès

@@ -64,10 +64,16 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Pourquoi :** ils se tapent au clavier, et le jeu n'ouvre pas de clavier sur téléphone. En plus, ils sont volontairement coupés dans l'application et sur le site en ligne (`CHEATS_ENABLED`, voir [codes-triche.md](codes-triche.md)).
 - **Que faire :** si on veut tester sur téléphone, ajouter un champ « code » caché dans les paramètres, affiché seulement quand `CHEATS_ENABLED` vaut `true`, et une façon de l'activer dans l'application de test (par exemple une constante à passer à `true` avant de lancer `npm run sync`).
 
+### Les pouvoirs des dieux ne sont pas encore équilibrés (les deux branches)
+
+- **Pourquoi :** les chiffres (dégâts, fréquence, rayons) ont été choisis à l'estime, et testés seulement en simulation. Arès gagne des dégâts pour toujours sans limite, et le cri de guerre presque permanent quand son arbre est rempli peut devenir trop fort ; la foudre de Zeus peut tout raser quand l'écran est plein.
+- **Que faire :** jouer chaque dieu, puis régler les chiffres dans `SKILL_TREES_DATA` (compétences) et dans la partie `POUVOIRS DES DIEUX` du code (`WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...). Ce sera à revoir avec la vitesse de progression et les améliorations infinies.
+
 ### Performances avec énormément d'ennemis (les deux branches)
 
 - **Ce qu'on sait :** avec 10 000 ennemis, une image prend environ 60 ms sur un ordinateur de test sans carte graphique (environ 16 images par seconde). Sur un vrai ordinateur, c'est bien plus rapide, mais **le jeu n'a pas encore été testé sur un vrai téléphone**.
 - **Que faire :** tester sur un téléphone d'entrée de gamme. Si ça rame : limiter le nombre d'ennemis vivants sur téléphone (en regroupant les ennemis en trop en un ennemi plus fort), baisser encore `MAX_ENEMY_SHADOWS` et `MAX_PARTICLES`.
+- **Avec les pouvoirs :** la foudre en chaîne de Zeus est la plus coûteuse. En simulation avec 400 ennemis serrés, un pas de jeu prend au pire 5 ms sur l'ordinateur de test. Si ça rame sur téléphone, baisser `MAX_BOLTS_PER_STEP` ou le nombre d'éclairs dessinés (200 au plus, dans `addLightningArc`).
 
 ## Dépôt GitHub et outils
 

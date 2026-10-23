@@ -235,6 +235,35 @@
             color: var(--ui-accent-text);
         }
 
+        #spawnAlert { /*alerte : un super ennemi arrive dans X secondes (sous le message temporaire)*/
+            position: fixed;
+            top: 118px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: calc(100% - 32px);
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: rgba(120, 10, 20, 0.85);
+            border: 2px solid #ff4d6d;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            pointer-events: none; /*on peut cliquer "à travers"*/
+            animation: alertPulse 0.8s ease-in-out infinite alternate;
+        }
+
+        #spawnAlert.movementAlert { /*nouvel ennemi : jaune, plus discret*/
+            background-color: rgba(60, 50, 0, 0.85);
+            border-color: #ffe14d;
+            font-size: 17px;
+        }
+
+        @keyframes alertPulse { /*l'alerte grossit un peu puis revient*/
+            from { transform: translateX(-50%) scale(1); }
+            to { transform: translateX(-50%) scale(1.06); }
+        }
+
         #toast { /*message temporaire au milieu en haut de l'écran, sous le chrono*/
             position: fixed;
             top: 72px;
@@ -271,6 +300,12 @@
 
             #timeControls {
                 left: calc(100% + 8px);
+            }
+
+            #spawnAlert { /*sous le message temporaire*/
+                top: calc(156px + env(safe-area-inset-top));
+                font-size: 16px;
+                padding: 8px 14px;
             }
 
             #toast { /*sous l'or et l'XP, pour ne pas les recouvrir*/
@@ -928,6 +963,31 @@
 
         #contactArea a {
             color: var(--ui-accent);
+        }
+
+        /*PALIERS (menu de mort) : un bouton par super ennemi vaincu, avec sa couleur*/
+        #checkpointButtons {
+            display: flex;
+            flex-wrap: wrap; /*passent à la ligne sur petit écran*/
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkpointButton {
+            min-height: 44px; /*assez grand pour le doigt*/
+            padding: 10px 14px;
+            border: 2px solid var(--boss-color);
+            border-radius: 10px;
+            background-color: transparent;
+            color: var(--ui-text);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .checkpointButton:hover {
+            background-color: rgba(255, 255, 255, 0.08);
         }
 
         #contactArea {
@@ -1779,6 +1839,8 @@
         </div>
     </div>
     <div id="toast" class="hiddenToast"></div>
+    <!-- ALERTE : un super ennemi (ou un nouvel ennemi) arrive dans quelques secondes -->
+    <div id="spawnAlert" class="hidden"></div>
     <!-- Bouton "Compétences" : visible seulement sur écran tactile (sur ordinateur, il y a la touche S) -->
     <button id="skillsButton" aria-label="Compétences">✦ Skills</button>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
@@ -1829,6 +1891,12 @@
             <p>Or disponible : <span id="shopGold">0</span></p>
             <div id="shopItems"></div>
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
+            <!-- PALIERS : recommencer juste après un super ennemi déjà vaincu (rempli par renderCheckpoints) -->
+            <section id="checkpointArea" class="hidden">
+                <h2>Paliers</h2>
+                <p class="smallText">Recommence juste après un super ennemi déjà vaincu. Le temps sauté ne rapporte ni or ni XP.</p>
+                <div id="checkpointButtons"></div>
+            </section>
             <section id="contactArea">
                 <h2>Contact</h2>
                 <div class="contactInfo">
@@ -2123,12 +2191,15 @@
             drawOrbit();
             drawShadows();           //toutes les ombres d'abord, pour qu'elles passent SOUS tous les objets
             drawHazards();           //ce qui est au sol (braises, graines...) passe sous les ennemis
+            drawSpawnWarning();      //la flèche au bord de l'écran : un ennemi spécial va arriver par là
             drawEnemies();
             drawBullets();
             drawEffects();
             drawLightning();
+            drawLightningArcs();     //les éclairs de Zeus entre les ennemis
             drawPlanetLinks();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
+            drawPowerAuras();        //cri de guerre d'Arès, bouclier des marées de Poséidon
             drawPlayer();
             drawDamageNumbers();     //tout en haut : les nombres passent devant tout le reste
 
@@ -2953,8 +3024,39 @@
             maxHealthOnHit: 0,
             comboProcChance: 0
         };
+        //LES POUVOIRS DES DIEUX : des stats de planète en plus, données par SON skill tree (0 = pas de pouvoir).
+        //Chaque dieu a sa façon de se battre (voir game-design/statistiques.md et la partie POUVOIRS DES DIEUX plus bas).
+        const PLANET_POWER_STATS = {
+            bulletSize: 1,        // taille des balles (1 = normale, 2 = 2 fois plus grosses) : Héphaïstos grandit, Éole rétrécit
+            damageMultiplier: 1,  // multiplie les dégâts de chaque balle (1 = normal, 2 = double)
+            pierce: 0,            // ennemis que la balle traverse avant de disparaître (999 = tous, jusqu'au bord de l'écran)
+            bounce: 0,            // rebonds : après un coup, la balle repart vers un autre ennemi proche (Artémis)
+            abilityHaste: 0,      // le pouvoir du dieu revient plus souvent (0.5 = 50% plus souvent)
+            charmRadius: 0,       // Aphrodite : rayon du charme, en pixels (0 = pas de charme)
+            charmDuration: 0,     // Aphrodite : secondes de charme
+            charmPower: 0,        // Aphrodite : dégâts en plus des ennemis charmés à leurs alliés (1 = 2 fois plus)
+            warCry: 0,            // Arès : puissance du cri de guerre (0 = pas de cri)
+            warCryDuration: 0,    // Arès : secondes en plus pour le cri de guerre
+            damagePerKill: 0,     // Arès : dégâts gagnés POUR TOUJOURS à chaque ennemi tué par lui
+            bloomHeal: 0,         // Déméter : PV rendus par le rayon de vie (0 = pas de rayon)
+            bloomRadius: 0,       // Déméter : rayon du rayon de vie, en pixels
+            vineCount: 0,         // Déméter : lianes qui poussent à chaque rayon
+            vineDuration: 0,      // Déméter : secondes d'immobilisation en plus
+            moonArrow: 0,         // Artémis : dégâts de la grande flèche (x les dégâts d'une balle, 0 = pas de flèche)
+            tideWave: 0,          // Poséidon : recul de la vague, en pixels (0 = pas de vague)
+            waveRadius: 0,        // Poséidon : portée de la vague autour de toi, en pixels
+            fragility: 0,         // Poséidon : dégâts en plus subis par les ennemis frêles (0.35 = +35%)
+            tideShield: 0,        // Poséidon : secondes d'invincibilité à chaque vague
+            chainArcs: 0,         // Zeus : éclairs envoyés à chaque balle qui touche (0 = pas d'éclair)
+            arcDamage: 0,         // Zeus : dégâts d'un éclair (x les dégâts de la balle)
+            arcRange: 0,          // Zeus : portée en plus des éclairs, en pixels
+            boltDamage: 0,        // Zeus : dégâts de la foudre sur un ennemi conducteur (x les dégâts de la balle, 0 = pas de foudre)
+            boltRadius: 0         // Zeus : zone de la foudre en plus (0.5 = 50% plus grande)
+        };
+        Object.assign(PLANET_BASE_STATS, PLANET_POWER_STATS); //assign = recopie ces stats dans PLANET_BASE_STATS
+
         //Les stats "de tir" : elles vont à celui qui tire. Toutes les autres (vie, défense, or, XP) vont au joueur.
-        const SHOOTER_STATS = ["damage", "attackSpeed", "range", "bulletSpeed", "bulletCount", "critChance", "critDamage", "damageVs", "lifeOnHit", "maxHealthOnHit", "comboProcChance"];
+        const SHOOTER_STATS = ["damage", "attackSpeed", "range", "bulletSpeed", "bulletCount", "critChance", "critDamage", "damageVs", "lifeOnHit", "maxHealthOnHit", "comboProcChance"].concat(Object.keys(PLANET_POWER_STATS));
         let playerStats = {};
         let runMaxHealthBonus = 0;   // PV max gagnés pendant la partie (Aphrodite) : remis à 0 à chaque nouvelle partie
 
@@ -2975,6 +3077,7 @@
 
             for (const planet of planets) {
                 planet.stats = createShooterStats(PLANET_BASE_STATS);
+                planet.stats.owner = planet; //pour savoir quelle planète a tiré une balle (pouvoirs, ennemis tués par Arès)
             }
             for (const tree of SKILL_TREES) {
                 const planet = planets.find(function (other) { return other.tree === tree; });
@@ -2982,11 +3085,13 @@
                     if (!node.unlocked) {
                         continue;
                     }
-                    const isShooterStat = SHOOTER_STATS.includes(node.effect.stat);
-                    if (isShooterStat && planet === undefined) {
-                        continue; //dieu pas en orbite : ses stats de tir ne servent à personne
+                    for (const effect of node.effects) { //une compétence peut avoir plusieurs effets
+                        const isShooterStat = SHOOTER_STATS.includes(effect.stat);
+                        if (isShooterStat && planet === undefined) {
+                            continue; //dieu pas en orbite : ses stats de tir ne servent à personne
+                        }
+                        applyEffect(isShooterStat ? planet.stats : playerStats, effect, 1);
                     }
-                    applyEffect(isShooterStat ? planet.stats : playerStats, node.effect, 1);
                 }
             }
 
@@ -3008,7 +3113,14 @@
                 }
             }
             playerStats.maxHealth += runMaxHealthBonus;
+            //Arès : les dégâts gagnés pour toujours avec chaque ennemi tué
+            for (const planet of planets) {
+                planet.stats.damage += (killStacks[planet.id] || 0) * planet.stats.damagePerKill;
+            }
         }
+
+        //ENNEMIS TUÉS PAR CHAQUE DIEU, toutes parties confondues (sauvegardés) : Arès y gagne des dégâts pour toujours
+        const killStacks = {};   // id du dieu -> ennemis tués par lui (seulement quand il a "damagePerKill")
 
         function applyEffect(stats, effect, times) {
             if (effect.stat === "damageVs") {
@@ -3139,7 +3251,12 @@
             if (isCheatInvincible) {
                 return;
             }
-            //1. Esquive : Math.random() < 0.1 arrive 1 fois sur 10
+            //1. Bouclier des marées (vague de Poséidon) : invincible pendant quelques secondes
+            if (tideShieldTimer > 0) {
+                spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, PLAYER_RADIUS * 3);
+                return;
+            }
+            //1 bis. Esquive : Math.random() < 0.1 arrive 1 fois sur 10
             if (Math.random() < playerStats.dodgeChance) {
                 playSound("dodge");
                 return;
@@ -3656,15 +3773,15 @@
             return null;
         }
         //Fréquence d'apparition : elle augmente petit à petit pendant la partie
-        const ENEMY_SPAWN_INTERVAL_START = 1.6;  // au début : un ennemi toutes les X secondes
-        const ENEMY_SPAWN_INTERVAL_MIN = 0.25;   // jamais plus rapide que ça
-        const ENEMY_SPAWN_RAMP = 0.02;           // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
+        const ENEMY_SPAWN_INTERVAL_START = 2.4;  // au début : un ennemi toutes les X secondes
+        const ENEMY_SPAWN_INTERVAL_MIN = 0.35;   // jamais plus rapide que ça
+        const ENEMY_SPAWN_RAMP = 0.012;          // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
         const ENEMY_FIRST_SPAWN_DELAY = 0.3;     // le 1er ennemi arrive après X secondes (au lieu d'attendre un intervalle entier)
         //Le minuteur démarre presque "plein" : le 1er ennemi apparaît dès ENEMY_FIRST_SPAWN_DELAY
         let enemySpawnTimer = ENEMY_SPAWN_INTERVAL_START - ENEMY_FIRST_SPAWN_DELAY;
         let runTime = 0;                         // secondes écoulées depuis le début de la partie
 
-        //Ex: à 0s -> 1.6s entre 2 ennemis, à 60s -> 0.73s, à 120s -> 0.47s, à 5min -> 0.25s
+        //Ex: à 0s -> 2.4s entre 2 ennemis, à 1min -> 1.4s, à 2min -> 1s, à 5min -> 0.52s, à 8min et plus -> 0.35s
         function getEnemySpawnInterval() {
             return Math.max(ENEMY_SPAWN_INTERVAL_MIN, ENEMY_SPAWN_INTERVAL_START / (1 + runTime * ENEMY_SPAWN_RAMP));
         }
@@ -3694,7 +3811,15 @@
             if (isGameOver || isPaused || !getUnlockedSkipOptions().includes(seconds)) {
                 return;
             }
-            let remaining = seconds;
+            //Pas de saut pendant l'arrivée d'un super ennemi ou d'un nouvel ennemi, et on s'arrête juste avant la prochaine
+            const allowed = getTimeUntilNextSpawnEvent();
+            if (spawnEvent !== null || soloTimer > 0 || allowed <= 0) {
+                showToast(t("Impossible de sauter le temps : un ennemi spécial arrive !"));
+                playSound("denied");
+                return;
+            }
+            let remaining = Math.min(seconds, allowed);
+            const skipped = remaining;
             let spawnedCount = 0;
 
             //On avance d'ennemi en ennemi : le temps jusqu'au prochain, puis on le fait apparaître, etc.
@@ -3713,12 +3838,14 @@
                     enemySpawnTimer = 0;
                     spawnNextEnemy();
                     spawnedCount++;
+                    if (spawnEvent !== null) {
+                        break; //un super ennemi déjà vaincu revient : son alerte arrête le saut
+                    }
                 }
             }
 
             playSound("skip");
-            showToast(t("⏩ +{seconds} s : {count} ennemis arrivent !", { seconds: seconds, count: spawnedCount }));
-            checkBossSchedule(); //un super ennemi dont l'heure est passée pendant le saut arrive aussitôt (son annonce remplace le message)
+            showToast(t("⏩ +{seconds} s : {count} ennemis arrivent !", { seconds: formatNumber(Math.round(skipped - Math.max(0, remaining))), count: spawnedCount }));
         }
 
         //Un bouton orange par option de TIME_SKIP_OPTIONS (verrouillé tant qu'il n'est pas acheté dans le shop)
@@ -3882,15 +4009,8 @@
             return MOVEMENT_UNLOCKS.filter(function (unlock) { return runTime >= unlock.time; }).map(function (unlock) { return unlock.movement; });
         }
 
-        //Appelé à chaque image : quand l'heure d'un mouvement arrive, son 1er ennemi apparaît (le "tuto")
+        //Appelé à chaque image. Le 1er ennemi de chaque mouvement arrive SEUL, après une petite alerte (voir checkSpawnEvents).
         function checkMovementUnlocks() {
-            for (const unlock of MOVEMENT_UNLOCKS) {
-                if (runTime >= unlock.time && !movementsIntroducedThisRun.has(unlock.movement)) {
-                    movementsIntroducedThisRun.add(unlock.movement);
-                    spawnEnemy(unlock.movement);
-                    showToast(t("🌀 Nouveau mouvement : {name}", { name: unlock.name }));
-                }
-            }
             if (runTime >= MOVEMENT_VARIATION_TIME && !movementsIntroducedThisRun.has("variation")) {
                 movementsIntroducedThisRun.add("variation");
                 showToast(t("🌀 Les mouvements deviennent imprévisibles !"));
@@ -4082,13 +4202,14 @@
         }
 
         //forcedMovement (optionnel) : impose le mouvement (pour le 1er ennemi d'un mouvement qui vient d'être débloqué)
-        function spawnEnemy(forcedMovement) {
+        //forcedAngle (optionnel) : la direction d'où il arrive (annoncée à l'avance par l'alerte)
+        function spawnEnemy(forcedMovement, forcedAngle) {
             const type = pickRandom(Object.keys(ENEMY_TYPES));
             const stats = ENEMY_TYPES[type];
             const healthScale = getEnemyHealthScale();
             const health = randomBetween(stats.minHealth, stats.maxHealth) * healthScale;
             const size = getEnemyTargetSize(health / healthScale); //la taille dépend de la vie "de départ", pas du temps
-            const angle = Math.random() * Math.PI * 2;
+            const angle = forcedAngle !== undefined ? forcedAngle : Math.random() * Math.PI * 2;
             const startDistance = getSpawnDistance(angle, size + ENEMY_WAVE_AMPLITUDE * 2);
             const unlockedMovements = getUnlockedMovements();
             let movement = "straight";
@@ -4165,8 +4286,8 @@
             }
         }
 
-        function spawnBoss(boss) {
-            const angle = Math.random() * Math.PI * 2;
+        function spawnBoss(boss, forcedAngle) {
+            const angle = forcedAngle !== undefined ? forcedAngle : Math.random() * Math.PI * 2;
             const startDistance = getSpawnDistance(angle, boss.size + ENEMY_WAVE_AMPLITUDE);
             enemies.push({
                 alive: true,
@@ -4193,24 +4314,153 @@
             });
         }
 
-        //Fait apparaître les super ennemis jamais vaincus quand leur heure est arrivée
-        function checkBossSchedule() {
+        //ARRIVÉES SPÉCIALES : un super ennemi, ou le 1er ennemi d'un nouveau mouvement, arrive SEUL pour qu'on le voie bien.
+        //1. Une ALERTE s'affiche quelques secondes avant (et une flèche montre d'où il va venir) : plus aucun ennemi n'apparaît,
+        //   le joueur a le temps de nettoyer l'écran.
+        //2. Il arrive, et les autres ennemis attendent encore un peu (soloTimer), ou jusqu'à sa mort.
+        const BOSS_WARNING_TIME = 8;          // secondes d'alerte avant un super ennemi jamais vaincu
+        const BOSS_REPEAT_WARNING_TIME = 5;   // ...avant un super ennemi déjà vaincu qui revient
+        const BOSS_SOLO_TIME = 10;            // secondes pendant lesquelles le super ennemi est seul (s'il n'est pas tué avant)
+        const MOVEMENT_WARNING_TIME = 3;      // secondes d'alerte avant le 1er ennemi d'un nouveau mouvement
+        const MOVEMENT_SOLO_TIME = 5;
+        let spawnEvent = null;                // l'arrivée annoncée : { boss ou unlock, timer (secondes avant l'arrivée), angle }
+        let soloTimer = 0;                    // > 0 : l'ennemi spécial vient d'arriver, les autres attendent
+        let soloEnemy = null;
+        const spawnAlert = document.getElementById("spawnAlert");
+
+        function canSpawnNormalEnemies() {
+            return spawnEvent === null && soloTimer <= 0;
+        }
+
+        //Secondes avant la prochaine alerte prévue (super ennemi jamais vaincu ou nouveau mouvement) : le saut dans le temps s'arrête avant
+        function getTimeUntilNextSpawnEvent() {
+            let next = Infinity;
             for (const boss of BOSSES) {
-                if (!defeatedBossIds.has(boss.id) && !bossesSpawnedThisRun.has(boss.id) && runTime >= boss.time) {
+                if (!defeatedBossIds.has(boss.id) && !bossesSpawnedThisRun.has(boss.id)) {
+                    next = Math.min(next, boss.time - BOSS_WARNING_TIME - runTime);
+                }
+            }
+            for (const unlock of MOVEMENT_UNLOCKS) {
+                if (!movementsIntroducedThisRun.has(unlock.movement)) {
+                    next = Math.min(next, unlock.time - MOVEMENT_WARNING_TIME - runTime);
+                }
+            }
+            return next;
+        }
+
+        //Lance l'alerte d'une arrivée spéciale (si aucune n'est déjà en cours)
+        function startSpawnEvent(event) {
+            event.angle = Math.random() * Math.PI * 2;
+            spawnEvent = event;
+            updateSpawnAlert();
+            spawnAlert.classList.remove("hidden");
+            spawnAlert.classList.toggle("movementAlert", event.boss === undefined);
+            playSound(event.boss !== undefined ? "bossArrive" : "click");
+        }
+
+        //Les arrivées prévues : super ennemis jamais vaincus (à leur heure) et 1er ennemi de chaque mouvement
+        //Une seule à la fois : si deux arrivent en même temps (ex : Cerbère et la spirale à 1:00), la 2e attend que la 1re soit finie.
+        function checkSpawnEvents() {
+            if (spawnEvent !== null || soloTimer > 0) {
+                return;
+            }
+            for (const boss of BOSSES) {
+                if (!defeatedBossIds.has(boss.id) && !bossesSpawnedThisRun.has(boss.id) && runTime >= boss.time - BOSS_WARNING_TIME) {
                     bossesSpawnedThisRun.add(boss.id);
-                    spawnBoss(boss);
-                    showToast(t("⚠️ {name} arrive !", { name: boss.name }));
-                    playSound("bossArrive");
+                    startSpawnEvent({ boss: boss, timer: BOSS_WARNING_TIME }); //toujours toute l'alerte, même s'il a dû attendre son tour
+                    return;
+                }
+            }
+            for (const unlock of MOVEMENT_UNLOCKS) {
+                if (!movementsIntroducedThisRun.has(unlock.movement) && runTime >= unlock.time - MOVEMENT_WARNING_TIME) {
+                    movementsIntroducedThisRun.add(unlock.movement);
+                    startSpawnEvent({ unlock: unlock, timer: MOVEMENT_WARNING_TIME });
+                    return;
                 }
             }
         }
 
-        //Le prochain ennemi : en général un normal, parfois un super ennemi déjà vaincu
+        //Le compte à rebours de l'alerte, puis l'arrivée
+        function updateSpawnEvent(deltaTime) {
+            if (soloTimer > 0) {
+                soloTimer -= deltaTime;
+                if (soloEnemy !== null && !soloEnemy.alive) {
+                    soloTimer = 0; //déjà tué : les autres ennemis reviennent tout de suite
+                }
+            }
+            if (spawnEvent === null) {
+                return;
+            }
+            spawnEvent.timer -= deltaTime;
+            if (spawnEvent.timer > 0) {
+                updateSpawnAlert();
+                return;
+            }
+            const event = spawnEvent;
+            spawnEvent = null;
+            hideSpawnAlert();
+            if (event.boss !== undefined) {
+                spawnBoss(event.boss, event.angle);
+                soloTimer = BOSS_SOLO_TIME;
+                showToast(t("⚠️ {name} arrive !", { name: event.boss.name }));
+            } else {
+                spawnEnemy(event.unlock.movement, event.angle);
+                soloTimer = MOVEMENT_SOLO_TIME;
+                showToast(t("🌀 Nouveau mouvement : {name}", { name: event.unlock.name }));
+            }
+            soloEnemy = enemies[enemies.length - 1]; //celui qu'on vient d'ajouter
+            enemySpawnTimer = 0;
+        }
+
+        function updateSpawnAlert() {
+            const seconds = Math.ceil(spawnEvent.timer);
+            spawnAlert.textContent = spawnEvent.boss !== undefined
+                ? t("⚠️ {name} arrive dans {seconds} s", { name: spawnEvent.boss.name, seconds: seconds })
+                : t("🌀 Nouvel ennemi : {name} dans {seconds} s", { name: spawnEvent.unlock.name, seconds: seconds });
+        }
+
+        function hideSpawnAlert() {
+            spawnAlert.classList.add("hidden");
+        }
+
+        function resetSpawnEvents() {
+            spawnEvent = null;
+            soloTimer = 0;
+            soloEnemy = null;
+            hideSpawnAlert();
+        }
+
+        //Pendant l'alerte : une flèche qui palpite au bord de l'écran, du côté d'où l'ennemi va arriver
+        function drawSpawnWarning() {
+            if (spawnEvent === null) {
+                return;
+            }
+            const color = spawnEvent.boss !== undefined ? spawnEvent.boss.color : SPECIAL_OUTLINE_COLOR;
+            const dirX = Math.cos(spawnEvent.angle);
+            const dirY = Math.sin(spawnEvent.angle);
+            const toSide = (screenSize.width / 2 / cameraZoom) / Math.max(Math.abs(dirX), 0.0001);
+            const toTopOrBottom = (screenSize.height / 2 / cameraZoom) / Math.max(Math.abs(dirY), 0.0001);
+            const distance = Math.min(toSide, toTopOrBottom) - 48 / cameraZoom; //un peu à l'intérieur de l'écran
+            const x = center.x + dirX * distance;
+            const y = center.y + dirY * distance;
+            const size = (16 + 4 * Math.sin(visualTime * 8)) / cameraZoom;
+            const points = [0, 2.4, -2.4].map(function (offset) { //un triangle qui pointe vers le bord
+                const angle = spawnEvent.angle + offset;
+                const radius = offset === 0 ? size * 1.3 : size;
+                return { x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * radius };
+            });
+            ctx.globalAlpha = 0.6 + 0.4 * Math.sin(visualTime * 8);
+            drawGlow(color, x, y, size * 3, 0.9);
+            fillShape(ctx, points, 0, 0, color);
+            ctx.globalAlpha = 1;
+        }
+
+        //Le prochain ennemi : en général un normal, parfois un super ennemi déjà vaincu (qui arrive seul, après une alerte)
         function spawnNextEnemy() {
             const chance = BOSS_RANDOM_CHANCE_START + runTime * BOSS_RANDOM_CHANCE_PER_SECOND;
-            if (defeatedBossIds.size > 0 && Math.random() < chance) {
+            if (defeatedBossIds.size > 0 && spawnEvent === null && Math.random() < chance) {
                 const defeatedBosses = BOSSES.filter(function (boss) { return defeatedBossIds.has(boss.id); });
-                spawnBoss(pickRandom(defeatedBosses));
+                startSpawnEvent({ boss: pickRandom(defeatedBosses), timer: BOSS_REPEAT_WARNING_TIME });
             } else {
                 spawnEnemy();
             }
@@ -4236,14 +4486,17 @@
         loadDefeatedBosses();
 
         function updateEnemies(deltaTime) {
-            //SPAWN
+            //SPAWN (pas pendant l'arrivée d'un ennemi spécial : il arrive seul)
             runTime += deltaTime;
-            enemySpawnTimer += deltaTime;
-            if (enemySpawnTimer >= getEnemySpawnInterval()) {
-                spawnNextEnemy();
-                enemySpawnTimer = 0;
+            updateSpawnEvent(deltaTime);
+            if (canSpawnNormalEnemies()) {
+                enemySpawnTimer += deltaTime;
+                if (enemySpawnTimer >= getEnemySpawnInterval()) {
+                    spawnNextEnemy();
+                    enemySpawnTimer = 0;
+                }
             }
-            checkBossSchedule();
+            checkSpawnEvents();
             checkMovementUnlocks();
 
             //MOVE
@@ -4299,7 +4552,8 @@
 
         //A-t-il un anneau de statut (charmé, affaibli, empoisonné, gelé, ralenti) à dessiner autour de lui ?
         function hasStatusRing(enemy) {
-            return enemy.charmTimer > 0 || enemy.weakTimer > 0 || enemy.poisonTimer > 0 || enemy.freezeTimer > 0 || enemy.slowTimer > 0;
+            return enemy.charmTimer > 0 || enemy.weakTimer > 0 || enemy.poisonTimer > 0 || enemy.freezeTimer > 0 || enemy.slowTimer > 0
+                || enemy.rootTimer > 0 || enemy.fragileTimer > 0 || enemy.conductTimer > 0;
         }
 
         //Nom + barre de vie au-dessus d'un super ennemi
@@ -4456,6 +4710,35 @@
                     ctx.stroke();
                 }
 
+                //Pouvoirs des dieux : liane (vert épais), frêle (bleu en pointillés), conducteur (petits éclairs bleus)
+                if (enemy.rootTimer > 0) {
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size + 4, 0, Math.PI * 2);
+                    ctx.strokeStyle = ATTRIBUTES.plant.color;
+                    ctx.lineWidth = 3.5;
+                    ctx.stroke();
+                }
+                if (enemy.fragileTimer > 0) {
+                    ctx.setLineDash([2, 5]);
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size + 8, 0, Math.PI * 2);
+                    ctx.strokeStyle = ATTRIBUTES.water.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+                if (enemy.conductTimer > 0) {
+                    ctx.beginPath();
+                    for (let k = 0; k < 4; k++) { //4 petites étincelles qui tournent autour de lui
+                        const angle = visualTime * 5 + k * Math.PI / 2;
+                        ctx.moveTo(enemy.x + Math.cos(angle) * (enemy.size + 3), enemy.y + Math.sin(angle) * (enemy.size + 3));
+                        ctx.lineTo(enemy.x + Math.cos(angle + 0.3) * (enemy.size + 9), enemy.y + Math.sin(angle + 0.3) * (enemy.size + 9));
+                    }
+                    ctx.strokeStyle = ATTRIBUTES.thunder.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
                 //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
                 if (SHOW_SPECIAL_RING && enemy.movement !== "straight") {
                     ctx.beginPath();
@@ -4477,6 +4760,9 @@
         const BULLET_SIZE = 4;
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
+
+        const BOUNCE_RANGE = 180;            // distance max d'un rebond (Artémis), en pixels
+        const MIN_SHOOTER_SPEED = 0.15;      // une planète tire toujours au moins à 15% de la cadence normale (Héphaïstos est lent)
 
         //BALLES PAR TIR : les balles en plus partent côte à côte, comme un "mur" (pas vers d'autres ennemis)
         const BULLET_WALL_SPACING = 10;      // écart entre deux balles du mur, en pixels
@@ -4502,13 +4788,24 @@
                 const sideY = dirX * offset;
                 //Les balles du milieu suivent la cible ; celles des bords filent tout droit, parallèles
                 const followsTarget = Math.abs(offset) <= BULLET_WALL_SPACING / 2;
-                const bullet = shootAt(followsTarget ? target : null, x + sideX, y + sideY, stats.damage, color, effects, ringColor, stats);
+                const bullet = shootAt(followsTarget ? target : null, x + sideX, y + sideY, getShotDamage(stats), color, effects, ringColor, stats);
                 bullet.dirX = dirX;
                 bullet.dirY = dirY;
                 bullet.wallX = sideX;  //elle vise la cible + son écart, pour garder la forme du mur
                 bullet.wallY = sideY;
                 bullet.proc = proc;
             }
+        }
+
+        //Les dégâts d'une balle : dégâts x multiplicateur (Héphaïstos le monte, Éole le baisse ; le joueur n'en a pas)
+        function getShotDamage(stats) {
+            return stats.damage * Math.max(0.1, stats.damageMultiplier || 1);
+        }
+
+        //Taille d'une balle (rayon en pixels) selon les stats du tireur
+        const MIN_BULLET_SIZE_FACTOR = 0.4;   // une balle ne rétrécit jamais sous 40% de sa taille
+        function getBulletSize(stats) {
+            return BULLET_SIZE * Math.max(MIN_BULLET_SIZE_FACTOR, stats.bulletSize || 1);
         }
 
         //Tire une balle de (x, y) vers "target". Par défaut : depuis le joueur, avec ses dégâts et sa couleur.
@@ -4529,7 +4826,9 @@
                 originY: y,
                 isReturning: false,
                 ringColor: ringColor,          // contour de la couleur de l'attribut emprunté (ou null)
-                pierceLeft: Math.round(COMBO_PIERCE_COUNT * getEffectPower(effects, "pierce")), // ennemis qu'elle peut encore traverser
+                pierceLeft: Math.round(COMBO_PIERCE_COUNT * getEffectPower(effects, "pierce")) + Math.round(stats.pierce || 0), // ennemis qu'elle peut encore traverser
+                bounceLeft: Math.round(stats.bounce || 0), // rebonds qui lui restent (Artémis)
+                size: getBulletSize(stats),    // son rayon, en pixels
                 alreadyHit: [],                // les ennemis déjà touchés (pour ne pas toucher 2 fois le même en traversant)
                 stats: stats,                  // les stats de celui qui a tiré
                 wallX: 0,                      // écart dans le "mur" de balles
@@ -4550,14 +4849,19 @@
 
         function hitEnemy(enemy, bullet) {
             const stats = bullet.stats; //les stats de celui qui a tiré (joueur ou planète)
+            const previousSource = damageSource;
+            damageSource = stats.owner || null; //les ennemis tués pendant ce coup comptent pour cette planète (Arès)
             let damage = bullet.damage + stats.damageVs[enemy.type];
+            //CRI DE GUERRE D'ARÈS : pendant qu'il dure, tous les tirs font plus de dégâts et de critiques
+            const warCry = warCryTimer > 0 ? warCryLevel : 0;
+            damage *= 1 + WAR_CRY_DAMAGE * warCry;
             //COUP CRITIQUE : chance = stat du joueur (shop, Héphaïstos) + combo d'orbite "crit".
             //Dégâts = x critDamage (2 = 200% au départ). Le combo "crit" ajoute aussi +100% de dégâts critiques.
             const comboCrit = getBulletEffect(bullet, "crit");
-            const critChance = stats.critChance + COMBO_CRIT_CHANCE * comboCrit;
+            const critChance = stats.critChance + COMBO_CRIT_CHANCE * comboCrit + WAR_CRY_CRIT_CHANCE * warCry;
             const isCrit = Math.random() < critChance;
             if (isCrit) {
-                damage *= stats.critDamage + (comboCrit > 0 ? COMBO_CRIT_BONUS_DAMAGE : 0);
+                damage *= stats.critDamage + (comboCrit > 0 ? COMBO_CRIT_BONUS_DAMAGE : 0) + WAR_CRY_CRIT_DAMAGE * warCry;
                 spawnShockwave(enemy.x, enemy.y, CRIT_OUTLINE_COLOR, enemy.size + 14);
             }
             spawnParticles(enemy.x, enemy.y, bullet.color, 3, 120);
@@ -4574,12 +4878,29 @@
                 spawnFloatingLabel(enemy.x, enemy.y - enemy.size - 16, "✨ " + EFFECT_NAMES[bullet.proc.type], ATTRIBUTES.aegis.color);
             }
             applyComboEffects(enemy, bullet); //avant les dégâts : l'explosion, le rebond... partent même si la cible meurt
+            //Zeus : la balle envoie des éclairs vers les ennemis autour (avant les dégâts, même raison)
+            if (stats.chainArcs > 0) {
+                zapAround(enemy, stats, damage);
+            }
             damageEnemy(enemy, damage, "enemyHit", { color: getDamageColor(bullet.color), crit: isCrit });
             //Exécution : un ennemi normal presque mort est achevé d'un coup
             if (getBulletEffect(bullet, "execute") > 0 && !enemy.isBoss && enemy.alive && enemy.health <= enemy.maxHealth * COMBO_EXECUTE_THRESHOLD) {
                 spawnShockwave(enemy.x, enemy.y, "#ffffff", enemy.size + 10);
                 damageEnemy(enemy, enemy.health + 1, null);
             }
+            damageSource = previousSource;
+        }
+
+        //La planète qui est en train de frapper (pendant hitEnemy), ou null : sert à compter les ennemis tués par Arès
+        let damageSource = null;
+
+        //Un ennemi vient d'être tué par une planète : Arès gagne des dégâts pour toujours
+        function onPlanetKill(planet) {
+            if (planet.stats.damagePerKill <= 0) {
+                return;
+            }
+            killStacks[planet.id] = (killStacks[planet.id] || 0) + 1;
+            planet.stats.damage += planet.stats.damagePerKill; //pas besoin de tout recalculer
         }
 
         //Enlève des PV à un ennemi, et s'occupe de sa mort (récompenses, éclats, son). sound = son si il survit (ou null)
@@ -4590,6 +4911,9 @@
             }
             if (enemy.weakTimer > 0) {
                 amount *= COMBO_WEAKEN_MULTIPLIER; //affaibli : subit plus de dégâts
+            }
+            if (enemy.fragileTimer > 0) {
+                amount *= 1 + enemy.fragileAmount; //frêle (vague de Poséidon) : subit encore plus de dégâts
             }
             enemy.health -= amount;
             enemy.hitTimer = ENEMY_HIT_FLASH_DURATION;
@@ -4613,6 +4937,9 @@
                     onBossDefeated(enemy);
                 }
                 killsThisRun++;
+                if (damageSource !== null) {
+                    onPlanetKill(damageSource);
+                }
                 gainRewards(enemy.gold, enemy.xp);
                 healPlayer(playerStats.lifeOnKill);
                 playSound("enemyKill");
@@ -4624,7 +4951,7 @@
         //Le premier ennemi touché par cette balle (grâce à la grille : seulement les ennemis tout près), ou null
         function findBulletHit(bullet) {
             let found = null;
-            forEachEnemyNear(bullet.x, bullet.y, BULLET_SIZE, function (enemy) {
+            forEachEnemyNear(bullet.x, bullet.y, bullet.size, function (enemy) {
                 if (bullet.alreadyHit.includes(enemy)) {
                     return false; //déjà touché par elle : on continue à chercher
                 }
@@ -4652,7 +4979,7 @@
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
-                const bulletSpeed = BASE_BULLET_SPEED * bullet.stats.bulletSpeed; //chaque tireur a sa vitesse de balles
+                const bulletSpeed = BASE_BULLET_SPEED * Math.max(0.2, bullet.stats.bulletSpeed) * (bullet.speedFactor || 1); //chaque tireur a sa vitesse de balles
 
                 //La balle suit sa cible tant qu'elle est vivante (en gardant son écart dans le mur), sinon elle continue tout droit
                 if (bullet.target !== null && bullet.target.alive) {
@@ -4673,11 +5000,18 @@
                 if (enemy !== null) {
                     hitEnemy(enemy, bullet);
                     bullet.alreadyHit.push(enemy);
+                    const nextTarget = bullet.bounceLeft > 0 ? findNearestEnemy(enemy.x, enemy.y, BOUNCE_RANGE, bullet.alreadyHit) : null;
                     if (getBulletEffect(bullet, "boomerang") > 0 && !bullet.isReturning) {
                         //Boomerang : demi-tour vers sa planète, il peut retoucher tout le monde sur le chemin du retour
                         bullet.isReturning = true;
                         bullet.target = null;
                         bullet.alreadyHit = [enemy];
+                    } else if (nextTarget !== null) {
+                        //Rebond (Artémis) : la balle repart vers l'ennemi le plus proche qu'elle n'a pas encore touché
+                        bullet.bounceLeft--;
+                        bullet.target = nextTarget;
+                        bullet.wallX = 0;
+                        bullet.wallY = 0;
                     } else if (bullet.pierceLeft > 0) {
                         bullet.pierceLeft--; //elle traverse : elle continue tout droit au lieu de disparaître
                         bullet.target = null;
@@ -4713,7 +5047,7 @@
         function updatePlanetShooting(deltaTime) {
             for (const planet of planets) {
                 planet.fireTimer += deltaTime;
-                if (planet.fireTimer < PLANET_FIRE_INTERVAL / planet.stats.attackSpeed) {
+                if (planet.fireTimer < PLANET_FIRE_INTERVAL / Math.max(MIN_SHOOTER_SPEED, planet.stats.attackSpeed)) {
                     continue;
                 }
                 const closestEnemy = findNearestEnemy(planet.x, planet.y, planet.stats.range, []);
@@ -5404,6 +5738,7 @@
             }
             if (power("charm") > 0 && !enemy.isBoss) {
                 enemy.charmTimer = COMBO_CHARM_DURATION * power("charm");
+                enemy.charmDps = COMBO_CHARM_DPS;
             }
             if (power("shieldCharge") > 0 && playerStats.shield > 0) {
                 shieldTimer += COMBO_SHIELD_CHARGE * power("shieldCharge");
@@ -5436,6 +5771,11 @@
                         enemy.slowTimer = Math.max(enemy.slowTimer || 0, 0.3);
                     } else if (hazard.type === "mine") {
                         isUsed = true; //quelqu'un a marché sur la graine : elle explose
+                    } else if (hazard.type === "vine" && !enemy.isBoss && !isUsed) {
+                        enemy.rootTimer = Math.max(enemy.rootTimer || 0, hazard.duration); //la liane l'attrape (une seule fois)
+                        spawnParticles(enemy.x, enemy.y, hazard.color, 6, 90);
+                        hazard.caught = true;
+                        isUsed = true;
                     } else if (hazard.type === "blackhole") {
                         //Aspire vers le centre du trou noir : on rapproche la distance et l'angle de l'ennemi de ceux du trou
                         const holeDistance = Math.hypot(hazard.x - center.x, hazard.y - center.y);
@@ -5446,7 +5786,7 @@
                         damageEnemy(enemy, hazard.dps * deltaTime, null, { color: getDamageColor(hazard.color), dot: true });
                     }
                 }
-                if (isUsed) {
+                if (isUsed && hazard.type === "mine") {
                     spawnShockwave(hazard.x, hazard.y, hazard.color, COMBO_EXPLOSION_RADIUS);
                     spawnParticles(hazard.x, hazard.y, hazard.color, 12, 240);
                     for (const enemy of getEnemiesNear(hazard.x, hazard.y, COMBO_EXPLOSION_RADIUS)) {
@@ -5503,7 +5843,19 @@
         function drawHazards() {
             for (const hazard of hazards) {
                 const fadeOut = Math.min(1, hazard.timer / 0.5); //s'efface pendant la dernière demi-seconde
-                if (hazard.type === "mine") {
+                if (hazard.type === "vine") {
+                    //Une petite pousse : 3 tiges vertes qui ondulent
+                    ctx.globalAlpha = fadeOut;
+                    ctx.strokeStyle = hazard.color;
+                    ctx.lineWidth = 2.5;
+                    ctx.lineCap = "round";
+                    for (let k = -1; k <= 1; k++) {
+                        ctx.beginPath();
+                        ctx.moveTo(hazard.x + k * 5, hazard.y + 6);
+                        ctx.quadraticCurveTo(hazard.x + k * 9 + Math.sin(visualTime * 4 + k) * 3, hazard.y - 4, hazard.x + k * 6, hazard.y - 12);
+                        ctx.stroke();
+                    }
+                } else if (hazard.type === "mine") {
                     //Une petite graine qui palpite
                     const pulse = 1 + 0.15 * Math.sin(hazard.timer * 10);
                     ctx.globalAlpha = fadeOut;
@@ -5568,6 +5920,15 @@
             if (enemy.weakTimer > 0) {
                 enemy.weakTimer -= deltaTime;
             }
+            if (enemy.fragileTimer > 0) {
+                enemy.fragileTimer -= deltaTime;
+            }
+            if (enemy.conductTimer > 0) {
+                enemy.conductTimer -= deltaTime;
+            }
+            if (enemy.boltCooldown > 0) {
+                enemy.boltCooldown -= deltaTime;
+            }
             if (enemy.poisonTimer > 0) {
                 enemy.poisonTimer -= deltaTime;
                 if (Math.random() < deltaTime * 6) {
@@ -5586,6 +5947,10 @@
                 enemy.freezeTimer -= deltaTime;
                 speedFactor = 0;
             }
+            if (enemy.rootTimer > 0) { //attrapé par une liane de Déméter
+                enemy.rootTimer -= deltaTime;
+                speedFactor = 0;
+            }
             if (enemy.bleedTimer > 0) {
                 enemy.bleedTimer -= deltaTime;
                 if (Math.random() < deltaTime * 6) {
@@ -5599,12 +5964,12 @@
                     enemy.bleedDps = 0; //le saignement est fini : il repart de zéro au prochain coup
                 }
             }
-            if (enemy.charmTimer > 0 && !(enemy.freezeTimer > 0)) {
+            if (enemy.charmTimer > 0 && !(enemy.freezeTimer > 0) && !(enemy.rootTimer > 0)) {
                 //Charmé : il repart en arrière et blesse les ennemis qu'il touche
                 enemy.charmTimer -= deltaTime;
                 for (const other of getEnemiesNear(enemy.x, enemy.y, enemy.size)) {
                     if (other !== enemy && !(other.charmTimer > 0)) {
-                        damageEnemy(other, COMBO_CHARM_DPS * deltaTime, null, { color: DAMAGE_COLORS.love, dot: true });
+                        damageEnemy(other, (enemy.charmDps || COMBO_CHARM_DPS) * deltaTime, null, { color: DAMAGE_COLORS.love, dot: true });
                     }
                 }
                 speedFactor = -0.8;
@@ -5623,6 +5988,285 @@
             return speedFactor;
         }
 
+        /////////////////////
+        ////POUVOIRS DES DIEUX//  Ce que chaque dieu sait faire quand on remplit son skill tree
+        /////////////////////
+        //Héphaïstos et Éole n'ont pas de pouvoir à part : leur skill tree change leurs TIRS (taille, cadence, dégâts, perforation).
+        //Les autres ont un POUVOIR qui revient régulièrement (toutes les X secondes, plus souvent avec "abilityHaste"),
+        //ou qui part avec leurs balles (Zeus). Tout dépend des stats de la planète (PLANET_POWER_STATS) : 0 = pas de pouvoir.
+        const WAR_CRY_DAMAGE = 0.15;         // Arès : +15% de dégâts par point de cri de guerre
+        const WAR_CRY_CRIT_CHANCE = 0.04;    // +4% de chance de critique par point
+        const WAR_CRY_CRIT_DAMAGE = 0.2;     // +20% de dégâts critiques par point
+        const WAR_CRY_BASE_DURATION = 4;     // secondes
+        let warCryTimer = 0;                 // > 0 : le cri de guerre est actif
+        let warCryLevel = 0;
+
+        const WEAKEN_FROM_BLOOM = 3;         // Déméter : secondes d'affaiblissement (+50% de dégâts subis)
+        const VINE_BASE_DURATION = 2.5;      // Déméter : secondes d'immobilisation d'une liane
+        const VINE_LIFETIME = 8;             // une liane qui n'a attrapé personne disparaît après X secondes
+        const MOON_ARROW_SIZE = 2.6;         // Artémis : la flèche est X fois plus grosse qu'une balle
+        const MOON_ARROW_SPEED = 1.8;        // ...et X fois plus rapide
+        const TIDE_SLOW_DURATION = 1.5;      // Poséidon : secondes de ralenti après la vague
+        const FRAGILE_DURATION = 4;          // secondes pendant lesquelles un ennemi reste frêle
+        const BOSS_KNOCKBACK_FACTOR = 0.3;   // les super ennemis sont moins repoussés
+        const ARC_BASE_RANGE = 120;          // Zeus : portée d'un éclair, en pixels
+        const CONDUCT_DURATION = 6;          // secondes pendant lesquelles un ennemi reste conducteur
+        const BOLT_BASE_RADIUS = 90;         // zone électrocutée par la foudre, en pixels
+        const BOLT_SPLASH_DAMAGE = 0.5;      // dégâts des ennemis électrocutés autour (x les dégâts de la balle)
+        const BOLT_COOLDOWN = 1;             // un même ennemi ne reçoit pas la foudre 2 fois en moins de X secondes
+        const MAX_BOLTS_PER_STEP = 6;        // la foudre en chaîne est étalée sur plusieurs images (sinon le jeu ralentit)
+        const MAX_PENDING_BOLTS = 400;
+        let tideShieldTimer = 0;             // > 0 : le joueur est invincible (vague de Poséidon)
+        const pendingBolts = [];             // la foudre qui va tomber (une file d'attente)
+        const lightningArcs = [];            // les éclairs entre deux ennemis, à dessiner
+
+        //Le nom de chaque pouvoir (panneau des stats)
+        const POWER_NAMES = { charm: "Rayon de charme", warCry: "Cri de guerre", bloom: "Rayon de vie", moonArrow: "Flèche de lune", tide: "Raz-de-marée" };
+
+        //Les pouvoirs qui reviennent régulièrement. interval = secondes entre deux fois (divisé par 1 + abilityHaste).
+        //isActive(stats) : la planète a-t-elle ce pouvoir ? use(planet) : le lancer (renvoie false s'il n'y a rien à faire : il attendra)
+        const PLANET_POWERS = [
+            { key: "charm", interval: 8, isActive: function (stats) { return stats.charmRadius > 0; }, use: useCharmPulse },
+            { key: "warCry", interval: 12, isActive: function (stats) { return stats.warCry > 0; }, use: useWarCry },
+            { key: "bloom", interval: 9, isActive: function (stats) { return stats.bloomHeal > 0 || stats.vineCount > 0; }, use: useBloom },
+            { key: "moonArrow", interval: 6, isActive: function (stats) { return stats.moonArrow > 0; }, use: useMoonArrow },
+            { key: "tide", interval: 10, isActive: function (stats) { return stats.tideWave > 0; }, use: useTideWave }
+        ];
+
+        function getPowerInterval(power, stats) {
+            return power.interval / (1 + Math.max(0, stats.abilityHaste));
+        }
+
+        function hasLivingEnemy() {
+            return enemies.some(function (enemy) { return enemy.alive; }); //some = "au moins un"
+        }
+
+        function updatePlanetPowers(deltaTime) {
+            warCryTimer = Math.max(0, warCryTimer - deltaTime);
+            tideShieldTimer = Math.max(0, tideShieldTimer - deltaTime);
+            for (const planet of planets) {
+                planet.powerTimers = planet.powerTimers || {};
+                for (const power of PLANET_POWERS) {
+                    if (!power.isActive(planet.stats)) {
+                        continue;
+                    }
+                    const timer = (planet.powerTimers[power.key] || 0) + deltaTime;
+                    planet.powerTimers[power.key] = timer;
+                    if (timer >= getPowerInterval(power, planet.stats) && hasLivingEnemy() && power.use(planet) !== false) {
+                        planet.powerTimers[power.key] = 0;
+                    }
+                }
+            }
+            updatePendingBolts();
+        }
+
+        //APHRODITE : une onde rose autour d'elle charme les ennemis (sauf les super ennemis) : ils font demi-tour et blessent leurs alliés
+        function useCharmPulse(planet) {
+            const stats = planet.stats;
+            spawnShockwave(planet.x, planet.y, ATTRIBUTES.love.color, stats.charmRadius);
+            spawnParticles(planet.x, planet.y, ATTRIBUTES.love.color, 10, 160);
+            for (const enemy of getEnemiesNear(planet.x, planet.y, stats.charmRadius)) {
+                if (!enemy.isBoss) {
+                    enemy.charmTimer = Math.max(enemy.charmTimer || 0, stats.charmDuration);
+                    //Ses coups suivent la vie des ennemis (qui monte avec le temps), sinon le charme ne servirait plus à rien
+                    enemy.charmDps = COMBO_CHARM_DPS * getEnemyHealthScale() * (1 + stats.charmPower);
+                }
+            }
+            playSound("skip");
+        }
+
+        //ARÈS : le cri de guerre. Pendant quelques secondes, le joueur et TOUTES les planètes font plus de dégâts et de critiques.
+        function useWarCry(planet) {
+            const stats = planet.stats;
+            warCryLevel = Math.max(warCryTimer > 0 ? warCryLevel : 0, stats.warCry);
+            warCryTimer = WAR_CRY_BASE_DURATION + stats.warCryDuration;
+            spawnShockwave(planet.x, planet.y, ATTRIBUTES.war.color, 120);
+            spawnShockwave(center.x, center.y, ATTRIBUTES.war.color, PLANET_ORBIT_RADIUS + 60);
+            spawnFloatingLabel(planet.x, planet.y - planet.size - 16, t("⚔️ Cri de guerre !"), ATTRIBUTES.war.color);
+            playSound("bossArrive");
+        }
+
+        //DÉMÉTER : un rayon de vie te soigne, affaiblit les ennemis autour d'elle, et fait pousser des lianes sous quelques ennemis
+        function useBloom(planet) {
+            const stats = planet.stats;
+            const radius = Math.max(60, stats.bloomRadius);
+            if (stats.bloomHeal > 0) {
+                healPlayer(stats.bloomHeal);
+                spawnShockwave(center.x, center.y, ATTRIBUTES.plant.color, PLAYER_RADIUS * 2.5);
+            }
+            spawnShockwave(planet.x, planet.y, ATTRIBUTES.plant.color, radius);
+            const touched = getEnemiesNear(planet.x, planet.y, radius);
+            for (const enemy of touched) {
+                enemy.weakTimer = Math.max(enemy.weakTimer || 0, WEAKEN_FROM_BLOOM);
+            }
+            //Les lianes : sous des ennemis au hasard (d'abord ceux du rayon, sinon les plus proches du joueur)
+            const candidates = touched.filter(function (enemy) { return !enemy.isBoss; });
+            let count = Math.round(stats.vineCount);
+            while (count > 0 && candidates.length > 0) {
+                const index = Math.floor(Math.random() * candidates.length);
+                const enemy = candidates.splice(index, 1)[0]; //splice enlève l'ennemi choisi de la liste (pas 2 lianes sous le même)
+                hazards.push({ type: "vine", x: enemy.x, y: enemy.y, radius: 16, timer: VINE_LIFETIME, duration: VINE_BASE_DURATION + stats.vineDuration, color: ATTRIBUTES.plant.color });
+                count--;
+            }
+            for (let i = 0; i < count; i++) {
+                const enemy = findNearestEnemy(center.x, center.y, Infinity, hazards.filter(function (hazard) { return hazard.target; }).map(function (hazard) { return hazard.target; }));
+                if (enemy === null || enemy.isBoss) {
+                    break;
+                }
+                hazards.push({ type: "vine", x: enemy.x, y: enemy.y, radius: 16, timer: VINE_LIFETIME, duration: VINE_BASE_DURATION + stats.vineDuration, color: ATTRIBUTES.plant.color, target: enemy });
+            }
+        }
+
+        //ARTÉMIS : une grande flèche qui transperce tous les ennemis sur son passage, vers l'ennemi le plus solide à portée
+        function useMoonArrow(planet) {
+            const stats = planet.stats;
+            let target = null;
+            forEachEnemyNear(planet.x, planet.y, stats.range * 1.5, function (enemy) {
+                if (target === null || enemy.health > target.health) {
+                    target = enemy;
+                }
+            });
+            if (target === null) {
+                return false; //personne à portée : la flèche attend
+            }
+            const angle = Math.atan2(target.y - planet.y, target.x - planet.x);
+            const arrow = shootAt(null, planet.x, planet.y, getShotDamage(stats) * stats.moonArrow, "#f1ecff", [], ATTRIBUTES.moon.color, stats);
+            arrow.dirX = Math.cos(angle);
+            arrow.dirY = Math.sin(angle);
+            arrow.size = getBulletSize(stats) * MOON_ARROW_SIZE;
+            arrow.pierceLeft = 999;      //elle traverse tout jusqu'au bord de l'écran
+            arrow.bounceLeft = 0;
+            arrow.speedFactor = MOON_ARROW_SPEED;
+            arrow.isArrow = true;
+            spawnShockwave(planet.x, planet.y, ATTRIBUTES.moon.color, 40);
+            playSound("skip");
+        }
+
+        //POSÉIDON : une vague part de toi, repousse les ennemis, les ralentit et les rend frêles (ils subissent plus de dégâts).
+        //Elle te donne aussi un bouclier des marées : invincible pendant quelques secondes.
+        function useTideWave(planet) {
+            const stats = planet.stats;
+            const radius = Math.max(PLANET_ORBIT_RADIUS + 60, stats.waveRadius);
+            spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, radius);
+            spawnShockwave(center.x, center.y, "#d8eefc", radius * 0.7);
+            for (const enemy of getEnemiesNear(center.x, center.y, radius)) {
+                const push = stats.tideWave * (enemy.isBoss ? BOSS_KNOCKBACK_FACTOR : 1);
+                enemy.distance = Math.min(enemy.startDistance, enemy.distance + push);
+                enemy.slowTimer = Math.max(enemy.slowTimer || 0, TIDE_SLOW_DURATION);
+                if (stats.fragility > 0) {
+                    enemy.fragileAmount = Math.max(enemy.fragileTimer > 0 ? enemy.fragileAmount : 0, stats.fragility);
+                    enemy.fragileTimer = FRAGILE_DURATION;
+                }
+            }
+            if (stats.tideShield > 0) {
+                tideShieldTimer = Math.max(tideShieldTimer, stats.tideShield);
+            }
+            playSound("shieldBlock");
+        }
+
+        //ZEUS : une balle qui touche envoie des éclairs vers les ennemis autour. Ils sont blessés et deviennent CONDUCTEURS.
+        //Un ennemi conducteur touché par un 2e éclair reçoit LA FOUDRE : gros dégâts, et elle électrocute les ennemis autour
+        //(qui deviennent conducteurs à leur tour... ce qui peut faire une réaction en chaîne sur tout l'écran).
+        function zapAround(source, stats, damage) {
+            let except = [source];
+            for (let i = 0; i < Math.round(stats.chainArcs); i++) {
+                const target = findNearestEnemy(source.x, source.y, ARC_BASE_RANGE + stats.arcRange, except);
+                if (target === null) {
+                    break;
+                }
+                except = except.concat([target]);
+                addLightningArc(source.x, source.y, target.x, target.y);
+                electrify(target, stats, damage * stats.arcDamage, damage);
+            }
+        }
+
+        //Un éclair touche cet ennemi : s'il était déjà conducteur (et que Zeus a la foudre), la foudre va tomber sur lui
+        function electrify(enemy, stats, damage, baseDamage) {
+            if (enemy.conductTimer > 0 && stats.boltDamage > 0 && !(enemy.boltCooldown > 0) && pendingBolts.length < MAX_PENDING_BOLTS) {
+                enemy.boltCooldown = BOLT_COOLDOWN;
+                enemy.conductTimer = 0;
+                pendingBolts.push({ enemy: enemy, stats: stats, baseDamage: baseDamage });
+            } else {
+                enemy.conductTimer = CONDUCT_DURATION;
+            }
+            damageEnemy(enemy, damage, null, { color: DAMAGE_COLORS.thunder });
+        }
+
+        //La foudre tombe, quelques-unes par pas de jeu (une réaction en chaîne énorme est étalée sur plusieurs images)
+        function updatePendingBolts() {
+            const previousSource = damageSource;
+            for (let i = 0; i < MAX_BOLTS_PER_STEP && pendingBolts.length > 0; i++) {
+                const bolt = pendingBolts.shift(); //shift = prend le premier de la file
+                const enemy = bolt.enemy;
+                if (!enemy.alive) {
+                    continue;
+                }
+                damageSource = bolt.stats.owner || null;
+                lightningBolts.push({ x: enemy.x, y: enemy.y, endTime: performance.now() + 220 });
+                const radius = BOLT_BASE_RADIUS * (1 + bolt.stats.boltRadius);
+                spawnShockwave(enemy.x, enemy.y, ATTRIBUTES.thunder.color, radius);
+                damageEnemy(enemy, bolt.baseDamage * bolt.stats.boltDamage, "enemyHit", { color: DAMAGE_COLORS.thunder, crit: true });
+                for (const other of getEnemiesNear(enemy.x, enemy.y, radius)) {
+                    if (other !== enemy) {
+                        addLightningArc(enemy.x, enemy.y, other.x, other.y);
+                        electrify(other, bolt.stats, bolt.baseDamage * BOLT_SPLASH_DAMAGE, bolt.baseDamage);
+                    }
+                }
+            }
+            damageSource = previousSource;
+        }
+
+        function addLightningArc(x1, y1, x2, y2) {
+            if (lightningArcs.length < 200) { //au-delà, on ne dessine plus les nouveaux (trop d'éclairs à la fois)
+                lightningArcs.push({ x1: x1, y1: y1, x2: x2, y2: y2, endTime: performance.now() + 140 });
+            }
+        }
+
+        //Les éclairs entre deux ennemis : une ligne brisée, blanche avec un cœur bleu
+        function drawLightningArcs() {
+            const now = performance.now();
+            for (let i = lightningArcs.length - 1; i >= 0; i--) {
+                const arc = lightningArcs[i];
+                if (arc.endTime <= now) {
+                    lightningArcs.splice(i, 1);
+                    continue;
+                }
+                ctx.beginPath();
+                ctx.moveTo(arc.x1, arc.y1);
+                const steps = 4;
+                for (let k = 1; k < steps; k++) {
+                    const x = arc.x1 + (arc.x2 - arc.x1) * k / steps + (Math.random() - 0.5) * 16;
+                    const y = arc.y1 + (arc.y2 - arc.y1) * k / steps + (Math.random() - 0.5) * 16;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(arc.x2, arc.y2);
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                ctx.strokeStyle = ATTRIBUTES.thunder.color;
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            }
+        }
+
+        //Autour du joueur : le bouclier des marées (bulle bleue) et le cri de guerre (lueur rouge)
+        function drawPowerAuras() {
+            if (warCryTimer > 0) {
+                drawGlow(ATTRIBUTES.war.color, center.x, center.y, PLAYER_RADIUS * 3.2, 0.5 + 0.2 * Math.sin(visualTime * 8));
+            }
+            if (tideShieldTimer > 0) {
+                ctx.globalAlpha = Math.min(1, tideShieldTimer / 0.4) * 0.8; //s'efface à la fin
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, PLAYER_RADIUS + 20 + 2 * Math.sin(visualTime * 6), 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(77, 166, 255, 0.18)";
+                ctx.fill();
+                ctx.strokeStyle = ATTRIBUTES.water.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+        }
+
         const BULLET_TRAIL_LENGTH = 12;   // longueur de la traînée derrière la balle, en pixels
 
         function drawBullets() {
@@ -5630,17 +6274,19 @@
                 //Traînée : une ligne qui part de la balle vers l'arrière
                 ctx.globalAlpha = 0.35;
                 ctx.strokeStyle = bullet.color;
-                ctx.lineWidth = 3;
+                const scale = bullet.size / BULLET_SIZE; //les grosses balles ont une traînée plus large et plus longue
+                ctx.lineWidth = 3 * scale;
                 ctx.lineCap = "round"; //bouts de ligne arrondis
                 ctx.beginPath();
                 ctx.moveTo(bullet.x, bullet.y);
-                ctx.lineTo(bullet.x - bullet.dirX * BULLET_TRAIL_LENGTH, bullet.y - bullet.dirY * BULLET_TRAIL_LENGTH);
+                const trail = BULLET_TRAIL_LENGTH * (bullet.isArrow ? 4 : Math.max(1, scale));
+                ctx.lineTo(bullet.x - bullet.dirX * trail, bullet.y - bullet.dirY * trail);
                 ctx.stroke();
                 ctx.globalAlpha = 1;
 
-                fillStretchedCircle(ctx, bullet.x, bullet.y, BULLET_SIZE, 0, 2, bullet.sideColor); //petite épaisseur
+                fillStretchedCircle(ctx, bullet.x, bullet.y, bullet.size, 0, 2 * Math.max(1, scale), bullet.sideColor); //petite épaisseur
                 ctx.beginPath();
-                ctx.arc(bullet.x, bullet.y, BULLET_SIZE, 0, Math.PI * 2);
+                ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
                 ctx.fillStyle = bullet.color;
                 ctx.fill();
                 if (bullet.ringColor !== null) { //balle avec un combo : contour de la couleur de l'attribut emprunté
@@ -6090,8 +6736,8 @@
                 },
                 minorSkills: [
                     { label: "DMG", name: "Dactyle", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "VIT", name: "Telchine", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
-                    { label: "CRIT", name: "Cyclope", description: "+1% de chance de coup critique", effect: { stat: "critChance", value: 0.01 } }
+                    { label: "TAIL", name: "Telchine", description: "Balles 8% plus grosses", effect: { stat: "bulletSize", value: 0.08 } },
+                    { label: "×CRIT", name: "Cyclope", description: "+10% de dégâts critiques", effect: { stat: "critDamage", value: 0.1 } }
                 ],
                 shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
@@ -6099,19 +6745,19 @@
                     notables: [
                         { label: "CRIT", name: "Prométhée", description: "+3% de chance de coup critique", effect: { stat: "critChance", value: 0.03 } },
                         { label: "×CRIT", name: "Kédalion", description: "+25% de dégâts critiques", effect: { stat: "critDamage", value: 0.25 } },
-                        { label: "VIT", name: "Stéropès", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "VIT", name: "Argès", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                        { label: "POR", name: "Aglaé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                        { label: "VEL", name: "Talos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
+                        { label: "TAIL", name: "Stéropès", description: "Balles 20% plus grosses", effect: { stat: "bulletSize", value: 0.2 } },
+                        { label: "DMG", name: "Argès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "PERF", name: "Aglaé", description: "Les balles traversent 1 ennemi de plus", effect: { stat: "pierce", value: 1 } },
+                        { label: "DMG", name: "Talos", description: "+15% de dégâts", effect: { stat: "damageMultiplier", value: 0.15 } },
                         { label: "DMG", name: "Kratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "VIT", name: "Bia", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                        { label: "PERF", name: "Bia", description: "Les balles traversent 1 ennemi de plus", effect: { stat: "pierce", value: 1 } }
                     ],
                     keystones: [
-                        { label: "×CRIT", name: "Brontès", description: "+60% de dégâts critiques", effect: { stat: "critDamage", value: 0.6 } },
-                        { label: "x2", name: "Cabires", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "MÉTÉO", name: "Hécate", description: "+3 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 3 } }
+                        { label: "MART", name: "Brontès", description: "Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: 1 }, { stat: "attackSpeed", value: -0.35 }] },
+                        { label: "ENCL", name: "Cabires", description: "Enclume : balles 2 fois plus grosses, mais 30% plus lentes", effects: [{ stat: "bulletSize", value: 1 }, { stat: "bulletSpeed", value: -0.3 }] },
+                        { label: "MAGMA", name: "Hécate", description: "Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran", effect: { stat: "pierce", value: 999 } }
                     ],
-                    grand: { label: "ETNA", name: "Etna", description: "GRANDE KEYSTONE : +3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                    grand: { label: "ETNA", name: "Etna", description: "GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: 1.5 }, { stat: "bulletSize", value: 0.5 }, { stat: "attackSpeed", value: -0.3 }] }
                 }
             },
             {
@@ -6125,27 +6771,27 @@
                 minorSkills: [
                     { label: "PV", name: "Néréide", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
-                    { label: "ESQ", name: "Naïade", description: "+3% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.03 } }
+                    { label: "FRÊLE", name: "Naïade", description: "Ennemis frêles : +2% de dégâts subis", effect: { stat: "fragility", value: 0.02 } }
                 ],
                 shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "PV", name: "Thétis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "waveRadius", value: 220 }, { stat: "fragility", value: 0.35 }] },
                     notables: [
                         { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "REG", name: "Galatée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                        { label: "VAGUE", name: "Galatée", description: "+40 de portée de la vague", effect: { stat: "waveRadius", value: 40 } },
                         { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
                         { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
-                        { label: "EAU", name: "Glaucos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
-                        { label: "EAU", name: "Leucothée", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
-                        { label: "VIE", name: "Palémon", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                        { label: "FRÊLE", name: "Glaucos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
+                        { label: "VAGUE", name: "Leucothée", description: "La vague revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "RECUL", name: "Palémon", description: "+30 de recul de la vague", effect: { stat: "tideWave", value: 30 } },
                         { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } }
                     ],
                     keystones: [
-                        { label: "OCÉAN", name: "Amphitrite", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
-                        { label: "ABYSS", name: "Céto", description: "+6 PV max", effect: { stat: "maxHealth", value: 6 } },
-                        { label: "VAGUE", name: "Triton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                        { label: "OCÉAN", name: "Amphitrite", description: "Bouclier des marées : chaque vague te rend invincible pendant 2 s", effect: { stat: "tideShield", value: 2 } },
+                        { label: "ABYSS", name: "Céto", description: "Ennemis frêles : +15% de dégâts subis", effect: { stat: "fragility", value: 0.15 } },
+                        { label: "VAGUE", name: "Triton", description: "La vague revient 40% plus souvent et va 80 plus loin", effects: [{ stat: "abilityHaste", value: 0.4 }, { stat: "waveRadius", value: 80 }] }
                     ],
-                    grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : +10 PV max", effect: { stat: "maxHealth", value: 10 } }
+                    grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s", effects: [{ stat: "fragility", value: 0.25 }, { stat: "tideShield", value: 1 }] }
                 }
             },
             {
@@ -6159,27 +6805,27 @@
                 minorSkills: [
                     { label: "VIE", name: "Dryade", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } },
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
-                    { label: "PLA", name: "Mélie", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } }
+                    { label: "FLEUR", name: "Mélie", description: "+8 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 8 } }
                 ],
                 shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VIE", name: "Perséphone", description: "+0.1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.1 } },
+                    start: { label: "VIE", name: "Perséphone", description: "Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s)", effects: [{ stat: "bloomHeal", value: 1 }, { stat: "bloomRadius", value: 120 }] },
                     notables: [
                         { label: "XP", name: "Thallo", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                        { label: "XP", name: "Auxo", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
+                        { label: "SOIN", name: "Auxo", description: "Le rayon de vie soigne 0.5 PV de plus", effect: { stat: "bloomHeal", value: 0.5 } },
                         { label: "REG", name: "Chloris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                         { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "PLA", name: "Iasion", description: "+1 dégât contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 1 } },
-                        { label: "PLA", name: "Eubouleus", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } },
-                        { label: "XP", name: "Carpo", description: "+15% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.15 } },
-                        { label: "PV", name: "Anthée", description: "+2.5 PV max", effect: { stat: "maxHealth", value: 2.5 } }
+                        { label: "FLEUR", name: "Iasion", description: "+25 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 25 } },
+                        { label: "LIANE", name: "Eubouleus", description: "+1 liane à chaque rayon de vie", effect: { stat: "vineCount", value: 1 } },
+                        { label: "FLEUR", name: "Carpo", description: "Le rayon de vie revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "LIANE", name: "Anthée", description: "Les lianes immobilisent 1 s de plus", effect: { stat: "vineDuration", value: 1 } }
                     ],
                     keystones: [
-                        { label: "ARBRE", name: "Karpos", description: "+50% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.5 } },
-                        { label: "SYMB", name: "Triptolème", description: "+0.3 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.3 } },
-                        { label: "FORÊT", name: "Pan", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                        { label: "ARBRE", name: "Karpos", description: "Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis)", effect: { stat: "vineCount", value: 3 } },
+                        { label: "MOISS", name: "Triptolème", description: "Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent", effects: [{ stat: "bloomHeal", value: 2 }, { stat: "abilityHaste", value: 0.3 }] },
+                        { label: "FORÊT", name: "Pan", description: "+60 de rayon du rayon de vie et +2 lianes", effects: [{ stat: "bloomRadius", value: 60 }, { stat: "vineCount", value: 2 }] }
                     ],
-                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +1 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 1 } }
+                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent", effects: [{ stat: "vineCount", value: 3 }, { stat: "vineDuration", value: 2 }, { stat: "abilityHaste", value: 1 }] }
                 }
             },
             {
@@ -6193,14 +6839,14 @@
                 minorSkills: [
                     { label: "POR", name: "Aura", description: "+15 de portée", effect: { stat: "range", value: 15 } },
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
-                    { label: "VIT", name: "Anémoï", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } }
+                    { label: "VIT", name: "Anémoï", description: "+6% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.06 } }
                 ],
                 shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                     notables: [
                         { label: "POR", name: "Éos", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                        { label: "POR", name: "Héméra", description: "+50 de portée", effect: { stat: "range", value: 50 } },
+                        { label: "VIT", name: "Héméra", description: "+20% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.2 } },
                         { label: "VEL", name: "Iris", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
                         { label: "VIT", name: "Borée", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
                         { label: "AIR", name: "Notos", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
@@ -6209,11 +6855,11 @@
                         { label: "VIT", name: "Hespéros", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
                     ],
                     keystones: [
-                        { label: "ŒIL", name: "Séléné", description: "+100 de portée", effect: { stat: "range", value: 100 } },
+                        { label: "RAFALE", name: "Séléné", description: "Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins", effects: [{ stat: "attackSpeed", value: 1 }, { stat: "damageMultiplier", value: -0.3 }] },
                         { label: "x2", name: "Phaéton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "OURAG", name: "Astraïos", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } }
+                        { label: "OURAG", name: "Astraïos", description: "Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites", effects: [{ stat: "attackSpeed", value: 0.6 }, { stat: "bulletSize", value: -0.4 }] }
                     ],
-                    grand: { label: "ŒIL", name: "Thyella", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    grand: { label: "TEMPÊTE", name: "Thyella", description: "GRANDE KEYSTONE : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins", effects: [{ stat: "attackSpeed", value: 1.5 }, { stat: "bulletCount", value: 1 }, { stat: "damageMultiplier", value: -0.3 }] }
                 }
             },
             {
@@ -6266,23 +6912,23 @@
                 ],
                 shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic (la forme à 3 branches gardée de côté)
                 skills: {
-                    start: { label: "POR", name: "Léto", description: "+20 de portée", effect: { stat: "range", value: 20 } },
+                    start: { label: "LUNE", name: "Léto", description: "Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle)", effect: { stat: "moonArrow", value: 3 } },
                     notables: [
                         { label: "VIT", name: "Callisto", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                         { label: "DMG", name: "Britomartis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "POR", name: "Aréthuse", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                        { label: "LUNE", name: "Aréthuse", description: "Flèche de lune : +1 fois les dégâts d'une balle", effect: { stat: "moonArrow", value: 1 } },
                         { label: "VEL", name: "Opis", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "AIR", name: "Cyrène", description: "+2 dégâts contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 2 } },
+                        { label: "LUNE", name: "Cyrène", description: "La flèche de lune revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
                         { label: "VIT", name: "Atalante", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
                         { label: "DMG", name: "Procris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "POR", name: "Taygète", description: "+30 de portée", effect: { stat: "range", value: 30 } }
                     ],
                     keystones: [
-                        { label: "ORION", name: "Orion", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                        { label: "ARC", name: "Hippolyte", description: "+80 de portée", effect: { stat: "range", value: 80 } },
-                        { label: "CERF", name: "Actéon", description: "+25% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.25 } }
+                        { label: "ORION", name: "Orion", description: "Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches", effect: { stat: "bounce", value: 2 } },
+                        { label: "ARC", name: "Hippolyte", description: "Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent", effects: [{ stat: "moonArrow", value: 3 }, { stat: "abilityHaste", value: 0.3 }] },
+                        { label: "CERF", name: "Actéon", description: "+1 rebond et +25% de vitesse d'attaque", effects: [{ stat: "bounce", value: 1 }, { stat: "attackSpeed", value: 0.25 }] }
                     ],
-                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle", effects: [{ stat: "abilityHaste", value: 1 }, { stat: "moonArrow", value: 4 }] }
                 }
             },
             //ATHÉNA : 2e divinité à acheter dans le shop (après Artémis). Sagesse et stratégie : défense, XP et un peu d'attaque.
@@ -6332,27 +6978,27 @@
                 minorSkills: [
                     { label: "DMG", name: "Astrapé", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VIT", name: "Brontè", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
-                    { label: "AIR", name: "Kéraunos", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } }
+                    { label: "ÉCLAIR", name: "Kéraunos", description: "Éclairs : +5% de dégâts", effect: { stat: "arcDamage", value: 0.05 } }
                 ],
                 shape: "bolt",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "DMG", name: "Thémis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    start: { label: "ÉCLAIR", name: "Thémis", description: "Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur", effects: [{ stat: "chainArcs", value: 1 }, { stat: "arcDamage", value: 0.4 }] },
                     notables: [
                         { label: "DMG", name: "Dikè", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "PV", name: "Eiréné", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                        { label: "REG", name: "Eunomia", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "ESQ", name: "Horkos", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ÉCLAIR", name: "Eiréné", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
+                        { label: "POR", name: "Eunomia", description: "+40 de portée des éclairs", effect: { stat: "arcRange", value: 40 } },
+                        { label: "ÉCLAIR", name: "Horkos", description: "Éclairs : +10% de dégâts", effect: { stat: "arcDamage", value: 0.1 } },
                         { label: "VIT", name: "Ganymède", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "PV", name: "Hébé", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                        { label: "ÉCLAIR", name: "Hébé", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
                         { label: "DMG", name: "Némésis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "VEL", name: "Io", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
+                        { label: "ÉCLAIR", name: "Io", description: "Éclairs : +15% de dégâts", effect: { stat: "arcDamage", value: 0.15 } }
                     ],
                     keystones: [
-                        { label: "AIGLE", name: "Aétos", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
+                        { label: "AIGLE", name: "Aétos", description: "Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (3 fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour", effect: { stat: "boltDamage", value: 3 } },
                         { label: "BÉLIER", name: "Ammon", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "OLYMPE", name: "Olympios", description: "+20% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.2 } }
+                        { label: "OLYMPE", name: "Olympios", description: "+2 éclairs par balle et +40 de portée des éclairs", effects: [{ stat: "chainArcs", value: 2 }, { stat: "arcRange", value: 40 }] }
                     ],
-                    grand: { label: "ÉTHER", name: "Aithér", description: "GRANDE KEYSTONE : +4 dégâts par balle", effect: { stat: "damage", value: 4 } }
+                    grand: { label: "ÉTHER", name: "Aithér", description: "GRANDE KEYSTONE : la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin", effects: [{ stat: "boltDamage", value: 4 }, { stat: "boltRadius", value: 0.5 }] }
                 }
             },
             //ARÈS : la guerre. Dégâts, et de la vie à chaque ennemi tué.
@@ -6366,28 +7012,28 @@
                 },
                 minorSkills: [
                     { label: "DMG", name: "Phobos", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "FEU", name: "Deimos", description: "+1 dégât contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 1 } },
+                    { label: "CRI", name: "Deimos", description: "Cri de guerre : +0.3 s", effect: { stat: "warCryDuration", value: 0.3 } },
                     { label: "VIE", name: "Alala", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } }
                 ],
                 shape: "sword",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "DMG", name: "Ényo", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    start: { label: "CRI", name: "Ényo", description: "Cri de guerre : toutes les 12 s, toi et toutes les planètes faites +15% de dégâts, +4% de chance de critique et +20% de dégâts critiques pendant 4 s", effect: { stat: "warCry", value: 1 } },
                     notables: [
                         { label: "DMG", name: "Éris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "VIT", name: "Kydoimos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "FEU", name: "Makhai", description: "+2 dégâts contre les ennemis de feu", effect: { stat: "damageVs", element: "fire", value: 2 } },
+                        { label: "CRI", name: "Makhai", description: "Cri de guerre : +1 s", effect: { stat: "warCryDuration", value: 1 } },
                         { label: "DMG", name: "Polémos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "VIE", name: "Penthésilée", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "PV", name: "Otréra", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                        { label: "CRI", name: "Otréra", description: "Le cri de guerre revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
                         { label: "VIT", name: "Antiope", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "EAU", name: "Androktasiai", description: "+2 dégâts contre les ennemis d'eau", effect: { stat: "damageVs", element: "water", value: 2 } }
+                        { label: "CRI", name: "Androktasiai", description: "Cri de guerre 50% plus fort", effect: { stat: "warCry", value: 0.5 } }
                     ],
                     keystones: [
-                        { label: "CYGNE", name: "Kyknos", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                        { label: "CHAR", name: "Œnomaos", description: "+25% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.25 } },
-                        { label: "SANG", name: "Phlégyas", description: "+0.5 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.5 } }
+                        { label: "CYGNE", name: "Kyknos", description: "Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours", effect: { stat: "damagePerKill", value: 0.001 } },
+                        { label: "CHAR", name: "Œnomaos", description: "Cri de guerre 2 fois plus fort", effect: { stat: "warCry", value: 1 } },
+                        { label: "SANG", name: "Phlégyas", description: "Le cri de guerre revient 30% plus souvent et dure 1 s de plus", effects: [{ stat: "abilityHaste", value: 0.3 }, { stat: "warCryDuration", value: 1 }] }
                     ],
-                    grand: { label: "KÈRES", name: "Kères", description: "GRANDE KEYSTONE : +4 dégâts par balle", effect: { stat: "damage", value: 4 } }
+                    grand: { label: "KÈRES", name: "Kères", description: "GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort", effects: [{ stat: "damagePerKill", value: 0.002 }, { stat: "warCry", value: 1 }] }
                 }
             },
             //APHRODITE : l'amour et la beauté. Vie, régénération et esquive.
@@ -6401,28 +7047,28 @@
                 },
                 minorSkills: [
                     { label: "PV", name: "Charis", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "REG", name: "Himéros", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
+                    { label: "CHARME", name: "Himéros", description: "+6 de rayon de charme", effect: { stat: "charmRadius", value: 6 } },
                     { label: "ESQ", name: "Pothos", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
                 shape: "heart",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "PV", name: "Éros", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    start: { label: "CHARME", name: "Éros", description: "Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis)", effects: [{ stat: "charmRadius", value: 80 }, { stat: "charmDuration", value: 2 }] },
                     notables: [
-                        { label: "REG", name: "Peitho", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
+                        { label: "CHARME", name: "Peitho", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
                         { label: "ESQ", name: "Antéros", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
-                        { label: "PV", name: "Adonis", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                        { label: "REG", name: "Psyché", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                        { label: "CHARME", name: "Adonis", description: "+20 de rayon de charme", effect: { stat: "charmRadius", value: 20 } },
+                        { label: "CHARME", name: "Psyché", description: "Le rayon de charme revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
                         { label: "VIE", name: "Hymen", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
                         { label: "PV", name: "Euphrosyne", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
-                        { label: "ESQ", name: "Hermaphrodite", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
-                        { label: "REG", name: "Rhodos", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } }
+                        { label: "CHARME", name: "Hermaphrodite", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
+                        { label: "CHARME", name: "Rhodos", description: "Le rayon de charme revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } }
                     ],
                     keystones: [
-                        { label: "FOULE", name: "Pandémos", description: "+5 PV max", effect: { stat: "maxHealth", value: 5 } },
-                        { label: "CIEL", name: "Ourania", description: "+0.2 PV régénérés par seconde", effect: { stat: "regen", value: 0.2 } },
-                        { label: "CYTHÈRE", name: "Cythérée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } }
+                        { label: "FOULE", name: "Pandémos", description: "Foule : +50 de rayon de charme", effect: { stat: "charmRadius", value: 50 } },
+                        { label: "CIEL", name: "Ourania", description: "Les ennemis charmés blessent 2 fois plus leurs alliés", effect: { stat: "charmPower", value: 1 } },
+                        { label: "CYTHÈRE", name: "Cythérée", description: "Le rayon de charme revient 40% plus souvent", effect: { stat: "abilityHaste", value: 0.4 } }
                     ],
-                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : +0.5 PV régénérés par seconde", effect: { stat: "regen", value: 0.5 } }
+                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent", effects: [{ stat: "charmDuration", value: 1.5 }, { stat: "abilityHaste", value: 1 }] }
                 }
             },
             //HERMÈS : le messager, la vitesse. Cadence, vitesse des balles et esquive.
@@ -6593,7 +7239,8 @@
                         name: t(minor.name) + " " + ROMAN_NUMERALS[minorCounts[minor.name] - 1], //le nom est traduit ici (avant le numéro)
                         isNameTranslated: true,
                         description: minor.description,
-                        effect: minor.effect
+                        effect: minor.effect,
+                        effects: minor.effects
                     };
                 }
                 //Constellation : les petites étoiles sont un peu décalées (toujours de la même façon) pour un rendu moins "rangé"
@@ -6611,7 +7258,7 @@
                     label: t(skill.label),
                     name: skill.isNameTranslated ? skill.name : t(skill.name),
                     description: translateSkillDescription(skill.description),
-                    effect: skill.effect,
+                    effects: skill.effects || [skill.effect], //"effects" (plusieurs effets) ou "effect" (un seul)
                     unlocked: false
                 });
             }
@@ -6821,8 +7468,39 @@
             dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
             shield: function () { return ["Bouclier", t("Oui")]; },
             goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
-            xpMultiplier: function (value) { return ["XP gagnée", "+" + formatNumber(value * 100) + "%"]; }
+            xpMultiplier: function (value) { return ["XP gagnée", "+" + formatNumber(value * 100) + "%"]; },
+            //Les pouvoirs des dieux (PLANET_POWER_STATS)
+            bulletSize: function (value) { return ["Taille des balles", formatSigned(value * 100) + "%"]; },
+            damageMultiplier: function (value) { return ["Multiplicateur de dégâts", formatSigned(value * 100) + "%"]; },
+            pierce: function (value) { return ["Ennemis traversés", value >= 999 ? t("Tous") : "+" + formatNumber(value)]; },
+            bounce: function (value) { return ["Rebonds", "+" + formatNumber(value)]; },
+            abilityHaste: function (value) { return ["Pouvoir plus fréquent", "+" + formatNumber(value * 100) + "%"]; },
+            charmRadius: function (value) { return ["Rayon de charme", "+" + formatNumber(value) + " px"]; },
+            charmDuration: function (value) { return ["Durée du charme", "+" + formatNumber(value) + " s"]; },
+            charmPower: function (value) { return ["Dégâts des ennemis charmés", "+" + formatNumber(value * 100) + "%"]; },
+            warCry: function (value) { return ["Cri de guerre (dégâts)", "+" + formatNumber(value * WAR_CRY_DAMAGE * 100) + "%"]; },
+            warCryDuration: function (value) { return ["Durée du cri de guerre", "+" + formatNumber(value) + " s"]; },
+            damagePerKill: function (value) { return ["Dégâts gagnés tous les 1000 ennemis tués (pour toujours)", "+" + formatNumber(value * 1000)]; },
+            bloomHeal: function (value) { return ["Soin du rayon de vie", "+" + formatNumber(value) + " PV"]; },
+            bloomRadius: function (value) { return ["Taille du rayon de vie", "+" + formatNumber(value) + " px"]; },
+            vineCount: function (value) { return ["Lianes", "+" + formatNumber(value)]; },
+            vineDuration: function (value) { return ["Durée des lianes", "+" + formatNumber(value) + " s"]; },
+            moonArrow: function (value) { return ["Dégâts de la flèche de lune", "x" + formatNumber(value)]; },
+            tideWave: function (value) { return ["Recul de la vague", "+" + formatNumber(value) + " px"]; },
+            waveRadius: function (value) { return ["Portée de la vague", "+" + formatNumber(value) + " px"]; },
+            fragility: function (value) { return ["Dégâts subis par les ennemis frêles", "+" + formatNumber(value * 100) + "%"]; },
+            tideShield: function (value) { return ["Bouclier des marées", "+" + formatNumber(value) + " s"]; },
+            chainArcs: function (value) { return ["Éclairs par balle", "+" + formatNumber(value)]; },
+            arcDamage: function (value) { return ["Dégâts des éclairs", "+" + formatNumber(value * 100) + "%"]; },
+            arcRange: function (value) { return ["Portée des éclairs", "+" + formatNumber(value) + " px"]; },
+            boltDamage: function (value) { return ["Dégâts de la foudre", "x" + formatNumber(value)]; },
+            boltRadius: function (value) { return ["Zone de la foudre", "+" + formatNumber(value * 100) + "%"]; }
         };
+
+        //"+20" ou "-30" (avec le signe dans les deux cas)
+        function formatSigned(value) {
+            return (value >= 0 ? "+" : "") + formatNumber(value);
+        }
 
         //COLONNE DE DROITE : tout ce que cet arbre nous apporte (progression, pouvoirs, total des stats)
         function renderTreeBonus(tree) {
@@ -6859,8 +7537,10 @@
             //STATS : on additionne les effets de toutes les compétences débloquées, stat par stat
             const totals = {};
             for (const node of unlockedNodes) {
-                const key = node.effect.stat === "damageVs" ? "damageVs_" + node.effect.element : node.effect.stat;
-                totals[key] = (totals[key] || 0) + node.effect.value;
+                for (const effect of node.effects) {
+                    const key = effect.stat === "damageVs" ? "damageVs_" + effect.element : effect.stat;
+                    totals[key] = (totals[key] || 0) + effect.value;
+                }
             }
             treeBonusArea.appendChild(createElementWithText("h3", "", t("Stats")));
             treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", t("Les stats de tir vont à la planète {name}. La vie et la défense vont au joueur (le triangle du milieu).", { name: tree.name })));
@@ -7422,7 +8102,9 @@
             }
             updateRecords();
             saveProgress();
+            hideSpawnAlert();
             renderShop();
+            renderCheckpoints();
             gameOverPanel.classList.remove("hidden");
             showStatsPanel();
         }
@@ -7493,7 +8175,8 @@
             renderStatsPanel(true); //anime les stats qui viennent d'augmenter
         }
 
-        function restartGame() {
+        //startTime (en secondes) : 0 = une partie normale ; sinon on commence directement à ce moment (palier après un super ennemi)
+        function restartGame(startTime = 0) {
             runMaxHealthBonus = 0;
             computeStats();
             playerHealth = playerStats.maxHealth;
@@ -7505,7 +8188,12 @@
             damageNumbers.length = 0;
             for (const planet of planets) {
                 planet.fireTimer = Math.random() * PLANET_FIRE_INTERVAL;
+                planet.powerTimers = {}; //les pouvoirs repartent de zéro
             }
+            warCryTimer = 0;
+            tideShieldTimer = 0;
+            pendingBolts.length = 0;
+            lightningArcs.length = 0;
             shockwaves.length = 0;
             enemySpawnTimer = ENEMY_SPAWN_INTERVAL_START - ENEMY_FIRST_SPAWN_DELAY;
             runTime = 0;
@@ -7515,13 +8203,43 @@
             killsThisRun = 0;
             bossesSpawnedThisRun.clear(); //clear = vide le Set
             movementsIntroducedThisRun.clear();
+            resetSpawnEvents();
+            //PALIER : on commence plus loin. Rien n'apparaît pendant le temps sauté (pas d'or ni d'XP),
+            //et les mouvements déjà débloqués à ce moment sont là sans alerte.
+            runTime = startTime;
+            for (const unlock of MOVEMENT_UNLOCKS) {
+                if (unlock.time <= startTime) {
+                    movementsIntroducedThisRun.add(unlock.movement);
+                }
+            }
+            if (startTime >= MOVEMENT_VARIATION_TIME) {
+                movementsIntroducedThisRun.add("variation");
+            }
             isGameOver = false;
             gameOverPanel.classList.add("hidden");
             hideStatsPanel();
             playSound("menuClose");
         }
 
-        document.getElementById("restartButton").addEventListener("click", restartGame);
+        document.getElementById("restartButton").addEventListener("click", function () { restartGame(0); });
+
+        //PALIERS : un bouton par super ennemi déjà vaincu, pour recommencer juste après lui
+        const CHECKPOINT_OFFSET = 2;   // secondes après l'heure du super ennemi
+        const checkpointArea = document.getElementById("checkpointArea");
+        const checkpointButtons = document.getElementById("checkpointButtons");
+
+        function renderCheckpoints() {
+            checkpointButtons.textContent = "";
+            const defeated = BOSSES.filter(function (boss) { return defeatedBossIds.has(boss.id); });
+            checkpointArea.classList.toggle("hidden", defeated.length === 0);
+            for (const boss of defeated) {
+                const startTime = boss.time + CHECKPOINT_OFFSET;
+                const button = createElementWithText("button", "checkpointButton", t("Après {name} ({time})", { name: boss.name, time: formatTime(startTime) }));
+                button.style.setProperty("--boss-color", boss.color);
+                button.addEventListener("click", function () { restartGame(startTime); });
+                checkpointButtons.appendChild(button);
+            }
+        }
 
 
         /////////////////////
@@ -7547,7 +8265,8 @@
                 xp: xp,
                 shop: {},   // nom de l'amélioration -> niveau
                 trees: {},  // nom du dieu -> { en orbite ?, lien, compétences prises }
-                planetOrder: planets.map(function (planet) { return planet.id; }) //map = transforme chaque élément
+                planetOrder: planets.map(function (planet) { return planet.id; }), //map = transforme chaque élément
+                killStacks: killStacks   // ennemis tués par chaque dieu (Arès gagne des dégâts pour toujours)
             };
             for (const item of SHOP_ITEMS) {
                 data.shop[item.id] = item.level;
@@ -7599,6 +8318,9 @@
                     }
                 }
                 savedPlanetOrder = Array.isArray(data.planetOrder) ? data.planetOrder : [];
+                for (const id of Object.keys(data.killStacks || {})) {
+                    killStacks[id] = Math.max(0, Number(data.killStacks[id]) || 0);
+                }
                 const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
                 godItem.level = SKILL_TREES.filter(function (tree) { return !tree.isLocked; }).length;
             }
@@ -7919,6 +8641,20 @@
                 }
                 if (stats.comboProcChance > 0) {
                     rows.push(["Effet de combo au hasard", t("{percent}% par tir", { percent: formatNumber(stats.comboProcChance * 100) })]);
+                }
+                //Les pouvoirs : la différence avec une planète "normale", et tous les combien ils reviennent
+                for (const key of Object.keys(PLANET_POWER_STATS)) {
+                    if (Math.abs(stats[key] - PLANET_POWER_STATS[key]) > 0.0001) {
+                        rows.push(BONUS_FORMATS[key](stats[key] - PLANET_POWER_STATS[key]));
+                    }
+                }
+                for (const power of PLANET_POWERS) {
+                    if (power.isActive(stats)) {
+                        rows.push([POWER_NAMES[power.key], t("toutes les {seconds} s", { seconds: formatNumber(getPowerInterval(power, stats)) })]);
+                    }
+                }
+                if (stats.damagePerKill > 0) {
+                    rows.push(["Ennemis tués (soif de gloire)", killStacks[planet.id] || 0]);
                 }
                 rows.push(["Lien d'orbite", getLinkSummary(planet)]);
                 return { title: ATTRIBUTES[planet.tree.element].icon + " " + planet.name, rows: rows };
@@ -8691,6 +9427,7 @@
             updateEnemies(deltaTime);
             updateBullets(deltaTime);
             updateHazards(deltaTime);
+            updatePlanetPowers(deltaTime);
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;
             updateShield(deltaTime);
