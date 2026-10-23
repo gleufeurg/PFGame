@@ -9549,6 +9549,17 @@
                 defeatedBossIds.add(boss.id); //les paliers de tous les super ennemis
             }
             saveDefeatedBosses();
+            //Les deux packs aussi (sans changer de thème)
+            if (!isPremium()) {
+                unlockPremium();
+            }
+            isSupporterOwned = true;
+            try {
+                localStorage.setItem("supporter", "1");
+            } catch (error) {
+            }
+            renderThemeOptions();
+            renderPremiumBoxes();
         }
 
         //Tout le shop au niveau maximum (donc aussi tous les dieux et toutes les options de temps)
