@@ -1389,5 +1389,20 @@ window.TRADUCTIONS.ja = {
     "Dans le shop": "ショップで",
     "Débloque le lien d'orbite « {name} »": "軌道リンク「{name}」を解放",
     "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "軌道リンクを解放：右、次に左、次に両側、最後に反対",
-    "À débloquer dans le shop : « Liens d'orbite »": "ショップで解放：「軌道リンク」"
+    "À débloquer dans le shop : « Liens d'orbite »": "ショップで解放：「軌道リンク」",
+    "TRAÎNÉE": "軌跡",
+    "Phlégéthon": "プレゲトン",
+    "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)": "炎の軌跡：ヘパイストスの弾は後ろに炎の軌跡を残し、触れた敵は燃える（毎秒、弾のダメージの40%）",
+    "DURÉE": "持続",
+    "Pyrois": "ピュロエイス",
+    "La traînée de feu dure 0.6 s de plus": "炎の軌跡が0.6秒長く残る",
+    "BRÛLE": "灼熱",
+    "Aethon": "アイトン",
+    "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde": "炎の軌跡がより強く燃える：毎秒、弾のダメージの+40%",
+    "BRASIER": "業火",
+    "Pyriphlégéthon": "ピュリプレゲトン",
+    "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "業火：炎の軌跡の幅が2倍になり、1秒長く残る",
+    "Brûlure de la traînée de feu (par seconde)": "炎の軌跡の燃焼（毎秒）",
+    "Durée de la traînée de feu": "炎の軌跡の持続時間",
+    "Largeur de la traînée de feu": "炎の軌跡の幅"
 };

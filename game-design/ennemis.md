@@ -110,7 +110,7 @@ Les combos et fusions d'orbite des planètes ajoutent des effets aux balles (le 
 
 | Effet | Ce qu'il fait à l'ennemi | Valeurs de base | Super ennemis |
 | --- | --- | --- | --- |
-| Brûlure | perd des PV chaque seconde | 0,6 × par seconde pendant 3 s | oui |
+| Brûlure | perd des PV chaque seconde | 0,6 × par seconde pendant 3 s ; traînée de feu d'Héphaïstos : `fireTrail` × par seconde pendant 1 s après l'avoir touchée | oui |
 | Poison | perd des PV chaque seconde ; à sa mort, contamine ses voisins | 0,5 × par seconde pendant 4 s ; 2 voisins | oui |
 | Saignement | perd des PV chaque seconde ; chaque coup en rajoute | +0,3 × par seconde par coup, 3 × maximum, 4 s | oui |
 | Ralenti | avance moins vite | 45 % de sa vitesse pendant 2 s | oui |

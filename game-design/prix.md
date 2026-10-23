@@ -5,7 +5,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
 - Tout le shop au maximum coûte **87 435 or**, dont 72 240 or pour les 12 dieux.
-- Tous les skills des 12 dieux coûtent **16 508 XP**.
+- Tous les skills des 12 dieux coûtent **16 737 XP**.
 
 ## Le shop
 
@@ -46,11 +46,11 @@ Un skill coûte plus cher quand il est loin du départ : chaque lien à parcouri
 | Athéna | 51 | 38 | 8 | 3 + 1 | 1 677 |
 | Apollon | 49 | 36 | 8 | 3 + 1 | 1 455 |
 | Zeus | 30 | 17 | 8 | 3 + 1 | 1 392 |
+| Héphaïstos | 39 | 23 | 10 | 4 + 1 | 1 328 |
 | Aphrodite | 39 | 26 | 8 | 3 + 1 | 1 237 |
 | Arès | 27 | 14 | 8 | 3 + 1 | 1 225 |
 | Hestia | 27 | 14 | 8 | 3 + 1 | 1 179 |
 | Déméter | 49 | 36 | 8 | 3 + 1 | 1 171 |
-| Héphaïstos | 35 | 22 | 8 | 3 + 1 | 1 099 |
 | Hermès | 27 | 14 | 8 | 3 + 1 | 1 011 |
 | Artémis | 22 | 10 | 7 | 3 + 1 | 743 |
 
@@ -58,7 +58,7 @@ Un skill coûte plus cher quand il est loin du départ : chaque lien à parcouri
 
 Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur ordre d'achat dans le shop.
 
-### Héphaïstos (35 skills · 1 099 XP)
+### Héphaïstos (39 skills · 1 328 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -81,13 +81,17 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 29 | Dactyle II, VII | Mineure | +0.5 dégât par balle, chacun |
 | 29 | Telchine VII | Mineure | Balles 8% plus grosses |
 | 33 | Telchine II, V | Mineure | Balles 8% plus grosses, chacun |
+| 37 | Pyrois | Mineure | La traînée de feu dure 0.6 s de plus |
 | 38 | Argès | Notable | +2 dégâts par balle |
 | 38 | Kédalion | Notable | +25% de dégâts critiques |
 | 50 | Kratos | Notable | +1 dégât par balle |
+| 50 | Phlégéthon | Notable | Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde) |
 | 50 | Stéropès | Notable | Balles 20% plus grosses |
+| 62 | Aethon | Notable | La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde |
 | 72 | Brontès | Keystone | Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins |
 | 72 | Cabires | Keystone | Enclume : balles 2 fois plus grosses, mais 30% plus lentes |
 | 74 | Hécate | Keystone | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran |
+| 80 | Pyriphlégéthon | Keystone | Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus |
 | 150 | Etna | Grande keystone | GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins |
 
 ### Poséidon (40 skills · 2 202 XP)

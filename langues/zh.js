@@ -1389,5 +1389,20 @@ window.TRADUCTIONS.zh = {
     "Dans le shop": "在商店",
     "Débloque le lien d'orbite « {name} »": "解锁轨道连结「{name}」",
     "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "解锁轨道连结：右侧，然后左侧，然后两侧，最后对面",
-    "À débloquer dans le shop : « Liens d'orbite »": "在商店解锁：「轨道连结」"
+    "À débloquer dans le shop : « Liens d'orbite »": "在商店解锁：「轨道连结」",
+    "TRAÎNÉE": "火痕",
+    "Phlégéthon": "弗列革吞",
+    "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)": "火焰轨迹：赫菲斯托斯的子弹会在身后留下一道火焰轨迹，碰到它的敌人会燃烧（每秒造成子弹伤害的40%）",
+    "DURÉE": "持续",
+    "Pyrois": "皮洛伊斯",
+    "La traînée de feu dure 0.6 s de plus": "火焰轨迹多持续0.6秒",
+    "BRÛLE": "灼烧",
+    "Aethon": "埃同",
+    "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde": "火焰轨迹燃烧得更猛烈：每秒造成子弹伤害的+40%",
+    "BRASIER": "烈焰",
+    "Pyriphlégéthon": "皮利弗列革吞",
+    "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "烈焰：火焰轨迹宽度变为2倍，并多持续1秒",
+    "Brûlure de la traînée de feu (par seconde)": "火焰轨迹燃烧（每秒）",
+    "Durée de la traînée de feu": "火焰轨迹持续时间",
+    "Largeur de la traînée de feu": "火焰轨迹宽度"
 };

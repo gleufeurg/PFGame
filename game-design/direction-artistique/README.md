@@ -38,6 +38,7 @@ Réglage « Graphismes » des paramètres (`isHighGraphics`). En graphismes simp
 | Pouvoir | Graphismes élevés | Graphismes simples | Son |
 | --- | --- | --- | --- |
 | Vague de Poséidon | une nappe d'eau bleue derrière le front, une crête d'écume blanche qui ondule, des éclaboussures (`drawTideWaves`) | deux anneaux bleus qui grandissent au rythme de la vague | une vague qui gonfle, déferle et se retire (`playWaveSound`) |
+| Traînée de feu d'Héphaïstos | des flammes douces (dégradé jaune → orange → rouge, dessiné une fois puis recopié) qui s'additionnent en lumière (`lighter`), vacillent, rapetissent et montent un peu en s'éteignant (`drawFireTrails`) | une bande orange unie, faite de ronds qui rapetissent (un seul tracé) | — |
 | Rayon de vie de Déméter | une floraison : un halo d'herbe lumineuse qui grandit, 22 pétales et feuilles qui s'envolent en tournant, un rayon de lumière verte jusqu'au joueur, des petites croix de soin qui montent autour de lui (`drawBloomEffects`) ; les ennemis immobilisés sont entourés de lianes enroulées avec des feuilles (`drawRootVines`) | une onde verte autour de Déméter et une autour du joueur ; un anneau vert autour des ennemis immobilisés | un petit carillon qui monte (do, mi, sol, do) et un léger bruissement de feuilles (`playBloomSound`) |
 
 ## Les thèmes drapeaux

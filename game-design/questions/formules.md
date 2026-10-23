@@ -115,6 +115,7 @@ temps entre deux pouvoirs = temps de base ÷ (1 + abilityHaste)
 | Éclairs (Zeus) | à chaque balle qui touche | `chainArcs` éclairs vers les ennemis les plus proches, à 120 + `arcRange` px ; chacun fait D × `arcDamage` (D de l'étape 2, avec le critique) ; l'ennemi devient conducteur pendant 6 s |
 | Foudre (Zeus) | sur un conducteur touché par un 2e éclair | la cible perd D × `boltDamage` ; chaque ennemi à 90 × (1 + `boltRadius`) px perd D × 0,5 et devient conducteur (ou reçoit la foudre s'il l'était déjà) ; un même ennemi la reçoit au plus 1 fois par seconde ; au plus 6 coups de foudre par pas de jeu |
 | Grosses balles (Héphaïstos, Éole) | — | rayon = 4 × max(0,4 ; `bulletSize`) px ; traverse `pierce` ennemis (999 = tous) |
+| Traînée de feu (Héphaïstos) | à chaque balle | un point de feu tous les 14 px parcourus ; rayon du point = 9 × max(0,5 ; `bulletSize`) × (1 + `fireTrailWidth`) px ; il s'éteint en 1,2 + `fireTrailDuration` s ; un ennemi qui le touche brûle 1 s à D_tir × `fireTrail` par seconde (la plus forte brûlure garde le dessus, elles ne s'additionnent pas) ; 600 points au plus sur l'écran (les plus vieux s'éteignent) |
 
 ---
 

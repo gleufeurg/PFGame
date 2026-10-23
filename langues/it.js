@@ -1389,5 +1389,20 @@ window.TRADUCTIONS.it = {
     "Dans le shop": "Nel negozio",
     "Débloque le lien d'orbite « {name} »": "Sblocca il legame d'orbita «{name}»",
     "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "Sblocca i legami d'orbita: Destra, poi Sinistra, poi Entrambi i lati, poi Opposto",
-    "À débloquer dans le shop : « Liens d'orbite »": "Da sbloccare nel negozio: «Legami d'orbita»"
+    "À débloquer dans le shop : « Liens d'orbite »": "Da sbloccare nel negozio: «Legami d'orbita»",
+    "TRAÎNÉE": "SCIA",
+    "Phlégéthon": "Flegetonte",
+    "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)": "Scia di fuoco: i proiettili di Efesto lasciano dietro di sé una scia di fuoco; i nemici che la toccano bruciano (40% dei danni del proiettile al secondo)",
+    "DURÉE": "DURATA",
+    "Pyrois": "Piroo",
+    "La traînée de feu dure 0.6 s de plus": "La scia di fuoco dura 0.6 s in più",
+    "BRÛLE": "BRUCIA",
+    "Aethon": "Etone",
+    "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde": "La scia di fuoco brucia più forte: +40% dei danni del proiettile al secondo",
+    "BRASIER": "ROGO",
+    "Pyriphlégéthon": "Piriflegetonte",
+    "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Rogo: la scia di fuoco è 2 volte più larga e dura 1 s in più",
+    "Brûlure de la traînée de feu (par seconde)": "Bruciatura della scia di fuoco (al secondo)",
+    "Durée de la traînée de feu": "Durata della scia di fuoco",
+    "Largeur de la traînée de feu": "Larghezza della scia di fuoco"
 };
