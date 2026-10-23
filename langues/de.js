@@ -1353,5 +1353,11 @@ window.TRADUCTIONS.de = {
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 Neuer Gegner: {name} in {seconds} s",
     "⚔️ Cri de guerre !": "⚔️ Kriegsschrei!",
     "Après {name} ({time})": "Nach {name} ({time})",
-    "Tout le jeu est débloqué": "Das ganze Spiel ist freigeschaltet"
+    "Tout le jeu est débloqué": "Das ganze Spiel ist freigeschaltet",
+    "Décor": "Kulisse",
+    "Aucun (couleur du thème)": "Keine (Themenfarbe)",
+    "Mer étoilée": "Sternenmeer",
+    "Mer en plein jour": "Meer bei Tag",
+    "Neige": "Schnee",
+    "Prairie": "Wiese"
 };
