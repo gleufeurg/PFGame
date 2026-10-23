@@ -7,7 +7,7 @@ Ce dossier est généré à partir des données du jeu (`index.html`) par `game-
 | Dieu | Attribut | Forme | Compétences | XP pour tout | Grande keystone | Fichier |
 |---|---|---|---|---|---|---|
 | **Héphaïstos** | 🔥 Feu | flamme | 35 | 1099 | Etna : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins | [01-hephaistos.md](01-hephaistos.md) |
-| **Poséidon** | 💧 Eau | vagues | 40 | 2182 | Océanos : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | [02-poseidon.md](02-poseidon.md) |
+| **Poséidon** | 💧 Eau | vagues | 40 | 2202 | Océanos : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | [02-poseidon.md](02-poseidon.md) |
 | **Déméter** | 🌿 Plante | fleur | 49 | 1171 | Gaïa : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | [03-demeter.md](03-demeter.md) |
 | **Éole** | 🌪️ Vent | souffles de vent | 45 | 2117 | Thyella : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins | [04-eole.md](04-eole.md) |
 | **Apollon** | ☀️ Lumière | soleil | 49 | 1455 | Chaos : +100% d'or gagné | [05-apollon.md](05-apollon.md) |

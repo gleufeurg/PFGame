@@ -6,7 +6,7 @@
 | Couleur | `#4da6ff` |
 | Forme de l'arbre | vagues (`waves`) |
 | Compétences | 40 (10 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 2182 |
+| XP pour tout débloquer | 2202 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°2) |
 
 ## ⭐ Grande keystone
@@ -35,8 +35,8 @@
 | **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 62 XP |
 | **Palémon** (RECUL) | +30 de recul de la vague | 86 XP |
 | **Nérée** (PV) | +3 PV max | 98 XP |
-| **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 74 XP |
-| **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 86 XP |
+| **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 80 XP |
+| **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 92 XP |
 
 ## Départ
 
@@ -53,8 +53,8 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Néréide** (PV) | +1 PV max | ×8 | 21 à 81 XP |
 | **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 9 à 85 XP |
 | **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 13 à 77 XP |
-| **Cymo** (POR) | +20 de portée | ×1 | 45 à 45 XP |
-| **Rhodé** (POR) | +30 de portée | ×1 | 53 à 53 XP |
+| **Cymo** (POR) | +20 de portée | ×1 | 49 à 49 XP |
+| **Rhodé** (POR) | +30 de portée | ×1 | 57 à 57 XP |
 
 ## ↔️ Lien « Opposé » vers Poséidon
 
