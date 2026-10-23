@@ -8,6 +8,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | --- | --- | --- |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
 | [skills/](skills/README.md) | les 12 skill trees, les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
+| [formules.md](formules.md) | toutes les formules : dégâts sur les ennemis, combos, pouvoirs, vie des ennemis, joueur, prix | écrit à la main |
 | [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
 | [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |
 | [interface.md](interface.md) | touches, commandes au doigt, petits écrans, sauvegarde, améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |

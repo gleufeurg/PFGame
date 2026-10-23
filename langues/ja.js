@@ -1352,5 +1352,6 @@ window.TRADUCTIONS.ja = {
     "⚠️ {name} arrive dans {seconds} s": "⚠️ {name}が{seconds}秒後に来るよ",
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 新しい敵：{name}が{seconds}秒後に来るよ",
     "⚔️ Cri de guerre !": "⚔️ 雄叫び！",
-    "Après {name} ({time})": "{name}の後（{time}）"
+    "Après {name} ({time})": "{name}の後（{time}）",
+    "Tout le jeu est débloqué": "ゲームのすべてを解放したよ"
 };

@@ -1352,5 +1352,6 @@ window.TRADUCTIONS.en = {
     "⚠️ {name} arrive dans {seconds} s": "⚠️ {name} arrives in {seconds} s",
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 New enemy: {name} in {seconds} s",
     "⚔️ Cri de guerre !": "⚔️ War cry!",
-    "Après {name} ({time})": "After {name} ({time})"
+    "Après {name} ({time})": "After {name} ({time})",
+    "Tout le jeu est débloqué": "The whole game is unlocked"
 };
