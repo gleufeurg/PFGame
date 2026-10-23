@@ -36,6 +36,10 @@ Images de référence pour les formes des skill trees, et les choix de style val
   - Dans l'interface : la bordure dorée des fenêtres brille et la lumière en fait le tour ; les grands titres sont écrits « en or » avec un reflet qui passe ; les boutons ont un léger halo doré.
   - Il n'est pas dans le « Cycle des thèmes ».
 
+## Les thèmes drapeaux
+
+Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.
+
 ## Les décors
 
 Réglage **« Décor »** des paramètres, sous le thème (clé `scene` du `localStorage`). Un décor remplace le fond uni du thème. Le thème garde les couleurs de l'interface : boutons, fenêtres, texte. Le décor choisit aussi la couleur des ombres et de l'orbite, pour qu'elles aillent avec son sol (`SCENES` dans `index.html`, partie `DÉCORS`).

@@ -1359,5 +1359,12 @@ window.TRADUCTIONS.de = {
     "Mer étoilée": "Sternenmeer",
     "Mer en plein jour": "Meer bei Tag",
     "Neige": "Schnee",
-    "Prairie": "Wiese"
+    "Prairie": "Wiese",
+    "Morceau": "Stück",
+    "Tous, à la suite": "Alle nacheinander",
+    "Orbite": "Umlaufbahn",
+    "Marée basse": "Ebbe",
+    "Neige lente": "Langsamer Schnee",
+    "Lanternes": "Laternen",
+    "Dernière étoile": "Letzter Stern"
 };
