@@ -6,16 +6,16 @@ Ce dossier est généré à partir des données du jeu (`index.html`) par `game-
 
 | Dieu | Attribut | Forme | Compétences | XP pour tout | Grande keystone | Fichier |
 |---|---|---|---|---|---|---|
-| **Héphaïstos** | 🔥 Feu | flamme | 35 | 1099 | Etna : +3 dégâts par balle | [01-hephaistos.md](01-hephaistos.md) |
-| **Poséidon** | 💧 Eau | vagues | 36 | 1924 | Océanos : +10 PV max | [02-poseidon.md](02-poseidon.md) |
-| **Déméter** | 🌿 Plante | fleur | 49 | 1171 | Gaïa : +1 PV regagné par ennemi tué | [03-demeter.md](03-demeter.md) |
-| **Éole** | 🌪️ Vent | souffles de vent | 45 | 2117 | Thyella : +1 balle par tir | [04-eole.md](04-eole.md) |
+| **Héphaïstos** | 🔥 Feu | flamme | 35 | 1099 | Etna : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins | [01-hephaistos.md](01-hephaistos.md) |
+| **Poséidon** | 💧 Eau | vagues | 36 | 1924 | Océanos : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | [02-poseidon.md](02-poseidon.md) |
+| **Déméter** | 🌿 Plante | fleur | 49 | 1171 | Gaïa : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | [03-demeter.md](03-demeter.md) |
+| **Éole** | 🌪️ Vent | souffles de vent | 45 | 2117 | Thyella : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins | [04-eole.md](04-eole.md) |
 | **Apollon** | ☀️ Lumière | soleil | 49 | 1455 | Chaos : +100% d'or gagné | [05-apollon.md](05-apollon.md) |
-| **Artémis** | 🌙 Lune | arc et flèche | 22 | 743 | Agrotera : +1 balle par tir | [06-artemis.md](06-artemis.md) |
+| **Artémis** | 🌙 Lune | arc et flèche | 22 | 743 | Agrotera : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle | [06-artemis.md](06-artemis.md) |
 | **Athéna** | 🛡️ Égide | couronne de laurier | 51 | 1677 | Parthénos : +100% d'XP gagnée | [07-athena.md](07-athena.md) |
-| **Zeus** | ⚡ Foudre | éclair | 30 | 1392 | Aithér : +4 dégâts par balle | [08-zeus.md](08-zeus.md) |
-| **Arès** | ⚔️ Guerre | épée | 27 | 1225 | Kères : +4 dégâts par balle | [09-ares.md](09-ares.md) |
-| **Aphrodite** | 💗 Amour | cœur | 39 | 1237 | Phanès : +0.5 PV régénérés par seconde | [10-aphrodite.md](10-aphrodite.md) |
+| **Zeus** | ⚡ Foudre | éclair | 30 | 1392 | Aithér : la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin | [08-zeus.md](08-zeus.md) |
+| **Arès** | ⚔️ Guerre | épée | 27 | 1225 | Kères : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort | [09-ares.md](09-ares.md) |
+| **Aphrodite** | 💗 Amour | cœur | 39 | 1237 | Phanès : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent | [10-aphrodite.md](10-aphrodite.md) |
 | **Hermès** | 🪶 Plume | aile | 27 | 1011 | Aion : +50% de vitesse d'attaque | [11-hermes.md](11-hermes.md) |
 | **Hestia** | 🕯️ Foyer | brasero | 27 | 1179 | Ananké : +8 PV max | [12-hestia.md](12-hestia.md) |
 

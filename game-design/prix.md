@@ -62,95 +62,95 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
 | 5 | Hestia | Départ | +1 dégât par balle |
-| 9 | Cyclope III, V | Mineure | +1% de chance de coup critique, chacun |
+| 9 | Cyclope III, V | Mineure | +10% de dégâts critiques, chacun |
 | 9 | Dactyle I, IV | Mineure | +0.5 dégât par balle, chacun |
 | 13 | Dactyle VI | Mineure | +0.5 dégât par balle |
-| 13 | Telchine IV | Mineure | +5% de vitesse d'attaque |
-| 17 | Telchine I, III | Mineure | +5% de vitesse d'attaque, chacun |
-| 20 | Aglaé | Notable | +30 de portée |
+| 13 | Telchine IV | Mineure | Balles 8% plus grosses |
+| 17 | Telchine I, III | Mineure | Balles 8% plus grosses, chacun |
+| 20 | Aglaé | Notable | Les balles traversent 1 ennemi de plus |
 | 20 | Prométhée | Notable | +3% de chance de coup critique |
-| 21 | Cyclope I, IV | Mineure | +1% de chance de coup critique, chacun |
+| 21 | Cyclope I, IV | Mineure | +10% de dégâts critiques, chacun |
 | 21 | Dactyle III, VIII | Mineure | +0.5 dégât par balle, chacun |
-| 21 | Telchine VI | Mineure | +5% de vitesse d'attaque |
-| 25 | Cyclope VI, VII | Mineure | +1% de chance de coup critique, chacun |
+| 21 | Telchine VI | Mineure | Balles 8% plus grosses |
+| 25 | Cyclope VI, VII | Mineure | +10% de dégâts critiques, chacun |
 | 25 | Dactyle V | Mineure | +0.5 dégât par balle |
-| 26 | Bia | Notable | +10% de vitesse d'attaque |
-| 26 | Talos | Notable | +20% de vitesse des balles |
-| 29 | Cyclope II | Mineure | +1% de chance de coup critique |
+| 26 | Bia | Notable | Les balles traversent 1 ennemi de plus |
+| 26 | Talos | Notable | +15% de dégâts |
+| 29 | Cyclope II | Mineure | +10% de dégâts critiques |
 | 29 | Dactyle II, VII | Mineure | +0.5 dégât par balle, chacun |
-| 29 | Telchine VII | Mineure | +5% de vitesse d'attaque |
-| 33 | Telchine II, V | Mineure | +5% de vitesse d'attaque, chacun |
-| 38 | Argès | Notable | +15% de vitesse d'attaque |
+| 29 | Telchine VII | Mineure | Balles 8% plus grosses |
+| 33 | Telchine II, V | Mineure | Balles 8% plus grosses, chacun |
+| 38 | Argès | Notable | +2 dégâts par balle |
 | 38 | Kédalion | Notable | +25% de dégâts critiques |
 | 50 | Kratos | Notable | +1 dégât par balle |
-| 50 | Stéropès | Notable | +10% de vitesse d'attaque |
-| 72 | Brontès | Keystone | +60% de dégâts critiques |
-| 72 | Cabires | Keystone | +1 balle par tir |
-| 74 | Hécate | Keystone | +3 dégâts contre les plantes |
-| 150 | Etna | Grande keystone | GRANDE KEYSTONE : +3 dégâts par balle |
+| 50 | Stéropès | Notable | Balles 20% plus grosses |
+| 72 | Brontès | Keystone | Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins |
+| 72 | Cabires | Keystone | Enclume : balles 2 fois plus grosses, mais 30% plus lentes |
+| 74 | Hécate | Keystone | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran |
+| 150 | Etna | Grande keystone | GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins |
 
 ### Poséidon (36 skills · 1 924 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Thétis | Départ | +2 PV max |
+| 5 | Thétis | Départ | Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s |
 | 9 | Océanide IV | Mineure | +0.02 PV régénérés par seconde |
-| 13 | Naïade IV | Mineure | +3% de chance d'esquiver un coup |
+| 13 | Naïade IV | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 21 | Néréide V | Mineure | +1 PV max |
 | 25 | Océanide II | Mineure | +0.02 PV régénérés par seconde |
 | 26 | Phorcys | Notable | Bouclier : bloque un coup, se recharge en 10 s |
 | 29 | Néréide II | Mineure | +1 PV max |
-| 33 | Naïade I, II | Mineure | +3% de chance d'esquiver un coup, chacun |
+| 33 | Naïade I, II | Mineure | Ennemis frêles : +2% de dégâts subis, chacun |
 | 33 | Océanide V | Mineure | +0.02 PV régénérés par seconde |
-| 37 | Naïade V | Mineure | +3% de chance d'esquiver un coup |
+| 37 | Naïade V | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 37 | Néréide III | Mineure | +1 PV max |
 | 37 | Océanide I | Mineure | +0.02 PV régénérés par seconde |
-| 38 | Glaucos | Notable | +1 dégât contre les ennemis de feu |
-| 44 | Galatée | Notable | +0.1 PV régénérés par seconde |
+| 38 | Glaucos | Notable | Ennemis frêles : +5% de dégâts subis |
+| 44 | Galatée | Notable | +40 de portée de la vague |
 | 45 | Néréide I, VI | Mineure | +1 PV max, chacun |
 | 45 | Océanide III | Mineure | +0.02 PV régénérés par seconde |
-| 49 | Naïade III | Mineure | +3% de chance d'esquiver un coup |
+| 49 | Naïade III | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 49 | Océanide VI | Mineure | +0.02 PV régénérés par seconde |
-| 53 | Naïade VI | Mineure | +3% de chance d'esquiver un coup |
+| 53 | Naïade VI | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 57 | Néréide IV | Mineure | +1 PV max |
 | 61 | Néréide VII | Mineure | +1 PV max |
 | 62 | Doris | Notable | +0.05 PV régénérés par seconde |
-| 62 | Leucothée | Notable | +2 dégâts contre les ennemis de feu |
-| 72 | Céto | Keystone | +6 PV max |
+| 62 | Leucothée | Notable | La vague revient 15% plus souvent |
+| 72 | Céto | Keystone | Ennemis frêles : +15% de dégâts subis |
 | 73 | Océanide VII | Mineure | +0.02 PV régénérés par seconde |
-| 77 | Naïade VII | Mineure | +3% de chance d'esquiver un coup |
+| 77 | Naïade VII | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 80 | Protée | Notable | +10% de chance d'esquiver un coup |
 | 81 | Néréide VIII | Mineure | +1 PV max |
-| 82 | Amphitrite | Keystone | +0.2 PV régénérés par seconde |
+| 82 | Amphitrite | Keystone | Bouclier des marées : chaque vague te rend invincible pendant 2 s |
 | 85 | Océanide VIII | Mineure | +0.02 PV régénérés par seconde |
-| 86 | Palémon | Notable | +0.1 PV regagné par ennemi tué |
-| 92 | Triton | Keystone | +1 balle par tir |
+| 86 | Palémon | Notable | +30 de recul de la vague |
+| 92 | Triton | Keystone | La vague revient 40% plus souvent et va 80 plus loin |
 | 98 | Nérée | Notable | +3 PV max |
-| 150 | Océanos | Grande keystone | GRANDE KEYSTONE : +10 PV max |
+| 150 | Océanos | Grande keystone | GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s |
 
 ### Déméter (49 skills · 1 171 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Perséphone | Départ | +0.1 PV regagné par ennemi tué |
+| 5 | Perséphone | Départ | Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s) |
 | 9 | Dryade I, IV, VII, X | Mineure | +0.05 PV regagné par ennemi tué, chacun |
 | 13 | Hamadryade I, II, IV, V, VII, VIII, X, XI | Mineure | +5% d'XP gagnée, chacun |
 | 17 | Dryade II, V, VIII, XI | Mineure | +0.05 PV regagné par ennemi tué, chacun |
-| 17 | Mélie I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII | Mineure | +1 dégât contre les ennemis d'eau, chacun |
-| 20 | Carpo | Notable | +15% d'XP gagnée |
+| 17 | Mélie I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII | Mineure | +8 de rayon du rayon de vie, chacun |
+| 20 | Carpo | Notable | Le rayon de vie revient 15% plus souvent |
 | 20 | Chloris | Notable | +0.05 PV régénérés par seconde |
-| 20 | Iasion | Notable | +1 dégât contre les ennemis d'eau |
+| 20 | Iasion | Notable | +25 de rayon du rayon de vie |
 | 20 | Thallo | Notable | +10% d'XP gagnée |
 | 21 | Dryade III, VI, IX, XII | Mineure | +0.05 PV regagné par ennemi tué, chacun |
 | 21 | Hamadryade III, VI, IX, XII | Mineure | +5% d'XP gagnée, chacun |
-| 38 | Anthée | Notable | +2.5 PV max |
+| 38 | Anthée | Notable | Les lianes immobilisent 1 s de plus |
 | 38 | Aristée | Notable | +0.2 PV regagnés par ennemi tué |
-| 38 | Auxo | Notable | +20% d'XP gagnée |
-| 38 | Eubouleus | Notable | +2 dégâts contre les ennemis d'eau |
-| 68 | Karpos | Keystone | +50% d'XP gagnée |
-| 68 | Pan | Keystone | +2 dégâts par balle |
-| 68 | Triptolème | Keystone | +0.3 PV regagnés par ennemi tué |
-| 150 | Gaïa | Grande keystone | GRANDE KEYSTONE : +1 PV regagné par ennemi tué |
+| 38 | Auxo | Notable | Le rayon de vie soigne 0.5 PV de plus |
+| 38 | Eubouleus | Notable | +1 liane à chaque rayon de vie |
+| 68 | Karpos | Keystone | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) |
+| 68 | Pan | Keystone | +60 de rayon du rayon de vie et +2 lianes |
+| 68 | Triptolème | Keystone | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent |
+| 150 | Gaïa | Grande keystone | GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent |
 
 ### Éole (45 skills · 2 117 XP)
 
@@ -159,40 +159,40 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 5 | Zéphyr | Départ | +10% de vitesse d'attaque |
 | 9 | Aura I | Mineure | +15 de portée |
 | 13 | Héliade I | Mineure | +10% de vitesse des balles |
-| 21 | Anémoï I | Mineure | +5% de vitesse d'attaque |
+| 21 | Anémoï I | Mineure | +6% de vitesse d'attaque |
 | 21 | Héliade V | Mineure | +10% de vitesse des balles |
-| 25 | Anémoï VIII | Mineure | +5% de vitesse d'attaque |
+| 25 | Anémoï VIII | Mineure | +6% de vitesse d'attaque |
 | 25 | Aura II, V, IX | Mineure | +15 de portée, chacun |
 | 26 | Éos | Notable | +30 de portée |
-| 29 | Anémoï V | Mineure | +5% de vitesse d'attaque |
+| 29 | Anémoï V | Mineure | +6% de vitesse d'attaque |
 | 32 | Euros | Notable | +2 dégâts contre les plantes |
 | 33 | Aura VI | Mineure | +15 de portée |
 | 33 | Héliade II, IX | Mineure | +10% de vitesse des balles, chacun |
-| 37 | Anémoï II, IX | Mineure | +5% de vitesse d'attaque, chacun |
+| 37 | Anémoï II, IX | Mineure | +6% de vitesse d'attaque, chacun |
 | 37 | Héliade VI | Mineure | +10% de vitesse des balles |
 | 38 | Borée | Notable | +15% de vitesse d'attaque |
-| 41 | Anémoï VI | Mineure | +5% de vitesse d'attaque |
+| 41 | Anémoï VI | Mineure | +6% de vitesse d'attaque |
 | 41 | Aura III, X | Mineure | +15 de portée, chacun |
-| 44 | Héméra | Notable | +50 de portée |
+| 44 | Héméra | Notable | +20% de vitesse d'attaque |
 | 44 | Phosphoros | Notable | +30% de vitesse des balles |
 | 45 | Aura VII | Mineure | +15 de portée |
 | 45 | Héliade III | Mineure | +10% de vitesse des balles |
 | 49 | Héliade X | Mineure | +10% de vitesse des balles |
-| 53 | Anémoï III, X | Mineure | +5% de vitesse d'attaque, chacun |
+| 53 | Anémoï III, X | Mineure | +6% de vitesse d'attaque, chacun |
 | 53 | Héliade VII | Mineure | +10% de vitesse des balles |
-| 57 | Anémoï VII | Mineure | +5% de vitesse d'attaque |
+| 57 | Anémoï VII | Mineure | +6% de vitesse d'attaque |
 | 57 | Aura IV, XI | Mineure | +15 de portée, chacun |
 | 61 | Aura VIII | Mineure | +15 de portée |
 | 61 | Héliade IV, XI | Mineure | +10% de vitesse des balles, chacun |
-| 65 | Anémoï IV | Mineure | +5% de vitesse d'attaque |
+| 65 | Anémoï IV | Mineure | +6% de vitesse d'attaque |
 | 65 | Héliade VIII | Mineure | +10% de vitesse des balles |
 | 68 | Hespéros | Notable | +10% de vitesse d'attaque |
-| 72 | Séléné | Keystone | +100 de portée |
+| 72 | Séléné | Keystone | Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins |
 | 74 | Iris | Notable | +20% de vitesse des balles |
 | 74 | Notos | Notable | +1 dégât contre les plantes |
-| 90 | Astraïos | Keystone | +30% de vitesse d'attaque |
+| 90 | Astraïos | Keystone | Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites |
 | 92 | Phaéton | Keystone | +1 balle par tir |
-| 150 | Thyella | Grande keystone | GRANDE KEYSTONE : +1 balle par tir |
+| 150 | Thyella | Grande keystone | GRANDE KEYSTONE : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins |
 
 ### Apollon (49 skills · 1 455 XP)
 
@@ -232,26 +232,26 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Léto | Départ | +20 de portée |
+| 5 | Léto | Départ | Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle) |
 | 9 | Nymphe IV | Mineure | +10 de portée |
 | 9 | Pléione II, III | Mineure | +8% de vitesse des balles, chacun |
 | 14 | Britomartis | Notable | +1 dégât par balle |
 | 14 | Callisto | Notable | +10% de vitesse d'attaque |
 | 17 | Nymphe I, III | Mineure | +10 de portée, chacun |
 | 17 | Oréade II | Mineure | +0.5 dégât par balle |
-| 20 | Cyrène | Notable | +2 dégâts contre les ennemis d'air |
+| 20 | Cyrène | Notable | La flèche de lune revient 15% plus souvent |
 | 21 | Pléione I | Mineure | +8% de vitesse des balles |
 | 25 | Nymphe II | Mineure | +10 de portée |
 | 25 | Oréade I | Mineure | +0.5 dégât par balle |
 | 29 | Oréade III | Mineure | +0.5 dégât par balle |
-| 32 | Aréthuse | Notable | +30 de portée |
+| 32 | Aréthuse | Notable | Flèche de lune : +1 fois les dégâts d'une balle |
 | 32 | Opis | Notable | +20% de vitesse des balles |
 | 38 | Atalante | Notable | +15% de vitesse d'attaque |
 | 56 | Procris | Notable | +1 dégât par balle |
-| 64 | Hippolyte | Keystone | +80 de portée |
-| 64 | Orion | Keystone | +2 dégâts par balle |
-| 76 | Actéon | Keystone | +25% de vitesse d'attaque |
-| 150 | Agrotera | Grande keystone | GRANDE KEYSTONE : +1 balle par tir |
+| 64 | Hippolyte | Keystone | Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent |
+| 64 | Orion | Keystone | Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches |
+| 76 | Actéon | Keystone | +1 rebond et +25% de vitesse d'attaque |
+| 150 | Agrotera | Grande keystone | GRANDE KEYSTONE : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle |
 
 ### Athéna (51 skills · 1 677 XP)
 
@@ -299,103 +299,103 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Thémis | Départ | +1 dégât par balle |
+| 5 | Thémis | Départ | Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur |
 | 9 | Astrapé IV | Mineure | +0.5 dégât par balle |
-| 9 | Kéraunos III | Mineure | +1 dégât contre les ennemis d'air |
+| 9 | Kéraunos III | Mineure | Éclairs : +5% de dégâts |
 | 13 | Brontè IV | Mineure | +5% de vitesse d'attaque |
 | 17 | Brontè III | Mineure | +5% de vitesse d'attaque |
 | 20 | Ganymède | Notable | +10% de vitesse d'attaque |
-| 21 | Kéraunos IV | Mineure | +1 dégât contre les ennemis d'air |
+| 21 | Kéraunos IV | Mineure | Éclairs : +5% de dégâts |
 | 25 | Astrapé III | Mineure | +0.5 dégât par balle |
-| 26 | Hébé | Notable | +2 PV max |
+| 26 | Hébé | Notable | +1 éclair par balle |
 | 29 | Astrapé V | Mineure | +0.5 dégât par balle |
-| 29 | Kéraunos II | Mineure | +1 dégât contre les ennemis d'air |
-| 32 | Horkos | Notable | +5% de chance d'esquiver un coup |
+| 29 | Kéraunos II | Mineure | Éclairs : +5% de dégâts |
+| 32 | Horkos | Notable | Éclairs : +10% de dégâts |
 | 33 | Brontè II | Mineure | +5% de vitesse d'attaque |
 | 37 | Brontè V | Mineure | +5% de vitesse d'attaque |
 | 38 | Némésis | Notable | +1 dégât par balle |
 | 41 | Astrapé II | Mineure | +0.5 dégât par balle |
-| 41 | Kéraunos V | Mineure | +1 dégât contre les ennemis d'air |
+| 41 | Kéraunos V | Mineure | Éclairs : +5% de dégâts |
 | 49 | Astrapé VI | Mineure | +0.5 dégât par balle |
-| 49 | Kéraunos I | Mineure | +1 dégât contre les ennemis d'air |
+| 49 | Kéraunos I | Mineure | Éclairs : +5% de dégâts |
 | 53 | Brontè VI | Mineure | +5% de vitesse d'attaque |
 | 57 | Brontè I | Mineure | +5% de vitesse d'attaque |
 | 65 | Astrapé I | Mineure | +0.5 dégât par balle |
-| 68 | Eunomia | Notable | +0.05 PV régénérés par seconde |
-| 68 | Io | Notable | +20% de vitesse des balles |
-| 74 | Olympios | Keystone | +20% de vitesse d'attaque |
+| 68 | Eunomia | Notable | +40 de portée des éclairs |
+| 68 | Io | Notable | Éclairs : +15% de dégâts |
+| 74 | Olympios | Keystone | +2 éclairs par balle et +40 de portée des éclairs |
 | 76 | Ammon | Keystone | +1 balle par tir |
-| 80 | Eiréné | Notable | +2 PV max |
-| 86 | Aétos | Keystone | +2 dégâts par balle |
+| 80 | Eiréné | Notable | +1 éclair par balle |
+| 86 | Aétos | Keystone | Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (3 fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour |
 | 92 | Dikè | Notable | +1 dégât par balle |
-| 150 | Aithér | Grande keystone | GRANDE KEYSTONE : +4 dégâts par balle |
+| 150 | Aithér | Grande keystone | GRANDE KEYSTONE : la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin |
 
 ### Arès (27 skills · 1 225 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Ényo | Départ | +1 dégât par balle |
-| 14 | Androktasiai | Notable | +2 dégâts contre les ennemis d'eau |
+| 5 | Ényo | Départ | Cri de guerre : toutes les 12 s, toi et toutes les planètes faites +15% de dégâts, +4% de chance de critique et +20% de dégâts critiques pendant 4 s |
+| 14 | Androktasiai | Notable | Cri de guerre 50% plus fort |
 | 14 | Antiope | Notable | +10% de vitesse d'attaque |
-| 17 | Deimos V | Mineure | +1 dégât contre les ennemis de feu |
+| 17 | Deimos V | Mineure | Cri de guerre : +0.3 s |
 | 21 | Alala IV | Mineure | +0.05 PV regagné par ennemi tué |
-| 25 | Deimos IV | Mineure | +1 dégât contre les ennemis de feu |
+| 25 | Deimos IV | Mineure | Cri de guerre : +0.3 s |
 | 25 | Phobos V | Mineure | +0.5 dégât par balle |
-| 29 | Deimos II | Mineure | +1 dégât contre les ennemis de feu |
+| 29 | Deimos II | Mineure | Cri de guerre : +0.3 s |
 | 29 | Phobos IV | Mineure | +0.5 dégât par balle |
 | 37 | Alala III | Mineure | +0.05 PV regagné par ennemi tué |
 | 37 | Phobos II | Mineure | +0.5 dégât par balle |
 | 41 | Alala I | Mineure | +0.05 PV regagné par ennemi tué |
-| 41 | Deimos III | Mineure | +1 dégât contre les ennemis de feu |
-| 44 | Otréra | Notable | +2 PV max |
+| 41 | Deimos III | Mineure | Cri de guerre : +0.3 s |
+| 44 | Otréra | Notable | Le cri de guerre revient 15% plus souvent |
 | 44 | Penthésilée | Notable | +0.2 PV regagné par ennemi tué |
-| 49 | Deimos I | Mineure | +1 dégât contre les ennemis de feu |
+| 49 | Deimos I | Mineure | Cri de guerre : +0.3 s |
 | 49 | Phobos III | Mineure | +0.5 dégât par balle |
 | 50 | Kydoimos | Notable | +10% de vitesse d'attaque |
 | 50 | Polémos | Notable | +1 dégât par balle |
 | 53 | Alala II | Mineure | +0.05 PV regagné par ennemi tué |
 | 53 | Phobos I | Mineure | +0.5 dégât par balle |
-| 64 | Phlégyas | Keystone | +0.5 PV regagné par ennemi tué |
-| 68 | Makhai | Notable | +2 dégâts contre les ennemis de feu |
+| 64 | Phlégyas | Keystone | Le cri de guerre revient 30% plus souvent et dure 1 s de plus |
+| 68 | Makhai | Notable | Cri de guerre : +1 s |
 | 68 | Éris | Notable | +1 dégât par balle |
-| 74 | Kyknos | Keystone | +2 dégâts par balle |
-| 74 | Œnomaos | Keystone | +25% de vitesse d'attaque |
-| 150 | Kères | Grande keystone | GRANDE KEYSTONE : +4 dégâts par balle |
+| 74 | Kyknos | Keystone | Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours |
+| 74 | Œnomaos | Keystone | Cri de guerre 2 fois plus fort |
+| 150 | Kères | Grande keystone | GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort |
 
 ### Aphrodite (39 skills · 1 237 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Éros | Départ | +2 PV max |
+| 5 | Éros | Départ | Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) |
 | 9 | Charis I | Mineure | +1 PV max |
 | 9 | Pothos VI | Mineure | +2% de chance d'esquiver un coup |
 | 13 | Charis VII | Mineure | +1 PV max |
-| 13 | Himéros I, VI, IX | Mineure | +0.02 PV régénérés par seconde, chacun |
+| 13 | Himéros I, VI, IX | Mineure | +6 de rayon de charme, chacun |
 | 17 | Charis VI, IX | Mineure | +1 PV max, chacun |
-| 17 | Himéros VII | Mineure | +0.02 PV régénérés par seconde |
+| 17 | Himéros VII | Mineure | +6 de rayon de charme |
 | 17 | Pothos I | Mineure | +2% de chance d'esquiver un coup |
 | 21 | Charis VIII | Mineure | +1 PV max |
-| 21 | Himéros VIII | Mineure | +0.02 PV régénérés par seconde |
+| 21 | Himéros VIII | Mineure | +6 de rayon de charme |
 | 25 | Charis II, IV | Mineure | +1 PV max, chacun |
 | 25 | Pothos III, V, VII, VIII | Mineure | +2% de chance d'esquiver un coup, chacun |
-| 26 | Hermaphrodite | Notable | +5% de chance d'esquiver un coup |
-| 29 | Himéros II, V | Mineure | +0.02 PV régénérés par seconde, chacun |
-| 32 | Adonis | Notable | +2 PV max |
+| 26 | Hermaphrodite | Notable | Charme : +0.5 s |
+| 29 | Himéros II, V | Mineure | +6 de rayon de charme, chacun |
+| 32 | Adonis | Notable | +20 de rayon de charme |
 | 32 | Euphrosyne | Notable | +3 PV max |
 | 32 | Hymen | Notable | +0.2 PV regagné par ennemi tué |
-| 32 | Peitho | Notable | +0.05 PV régénérés par seconde |
-| 32 | Rhodos | Notable | +0.05 PV régénérés par seconde |
+| 32 | Peitho | Notable | Charme : +0.5 s |
+| 32 | Rhodos | Notable | Le rayon de charme revient 15% plus souvent |
 | 33 | Charis V | Mineure | +1 PV max |
-| 33 | Himéros III, IV | Mineure | +0.02 PV régénérés par seconde, chacun |
+| 33 | Himéros III, IV | Mineure | +6 de rayon de charme, chacun |
 | 33 | Pothos II | Mineure | +2% de chance d'esquiver un coup |
 | 37 | Charis III | Mineure | +1 PV max |
 | 37 | Pothos IV | Mineure | +2% de chance d'esquiver un coup |
 | 44 | Antéros | Notable | +5% de chance d'esquiver un coup |
-| 44 | Psyché | Notable | +0.1 PV régénérés par seconde |
-| 62 | Cythérée | Keystone | +10% de chance d'esquiver un coup |
-| 76 | Ourania | Keystone | +0.2 PV régénérés par seconde |
-| 76 | Pandémos | Keystone | +5 PV max |
-| 150 | Phanès | Grande keystone | GRANDE KEYSTONE : +0.5 PV régénérés par seconde |
+| 44 | Psyché | Notable | Le rayon de charme revient 15% plus souvent |
+| 62 | Cythérée | Keystone | Le rayon de charme revient 40% plus souvent |
+| 76 | Ourania | Keystone | Les ennemis charmés blessent 2 fois plus leurs alliés |
+| 76 | Pandémos | Keystone | Foule : +50 de rayon de charme |
+| 150 | Phanès | Grande keystone | GRANDE KEYSTONE : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent |
 
 ### Hermès (27 skills · 1 011 XP)
 

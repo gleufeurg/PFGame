@@ -16,7 +16,8 @@ Exemple : les +30 de portée d'Aglaé (Héphaïstos) n'agrandissent que la port�
 - **Stats de tir** (`SHOOTER_STATS`) : dégâts, dégâts contre un élément, vitesse d'attaque, portée, vitesse des balles, balles par tir, chance et dégâts critiques, vie par touche, PV max par touche, effet de combo au hasard.
 - **Stats du joueur seulement** : PV max, régénération, esquive, bouclier, recharge du bouclier, vie par ennemi tué, or gagné, XP gagnée.
 
-> **Plus tard (pas encore fait) :** des skills ou des pouvoirs qui permettront à une planète de profiter des stats d'une autre planète.
+> **Déjà fait :** le cri de guerre d'Arès donne des dégâts et des critiques à toutes les planètes (voir « Les pouvoirs des dieux »).
+> **Plus tard (pas encore fait) :** d'autres pouvoirs qui permettront à une planète de profiter des stats d'une autre planète.
 
 ## Les stats de départ
 
@@ -29,6 +30,25 @@ Exemple : les +30 de portée d'Aglaé (Héphaïstos) n'agrandissent que la port�
 | Balles par tir | 1 | 1 |
 | Chance de critique | 0 % | 0 % |
 | Dégâts critiques | 200 % | 200 % |
+
+## Les pouvoirs des dieux
+
+Chaque dieu a sa façon de se battre, que son skill tree construit petit à petit : la compétence de **départ** donne déjà une version faible du pouvoir, et les keystones et la grande keystone le rendent énorme. Ce sont des stats de planète en plus (`PLANET_POWER_STATS`), qui ne vont qu'à la planète de ce dieu. Le détail de chaque arbre est dans [skills/](skills/README.md).
+
+| Dieu | Arbre rempli | Comment ça marche |
+| --- | --- | --- |
+| Héphaïstos | tire lentement une énorme balle lente, qui fait de très gros dégâts et traverse tous les ennemis jusqu'au bord de l'écran | stats `bulletSize` (taille), `damageMultiplier` (multiplicateur de dégâts), `pierce` (999 = tous) ; sa vitesse d'attaque et la vitesse de ses balles baissent |
+| Éole | tire extrêmement vite, de petites balles faibles | grosse vitesse d'attaque, `damageMultiplier` et `bulletSize` en baisse |
+| Aphrodite | une onde rose autour d'elle charme les ennemis (pas les super ennemis) : ils font demi-tour et blessent leurs alliés | toutes les 8 s ; `charmRadius`, `charmDuration`, `charmPower` |
+| Arès | cri de guerre : le joueur et toutes les planètes font plus de dégâts et de critiques pendant quelques secondes ; et chaque ennemi qu'il tue lui donne des dégâts **pour toujours** | toutes les 12 s ; par point de cri : +15 % de dégâts, +4 % de critique, +20 % de dégâts critiques. Soif de gloire : +0,001 à +0,003 dégât par ennemi tué, sans limite, gardé dans la sauvegarde (`killStacks`) |
+| Déméter | un rayon de vie te soigne, affaiblit les ennemis autour d'elle (+50 % de dégâts subis pendant 3 s), et fait pousser des lianes sous quelques ennemis, qui les immobilisent | toutes les 9 s ; `bloomHeal`, `bloomRadius`, `vineCount`, `vineDuration` |
+| Artémis | ses balles rebondissent sur d'autres ennemis ; régulièrement, une grande flèche de lune transperce tous les ennemis sur son passage | toutes les 6 s, vers l'ennemi le plus solide à portée ; `moonArrow` (× les dégâts d'une balle), `bounce` |
+| Poséidon | une vague part du joueur, repousse les ennemis, les ralentit et les rend frêles (+35 % de dégâts subis, et plus) ; elle donne un bouclier des marées (invincible 2 à 3 s) | toutes les 10 s ; `tideWave`, `waveRadius`, `fragility`, `tideShield` |
+| Zeus | chaque balle envoie des éclairs vers les ennemis proches, qui deviennent conducteurs ; un conducteur touché par un 2e éclair reçoit la foudre, qui électrocute les ennemis autour (réaction en chaîne) | `chainArcs`, `arcDamage`, `arcRange`, `boltDamage`, `boltRadius`. La foudre en chaîne est étalée sur plusieurs images (6 par pas de jeu au plus) pour ne pas faire ramer |
+
+« Revient plus souvent » (`abilityHaste`) : le temps entre deux pouvoirs est divisé par (1 + bonus). +100 % = 2 fois plus souvent.
+
+Apollon, Athéna, Hermès et Hestia n'ont pas encore de pouvoir : leurs arbres donnent seulement des stats.
 
 ## Balles par tir : un « mur »
 

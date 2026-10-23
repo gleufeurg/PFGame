@@ -29,24 +29,25 @@ Il y a 4 ennemis normaux, un par élément, et chacun a 25 % de chances d'appara
 
 ## L'apparition
 
-Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,25 s atteint vers 4 min 30. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
+Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,35 s atteint vers 8 min. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
 
 **Avec la caméra :** quand la portée du joueur dépasse l'écran, la caméra dézoome pour que la portée occupe environ 95 % de la demi-largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`). Les ennemis naissent toujours hors de l'écran visible. Au-delà de 1000 px de portée (`CAMERA_MAX_RANGE`), la caméra ne dézoome plus, et les ennemis naissent n'importe où entre le bord de l'écran et 1000 px du centre.
 
 | Temps de jeu | Écart entre deux ennemis | Ennemis par minute |
 | --- | --- | --- |
-| 0:00 | 1,6 s | 38 |
-| 0:30 | 1,0 s | 60 |
-| 1:00 | 0,73 s | 83 |
-| 2:00 | 0,47 s | 128 |
-| 3:00 | 0,35 s | 173 |
-| 4:30 et après | 0,25 s | 240 |
+| 0:00 | 2,4 s | 25 |
+| 0:30 | 1,76 s | 34 |
+| 1:00 | 1,4 s | 43 |
+| 2:00 | 0,98 s | 61 |
+| 3:00 | 0,76 s | 79 |
+| 5:00 | 0,52 s | 115 |
+| 8:00 et après | 0,35 s | 171 |
 
-Formule : écart = 1,6 ÷ (1 + 0,02 × secondes de jeu), jamais moins de 0,25 s. Les réglages sont `ENEMY_SPAWN_INTERVAL_START`, `ENEMY_SPAWN_RAMP`, `ENEMY_SPAWN_INTERVAL_MIN` et `ENEMY_FIRST_SPAWN_DELAY`.
+Formule : écart = 2,4 ÷ (1 + 0,012 × secondes de jeu), jamais moins de 0,35 s. Les réglages sont `ENEMY_SPAWN_INTERVAL_START`, `ENEMY_SPAWN_RAMP`, `ENEMY_SPAWN_INTERVAL_MIN` et `ENEMY_FIRST_SPAWN_DELAY`.
 
 ## Les mouvements spéciaux
 
-Aucun mouvement spécial avant 1:00. Chacun se débloque à son heure : à ce moment-là, un premier ennemi avec ce mouvement apparaît tout de suite, avec le message « Nouveau mouvement », pour montrer au joueur ce qui l'attend (`MOVEMENT_UNLOCKS`, `MOVEMENT_VARIATION_TIME`).
+Aucun mouvement spécial avant 1:00. Chacun se débloque à son heure : un premier ennemi avec ce mouvement arrive **seul**, après une petite alerte, pour montrer au joueur ce qui l'attend (voir « Les arrivées spéciales » plus bas, `MOVEMENT_UNLOCKS`, `MOVEMENT_VARIATION_TIME`).
 
 | Temps de jeu | Ce qui change |
 | --- | --- |
@@ -68,7 +69,7 @@ Les réglages communs sont `ENEMY_WAVE_AMPLITUDE` (40 px), `ENEMY_WAVE_FREQUENCY
 
 ## Les super ennemis
 
-Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, avec une alerte « X arrive ! ». Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive. Leur vie ne monte pas avec le temps.
+Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, **seul**, après une alerte (voir « Les arrivées spéciales » ci-dessous). Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive. Leur vie ne monte pas avec le temps.
 
 | Arrivée | Super ennemi | Élément | Vie (PV) | Vitesse (px/s) | Taille (rayon, px) | Pointes | Dégâts s'il touche (intact) | Or | XP |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -82,9 +83,26 @@ Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, avec une aler
 | 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 1 200 | 260 | 260 |
 
 - **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie.
-- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`).
+- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Lui aussi arrive seul, après une alerte plus courte.
+- **Paliers :** chaque super ennemi vaincu débloque un bouton dans le menu de mort, pour recommencer juste après lui (voir [interface.md](interface.md)).
 - **La liste des vaincus est sauvegardée** dans le navigateur, d'une partie à l'autre.
 - **Son élément compte** pour les bonus des skills « +X dégâts contre les ennemis de feu », etc.
+
+## Les arrivées spéciales : alerte, puis seul
+
+Pour qu'on voie bien un super ennemi ou le premier ennemi d'un nouveau mouvement, il n'arrive jamais au milieu de la foule :
+
+1. **Alerte** : un bandeau en haut de l'écran (« ⚠️ Cerbère arrive dans 7 s », rouge ; « 🌀 Nouvel ennemi : Spirale dans 3 s », jaune) et une flèche qui palpite au bord de l'écran, du côté d'où il va venir. **Plus aucun ennemi n'apparaît** pendant l'alerte : le joueur a le temps de nettoyer l'écran.
+2. **Il arrive seul** : les ennemis normaux attendent encore un peu, ou jusqu'à ce qu'il soit tué.
+3. Si deux arrivées tombent en même temps (Cerbère et la Spirale à 1:00), la deuxième attend que la première soit finie, avec toute son alerte.
+
+| Arrivée | Alerte | Seul pendant |
+| --- | --- | --- |
+| Super ennemi jamais vaincu | 8 s (`BOSS_WARNING_TIME`) | 10 s ou jusqu'à sa mort (`BOSS_SOLO_TIME`) |
+| Super ennemi déjà vaincu qui revient | 5 s (`BOSS_REPEAT_WARNING_TIME`) | 10 s ou jusqu'à sa mort |
+| Premier ennemi d'un nouveau mouvement | 3 s (`MOVEMENT_WARNING_TIME`) | 5 s ou jusqu'à sa mort (`MOVEMENT_SOLO_TIME`) |
+
+**Sauter dans le temps** : impossible pendant une alerte (message), et un saut s'arrête juste avant la prochaine alerte prévue.
 
 ## Les effets que subissent les ennemis
 
@@ -103,7 +121,10 @@ Les combos et fusions d'orbite des planètes ajoutent des effets aux balles (le 
 | Attiré | aspiré vers un point (vortex, trou noir) | vortex 110 px de rayon ; trou noir 150 px pendant 2 s | oui |
 | Confus | repart en arrière | 1,5 s | non |
 | Renvoyé | retourne au bord de l'écran | 25 % de chances par coup | non |
-| Charmé | fait demi-tour et blesse les ennemis qu'il touche | 2,5 s, 3 dégâts par seconde | non |
+| Charmé | fait demi-tour et blesse les ennemis qu'il touche | combo : 2,5 s, 3 dégâts par seconde ; rayon d'Aphrodite : selon son arbre, dégâts × la montée de vie des ennemis | non |
+| Immobilisé (liane de Déméter) | immobile, anneau vert | 2,5 s + bonus de l'arbre | non |
+| Frêle (vague de Poséidon) | subit plus de dégâts, anneau bleu en pointillés | +35 % (et plus avec l'arbre) pendant 4 s ; s'ajoute à « affaibli » | oui |
+| Conducteur (éclair de Zeus) | un 2e éclair fait tomber la foudre sur lui ; petites étincelles bleues | 6 s | oui |
 | Exécuté | tué d'un coup | sous 20 % de sa vie | non |
 
 Les autres effets sont des dégâts en plus, sans état : explosion (0,8 × dans 70 px), rebond sur un autre ennemi (0,7 ×, 160 px max), balle qui se divise (0,5 ×), critique (combo : +20 % de chances et +100 % de dégâts critiques, voir plus bas), balle qui traverse un ennemi, météore (3 ×), foudre sur 2 ennemis au hasard (1,5 ×), éclats de nova (6 × 0,6), écho (2e coup 0,5 s plus tard), braises et flaque toxique au sol (45 px, 3 s) et graine explosive (2,5 ×, dure 6 s).

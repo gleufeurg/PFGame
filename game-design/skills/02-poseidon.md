@@ -13,34 +13,34 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Océanos** (MER) | +10 PV max | 150 XP |
+| **Océanos** (MER) | ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Amphitrite** (OCÉAN) | +0.2 PV régénérés par seconde | 82 XP |
-| **Céto** (ABYSS) | +6 PV max | 72 XP |
-| **Triton** (VAGUE) | +1 balle par tir | 92 XP |
+| **Amphitrite** (OCÉAN) | Bouclier des marées : chaque vague te rend invincible pendant 2 s | 82 XP |
+| **Céto** (ABYSS) | Ennemis frêles : +15% de dégâts subis | 72 XP |
+| **Triton** (VAGUE) | La vague revient 40% plus souvent et va 80 plus loin | 92 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Doris** (REG) | +0.05 PV régénérés par seconde | 62 XP |
-| **Galatée** (REG) | +0.1 PV régénérés par seconde | 44 XP |
+| **Galatée** (VAGUE) | +40 de portée de la vague | 44 XP |
 | **Protée** (ESQ) | +10% de chance d'esquiver un coup | 80 XP |
 | **Phorcys** (BOUC) | Bouclier : bloque un coup, se recharge en 10 s | 26 XP |
-| **Glaucos** (EAU) | +1 dégât contre les ennemis de feu | 38 XP |
-| **Leucothée** (EAU) | +2 dégâts contre les ennemis de feu | 62 XP |
-| **Palémon** (VIE) | +0.1 PV regagné par ennemi tué | 86 XP |
+| **Glaucos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 38 XP |
+| **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 62 XP |
+| **Palémon** (RECUL) | +30 de recul de la vague | 86 XP |
 | **Nérée** (PV) | +3 PV max | 98 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thétis** (PV) | +2 PV max | 5 XP |
+| **Thétis** (VAGUE) | Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s | 5 XP |
 
 ## Petites compétences
 
@@ -50,7 +50,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Néréide** (PV) | +1 PV max | ×8 | 21 à 81 XP |
 | **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 9 à 85 XP |
-| **Naïade** (ESQ) | +3% de chance d'esquiver un coup | ×7 | 13 à 77 XP |
+| **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 13 à 77 XP |
 
 ## ↔️ Lien « Opposé » vers Poséidon
 

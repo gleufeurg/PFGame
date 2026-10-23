@@ -13,22 +13,22 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thyella** (ŒIL) | +1 balle par tir | 150 XP |
+| **Thyella** (TEMPÊTE) | +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Séléné** (ŒIL) | +100 de portée | 72 XP |
+| **Séléné** (RAFALE) | Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins | 72 XP |
 | **Phaéton** (x2) | +1 balle par tir | 92 XP |
-| **Astraïos** (OURAG) | +30% de vitesse d'attaque | 90 XP |
+| **Astraïos** (OURAG) | Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites | 90 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Éos** (POR) | +30 de portée | 26 XP |
-| **Héméra** (POR) | +50 de portée | 44 XP |
+| **Héméra** (VIT) | +20% de vitesse d'attaque | 44 XP |
 | **Iris** (VEL) | +20% de vitesse des balles | 74 XP |
 | **Borée** (VIT) | +15% de vitesse d'attaque | 38 XP |
 | **Notos** (AIR) | +1 dégât contre les plantes | 74 XP |
@@ -50,7 +50,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Aura** (POR) | +15 de portée | ×11 | 9 à 61 XP |
 | **Héliade** (VEL) | +10% de vitesse des balles | ×11 | 13 à 65 XP |
-| **Anémoï** (VIT) | +5% de vitesse d'attaque | ×10 | 21 à 65 XP |
+| **Anémoï** (VIT) | +6% de vitesse d'attaque | ×10 | 21 à 65 XP |
 
 ## ↔️ Lien « Opposé » vers Éole
 

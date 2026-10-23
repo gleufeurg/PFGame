@@ -82,6 +82,14 @@ Les boutons pas encore achetés restent visibles avec un cadenas. Sur la branche
 Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 >>>>>>> portfolio
 
+## Le menu de mort : les paliers
+
+Sous « Rejouer », une section **Paliers** montre un bouton par super ennemi déjà vaincu, de sa couleur : « Après Cerbère (1:02) », « Après Hydre de Lerne (2:02) »… Il relance une partie qui commence directement 2 s après l'heure de ce super ennemi (`CHECKPOINT_OFFSET`). C'est un simple point de départ : rien n'apparaît pendant le temps sauté, donc il ne rapporte ni or ni XP (contrairement à « Sauter dans le temps », qui fait arriver tous les ennemis d'un coup). Les mouvements déjà débloqués à ce moment-là sont là directement, sans alerte. La section est cachée tant qu'aucun super ennemi n'est vaincu. « Rejouer » (ou la touche R) recommence toujours à 0:00.
+
+## L'alerte des ennemis spéciaux
+
+Avant un super ennemi ou le premier ennemi d'un nouveau mouvement : un bandeau sous le message temporaire (rouge pour un super ennemi, jaune pour un nouvel ennemi) avec un compte à rebours, et une flèche qui palpite au bord de l'écran, du côté d'où il va arriver. Détails dans [ennemis.md](ennemis.md).
+
 ## La fenêtre des skills
 
 - **Passer d'un dieu à l'autre :** flèches **‹ ›** de chaque côté du nom du dieu, **glisser le doigt** (ou la souris) vers la gauche ou la droite sur la fenêtre (en dehors de l'arbre, où glisser sert à le déplacer), ou **flèches ← →** du clavier. On parcourt les dieux en orbite, plus le prochain dieu à acheter (en aperçu). Les autres dieux ne sont pas affichés, pour ne pas surcharger la fenêtre.
@@ -106,7 +114,7 @@ Tout en bas des paramètres : « Un jeu créé par Evangeline Lefevre », puis l
 
 À droite, quand la fenêtre des skills ou le game over est ouvert (en bas sur écran étroit, repliable sur petit écran). Ses sections :
 - **Vie** et **Attaque (toi)** : les stats du triangle du milieu.
-- **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. La planète du skill tree ouvert passe en premier.
+- **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. Les **pouvoirs** du dieu (taille des balles, rayon de charme, éclairs...) s'affichent aussi, avec « toutes les X s » pour ceux qui reviennent régulièrement, et le nombre d'ennemis tués pour la soif de gloire d'Arès. La planète du skill tree ouvert passe en premier.
 - **Défense**, **Gains** et **Ennemis**.
 
 Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`). Pour les stats où un nombre plus bas est mieux (la recharge du bouclier), la couleur est inversée (`LOWER_IS_BETTER_STATS`).

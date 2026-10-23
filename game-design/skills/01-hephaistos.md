@@ -13,15 +13,15 @@
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Etna** (ETNA) | +3 dégâts par balle | 150 XP |
+| **Etna** (ETNA) | +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins | 150 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Brontès** (×CRIT) | +60% de dégâts critiques | 72 XP |
-| **Cabires** (x2) | +1 balle par tir | 72 XP |
-| **Hécate** (MÉTÉO) | +3 dégâts contre les plantes | 74 XP |
+| **Brontès** (MART) | Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins | 72 XP |
+| **Cabires** (ENCL) | Enclume : balles 2 fois plus grosses, mais 30% plus lentes | 72 XP |
+| **Hécate** (MAGMA) | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran | 74 XP |
 
 ## 🔹 Notables
 
@@ -29,12 +29,12 @@
 |---|---|---|
 | **Prométhée** (CRIT) | +3% de chance de coup critique | 20 XP |
 | **Kédalion** (×CRIT) | +25% de dégâts critiques | 38 XP |
-| **Stéropès** (VIT) | +10% de vitesse d'attaque | 50 XP |
-| **Argès** (VIT) | +15% de vitesse d'attaque | 38 XP |
-| **Aglaé** (POR) | +30 de portée | 20 XP |
-| **Talos** (VEL) | +20% de vitesse des balles | 26 XP |
+| **Stéropès** (TAIL) | Balles 20% plus grosses | 50 XP |
+| **Argès** (DMG) | +2 dégâts par balle | 38 XP |
+| **Aglaé** (PERF) | Les balles traversent 1 ennemi de plus | 20 XP |
+| **Talos** (DMG) | +15% de dégâts | 26 XP |
 | **Kratos** (DMG) | +1 dégât par balle | 50 XP |
-| **Bia** (VIT) | +10% de vitesse d'attaque | 26 XP |
+| **Bia** (PERF) | Les balles traversent 1 ennemi de plus | 26 XP |
 
 ## Départ
 
@@ -49,8 +49,8 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
 | **Dactyle** (DMG) | +0.5 dégât par balle | ×8 | 9 à 29 XP |
-| **Telchine** (VIT) | +5% de vitesse d'attaque | ×7 | 13 à 33 XP |
-| **Cyclope** (CRIT) | +1% de chance de coup critique | ×7 | 9 à 29 XP |
+| **Telchine** (TAIL) | Balles 8% plus grosses | ×7 | 13 à 33 XP |
+| **Cyclope** (×CRIT) | +10% de dégâts critiques | ×7 | 9 à 29 XP |
 
 ## ↔️ Lien « Opposé » vers Héphaïstos
 
