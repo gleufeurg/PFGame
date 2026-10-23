@@ -83,14 +83,14 @@ Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, **seul**, apr
 | 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 1 200 | 260 | 260 |
 
 - **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie.
-- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Lui aussi arrive seul, après une alerte plus courte.
+- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Il devient alors un ennemi (rare) comme les autres : **pas d'alerte**, il arrive au milieu des ennemis normaux, qui continuent d'apparaître, et il n'arrête pas « Sauter dans le temps » (il peut même arriver pendant un saut).
 - **Paliers :** chaque super ennemi vaincu débloque un bouton dans le menu de mort, pour recommencer juste après lui (voir [interface.md](interface.md)).
 - **La liste des vaincus est sauvegardée** dans le navigateur, d'une partie à l'autre.
 - **Son élément compte** pour les bonus des skills « +X dégâts contre les ennemis de feu », etc.
 
 ## Les arrivées spéciales : alerte, puis seul
 
-Pour qu'on voie bien un super ennemi ou le premier ennemi d'un nouveau mouvement, il n'arrive jamais au milieu de la foule :
+Pour qu'on voie bien un super ennemi jamais vaincu ou le premier ennemi d'un nouveau mouvement, il n'arrive jamais au milieu de la foule :
 
 1. **Alerte** : un bandeau en haut de l'écran (« ⚠️ Cerbère arrive dans 7 s », rouge ; « 🌀 Nouvel ennemi : Spirale dans 3 s », jaune) et une flèche qui palpite au bord de l'écran, du côté d'où il va venir. **Plus aucun ennemi n'apparaît** pendant l'alerte : le joueur a le temps de nettoyer l'écran.
 2. **Il arrive seul** : les ennemis normaux attendent encore un peu, ou jusqu'à ce qu'il soit tué.
@@ -99,10 +99,11 @@ Pour qu'on voie bien un super ennemi ou le premier ennemi d'un nouveau mouvement
 | Arrivée | Alerte | Seul pendant |
 | --- | --- | --- |
 | Super ennemi jamais vaincu (1re rencontre) | 8 s (`BOSS_WARNING_TIME`) | **jusqu'à sa mort** : aucun autre ennemi n'apparaît, le joueur se concentre sur le combat |
-| Super ennemi déjà vaincu qui revient | 5 s (`BOSS_REPEAT_WARNING_TIME`) | 10 s ou jusqu'à sa mort |
 | Premier ennemi d'un nouveau mouvement | 3 s (`MOVEMENT_WARNING_TIME`) | 5 s ou jusqu'à sa mort (`MOVEMENT_SOLO_TIME`) |
 
-**Sauter dans le temps** : impossible pendant une alerte (message), et un saut s'arrête juste avant la prochaine alerte prévue.
+Un super ennemi **déjà vaincu** n'a plus d'arrivée spéciale (voir plus haut).
+
+**Sauter dans le temps** : impossible pendant une alerte (message), et un saut s'arrête juste avant la prochaine alerte prévue. Une fois tous les super ennemis vaincus et tous les mouvements découverts dans la partie, plus rien ne bloque le saut.
 
 ## Les effets que subissent les ennemis
 
