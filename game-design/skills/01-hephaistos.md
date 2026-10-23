@@ -5,8 +5,8 @@
 | Attribut | 🔥 Feu |
 | Couleur | `#ff7a45` |
 | Forme de l'arbre | flamme (`fire`) |
-| Compétences | 35 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1099 |
+| Compétences | 39 (10 notables, 4 keystones, 1 grande keystone) |
+| XP pour tout débloquer | 1328 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°1) |
 
 ## ⭐ Grande keystone
@@ -22,6 +22,7 @@
 | **Brontès** (MART) | Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins | 72 XP |
 | **Cabires** (ENCL) | Enclume : balles 2 fois plus grosses, mais 30% plus lentes | 72 XP |
 | **Hécate** (MAGMA) | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran | 74 XP |
+| **Pyriphlégéthon** (BRASIER) | Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus | 80 XP |
 
 ## 🔹 Notables
 
@@ -35,6 +36,8 @@
 | **Talos** (DMG) | +15% de dégâts | 26 XP |
 | **Kratos** (DMG) | +1 dégât par balle | 50 XP |
 | **Bia** (PERF) | Les balles traversent 1 ennemi de plus | 26 XP |
+| **Phlégéthon** (TRAÎNÉE) | Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde) | 50 XP |
+| **Aethon** (BRÛLE) | La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde | 62 XP |
 
 ## Départ
 
@@ -51,6 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Dactyle** (DMG) | +0.5 dégât par balle | ×8 | 9 à 29 XP |
 | **Telchine** (TAIL) | Balles 8% plus grosses | ×7 | 13 à 33 XP |
 | **Cyclope** (×CRIT) | +10% de dégâts critiques | ×7 | 9 à 29 XP |
+| **Pyrois** (DURÉE) | La traînée de feu dure 0.6 s de plus | ×1 | 37 à 37 XP |
 
 ## ↔️ Lien « Opposé » vers Héphaïstos
 

@@ -2397,6 +2397,7 @@
             drawOrbit();
             drawShadows();           //toutes les ombres d'abord, pour qu'elles passent SOUS tous les objets
             drawHazards();           //ce qui est au sol (braises, graines...) passe sous les ennemis
+            drawFireTrails();        //la traînée de feu des balles d'Héphaïstos
             drawSpawnWarning();      //la flèche au bord de l'écran : un ennemi spécial va arriver par là
             drawTideWaves();         //la vague de Poséidon (graphismes élevés)
             drawBloomEffects();      //la floraison de Déméter (graphismes élevés)
@@ -3726,7 +3727,10 @@
             arcDamage: 0,         // Zeus : dégâts d'un éclair (x les dégâts de la balle)
             arcRange: 0,          // Zeus : portée en plus des éclairs, en pixels
             boltDamage: 0,        // Zeus : dégâts de la foudre sur un ennemi conducteur (x les dégâts de la balle, 0 = pas de foudre)
-            boltRadius: 0         // Zeus : zone de la foudre en plus (0.5 = 50% plus grande)
+            boltRadius: 0,        // Zeus : zone de la foudre en plus (0.5 = 50% plus grande)
+            fireTrail: 0,         // Héphaïstos : brûlure de la traînée de feu, par seconde (x les dégâts de la balle, 0 = pas de traînée)
+            fireTrailDuration: 0, // Héphaïstos : secondes en plus avant que la traînée s'éteigne
+            fireTrailWidth: 0     // Héphaïstos : traînée plus large (1 = 2 fois plus large)
         };
         Object.assign(PLANET_BASE_STATS, PLANET_POWER_STATS); //assign = recopie ces stats dans PLANET_BASE_STATS
 
@@ -5713,6 +5717,9 @@
 
                 bullet.x += bullet.dirX * bulletSpeed * deltaTime;
                 bullet.y += bullet.dirY * bulletSpeed * deltaTime;
+                if (bullet.stats.fireTrail > 0) {
+                    dropFireTrail(bullet, bulletSpeed * deltaTime); //Héphaïstos : la balle laisse du feu derrière elle
+                }
 
                 let hasHit = false;
                 const enemy = findBulletHit(bullet);
@@ -6215,6 +6222,106 @@
         //Les échos : un 2e coup qui arrive un peu plus tard
         const echoes = [];
 
+        //TRAÎNÉE DE FEU (Héphaïstos) : derrière chaque balle, des petits points de feu qui s'éteignent peu à peu.
+        //Un ennemi qui touche un point brûle (brûlure = dps du point, pendant FIRE_TRAIL_BURN_TIME secondes).
+        const FIRE_TRAIL_STEP = 14;             // un point de feu tous les X pixels parcourus par la balle
+        const FIRE_TRAIL_DURATION = 1.2;        // secondes avant qu'un point s'éteigne (+ fireTrailDuration)
+        const FIRE_TRAIL_RADIUS = 9;            // rayon d'un point, en pixels (x la taille des balles, x (1 + fireTrailWidth))
+        const FIRE_TRAIL_BURN_TIME = 1;         // secondes de brûlure après avoir touché la traînée
+        const MAX_FIRE_TRAIL_POINTS = 600;      // au-delà, les plus vieux points s'éteignent (pour que le jeu reste fluide)
+        const fireTrails = [];
+
+        function dropFireTrail(bullet, movedDistance) {
+            const stats = bullet.stats;
+            bullet.trailDistance = (bullet.trailDistance || 0) + movedDistance;
+            //Si la balle a avancé de plusieurs pas pendant cette image, on pose plusieurs points, en remontant vers l'arrière
+            while (bullet.trailDistance >= FIRE_TRAIL_STEP) {
+                bullet.trailDistance -= FIRE_TRAIL_STEP;
+                const duration = FIRE_TRAIL_DURATION + stats.fireTrailDuration;
+                fireTrails.push({
+                    x: bullet.x - bullet.dirX * bullet.trailDistance,
+                    y: bullet.y - bullet.dirY * bullet.trailDistance,
+                    radius: FIRE_TRAIL_RADIUS * Math.max(0.5, stats.bulletSize) * (1 + stats.fireTrailWidth),
+                    timer: duration,
+                    duration: duration,
+                    dps: bullet.damage * stats.fireTrail,
+                    seed: Math.random() * 10 //pour que chaque flamme vacille à son rythme
+                });
+            }
+            if (fireTrails.length > MAX_FIRE_TRAIL_POINTS) {
+                fireTrails.splice(0, fireTrails.length - MAX_FIRE_TRAIL_POINTS); //splice(0, n) = enlève les n premiers (les plus vieux)
+            }
+        }
+
+        function updateFireTrails(deltaTime) {
+            let kept = 0; //on garde les points encore allumés au début du tableau, puis on coupe la fin (plus rapide que splice un par un)
+            for (let i = 0; i < fireTrails.length; i++) {
+                const point = fireTrails[i];
+                point.timer -= deltaTime;
+                if (point.timer <= 0) {
+                    continue;
+                }
+                forEachEnemyNear(point.x, point.y, point.radius, function (enemy) {
+                    enemy.burnTimer = Math.max(enemy.burnTimer || 0, FIRE_TRAIL_BURN_TIME);
+                    enemy.burnDps = Math.max(enemy.burnDps || 0, point.dps);
+                });
+                fireTrails[kept++] = point;
+            }
+            fireTrails.length = kept;
+        }
+
+        //Une flamme douce (dégradé orange -> transparent), dessinée une seule fois puis recopiée : bien plus rapide
+        let fireTrailSprite = null;
+        function getFireTrailSprite() {
+            if (fireTrailSprite === null) {
+                fireTrailSprite = document.createElement("canvas");
+                fireTrailSprite.width = 64;
+                fireTrailSprite.height = 64;
+                const spriteCtx = fireTrailSprite.getContext("2d");
+                const gradient = spriteCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+                gradient.addColorStop(0, "rgba(255, 240, 170, 1)");
+                gradient.addColorStop(0.35, "rgba(255, 150, 50, 0.8)");
+                gradient.addColorStop(0.7, "rgba(230, 70, 20, 0.35)");
+                gradient.addColorStop(1, "rgba(200, 40, 10, 0)");
+                spriteCtx.fillStyle = gradient;
+                spriteCtx.fillRect(0, 0, 64, 64);
+            }
+            return fireTrailSprite;
+        }
+
+        function drawFireTrails() {
+            if (fireTrails.length === 0) {
+                return;
+            }
+            if (!isHighGraphics) {
+                //Graphismes simples : des ronds orange qui rapetissent, tous dans UN seul tracé
+                //(les ronds qui se chevauchent ne s'additionnent pas : une bande unie, et un seul fill, plus léger)
+                ctx.fillStyle = ATTRIBUTES.fire.color;
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                for (const point of fireTrails) {
+                    const radius = point.radius * (0.3 + 0.7 * point.timer / point.duration); //timer / duration : 1 = tout neuf, 0 = éteint
+                    ctx.moveTo(point.x + radius, point.y); //moveTo : sinon le rond serait relié au précédent par un trait
+                    ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+                }
+                ctx.fill();
+                ctx.globalAlpha = 1;
+                return;
+            }
+            //Graphismes élevés : des flammes qui vacillent, s'additionnent (lighter = la lumière s'ajoute) et montent un peu en s'éteignant
+            const sprite = getFireTrailSprite();
+            ctx.globalCompositeOperation = "lighter";
+            for (const point of fireTrails) {
+                const life = point.timer / point.duration;
+                const flicker = 1 + 0.18 * Math.sin(visualTime * 18 + point.seed);
+                const size = point.radius * 2.2 * (0.45 + 0.55 * life) * flicker;
+                ctx.globalAlpha = Math.min(1, life * 1.6) * 0.75;
+                ctx.drawImage(sprite, point.x - size / 2, point.y - size / 2 - (1 - life) * 8, size, size);
+            }
+            ctx.globalCompositeOperation = "source-over";
+            ctx.globalAlpha = 1;
+        }
+
         //Couleur d'un combo : celle de l'attribut emprunté, ou le mélange des 2 pour une fusion
         function getComboColor(item) {
             if (item.fusion) {
@@ -6716,6 +6823,9 @@
                     spawnParticles(enemy.x, enemy.y - enemy.size / 2, ATTRIBUTES.fire.color, 1, 40); //petites flammes
                 }
                 damageEnemy(enemy, enemy.burnDps * deltaTime, null, { color: DAMAGE_COLORS.fire, dot: true });
+                if (enemy.burnTimer <= 0) {
+                    enemy.burnDps = 0; //la brûlure est finie : la prochaine repartira de sa propre force, pas de l'ancienne
+                }
             }
             return speedFactor;
         }
@@ -7389,6 +7499,8 @@
                 ].map(toPercent));
                 b.chain("right7", "rightIn", [[540, 340], [538, 392], [505, 412]].map(toPercent));
                 b.layout["rightIn3"].links.push("midR5");
+                //La traînée : une étincelle qui s'échappe de la langue de droite et s'envole vers le haut (compétences de la traînée de feu, voir extraSkills)
+                b.chain("right6", "trail", [[84, 36, "notable"], [89, 29], [91, 20, "notable"], [89, 11, "keystone"]]);
                 return b.layout;
             },
 
@@ -7732,6 +7844,14 @@
                     { label: "TAIL", name: "Telchine", description: "Balles 8% plus grosses", effect: { stat: "bulletSize", value: 0.08 } },
                     { label: "×CRIT", name: "Cyclope", description: "+10% de dégâts critiques", effect: { stat: "critDamage", value: 0.1 } }
                 ],
+                //Les compétences de la branche "traînée" (ids trail1 à trail4 dans la forme "fire") :
+                //une étincelle qui s'échappe de la langue de droite, comme la traînée laissée par une balle
+                extraSkills: {
+                    trail1: { label: "TRAÎNÉE", name: "Phlégéthon", description: "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)", effect: { stat: "fireTrail", value: 0.4 } },
+                    trail2: { label: "DURÉE", name: "Pyrois", description: "La traînée de feu dure 0.6 s de plus", effect: { stat: "fireTrailDuration", value: 0.6 } },
+                    trail3: { label: "BRÛLE", name: "Aethon", description: "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: 0.4 } },
+                    trail4: { label: "BRASIER", name: "Pyriphlégéthon", description: "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus", effects: [{ stat: "fireTrailWidth", value: 1 }, { stat: "fireTrailDuration", value: 1 }] }
+                },
                 shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
@@ -8492,7 +8612,10 @@
             arcDamage: function (value) { return ["Dégâts des éclairs", "+" + formatNumber(value * 100) + "%"]; },
             arcRange: function (value) { return ["Portée des éclairs", "+" + formatNumber(value) + " px"]; },
             boltDamage: function (value) { return ["Dégâts de la foudre", "x" + formatNumber(value)]; },
-            boltRadius: function (value) { return ["Zone de la foudre", "+" + formatNumber(value * 100) + "%"]; }
+            boltRadius: function (value) { return ["Zone de la foudre", "+" + formatNumber(value * 100) + "%"]; },
+            fireTrail: function (value) { return ["Brûlure de la traînée de feu (par seconde)", "+" + formatNumber(value * 100) + "%"]; },
+            fireTrailDuration: function (value) { return ["Durée de la traînée de feu", "+" + formatNumber(value) + " s"]; },
+            fireTrailWidth: function (value) { return ["Largeur de la traînée de feu", "+" + formatNumber(value * 100) + "%"]; }
         };
 
         //"+20" ou "-30" (avec le signe dans les deux cas)
@@ -9203,6 +9326,7 @@
             enemies.length = 0;
             bullets.length = 0;
             hazards.length = 0;
+            fireTrails.length = 0;
             echoes.length = 0;
             particles.length = 0;
             damageNumbers.length = 0;
@@ -11146,6 +11270,7 @@
             updateEnemies(deltaTime);
             updateBullets(deltaTime);
             updateHazards(deltaTime);
+            updateFireTrails(deltaTime);
             updatePlanetPowers(deltaTime);
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;

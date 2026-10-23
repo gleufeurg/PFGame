@@ -1389,5 +1389,20 @@ window.TRADUCTIONS.en = {
     "Dans le shop": "In the shop",
     "Débloque le lien d'orbite « {name} »": "Unlocks the “{name}” orbit link",
     "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "Unlocks orbit links: Right, then Left, then Both sides, then Opposite",
-    "À débloquer dans le shop : « Liens d'orbite »": "Unlock in the shop: “Orbit links”"
+    "À débloquer dans le shop : « Liens d'orbite »": "Unlock in the shop: “Orbit links”",
+    "TRAÎNÉE": "TRAIL",
+    "Phlégéthon": "Phlegethon",
+    "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)": "Fire trail: Hephaestus' bullets leave a trail of fire behind them; enemies that touch it burn (40% of the bullet's damage per second)",
+    "DURÉE": "TIME",
+    "Pyrois": "Pyrois",
+    "La traînée de feu dure 0.6 s de plus": "The fire trail lasts 0.6 s longer",
+    "BRÛLE": "BURN",
+    "Aethon": "Aethon",
+    "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde": "The fire trail burns hotter: +40% of the bullet's damage per second",
+    "BRASIER": "BLAZE",
+    "Pyriphlégéthon": "Pyriphlegethon",
+    "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Blaze: the fire trail is twice as wide and lasts 1 s longer",
+    "Brûlure de la traînée de feu (par seconde)": "Fire trail burn (per second)",
+    "Durée de la traînée de feu": "Fire trail duration",
+    "Largeur de la traînée de feu": "Fire trail width"
 };

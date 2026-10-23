@@ -1389,5 +1389,20 @@ window.TRADUCTIONS.de = {
     "Dans le shop": "Im Shop",
     "Débloque le lien d'orbite « {name} »": "Schaltet die Orbit-Verbindung „{name}“ frei",
     "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "Schaltet Orbit-Verbindungen frei: Rechts, dann Links, dann Beide Seiten, dann Gegenüber",
-    "À débloquer dans le shop : « Liens d'orbite »": "Im Shop freischalten: „Orbit-Verbindungen“"
+    "À débloquer dans le shop : « Liens d'orbite »": "Im Shop freischalten: „Orbit-Verbindungen“",
+    "TRAÎNÉE": "SPUR",
+    "Phlégéthon": "Phlegethon",
+    "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)": "Feuerspur: Hephaistos' Kugeln ziehen eine Feuerspur hinter sich her; Gegner, die sie berühren, brennen (40% des Kugelschadens pro Sekunde)",
+    "DURÉE": "DAUER",
+    "Pyrois": "Pyrois",
+    "La traînée de feu dure 0.6 s de plus": "Die Feuerspur hält 0.6 s länger",
+    "BRÛLE": "GLUT",
+    "Aethon": "Aithon",
+    "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde": "Die Feuerspur brennt stärker: +40% des Kugelschadens pro Sekunde",
+    "BRASIER": "BRAND",
+    "Pyriphlégéthon": "Pyriphlegethon",
+    "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Brand: Die Feuerspur ist doppelt so breit und hält 1 s länger",
+    "Brûlure de la traînée de feu (par seconde)": "Brand der Feuerspur (pro Sekunde)",
+    "Durée de la traînée de feu": "Dauer der Feuerspur",
+    "Largeur de la traînée de feu": "Breite der Feuerspur"
 };
