@@ -1353,5 +1353,11 @@ window.TRADUCTIONS.it = {
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 Nuovo nemico: {name} tra {seconds} s",
     "⚔️ Cri de guerre !": "⚔️ Grido di guerra!",
     "Après {name} ({time})": "Dopo {name} ({time})",
-    "Tout le jeu est débloqué": "Tutto il gioco è sbloccato"
+    "Tout le jeu est débloqué": "Tutto il gioco è sbloccato",
+    "Décor": "Scenario",
+    "Aucun (couleur du thème)": "Nessuno (colore del tema)",
+    "Mer étoilée": "Mare stellato",
+    "Mer en plein jour": "Mare di giorno",
+    "Neige": "Neve",
+    "Prairie": "Prateria"
 };

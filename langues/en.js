@@ -1353,5 +1353,11 @@ window.TRADUCTIONS.en = {
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 New enemy: {name} in {seconds} s",
     "⚔️ Cri de guerre !": "⚔️ War cry!",
     "Après {name} ({time})": "After {name} ({time})",
-    "Tout le jeu est débloqué": "The whole game is unlocked"
+    "Tout le jeu est débloqué": "The whole game is unlocked",
+    "Décor": "Scenery",
+    "Aucun (couleur du thème)": "None (theme color)",
+    "Mer étoilée": "Starry sea",
+    "Mer en plein jour": "Sea by day",
+    "Neige": "Snow",
+    "Prairie": "Meadow"
 };

@@ -59,6 +59,10 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu est en anglais (la langue par défaut). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
 
+## Décor
+
+Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thème), mer étoilée, mer en plein jour, neige ou prairie. Retenue par le navigateur (clé `scene`). Détails dans [direction-artistique/README.md](direction-artistique/README.md).
+
 ## Pause dans les menus
 
 Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (cochée par défaut, clé `pauseInMenus`) : cochée, le jeu s'arrête quand la fenêtre des skills ou les paramètres sont ouverts ; décochée, il continue. Si le joueur meurt pendant qu'il regarde ses skills, la fenêtre se ferme et le shop s'affiche.

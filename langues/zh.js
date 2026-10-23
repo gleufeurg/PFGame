@@ -1353,5 +1353,11 @@ window.TRADUCTIONS.zh = {
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 新敌人：{name}，{seconds} 秒后到来",
     "⚔️ Cri de guerre !": "⚔️ 战吼！",
     "Après {name} ({time})": "{name} 之后（{time}）",
-    "Tout le jeu est débloqué": "整个游戏已解锁"
+    "Tout le jeu est débloqué": "整个游戏已解锁",
+    "Décor": "场景",
+    "Aucun (couleur du thème)": "无（主题颜色）",
+    "Mer étoilée": "星空之海",
+    "Mer en plein jour": "白昼之海",
+    "Neige": "雪地",
+    "Prairie": "草原"
 };

@@ -1353,5 +1353,11 @@ window.TRADUCTIONS.ja = {
     "🌀 Nouvel ennemi : {name} dans {seconds} s": "🌀 新しい敵：{name}が{seconds}秒後に来るよ",
     "⚔️ Cri de guerre !": "⚔️ 雄叫び！",
     "Après {name} ({time})": "{name}の後（{time}）",
-    "Tout le jeu est débloqué": "ゲームのすべてを解放したよ"
+    "Tout le jeu est débloqué": "ゲームのすべてを解放したよ",
+    "Décor": "背景",
+    "Aucun (couleur du thème)": "なし（テーマの色）",
+    "Mer étoilée": "星空の海",
+    "Mer en plein jour": "昼の海",
+    "Neige": "雪原",
+    "Prairie": "草原"
 };
