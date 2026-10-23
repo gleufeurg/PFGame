@@ -1359,5 +1359,12 @@ window.TRADUCTIONS.it = {
     "Mer étoilée": "Mare stellato",
     "Mer en plein jour": "Mare di giorno",
     "Neige": "Neve",
-    "Prairie": "Prateria"
+    "Prairie": "Prateria",
+    "Morceau": "Brano",
+    "Tous, à la suite": "Tutti, uno dopo l'altro",
+    "Orbite": "Orbita",
+    "Marée basse": "Bassa marea",
+    "Neige lente": "Neve lenta",
+    "Lanternes": "Lanterne",
+    "Dernière étoile": "Ultima stella"
 };

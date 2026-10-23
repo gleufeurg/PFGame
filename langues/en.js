@@ -1359,5 +1359,12 @@ window.TRADUCTIONS.en = {
     "Mer étoilée": "Starry sea",
     "Mer en plein jour": "Sea by day",
     "Neige": "Snow",
-    "Prairie": "Meadow"
+    "Prairie": "Meadow",
+    "Morceau": "Track",
+    "Tous, à la suite": "All, one after another",
+    "Orbite": "Orbit",
+    "Marée basse": "Low Tide",
+    "Neige lente": "Slow Snow",
+    "Lanternes": "Lanterns",
+    "Dernière étoile": "Last Star"
 };

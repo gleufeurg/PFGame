@@ -31,6 +31,10 @@ Images de référence pour les formes des skill trees, et les choix de style val
 - Polices : **Nunito** (titres, chiffres, textes du jeu) et **Rubik** (texte courant), sous licence libre OFL. Les fichiers sont dans le dossier `polices/` du dépôt (pas sur Google Fonts) : le jeu marche hors ligne. Si on ajoute une police, il faut aussi la déclarer avec un `@font-face` en haut de `index.html`.
 - Des thèmes de couleur, qui teintent aussi les boutons et le texte.
 
+## Les thèmes drapeaux
+
+Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.
+
 ## Les décors
 
 Réglage **« Décor »** des paramètres, sous le thème (clé `scene` du `localStorage`). Un décor remplace le fond uni du thème. Le thème garde les couleurs de l'interface : boutons, fenêtres, texte. Le décor choisit aussi la couleur des ombres et de l'orbite, pour qu'elles aillent avec son sol (`SCENES` dans `index.html`, partie `DÉCORS`).

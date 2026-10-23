@@ -59,6 +59,20 @@ La progression est gardée dans le navigateur (`localStorage`, clé `progress`) 
 
 Liste « Langue » dans les paramètres : français, anglais, italien, allemand, chinois, japonais. Au premier lancement, le jeu est en anglais (la langue par défaut). Changer de langue sauvegarde puis recharge le jeu. Détails : [langues.md](langues.md).
 
+## Musique
+
+La musique est générée en direct par le navigateur (pas de fichier audio) : des accords en nappes, une basse, et de petites notes qui scintillent avec de l'écho. 5 morceaux calmes et un peu mélancoliques (`MUSIC_TRACKS`, partie `MUSIC` de `index.html`) :
+
+| Morceau | Tempo | Couleur |
+| --- | --- | --- |
+| Orbite | 66 | do majeur, lumineux (le morceau d'origine) |
+| Marée basse | 58 | la mineur, doux et rêveur |
+| Neige lente | 52 | ré mineur, lent, avec un long écho ; finit chaque tour sur un accord en suspens |
+| Lanternes | 62 | mi mineur, petites notes en arpège (comme une harpe) |
+| Dernière étoile | 56 | fa dièse mineur, son plus chaud et très filtré, en arpège |
+
+Liste « Morceau » dans les paramètres : « Tous, à la suite » (par défaut : chaque morceau tourne environ 2 minutes, puis le suivant arrive en fondu) ou un seul morceau en boucle. Le choix est retenu (clé `musicTrack`).
+
 ## Décor
 
 Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thème), mer étoilée, mer en plein jour, neige ou prairie. Retenue par le navigateur (clé `scene`). Détails dans [direction-artistique/README.md](direction-artistique/README.md).

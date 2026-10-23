@@ -1359,5 +1359,12 @@ window.TRADUCTIONS.ja = {
     "Mer étoilée": "星空の海",
     "Mer en plein jour": "昼の海",
     "Neige": "雪原",
-    "Prairie": "草原"
+    "Prairie": "草原",
+    "Morceau": "曲",
+    "Tous, à la suite": "すべて順番に",
+    "Orbite": "軌道",
+    "Marée basse": "引き潮",
+    "Neige lente": "ゆるやかな雪",
+    "Lanternes": "ランタン",
+    "Dernière étoile": "最後の星"
 };

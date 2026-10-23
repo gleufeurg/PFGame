@@ -1167,7 +1167,7 @@
             accent-color: var(--ui-accent); /*couleur du curseur*/
         }
 
-        #themeSelect, #languageSelect, #sceneSelect { /*listes déroulantes des thèmes, des langues et des décors*/
+        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect { /*listes déroulantes des paramètres*/
             flex: 1;
             padding: 6px 10px;
             border: 2px solid var(--ui-line);
@@ -1408,7 +1408,7 @@
             color: var(--ui-accent);
         }
 
-        #themeSelect, #languageSelect, #sceneSelect {
+        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect {
             border-color: var(--ui-accent);
         }
 
@@ -1933,6 +1933,10 @@
             <h2>Paramètres</h2>
             <div id="volumeSliders"></div>
             <div class="settingRow">
+                <label for="musicTrackSelect" class="volumeLabel">Morceau</label>
+                <select id="musicTrackSelect"></select>
+            </div>
+            <div class="settingRow">
                 <label for="languageSelect" class="volumeLabel">Langue</label>
                 <select id="languageSelect"></select>
             </div>
@@ -2192,6 +2196,8 @@
             }
             if (getScene().drawAnimated !== undefined) {
                 getScene().drawAnimated(visualTime); //ce qui bouge dans le décor (reflets, vagues, flocons...)
+            } else if (BG_STRIPE_LAYERS.length > 0) {
+                drawWavyFlag(visualTime); //thèmes drapeaux : le drapeau flotte
             }
             applyWorldTransform(ctx, shakeX, shakeY); //à partir d'ici, on dessine le "monde", avec le zoom de la caméra
             drawReflections();       //le joueur et les planètes se reflètent dans l'eau (décors de mer)
@@ -2306,17 +2312,11 @@
             bgCtx.fillStyle = BG_COLOR;
             bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
 
-            //Thème "drapeau" : des bandes horizontales de couleur, en transparence pour que le jeu reste lisible.
-            //Pendant le cycle des thèmes, il peut y avoir 2 drapeaux à la fois (l'un s'efface, l'autre apparaît).
-            for (const layer of BG_STRIPE_LAYERS) {
-                const stripeHeight = screenSize.height / layer.colors.length;
-                bgCtx.globalAlpha = layer.opacity;
-                layer.colors.forEach(function (color, i) {
-                    bgCtx.fillStyle = color;
-                    bgCtx.fillRect(0, i * stripeHeight, screenSize.width, stripeHeight + 1); //+1 : évite un fin trait entre deux bandes
-                });
+            //Thème "drapeau" : le drapeau flotte, il est donc dessiné à chaque image (drawWavyFlag), sans lumière ni ombre
+            //en haut et en bas (elles salissaient les couleurs du drapeau)
+            if (BG_STRIPE_LAYERS.length > 0) {
+                return;
             }
-            bgCtx.globalAlpha = 1;
 
             const light = bgCtx.createRadialGradient(center.x, 0, 0, center.x, 0, screenSize.height * 0.9);
             light.addColorStop(0, BG_LIGHT_COLOR);
@@ -2329,6 +2329,72 @@
             bottomShade.addColorStop(1, "rgba(10, 8, 18, 0.35)");
             bgCtx.fillStyle = bottomShade;
             bgCtx.fillRect(0, 0, screenSize.width, screenSize.height);
+        }
+
+        //DRAPEAU QUI FLOTTE (thèmes drapeaux) : les bandes horizontales ondulent, comme un tissu dans le vent.
+        //Une vague part de la gauche vers la droite ; des bandes claires et sombres suivent les plis du tissu.
+        //Pendant le cycle des thèmes, il peut y avoir 2 drapeaux à la fois (l'un s'efface, l'autre apparaît).
+        const FLAG_WAVE_HEIGHT = 9;          // hauteur des plis, en pixels
+        const FLAG_WAVE_LENGTH = 260;        // longueur d'un pli, en pixels
+        const FLAG_WAVE_SPEED = 1.3;         // vitesse du vent
+        const FLAG_STEP = 24;                // précision du dessin : un point tous les X pixels
+
+        //Le décalage vertical du tissu à la position x (deux vagues mélangées : plus naturel qu'une seule)
+        function getFlagWave(x, time) {
+            const phase = x / FLAG_WAVE_LENGTH * Math.PI * 2 - time * FLAG_WAVE_SPEED;
+            return FLAG_WAVE_HEIGHT * (Math.sin(phase) + 0.35 * Math.sin(phase * 2.3 + 1.7));
+        }
+
+        const flagFoldCanvas = document.createElement("canvas"); // les plis du drapeau (une ligne de pixels)
+
+        function drawWavyFlag(time) {
+            const w = screenSize.width;
+            const h = screenSize.height;
+            //Les x des points, de 0 au bord droit compris (calculés depuis 0, pour ne pas laisser de trou sur un bord)
+            const xs = [];
+            for (let x = 0; x < w + FLAG_STEP; x += FLAG_STEP) {
+                xs.push(x);
+            }
+            for (const layer of BG_STRIPE_LAYERS) {
+                const stripeHeight = h / layer.colors.length;
+                ctx.globalAlpha = layer.opacity;
+                layer.colors.forEach(function (color, i) {
+                    //Bord du haut et bord du bas de la bande, qui suivent la vague. La 1re et la dernière dépassent de l'écran.
+                    const top = i === 0 ? -FLAG_WAVE_HEIGHT * 2 : i * stripeHeight;
+                    const bottom = i === layer.colors.length - 1 ? h + FLAG_WAVE_HEIGHT * 2 : (i + 1) * stripeHeight + 1; //+1 : pas de fin trait entre deux bandes
+                    ctx.beginPath();
+                    for (const x of xs) {
+                        ctx.lineTo(x, top + (i === 0 ? 0 : getFlagWave(x, time)));
+                    }
+                    for (let k = xs.length - 1; k >= 0; k--) {
+                        ctx.lineTo(xs[k], bottom + (i === layer.colors.length - 1 ? 0 : getFlagWave(xs[k], time)));
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                });
+            }
+            //Les plis : là où le tissu "monte", un peu plus clair ; là où il "descend", un peu plus sombre.
+            //Une image d'UNE ligne de pixels (un pixel par point), étirée sur tout l'écran : le navigateur lisse
+            //le passage d'un pixel à l'autre, donc les plis sont doux, et c'est bien plus rapide qu'un grand dégradé.
+            if (flagFoldCanvas.width !== xs.length) {
+                flagFoldCanvas.width = xs.length;
+                flagFoldCanvas.height = 1;
+            }
+            const foldCtx = flagFoldCanvas.getContext("2d");
+            const pixels = foldCtx.createImageData(xs.length, 1);
+            xs.forEach(function (x, k) {
+                const slope = getFlagWave(x + 4, time) - getFlagWave(x - 4, time); //la pente du tissu à cet endroit
+                const value = slope < 0 ? 255 : 0;                                    //blanc ou noir
+                pixels.data[k * 4] = value;
+                pixels.data[k * 4 + 1] = value;
+                pixels.data[k * 4 + 2] = value;
+                pixels.data[k * 4 + 3] = Math.min(36, Math.abs(slope) * 9);          //opacité (sur 255)
+            });
+            foldCtx.putImageData(pixels, 0, 0);
+            ctx.globalAlpha = 1;
+            ctx.imageSmoothingEnabled = true;
+            ctx.drawImage(flagFoldCanvas, 0, 0, xs.length, 1, -FLAG_STEP / 2, 0, xs.length * FLAG_STEP, h);
         }
 
         //targetCtx = le canvas sur lequel dessiner (ici le fond caché)
@@ -9419,42 +9485,107 @@
         /////////////////////
         ////MUSIC////////////  Musique douce générée en direct : des accords "nappes" + des petites notes qui scintillent
         /////////////////////
-        const MUSIC_BPM = 66;                    // tempo (battements par minute)
-        const MUSIC_BEATS_PER_CHORD = 4;         // un accord dure 4 temps
-        //Les accords en notes MIDI (60 = do du milieu du piano, +1 = un demi-ton au-dessus)
-        const MUSIC_CHORDS = [
-            { bass: 48, notes: [60, 64, 67, 71] },   // Do maj7
-            { bass: 45, notes: [57, 60, 64, 67] },   // La m7
-            { bass: 41, notes: [53, 57, 60, 64] },   // Fa maj7
-            { bass: 43, notes: [55, 59, 62, 64] }    // Sol 6
+        //PLUSIEURS MORCEAUX, tous calmes et un peu mélancoliques. Chaque morceau = une suite d'accords qui tourne en boucle.
+        //Les notes sont en MIDI (60 = do du milieu du piano, +1 = un demi-ton au-dessus, +12 = une octave).
+        //- bpm : tempo ; beatsPerChord : durée d'un accord, en temps ; loops : combien de tours avant le morceau suivant
+        //- pad : forme du son des nappes ("triangle" = doux, "sine" = très doux, "sawtooth" = plus riche, très filtré) ; filter : coupe les aigus (Hz)
+        //- melody : les notes possibles des petites notes (une gamme pentatonique : jamais fausse) ; melodyChance : chance sur chaque demi-temps
+        //- arpeggio : true = les petites notes montent dans l'accord (comme une harpe), au lieu d'être au hasard
+        //- echo : temps de l'écho, en temps de musique (0.75 = trois quarts de temps)
+        const MUSIC_TRACKS = [
+            {
+                name: "Orbite", bpm: 66, beatsPerChord: 4, loops: 8, pad: "triangle", filter: 1100, echo: 0.75,
+                chords: [
+                    { bass: 48, notes: [60, 64, 67, 71] },   // Do maj7
+                    { bass: 45, notes: [57, 60, 64, 67] },   // La m7
+                    { bass: 41, notes: [53, 57, 60, 64] },   // Fa maj7
+                    { bass: 43, notes: [55, 59, 62, 64] }    // Sol 6
+                ],
+                melody: [72, 74, 76, 79, 81, 84], melodyChance: 0.35, arpeggio: false
+            },
+            {
+                name: "Marée basse", bpm: 58, beatsPerChord: 4, loops: 7, pad: "sine", filter: 950, echo: 1,
+                chords: [
+                    { bass: 45, notes: [57, 60, 64, 67] },   // La m7
+                    { bass: 41, notes: [57, 60, 64, 65] },   // Fa maj7 (renversé)
+                    { bass: 48, notes: [55, 60, 64, 67] },   // Do
+                    { bass: 40, notes: [55, 59, 62, 64] }    // Mi m7
+                ],
+                melody: [69, 72, 74, 76, 79, 81], melodyChance: 0.28, arpeggio: false
+            },
+            {
+                name: "Neige lente", bpm: 52, beatsPerChord: 4, loops: 6, pad: "triangle", filter: 850, echo: 1.5,
+                chords: [
+                    { bass: 38, notes: [53, 57, 60, 64] },   // Ré m9
+                    { bass: 46, notes: [58, 62, 65, 69] },   // Si♭ maj7
+                    { bass: 43, notes: [55, 58, 62, 65] },   // Sol m7
+                    { bass: 45, notes: [57, 62, 64, 67] }    // La sus4 (en suspens)
+                ],
+                melody: [74, 77, 79, 81, 84, 86], melodyChance: 0.22, arpeggio: false
+            },
+            {
+                name: "Lanternes", bpm: 62, beatsPerChord: 4, loops: 7, pad: "sine", filter: 1000, echo: 0.5,
+                chords: [
+                    { bass: 40, notes: [55, 59, 62, 66] },   // Mi m9
+                    { bass: 36, notes: [55, 59, 64, 67] },   // Do maj7
+                    { bass: 43, notes: [55, 59, 62, 67] },   // Sol
+                    { bass: 38, notes: [57, 62, 64, 69] }    // Ré sus2
+                ],
+                melody: [76, 79, 81, 83, 86, 88], melodyChance: 0.55, arpeggio: true
+            },
+            {
+                name: "Dernière étoile", bpm: 56, beatsPerChord: 4, loops: 6, pad: "sawtooth", filter: 650, echo: 1,
+                chords: [
+                    { bass: 42, notes: [57, 61, 64, 68] },   // Fa♯ m9
+                    { bass: 38, notes: [57, 61, 62, 66] },   // Ré maj7
+                    { bass: 45, notes: [57, 61, 64, 69] },   // La
+                    { bass: 40, notes: [59, 64, 66, 71] }    // Mi sus2
+                ],
+                melody: [73, 76, 78, 80, 85], melodyChance: 0.3, arpeggio: true
+            }
         ];
-        const MUSIC_MELODY_NOTES = [72, 74, 76, 79, 81, 84]; // gamme pentatonique de do : toujours jolie, jamais fausse
-        const MUSIC_MELODY_CHANCE = 0.35;        // chance qu'une petite note joue sur chaque demi-temps
+        translateFields(MUSIC_TRACKS, ["name"]);
 
+        //Le choix du morceau (Paramètres) : "all" = tous, à la suite, sinon le numéro d'un morceau qui tourne en boucle
+        let musicChoice = "all";
+        try {
+            const savedChoice = localStorage.getItem("musicTrack");
+            if (savedChoice !== null && (savedChoice === "all" || MUSIC_TRACKS[Number(savedChoice)] !== undefined)) {
+                musicChoice = savedChoice;
+            }
+        } catch (error) {
+        }
+
+        let musicTrackIndex = musicChoice === "all" ? 0 : Number(musicChoice);
         let musicChordIndex = 0;
+        let musicLoopCount = 0;                  // tours déjà joués du morceau en cours
         let nextChordTime = 0;
         let musicTimer = null;
         let musicFilter = null;                  // adoucit les nappes (coupe les aigus)
         let musicEcho = null;                    // écho sur les petites notes
 
+        function getMusicTrack() {
+            return MUSIC_TRACKS[musicTrackIndex];
+        }
+
         function midiToFrequency(note) {
             return 440 * Math.pow(2, (note - 69) / 12); //69 = la 440 Hz ; chaque +12 = une octave au-dessus (fréquence x2)
         }
 
-        function getChordDuration() {
-            return MUSIC_BEATS_PER_CHORD * 60 / MUSIC_BPM;
+        function getChordDuration(track) {
+            return track.beatsPerChord * 60 / track.bpm;
         }
 
         function startMusic() {
             //Filtre doux pour les nappes
             musicFilter = audioContext.createBiquadFilter();
             musicFilter.type = "lowpass";
-            musicFilter.frequency.value = 1100;
+            musicFilter.frequency.value = getMusicTrack().filter;
             musicFilter.connect(channelGains.music);
 
             //Écho : le son repasse en boucle dans un délai, un peu moins fort à chaque fois
-            musicEcho = audioContext.createDelay(2);
-            musicEcho.delayTime.value = 60 / MUSIC_BPM * 0.75;
+            musicEcho = audioContext.createDelay(4);
+            musicEcho.delayTime.value = 60 / getMusicTrack().bpm * getMusicTrack().echo;
             const echoFeedback = audioContext.createGain();
             echoFeedback.gain.value = 0.35;
             const echoVolume = audioContext.createGain();
@@ -9468,37 +9599,85 @@
             musicTimer = setInterval(scheduleMusic, 250); //toutes les 250 ms, on prépare la musique à venir
         }
 
+        //Le morceau suivant (en mode "tous, à la suite") : il commence au prochain accord, les nappes se fondent l'une dans l'autre
+        function goToNextTrack(time) {
+            musicLoopCount = 0;
+            musicChordIndex = 0;
+            if (musicChoice === "all") {
+                musicTrackIndex = (musicTrackIndex + 1) % MUSIC_TRACKS.length;
+            }
+            const track = getMusicTrack();
+            musicFilter.frequency.setTargetAtTime(track.filter, time, 1.5);           //le son change en douceur
+            musicEcho.delayTime.setTargetAtTime(60 / track.bpm * track.echo, time, 0.5);
+        }
+
         //On prépare toujours ~1 s de musique à l'avance, pour qu'elle ne saccade jamais
         function scheduleMusic() {
             while (nextChordTime < audioContext.currentTime + 1) {
-                scheduleChord(MUSIC_CHORDS[musicChordIndex], nextChordTime);
-                nextChordTime += getChordDuration();
-                musicChordIndex = (musicChordIndex + 1) % MUSIC_CHORDS.length; //% : revient à 0 après le dernier accord
-            }
-        }
-
-        function scheduleChord(chord, time) {
-            const duration = getChordDuration();
-            for (const note of chord.notes) {
-                playPadNote(midiToFrequency(note), time, duration, 0.035);
-            }
-            playPadNote(midiToFrequency(chord.bass), time, duration, 0.08);
-
-            //Petites notes "qui scintillent" sur les demi-temps, au hasard
-            const halfBeat = 60 / MUSIC_BPM / 2;
-            for (let i = 0; i < MUSIC_BEATS_PER_CHORD * 2; i++) {
-                if (Math.random() < MUSIC_MELODY_CHANCE) {
-                    playPluckNote(midiToFrequency(pickRandom(MUSIC_MELODY_NOTES)), time + i * halfBeat);
+                const track = getMusicTrack();
+                scheduleChord(track, track.chords[musicChordIndex], nextChordTime);
+                nextChordTime += getChordDuration(track);
+                musicChordIndex++;
+                if (musicChordIndex >= track.chords.length) { //fin d'un tour de la suite d'accords
+                    musicChordIndex = 0;
+                    musicLoopCount++;
+                    if (musicLoopCount >= track.loops) {
+                        goToNextTrack(nextChordTime);
+                    }
                 }
             }
         }
 
+        //Choisir un morceau dans les Paramètres : il commence au prochain accord
+        function setMusicChoice(choice) {
+            musicChoice = choice;
+            try {
+                localStorage.setItem("musicTrack", choice);
+            } catch (error) {
+            }
+            if (choice !== "all") {
+                musicTrackIndex = Number(choice);
+            }
+            if (musicFilter !== null) {
+                musicLoopCount = 0;
+                musicChordIndex = 0;
+                const track = getMusicTrack();
+                musicFilter.frequency.setTargetAtTime(track.filter, audioContext.currentTime, 1);
+                musicEcho.delayTime.setTargetAtTime(60 / track.bpm * track.echo, audioContext.currentTime, 0.5);
+            }
+        }
+
+        function scheduleChord(track, chord, time) {
+            const duration = getChordDuration(track);
+            for (const note of chord.notes) {
+                playPadNote(track, midiToFrequency(note), time, duration, track.pad === "sawtooth" ? 0.026 : 0.035); //"sawtooth" est plus fort : un peu moins de volume
+            }
+            playPadNote(track, midiToFrequency(chord.bass), time, duration, 0.08);
+
+            //Petites notes "qui scintillent" sur les demi-temps
+            const halfBeat = 60 / track.bpm / 2;
+            for (let i = 0; i < track.beatsPerChord * 2; i++) {
+                if (Math.random() >= track.melodyChance) {
+                    continue;
+                }
+                let note = pickRandom(track.melody);
+                if (track.arpeggio) {
+                    //Arpège : les notes de l'accord, une octave plus haut, qui montent puis redescendent
+                    const step = i % (chord.notes.length * 2 - 2);
+                    const index = step < chord.notes.length ? step : chord.notes.length * 2 - 2 - step;
+                    note = chord.notes[index] + 12;
+                }
+                playPluckNote(midiToFrequency(note), time + i * halfBeat);
+            }
+        }
+
         //Une note de nappe : monte doucement, tient, puis s'éteint doucement (un peu après l'accord suivant = fondu)
-        function playPadNote(frequency, time, duration, volume) {
+        function playPadNote(track, frequency, time, duration, volume) {
             const oscillator = audioContext.createOscillator();
             const gain = audioContext.createGain();
-            oscillator.type = "triangle";
+            oscillator.type = track.pad;
             oscillator.frequency.value = frequency;
+            oscillator.detune.value = (Math.random() - 0.5) * 8; //légèrement désaccordé, au hasard : plus chaud, moins "robot"
             gain.gain.setValueAtTime(0, time);
             gain.gain.linearRampToValueAtTime(volume, time + 1.2);           //monte en 1.2 s
             gain.gain.setValueAtTime(volume, time + duration);
@@ -9701,6 +9880,24 @@
         }
         themeSelect.addEventListener("change", function () {
             applyTheme(themeSelect.value);
+            playSound("click");
+        });
+
+        //LISTE DES MORCEAUX de musique dans les Paramètres
+        const musicTrackSelect = document.getElementById("musicTrackSelect");
+        const allTracksOption = document.createElement("option");
+        allTracksOption.value = "all";
+        allTracksOption.textContent = t("Tous, à la suite");
+        musicTrackSelect.appendChild(allTracksOption);
+        MUSIC_TRACKS.forEach(function (track, index) {
+            const option = document.createElement("option");
+            option.value = String(index);
+            option.textContent = track.name;
+            musicTrackSelect.appendChild(option);
+        });
+        musicTrackSelect.value = musicChoice;
+        musicTrackSelect.addEventListener("change", function () {
+            setMusicChoice(musicTrackSelect.value);
             playSound("click");
         });
 

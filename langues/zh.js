@@ -1359,5 +1359,12 @@ window.TRADUCTIONS.zh = {
     "Mer étoilée": "星空之海",
     "Mer en plein jour": "白昼之海",
     "Neige": "雪地",
-    "Prairie": "草原"
+    "Prairie": "草原",
+    "Morceau": "曲目",
+    "Tous, à la suite": "全部，依次播放",
+    "Orbite": "轨道",
+    "Marée basse": "退潮",
+    "Neige lente": "缓雪",
+    "Lanternes": "灯笼",
+    "Dernière étoile": "最后的星"
 };
