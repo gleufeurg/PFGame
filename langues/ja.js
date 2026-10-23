@@ -1368,5 +1368,14 @@ window.TRADUCTIONS.ja = {
     "Lanternes": "ランタン",
     "Dernière étoile": "最後の星",
     "Balles à tête chercheuse": "追尾弾",
-    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（オフ：弾は狙った敵へまっすぐ飛ぶよ）"
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（オフ：弾は狙った敵へまっすぐ飛ぶよ）",
+    "Cymo": "キュモー",
+    "Cymopolée": "キュモポレイア",
+    "Rhodé": "ロデ",
+    "Benthésicymé": "ベンテシキュメ",
+    "RESSAC": "返し波",
+    "HOULE": "うねり",
+    "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "返し波：波の射程がポセイドンの射程の50%ぶん伸びる",
+    "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "うねり：波の射程がさらにポセイドンの射程の50%ぶん伸びる",
+    "Portée de la vague (part de la portée de tir)": "波の射程（射程に対する割合）"
 };

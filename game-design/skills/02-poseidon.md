@@ -5,8 +5,8 @@
 | Attribut | 💧 Eau |
 | Couleur | `#4da6ff` |
 | Forme de l'arbre | vagues (`waves`) |
-| Compétences | 36 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1924 |
+| Compétences | 40 (10 notables, 3 keystones, 1 grande keystone) |
+| XP pour tout débloquer | 2002 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°2) |
 
 ## ⭐ Grande keystone
@@ -35,6 +35,8 @@
 | **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 62 XP |
 | **Palémon** (RECUL) | +30 de recul de la vague | 86 XP |
 | **Nérée** (PV) | +3 PV max | 98 XP |
+| **Cymopolée** (RESSAC) | Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon | 20 XP |
+| **Benthésicymé** (HOULE) | Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon | 32 XP |
 
 ## Départ
 
@@ -51,6 +53,8 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | **Néréide** (PV) | +1 PV max | ×8 | 21 à 81 XP |
 | **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 9 à 85 XP |
 | **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 13 à 77 XP |
+| **Cymo** (POR) | +20 de portée | ×1 | 9 à 9 XP |
+| **Rhodé** (POR) | +30 de portée | ×1 | 17 à 17 XP |
 
 ## ↔️ Lien « Opposé » vers Poséidon
 

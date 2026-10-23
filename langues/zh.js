@@ -1368,5 +1368,14 @@ window.TRADUCTIONS.zh = {
     "Lanternes": "灯笼",
     "Dernière étoile": "最后的星",
     "Balles à tête chercheuse": "追踪子弹",
-    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（取消勾选：子弹直线飞向瞄准的敌人）"
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（取消勾选：子弹直线飞向瞄准的敌人）",
+    "Cymo": "库摩",
+    "Cymopolée": "库摩波勒亚",
+    "Rhodé": "罗德",
+    "Benthésicymé": "本忒西库墨",
+    "RESSAC": "回浪",
+    "HOULE": "涌浪",
+    "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "回浪：浪潮范围增加波塞冬射程的50%",
+    "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "涌浪：浪潮范围再增加波塞冬射程的50%",
+    "Portée de la vague (part de la portée de tir)": "浪潮范围（占射程比例）"
 };

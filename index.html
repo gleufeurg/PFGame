@@ -3468,6 +3468,7 @@
             moonArrow: 0,         // Artémis : dégâts de la grande flèche (x les dégâts d'une balle, 0 = pas de flèche)
             tideWave: 0,          // Poséidon : recul de la vague, en pixels (0 = pas de vague)
             waveRadius: 0,        // Poséidon : portée de la vague autour de toi, en pixels
+            waveRangeScale: 0,    // Poséidon : la vague va plus loin, d'une part de la portée de tir de Poséidon (0.5 = +50% de sa portée)
             fragility: 0,         // Poséidon : dégâts en plus subis par les ennemis frêles (0.35 = +35%)
             tideShield: 0,        // Poséidon : secondes d'invincibilité à chaque vague
             chainArcs: 0,         // Zeus : éclairs envoyés à chaque balle qui touche (0 = pas d'éclair)
@@ -6579,7 +6580,8 @@
         //Elle te donne aussi un bouclier des marées : invincible pendant quelques secondes.
         function useTideWave(planet) {
             const stats = planet.stats;
-            const radius = Math.max(PLANET_ORBIT_RADIUS + 60, stats.waveRadius);
+            //Sa portée : celle de l'arbre + une part de la portée de tir de Poséidon (elle grandit avec elle)
+            const radius = Math.max(PLANET_ORBIT_RADIUS + 60, stats.waveRadius + stats.range * stats.waveRangeScale);
             spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, radius);
             spawnShockwave(center.x, center.y, "#d8eefc", radius * 0.7);
             for (const enemy of getEnemiesNear(center.x, center.y, radius)) {
@@ -6854,6 +6856,8 @@
                     [292, 246], [330, 216], [366, 188, "notable"], [404, 166], [442, 164, "notable"],
                     [466, 184, "keystone"], [432, 192], [410, 214], [408, 240], [426, 258]
                 ].map(toPercent));
+                //L'écume : une petite branche qui monte du départ, à gauche (compétences de portée de la vague, voir extraSkills)
+                b.chain("low1", "spray", [[28, 228], [24, 192, "notable"], [34, 156], [52, 124, "notable"]].map(toPercent));
                 //Les deux rangées se touchent, comme sur le dessin
                 b.layout["top7"].links.push("low5");
                 b.layout["top15"].links.push("low14");
@@ -7206,6 +7210,14 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "FRÊLE", name: "Naïade", description: "Ennemis frêles : +2% de dégâts subis", effect: { stat: "fragility", value: 0.02 } }
                 ],
+                //Les compétences de la branche "écume" (ids spray1 à spray4 dans la forme "waves") : la vague va plus loin,
+                //d'autant plus que Poséidon tire loin
+                extraSkills: {
+                    spray1: { label: "POR", name: "Cymo", description: "+20 de portée", effect: { stat: "range", value: 20 } },
+                    spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon", effect: { stat: "waveRangeScale", value: 0.5 } },
+                    spray3: { label: "POR", name: "Rhodé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
+                    spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon", effect: { stat: "waveRangeScale", value: 0.5 } }
+                },
                 shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "waveRadius", value: 220 }, { stat: "fragility", value: 0.35 }] },
@@ -7653,7 +7665,9 @@
                 const layout = treeLayout[id];
                 //On choisit la compétence selon le rôle de la place
                 let skill = undefined;
-                if (layout.role === "start") {
+                if (treeData.extraSkills !== undefined && treeData.extraSkills[id] !== undefined) {
+                    skill = treeData.extraSkills[id]; //une compétence écrite pour CETTE place de l'arbre
+                } else if (layout.role === "start") {
                     skill = treeData.skills.start;
                 } else if (layout.role === "grand") {
                     skill = treeData.skills.grand;
@@ -7921,6 +7935,7 @@
             moonArrow: function (value) { return ["Dégâts de la flèche de lune", "x" + formatNumber(value)]; },
             tideWave: function (value) { return ["Recul de la vague", "+" + formatNumber(value) + " px"]; },
             waveRadius: function (value) { return ["Portée de la vague", "+" + formatNumber(value) + " px"]; },
+            waveRangeScale: function (value) { return ["Portée de la vague (part de la portée de tir)", "+" + formatNumber(value * 100) + "%"]; },
             fragility: function (value) { return ["Dégâts subis par les ennemis frêles", "+" + formatNumber(value * 100) + "%"]; },
             tideShield: function (value) { return ["Bouclier des marées", "+" + formatNumber(value) + " s"]; },
             chainArcs: function (value) { return ["Éclairs par balle", "+" + formatNumber(value)]; },
