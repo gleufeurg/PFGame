@@ -38,4 +38,5 @@ Voir [0-combos.md](0-combos.md) : 66 combos et 220 fusions.
 | **Vitesse des balles** | +15% de vitesse des balles | 8 or | 6 |
 | **Accélérer le temps** | Débloque la vitesse x2, puis x4 | 40 or | 2 |
 | **Sauter dans le temps** | Débloque le saut de +10 s, puis +30 s, puis +100 s | 15 or | 3 |
+| **Liens d'orbite** | Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé | 30 or | 4 |
 | **Nouvelle divinité** | Une nouvelle planète et son skill tree rejoignent l'orbite | 50 or | 12 |

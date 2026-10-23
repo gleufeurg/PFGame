@@ -499,6 +499,12 @@
             grid-column: 1 / -1; /*"Aucun" prend toute la largeur*/
         }
 
+        .linkOption:disabled { /*lien pas encore acheté dans le shop : gris*/
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--ui-relief);
+        }
+
         .comboCard {
             margin-top: 10px;
             padding: 8px 10px;
@@ -4834,7 +4840,9 @@
             hideSpawnAlert();
             if (event.boss !== undefined) {
                 spawnBoss(event.boss, event.angle);
-                soloTimer = BOSS_SOLO_TIME;
+                //1re rencontre (jamais vaincu) : il reste SEUL jusqu'à sa mort, pour que le joueur se concentre sur le combat.
+                //Un super ennemi déjà vaincu qui revient n'est seul que BOSS_SOLO_TIME secondes.
+                soloTimer = defeatedBossIds.has(event.boss.id) ? BOSS_SOLO_TIME : Infinity;
                 showToast(t("⚠️ {name} arrive !", { name: event.boss.name }));
             } else {
                 spawnEnemy(event.unlock.movement, event.angle);
@@ -5543,6 +5551,18 @@
             opposite: { name: "Opposé", strength: 1 }           // pas de combo : une STAT typique du dieu (voir OPPOSITE_BONUSES)
         };
         translateFields(LINK_MODES, ["name"]);
+
+        //LIENS À ACHETER : au début, seul "Aucun" est disponible. L'amélioration "Liens d'orbite" du shop les débloque
+        //un par niveau, dans cet ordre. Les liens pas encore achetés sont gris dans la fenêtre des skills.
+        const LINK_UNLOCK_ORDER = ["right", "left", "both", "opposite"];
+
+        function isLinkModeUnlocked(mode) {
+            if (mode === "none") {
+                return true;
+            }
+            const item = SHOP_ITEMS.find(function (other) { return other.linkUpgrade; });
+            return LINK_UNLOCK_ORDER.indexOf(mode) < item.level;
+        }
 
         //LIEN "OPPOSÉ" : au lieu d'un combo, la planète qui choisit le lien reçoit une STAT typique du dieu d'en face.
         //Le lien traverse le milieu : le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur
@@ -8298,7 +8318,12 @@
                 tree.linkMode = mode; //on essaie chaque option pour savoir quelles planètes elle donnerait
                 const partners = getLinkedPlanets(planet).map(function (other) { return ATTRIBUTES[other.tree.element].icon + " " + other.name; });
                 const button = createElementWithText("button", "linkOption" + (mode === savedMode ? " selected" : "") + (mode === "none" ? " none" : ""), LINK_MODES[mode].name);
-                if (mode !== "none") {
+                const isUnlocked = isLinkModeUnlocked(mode);
+                button.disabled = !isUnlocked; //pas encore acheté : gris (CSS :disabled), on ne peut pas le choisir
+                if (!isUnlocked) {
+                    button.title = t("À débloquer dans le shop : « Liens d'orbite »");
+                    button.appendChild(createElementWithText("small", "", t("Dans le shop")));
+                } else if (mode !== "none") {
                     button.appendChild(createElementWithText("small", "", partners.length > 0 ? partners.join(" + ") : "—"));
                 }
                 button.addEventListener("click", function () {
@@ -8796,6 +8821,8 @@
             //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades)
             { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 40, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
             { name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: 15, costGrowth: 3, maxLevel: 3, level: 0, effect: null, timeUpgrade: "skip" },
+            //Pas d'effet de stat : débloque les liens d'orbite, un par niveau (voir LINK_UNLOCK_ORDER)
+            { name: "Liens d'orbite", description: "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé", baseCost: 30, costGrowth: 2.5, maxLevel: 4, level: 0, effect: null, linkUpgrade: true },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
             { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
@@ -8840,6 +8867,9 @@
                 }
                 if (item.timeUpgrade === "speed" && !isMaxed) {
                     description = t("Débloque la vitesse du jeu x{speed}", { speed: GAME_SPEED_OPTIONS[item.level + 1] });
+                }
+                if (item.linkUpgrade && !isMaxed) {
+                    description = t("Débloque le lien d'orbite « {name} »", { name: LINK_MODES[LINK_UNLOCK_ORDER[item.level]].name });
                 }
                 if (item.timeUpgrade === "skip" && !isMaxed) {
                     description = t("Débloque le saut de +{seconds} s (touche T)", { seconds: TIME_SKIP_OPTIONS[item.level] });
@@ -9037,6 +9067,13 @@
                     }
                 }
                 savedPlanetOrder = Array.isArray(data.planetOrder) ? data.planetOrder : [];
+                //Sauvegarde d'avant l'achat des liens : on débloque ceux que le joueur utilisait déjà (il ne perd rien)
+                const linkItem = SHOP_ITEMS.find(function (item) { return item.linkUpgrade; });
+                if (typeof shop[linkItem.id] !== "number") {
+                    for (const tree of SKILL_TREES) {
+                        linkItem.level = Math.max(linkItem.level, LINK_UNLOCK_ORDER.indexOf(tree.linkMode) + 1);
+                    }
+                }
                 for (const id of Object.keys(data.killStacks || {})) {
                     killStacks[id] = Math.max(0, Number(data.killStacks[id]) || 0);
                 }
@@ -9733,6 +9770,8 @@
                 return isCheatInvincible ? t("Invincible !") : t("Invincibilité désactivée");
             },
             harmonia: function () {      // tous les dieux en lien "Les deux côtés" (Harmonie = la déesse de l'harmonie)
+                const linkItem = SHOP_ITEMS.find(function (item) { return item.linkUpgrade; });
+                linkItem.level = Math.max(linkItem.level, LINK_UNLOCK_ORDER.indexOf("both") + 1); //le lien doit être débloqué
                 for (const tree of SKILL_TREES) {
                     tree.linkMode = "both";
                 }

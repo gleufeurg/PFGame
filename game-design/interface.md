@@ -129,7 +129,7 @@ Avant un super ennemi ou le premier ennemi d'un nouveau mouvement : un bandeau s
 - **Prochain dieu (pas encore en orbite) :** son arbre s'affiche quand même, assombri et verrouillé, pour montrer au joueur ce qui l'attend. On peut le parcourir mais pas acheter.
 - **Acheter :** clic sur une compétence disponible (au doigt : deux touchers, voir plus haut). Le lien depuis la compétence voisine se remplit, et l'étoile éclot.
 - **Rembourser :** clic droit sur une compétence prise (au doigt : appui long), ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
-- **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
+- **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie. Au début, seul « Aucun » est disponible : l'amélioration **« Liens d'orbite »** du shop (4 niveaux : 30, 75, 188 puis 469 or) débloque Droite, puis Gauche, puis Les deux côtés, puis Opposé (`LINK_UNLOCK_ORDER`). Les liens pas encore achetés sont gris, avec « Dans le shop ». Une ancienne sauvegarde garde les liens que le joueur utilisait déjà (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
 
 ## La caméra
 
