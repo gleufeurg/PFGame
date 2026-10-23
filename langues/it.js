@@ -1366,5 +1366,7 @@ window.TRADUCTIONS.it = {
     "Marée basse": "Bassa marea",
     "Neige lente": "Neve lenta",
     "Lanternes": "Lanterne",
-    "Dernière étoile": "Ultima stella"
+    "Dernière étoile": "Ultima stella",
+    "Balles à tête chercheuse": "Proiettili a ricerca",
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "(disattivato: i proiettili vanno dritti verso il nemico mirato)"
 };

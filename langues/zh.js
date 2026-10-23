@@ -1366,5 +1366,7 @@ window.TRADUCTIONS.zh = {
     "Marée basse": "退潮",
     "Neige lente": "缓雪",
     "Lanternes": "灯笼",
-    "Dernière étoile": "最后的星"
+    "Dernière étoile": "最后的星",
+    "Balles à tête chercheuse": "追踪子弹",
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（取消勾选：子弹直线飞向瞄准的敌人）"
 };

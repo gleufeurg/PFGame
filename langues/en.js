@@ -1366,5 +1366,7 @@ window.TRADUCTIONS.en = {
     "Marée basse": "Low Tide",
     "Neige lente": "Slow Snow",
     "Lanternes": "Lanterns",
-    "Dernière étoile": "Last Star"
+    "Dernière étoile": "Last Star",
+    "Balles à tête chercheuse": "Homing bullets",
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "(unchecked: bullets fly straight toward the targeted enemy)"
 };

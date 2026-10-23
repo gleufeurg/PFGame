@@ -1366,5 +1366,7 @@ window.TRADUCTIONS.ja = {
     "Marée basse": "引き潮",
     "Neige lente": "ゆるやかな雪",
     "Lanternes": "ランタン",
-    "Dernière étoile": "最後の星"
+    "Dernière étoile": "最後の星",
+    "Balles à tête chercheuse": "追尾弾",
+    "(décoché : les balles partent tout droit vers l'ennemi visé)": "（オフ：弾は狙った敵へまっすぐ飛ぶよ）"
 };
