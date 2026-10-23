@@ -4279,11 +4279,8 @@
                     remaining -= timeUntilNextSpawn;
                     runTime += timeUntilNextSpawn;
                     enemySpawnTimer = 0;
-                    spawnNextEnemy();
+                    spawnNextEnemy(); //peut être un super ennemi déjà vaincu : il arrive comme un ennemi normal, sans arrêter le saut
                     spawnedCount++;
-                    if (spawnEvent !== null) {
-                        break; //un super ennemi déjà vaincu revient : son alerte arrête le saut
-                    }
                 }
             }
 
@@ -4703,7 +4700,8 @@
             { id: "cronos", name: "Cronos", time: 480, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 8, sides: 12, gold: 260, xp: 260 }
         ];
         translateFields(BOSSES, ["name"]);
-        //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie
+        //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie.
+        //Une fois vaincu, un super ennemi devient un ennemi (rare) comme les autres : pas d'alerte, les autres ennemis continuent d'arriver.
         const BOSS_RANDOM_CHANCE_START = 0.001;     // 0.1% au début
         const BOSS_RANDOM_CHANCE_PER_SECOND = 0.00002; // +0.002% par seconde de jeu (≈ 0.7% à 5 minutes)
 
@@ -4757,13 +4755,11 @@
             });
         }
 
-        //ARRIVÉES SPÉCIALES : un super ennemi, ou le 1er ennemi d'un nouveau mouvement, arrive SEUL pour qu'on le voie bien.
+        //ARRIVÉES SPÉCIALES : un super ennemi jamais vaincu, ou le 1er ennemi d'un nouveau mouvement, arrive SEUL pour qu'on le voie bien.
         //1. Une ALERTE s'affiche quelques secondes avant (et une flèche montre d'où il va venir) : plus aucun ennemi n'apparaît,
         //   le joueur a le temps de nettoyer l'écran.
         //2. Il arrive, et les autres ennemis attendent encore un peu (soloTimer), ou jusqu'à sa mort.
         const BOSS_WARNING_TIME = 8;          // secondes d'alerte avant un super ennemi jamais vaincu
-        const BOSS_REPEAT_WARNING_TIME = 5;   // ...avant un super ennemi déjà vaincu qui revient
-        const BOSS_SOLO_TIME = 10;            // secondes pendant lesquelles le super ennemi est seul (s'il n'est pas tué avant)
         const MOVEMENT_WARNING_TIME = 3;      // secondes d'alerte avant le 1er ennemi d'un nouveau mouvement
         const MOVEMENT_SOLO_TIME = 5;
         let spawnEvent = null;                // l'arrivée annoncée : { boss ou unlock, timer (secondes avant l'arrivée), angle }
@@ -4844,9 +4840,8 @@
             hideSpawnAlert();
             if (event.boss !== undefined) {
                 spawnBoss(event.boss, event.angle);
-                //1re rencontre (jamais vaincu) : il reste SEUL jusqu'à sa mort, pour que le joueur se concentre sur le combat.
-                //Un super ennemi déjà vaincu qui revient n'est seul que BOSS_SOLO_TIME secondes.
-                soloTimer = defeatedBossIds.has(event.boss.id) ? BOSS_SOLO_TIME : Infinity;
+                //1re rencontre (jamais vaincu) : il reste SEUL jusqu'à sa mort, pour que le joueur se concentre sur le combat
+                soloTimer = Infinity;
                 showToast(t("⚠️ {name} arrive !", { name: event.boss.name }));
             } else {
                 spawnEnemy(event.unlock.movement, event.angle);
@@ -4900,12 +4895,12 @@
             ctx.globalAlpha = 1;
         }
 
-        //Le prochain ennemi : en général un normal, parfois un super ennemi déjà vaincu (qui arrive seul, après une alerte)
+        //Le prochain ennemi : en général un normal, parfois (rarement) un super ennemi déjà vaincu, sans alerte, au milieu des autres
         function spawnNextEnemy() {
             const chance = BOSS_RANDOM_CHANCE_START + runTime * BOSS_RANDOM_CHANCE_PER_SECOND;
-            if (defeatedBossIds.size > 0 && spawnEvent === null && Math.random() < chance) {
+            if (defeatedBossIds.size > 0 && Math.random() < chance) {
                 const defeatedBosses = BOSSES.filter(function (boss) { return defeatedBossIds.has(boss.id); });
-                startSpawnEvent({ boss: pickRandom(defeatedBosses), timer: BOSS_REPEAT_WARNING_TIME });
+                spawnBoss(pickRandom(defeatedBosses));
             } else {
                 spawnEnemy();
             }
