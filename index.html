@@ -1239,7 +1239,7 @@
             accent-color: var(--ui-accent); /*couleur du curseur*/
         }
 
-        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect { /*listes déroulantes des paramètres*/
+        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect, #graphicsSelect { /*listes déroulantes des paramètres*/
             flex: 1;
             padding: 6px 10px;
             border: 2px solid var(--ui-line);
@@ -1484,7 +1484,7 @@
             color: var(--ui-accent);
         }
 
-        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect {
+        #themeSelect, #languageSelect, #sceneSelect, #musicTrackSelect, #graphicsSelect {
             border-color: var(--ui-accent);
         }
 
@@ -2085,6 +2085,13 @@
                 <select id="sceneSelect"></select>
             </div>
             <div class="settingRow">
+                <label for="graphicsSelect" class="volumeLabel">Graphismes</label>
+                <select id="graphicsSelect">
+                    <option value="high">Élevés (plus belles animations)</option>
+                    <option value="simple">Simples (plus rapide)</option>
+                </select>
+            </div>
+            <div class="settingRow">
                 <input type="checkbox" id="muteCheckbox">
                 <label for="muteCheckbox">Couper le son</label>
             </div>
@@ -2385,6 +2392,7 @@
             drawShadows();           //toutes les ombres d'abord, pour qu'elles passent SOUS tous les objets
             drawHazards();           //ce qui est au sol (braises, graines...) passe sous les ennemis
             drawSpawnWarning();      //la flèche au bord de l'écran : un ennemi spécial va arriver par là
+            drawTideWaves();         //la vague de Poséidon (graphismes élevés)
             drawEnemies();
             drawBullets();
             drawEffects();
@@ -3091,8 +3099,9 @@
         //ONDES DE CHOC : un anneau qui grandit et s'efface (joueur touché, bouclier...)
         const shockwaves = [];
 
-        function spawnShockwave(x, y, color, maxRadius) {
-            shockwaves.push({ x: x, y: y, color: color, radius: 0, maxRadius: maxRadius, life: 0.5, maxLife: 0.5 });
+        //life (optionnel) = durée de l'onde en secondes (0.5 par défaut)
+        function spawnShockwave(x, y, color, maxRadius, life = 0.5) {
+            shockwaves.push({ x: x, y: y, color: color, radius: 0, maxRadius: maxRadius, life: life, maxLife: life });
         }
 
         //NOMBRES DE DÉGÂTS : chaque coup affiche les dégâts au-dessus de l'ennemi, de la couleur de l'attaque
@@ -6693,6 +6702,15 @@
         //Héphaïstos et Éole n'ont pas de pouvoir à part : leur skill tree change leurs TIRS (taille, cadence, dégâts, perforation).
         //Les autres ont un POUVOIR qui revient régulièrement (toutes les X secondes, plus souvent avec "abilityHaste"),
         //ou qui part avec leurs balles (Zeus). Tout dépend des stats de la planète (PLANET_POWER_STATS) : 0 = pas de pouvoir.
+        //GRAPHISMES : "high" (élevés, par défaut) = les animations les plus belles (ex : la vague de Poséidon) ;
+        //"simple" = des effets plus légers, pour les appareils lents. Réglage des Paramètres, retenu par le navigateur.
+        //⚠️ Les belles animations à venir se dessinent seulement si isHighGraphics est vrai ; le jeu (les règles) reste le même.
+        let isHighGraphics = true;
+        try {
+            isHighGraphics = localStorage.getItem("graphicsQuality") !== "simple";
+        } catch (error) {
+        }
+
         const WAR_CRY_DAMAGE = 0.15;         // Arès : +15% de dégâts par point de cri de guerre
         const WAR_CRY_CRIT_CHANCE = 0.04;    // +4% de chance de critique par point
         const WAR_CRY_CRIT_DAMAGE = 0.2;     // +20% de dégâts critiques par point
@@ -6757,6 +6775,7 @@
                 }
             }
             updatePendingBolts();
+            updateTideWaves(deltaTime);
         }
 
         //APHRODITE : une onde rose autour d'elle charme les ennemis (sauf les super ennemis) : ils font demi-tour et blessent leurs alliés
@@ -6843,25 +6862,125 @@
 
         //POSÉIDON : une vague part de toi, repousse les ennemis, les ralentit et les rend frêles (ils subissent plus de dégâts).
         //Elle te donne aussi un bouclier des marées : invincible pendant quelques secondes.
+        //La vague ne repousse pas tout d'un coup : elle part du joueur et AVANCE (TIDE_WAVE_SPEED pixels par seconde).
+        //Quand son front arrive sur un ennemi, il est ralenti, devient frêle, puis la vague l'emporte avec elle,
+        //jusqu'à TIDE_PUSH_FACTOR x le recul de la vague (moins pour un super ennemi). Ensuite, elle passe par-dessus lui.
+        const TIDE_WAVE_SPEED = 320;        // vitesse du front de la vague, en pixels par seconde
+        const TIDE_PUSH_FACTOR = 2;         // distance max dont un ennemi est emporté = recul de la vague x ce nombre
+        const tideWaves = [];               // les vagues en train d'avancer
+
         function useTideWave(planet) {
             const stats = planet.stats;
             //Sa portée : celle de l'arbre + une part de la portée de tir de Poséidon (elle grandit avec elle)
             const radius = Math.max(PLANET_ORBIT_RADIUS + 60, stats.waveRadius + stats.range * stats.waveRangeScale);
-            spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, radius);
-            spawnShockwave(center.x, center.y, "#d8eefc", radius * 0.7);
-            for (const enemy of getEnemiesNear(center.x, center.y, radius)) {
-                const push = stats.tideWave * (enemy.isBoss ? BOSS_KNOCKBACK_FACTOR : 1);
-                enemy.distance = Math.min(enemy.startDistance, enemy.distance + push);
-                enemy.slowTimer = Math.max(enemy.slowTimer || 0, TIDE_SLOW_DURATION);
-                if (stats.fragility > 0) {
-                    enemy.fragileAmount = Math.max(enemy.fragileTimer > 0 ? enemy.fragileAmount : 0, stats.fragility);
-                    enemy.fragileTimer = FRAGILE_DURATION;
-                }
+            tideWaves.push({
+                radius: PLAYER_RADIUS,      // le front de la vague, qui grandit
+                maxRadius: radius,
+                push: stats.tideWave * TIDE_PUSH_FACTOR,
+                fragility: stats.fragility,
+                pushed: new Map(),          // ennemi -> distance dont cette vague l'a déjà emporté (Map = un dictionnaire)
+                time: 0
+            });
+            if (!isHighGraphics) {
+                //Graphismes simples : les deux ondes de choc d'origine, qui grandissent au rythme de la vague
+                const duration = (radius - PLAYER_RADIUS) / TIDE_WAVE_SPEED;
+                spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, radius, duration);
+                spawnShockwave(center.x, center.y, "#d8eefc", radius * 0.7, duration * 0.7);
             }
             if (stats.tideShield > 0) {
                 tideShieldTimer = Math.max(tideShieldTimer, stats.tideShield);
             }
             playSound("shieldBlock");
+        }
+
+        function updateTideWaves(deltaTime) {
+            for (let i = tideWaves.length - 1; i >= 0; i--) {
+                const wave = tideWaves[i];
+                wave.time += deltaTime;
+                wave.radius = Math.min(wave.maxRadius, wave.radius + TIDE_WAVE_SPEED * deltaTime);
+                for (const enemy of getEnemiesNear(center.x, center.y, wave.radius)) {
+                    if (enemy.distance > wave.radius) {
+                        continue; //le front ne l'a pas encore atteint (il touche juste le bord du cercle)
+                    }
+                    let pushed = wave.pushed.get(enemy);
+                    if (pushed === undefined) {
+                        //Le front vient de l'atteindre : ralenti et frêle
+                        pushed = 0;
+                        enemy.slowTimer = Math.max(enemy.slowTimer || 0, TIDE_SLOW_DURATION);
+                        if (wave.fragility > 0) {
+                            enemy.fragileAmount = Math.max(enemy.fragileTimer > 0 ? enemy.fragileAmount : 0, wave.fragility);
+                            enemy.fragileTimer = FRAGILE_DURATION;
+                        }
+                    }
+                    //La vague l'emporte : il est poussé devant le front, tant qu'il lui reste de la "poussée"
+                    const budget = wave.push * (enemy.isBoss ? BOSS_KNOCKBACK_FACTOR : 1) - pushed;
+                    const step = Math.min(budget, wave.radius - enemy.distance + enemy.size * 0.5);
+                    if (step > 0) {
+                        enemy.distance = Math.min(enemy.startDistance, enemy.distance + step);
+                        pushed += step;
+                    }
+                    wave.pushed.set(enemy, pushed);
+                }
+                if (isHighGraphics && Math.random() < deltaTime * 40) {
+                    //De l'écume qui gicle sur le front de la vague
+                    const angle = Math.random() * Math.PI * 2;
+                    spawnParticles(center.x + Math.cos(angle) * wave.radius, center.y + Math.sin(angle) * wave.radius, "#e8f6ff", 2, 90);
+                }
+                if (wave.radius >= wave.maxRadius) {
+                    wave.fading = (wave.fading || 0) + deltaTime; //arrivée au bout : elle s'efface en 0.4 s
+                    if (wave.fading > 0.4) {
+                        tideWaves.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        //GRAPHISMES ÉLEVÉS : une vraie vague. Derrière le front, une nappe d'eau bleue transparente ;
+        //sur le front, une crête d'écume blanche qui ondule ; elle s'efface en arrivant au bout.
+        function drawTideWaves() {
+            if (!isHighGraphics) {
+                return;
+            }
+            for (const wave of tideWaves) {
+                const fade = (1 - (wave.fading || 0) / 0.4) * (0.55 + 0.45 * (1 - wave.radius / wave.maxRadius));
+                const r = wave.radius;
+                const thickness = 70;
+                //La nappe d'eau : un anneau en dégradé, transparent derrière, bleu juste avant la crête
+                const water = ctx.createRadialGradient(center.x, center.y, Math.max(0, r - thickness), center.x, center.y, r + 10);
+                water.addColorStop(0, "rgba(77, 166, 255, 0)");
+                water.addColorStop(0.75, "rgba(77, 166, 255, 0.32)");
+                water.addColorStop(0.9, "rgba(170, 220, 255, 0.55)");
+                water.addColorStop(1, "rgba(255, 255, 255, 0)");
+                ctx.globalAlpha = fade;
+                ctx.fillStyle = water;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, r + 10, 0, Math.PI * 2);
+                ctx.arc(center.x, center.y, Math.max(0, r - thickness), 0, Math.PI * 2, true); //un trou au milieu : un anneau
+                ctx.fill();
+                //La crête d'écume : une ligne blanche qui ondule autour du cercle
+                ctx.beginPath();
+                const steps = 72;
+                for (let k = 0; k <= steps; k++) {
+                    const angle = k / steps * Math.PI * 2;
+                    const wobble = Math.sin(angle * 9 + wave.time * 6) * 3 + Math.sin(angle * 23 - wave.time * 4) * 1.5;
+                    const x = center.x + Math.cos(angle) * (r + wobble);
+                    const y = center.y + Math.sin(angle) * (r + wobble);
+                    if (k === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 4;
+                ctx.globalAlpha = fade * 0.85;
+                ctx.stroke();
+                ctx.strokeStyle = "#bfe6ff";
+                ctx.lineWidth = 9;
+                ctx.globalAlpha = fade * 0.25;
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
         }
 
         //ZEUS : une balle qui touche envoie des éclairs vers les ennemis autour. Ils sont blessés et deviennent CONDUCTEURS.
@@ -8914,6 +9033,7 @@
             }
             warCryTimer = 0;
             tideShieldTimer = 0;
+            tideWaves.length = 0;
             pendingBolts.length = 0;
             lightningArcs.length = 0;
             shockwaves.length = 0;
@@ -10573,6 +10693,18 @@
             } catch (error) {
             }
             updatePause();
+            playSound("click");
+        });
+
+        //GRAPHISMES SIMPLES / ÉLEVÉS
+        const graphicsSelect = document.getElementById("graphicsSelect");
+        graphicsSelect.value = isHighGraphics ? "high" : "simple";
+        graphicsSelect.addEventListener("change", function () {
+            isHighGraphics = graphicsSelect.value === "high";
+            try {
+                localStorage.setItem("graphicsQuality", graphicsSelect.value);
+            } catch (error) {
+            }
             playSound("click");
         });
 

@@ -1377,5 +1377,8 @@ window.TRADUCTIONS.zh = {
     "HOULE": "涌浪",
     "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "回浪：浪潮范围增加波塞冬射程的50%",
     "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "涌浪：浪潮范围再增加波塞冬射程的50%",
-    "Portée de la vague (part de la portée de tir)": "浪潮范围（占射程比例）"
+    "Portée de la vague (part de la portée de tir)": "浪潮范围（占射程比例）",
+    "Graphismes": "画质",
+    "Élevés (plus belles animations)": "高（更好看的动画）",
+    "Simples (plus rapide)": "简单（更流畅）"
 };

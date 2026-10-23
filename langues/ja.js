@@ -1377,5 +1377,8 @@ window.TRADUCTIONS.ja = {
     "HOULE": "うねり",
     "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "返し波：波の射程がポセイドンの射程の50%ぶん伸びる",
     "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "うねり：波の射程がさらにポセイドンの射程の50%ぶん伸びる",
-    "Portée de la vague (part de la portée de tir)": "波の射程（射程に対する割合）"
+    "Portée de la vague (part de la portée de tir)": "波の射程（射程に対する割合）",
+    "Graphismes": "グラフィック",
+    "Élevés (plus belles animations)": "高（きれいなアニメーション）",
+    "Simples (plus rapide)": "シンプル（軽い）"
 };

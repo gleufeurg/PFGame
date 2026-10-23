@@ -1377,5 +1377,8 @@ window.TRADUCTIONS.de = {
     "HOULE": "DÜNUNG",
     "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon": "Brandung: Die Welle reicht weiter, um 50% von Poseidons Schussreichweite",
     "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon": "Dünung: Die Welle reicht noch weiter, um weitere 50% von Poseidons Schussreichweite",
-    "Portée de la vague (part de la portée de tir)": "Wellenreichweite (Anteil der Schussreichweite)"
+    "Portée de la vague (part de la portée de tir)": "Wellenreichweite (Anteil der Schussreichweite)",
+    "Graphismes": "Grafik",
+    "Élevés (plus belles animations)": "Hoch (schönere Animationen)",
+    "Simples (plus rapide)": "Einfach (schneller)"
 };
