@@ -22,7 +22,9 @@ L'application mobile (branche `monetisation`, voir `game-design/mobile.md` sur c
 
 1. Sur la page du dépôt : **Settings** → **Pages**.
 2. Dans **Build and deployment** → **Source**, choisir **GitHub Actions** (au lieu de « Deploy from a branch »).
-3. Onglet **Actions** → « Publier le site » → **Run workflow** (choisir la branche `monetisation`).
+3. Onglet **Actions** → « Publier le site » → cliquer sur la dernière publication de la branche `monetisation` → **Re-run all jobs**. (Le bouton « Run workflow » n'apparaît pas : GitHub ne le montre que si le workflow existe sur la branche principale du dépôt, `main`.)
+
+✅ Fait le 23 octobre 2026 : le site est publié par GitHub Actions.
 
 Si la publication échoue avec un message du genre « Branch "monetisation" is not allowed to deploy to github-pages » : **Settings** → **Environments** → **github-pages** → **Deployment branches and tags** → ajouter `monetisation`.
 

@@ -1,7 +1,7 @@
 # Publie le site du jeu (GitHub Pages) avec SEULEMENT les fichiers du jeu :
 # CLAUDE.md, game-design/, README.md... restent dans le dépôt mais ne sont pas sur le site.
 # Se lance tout seul à chaque push sur la branche monetisation, celle que le site publie depuis le début
-# (et à la main : onglet Actions > "Publier le site" > Run workflow, en choisissant la branche monetisation).
+# Pour relancer à la main : onglet Actions > "Publier le site" > la dernière publication > Re-run all jobs.
 # Voir game-design/site-web.md
 name: Publier le site
 
