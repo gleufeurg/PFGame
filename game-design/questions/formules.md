@@ -1,5 +1,7 @@
 # Les formules du jeu
 
+> **La question :** les formules mathématiques du jeu (dégâts, combos, pouvoirs, vie des ennemis, joueur, prix).
+
 Tous les calculs du jeu, tels qu'ils sont écrits dans `index.html`. Les noms entre `accents graves` sont les constantes ou les stats du code : les changer change le jeu. Quand ce document et le code ne disent pas la même chose, c'est le code qui a raison, et il faut corriger ce document.
 
 Notations :
@@ -163,7 +165,7 @@ Les multiplicateurs de statut :
 chance qu'un ennemi soit un super ennemi déjà vaincu = 0,001 + 0,00002 × t
 ```
 
-Un ennemi sur 10 a un mouvement spécial, choisi parmi ceux déjà débloqués. Les alertes et les arrivées seules sont détaillées dans [ennemis.md](ennemis.md).
+Un ennemi sur 10 a un mouvement spécial, choisi parmi ceux déjà débloqués. Les alertes et les arrivées seules sont détaillées dans [ennemis.md](../ennemis.md).
 
 ### Leurs dégâts sur le joueur
 
@@ -235,4 +237,4 @@ Le prix d'un skill dépend de son type et de son nombre de **pas** : le nombre d
 | Keystone | 60 + 2 × pas |
 | Grande keystone | 150 |
 
-Le détail des prix, dieu par dieu, est dans [prix.md](prix.md). Rembourser un skill rend tout son XP.
+Le détail des prix, dieu par dieu, est dans [prix.md](../prix.md). Rembourser un skill rend tout son XP.
