@@ -1380,5 +1380,10 @@ window.TRADUCTIONS.en = {
     "Portée de la vague (part de la portée de tir)": "Wave range (share of firing range)",
     "Graphismes": "Graphics",
     "Élevés (plus belles animations)": "High (nicer animations)",
-    "Simples (plus rapide)": "Simple (faster)"
+    "Simples (plus rapide)": "Simple (faster)",
+    "+40 de portée (la vague va aussi plus loin)": "+40 range (the wave also reaches farther)",
+    "Ressac : +60 de portée (la vague va aussi plus loin)": "Surf: +60 range (the wave also reaches farther)",
+    "Houle : +80 de portée (la vague va aussi plus loin)": "Swell: +80 range (the wave also reaches farther)",
+    "La vague revient 40% plus souvent, et +80 de portée": "The wave comes back 40% more often, and +80 range",
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Tidal wave: every 10 s, a wave spreads out from Poseidon up to his range, pushes enemies back, slows them and makes them frail: +35% damage taken for 4 s"
 };

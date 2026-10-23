@@ -1380,5 +1380,10 @@ window.TRADUCTIONS.it = {
     "Portée de la vague (part de la portée de tir)": "Gittata dell'onda (quota della gittata di tiro)",
     "Graphismes": "Grafica",
     "Élevés (plus belles animations)": "Alta (animazioni più belle)",
-    "Simples (plus rapide)": "Semplice (più veloce)"
+    "Simples (plus rapide)": "Semplice (più veloce)",
+    "+40 de portée (la vague va aussi plus loin)": "+40 gittata (anche l'onda arriva più lontano)",
+    "Ressac : +60 de portée (la vague va aussi plus loin)": "Risacca: +60 gittata (anche l'onda arriva più lontano)",
+    "Houle : +80 de portée (la vague va aussi plus loin)": "Mareggiata: +80 gittata (anche l'onda arriva più lontano)",
+    "La vague revient 40% plus souvent, et +80 de portée": "L'onda torna il 40% più spesso, e +80 gittata",
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Maremoto: ogni 10 s, un'onda parte da Poseidone fino alla sua gittata, respinge i nemici, li rallenta e li rende fragili: +35% di danni subiti per 4 s"
 };

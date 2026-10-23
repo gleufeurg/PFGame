@@ -1380,5 +1380,10 @@ window.TRADUCTIONS.de = {
     "Portée de la vague (part de la portée de tir)": "Wellenreichweite (Anteil der Schussreichweite)",
     "Graphismes": "Grafik",
     "Élevés (plus belles animations)": "Hoch (schönere Animationen)",
-    "Simples (plus rapide)": "Einfach (schneller)"
+    "Simples (plus rapide)": "Einfach (schneller)",
+    "+40 de portée (la vague va aussi plus loin)": "+40 Reichweite (auch die Welle reicht weiter)",
+    "Ressac : +60 de portée (la vague va aussi plus loin)": "Brandung: +60 Reichweite (auch die Welle reicht weiter)",
+    "Houle : +80 de portée (la vague va aussi plus loin)": "Dünung: +80 Reichweite (auch die Welle reicht weiter)",
+    "La vague revient 40% plus souvent, et +80 de portée": "Die Welle kommt 40% öfter, und +80 Reichweite",
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Flutwelle: Alle 10 s geht eine Welle von Poseidon bis zu seiner Reichweite aus, stößt Gegner zurück, verlangsamt sie und macht sie brüchig: +35% erlittener Schaden für 4 s"
 };

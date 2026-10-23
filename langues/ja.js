@@ -1380,5 +1380,10 @@ window.TRADUCTIONS.ja = {
     "Portée de la vague (part de la portée de tir)": "波の射程（射程に対する割合）",
     "Graphismes": "グラフィック",
     "Élevés (plus belles animations)": "高（きれいなアニメーション）",
-    "Simples (plus rapide)": "シンプル（軽い）"
+    "Simples (plus rapide)": "シンプル（軽い）",
+    "+40 de portée (la vague va aussi plus loin)": "射程+40（波もより遠くまで届く）",
+    "Ressac : +60 de portée (la vague va aussi plus loin)": "返し波：射程+60（波もより遠くまで届く）",
+    "Houle : +80 de portée (la vague va aussi plus loin)": "うねり：射程+80（波もより遠くまで届く）",
+    "La vague revient 40% plus souvent, et +80 de portée": "波の頻度が40%アップ、射程+80",
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "大津波：10秒ごとにポセイドンから射程いっぱいまで波が広がり、敵を押し返して減速させ、脆弱にする：4秒間受けるダメージ+35%"
 };
