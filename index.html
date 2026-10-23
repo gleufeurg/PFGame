@@ -3476,8 +3476,6 @@
             vineDuration: 0,      // Déméter : secondes d'immobilisation en plus
             moonArrow: 0,         // Artémis : dégâts de la grande flèche (x les dégâts d'une balle, 0 = pas de flèche)
             tideWave: 0,          // Poséidon : recul de la vague, en pixels (0 = pas de vague)
-            waveRadius: 0,        // Poséidon : portée de la vague autour de toi, en pixels
-            waveRangeScale: 0,    // Poséidon : la vague va plus loin, d'une part de la portée de tir de Poséidon (0.5 = +50% de sa portée)
             fragility: 0,         // Poséidon : dégâts en plus subis par les ennemis frêles (0.35 = +35%)
             tideShield: 0,        // Poséidon : secondes d'invincibilité à chaque vague
             chainArcs: 0,         // Zeus : éclairs envoyés à chaque balle qui touche (0 = pas d'éclair)
@@ -6597,8 +6595,9 @@
 
         //POSÉIDON : une vague part de toi, repousse les ennemis, les ralentit et les rend frêles (ils subissent plus de dégâts).
         //Elle te donne aussi un bouclier des marées : invincible pendant quelques secondes.
-        //La vague ne repousse pas tout d'un coup : elle part du joueur et AVANCE (TIDE_WAVE_SPEED pixels par seconde).
-        //Quand son front arrive sur un ennemi, il est ralenti, devient frêle, puis la vague l'emporte avec elle,
+        //La vague part de la planète Poséidon (là où elle est au moment du lancer) et AVANCE (TIDE_WAVE_SPEED pixels par seconde)
+        //jusqu'à la portée de Poséidon (prise au moment du lancer) : améliorer sa portée, c'est agrandir sa vague.
+        //Quand son front arrive sur un ennemi, il est ralenti, devient frêle, puis la vague l'emporte avec elle (en s'éloignant de Poséidon),
         //jusqu'à TIDE_PUSH_FACTOR x le recul de la vague (moins pour un super ennemi). Ensuite, elle passe par-dessus lui.
         const TIDE_WAVE_SPEED = 320;        // vitesse du front de la vague, en pixels par seconde
         const TIDE_PUSH_FACTOR = 2;         // distance max dont un ennemi est emporté = recul de la vague x ce nombre
@@ -6606,10 +6605,11 @@
 
         function useTideWave(planet) {
             const stats = planet.stats;
-            //Sa portée : celle de l'arbre + une part de la portée de tir de Poséidon (elle grandit avec elle)
-            const radius = Math.max(PLANET_ORBIT_RADIUS + 60, stats.waveRadius + stats.range * stats.waveRangeScale);
+            const radius = stats.range; //la vague va jusqu'à la portée de Poséidon
             tideWaves.push({
-                radius: PLAYER_RADIUS,      // le front de la vague, qui grandit
+                x: planet.x,                // d'où elle part : la planète, au moment du lancer
+                y: planet.y,
+                radius: planet.size,        // le front de la vague, qui grandit
                 maxRadius: radius,
                 push: stats.tideWave * TIDE_PUSH_FACTOR,
                 fragility: stats.fragility,
@@ -6618,9 +6618,9 @@
             });
             if (!isHighGraphics) {
                 //Graphismes simples : les deux ondes de choc d'origine, qui grandissent au rythme de la vague
-                const duration = (radius - PLAYER_RADIUS) / TIDE_WAVE_SPEED;
-                spawnShockwave(center.x, center.y, ATTRIBUTES.water.color, radius, duration);
-                spawnShockwave(center.x, center.y, "#d8eefc", radius * 0.7, duration * 0.7);
+                const duration = (radius - planet.size) / TIDE_WAVE_SPEED;
+                spawnShockwave(planet.x, planet.y, ATTRIBUTES.water.color, radius, duration);
+                spawnShockwave(planet.x, planet.y, "#d8eefc", radius * 0.7, duration * 0.7);
             }
             if (stats.tideShield > 0) {
                 tideShieldTimer = Math.max(tideShieldTimer, stats.tideShield);
@@ -6633,8 +6633,11 @@
                 const wave = tideWaves[i];
                 wave.time += deltaTime;
                 wave.radius = Math.min(wave.maxRadius, wave.radius + TIDE_WAVE_SPEED * deltaTime);
-                for (const enemy of getEnemiesNear(center.x, center.y, wave.radius)) {
-                    if (enemy.distance > wave.radius) {
+                for (const enemy of getEnemiesNear(wave.x, wave.y, wave.radius)) {
+                    const dx = enemy.x - wave.x;
+                    const dy = enemy.y - wave.y;
+                    const fromWave = Math.hypot(dx, dy) || 1; //sa distance à l'endroit d'où part la vague (|| 1 : jamais 0)
+                    if (fromWave > wave.radius) {
                         continue; //le front ne l'a pas encore atteint (il touche juste le bord du cercle)
                     }
                     let pushed = wave.pushed.get(enemy);
@@ -6649,9 +6652,16 @@
                     }
                     //La vague l'emporte : il est poussé devant le front, tant qu'il lui reste de la "poussée"
                     const budget = wave.push * (enemy.isBoss ? BOSS_KNOCKBACK_FACTOR : 1) - pushed;
-                    const step = Math.min(budget, wave.radius - enemy.distance + enemy.size * 0.5);
+                    const step = Math.min(budget, wave.radius - fromWave + enemy.size * 0.5);
                     if (step > 0) {
-                        enemy.distance = Math.min(enemy.startDistance, enemy.distance + step);
+                        //Il est poussé en s'éloignant de Poséidon. Les ennemis sont rangés par "distance au joueur" et "angle" :
+                        //on recalcule les deux à partir de sa nouvelle position.
+                        const newX = enemy.x + dx / fromWave * step;
+                        const newY = enemy.y + dy / fromWave * step;
+                        const newDistance = Math.hypot(newX - center.x, newY - center.y);
+                        enemy.angle = Math.atan2(newY - center.y, newX - center.x);
+                        //Jamais poussé VERS le joueur (si Poséidon est de l'autre côté), ni plus loin que son point de départ
+                        enemy.distance = Math.min(enemy.startDistance, Math.max(enemy.distance, newDistance));
                         pushed += step;
                     }
                     wave.pushed.set(enemy, pushed);
@@ -6659,7 +6669,7 @@
                 if (isHighGraphics && Math.random() < deltaTime * 40) {
                     //De l'écume qui gicle sur le front de la vague
                     const angle = Math.random() * Math.PI * 2;
-                    spawnParticles(center.x + Math.cos(angle) * wave.radius, center.y + Math.sin(angle) * wave.radius, "#e8f6ff", 2, 90);
+                    spawnParticles(wave.x + Math.cos(angle) * wave.radius, wave.y + Math.sin(angle) * wave.radius, "#e8f6ff", 2, 90);
                 }
                 if (wave.radius >= wave.maxRadius) {
                     wave.fading = (wave.fading || 0) + deltaTime; //arrivée au bout : elle s'efface en 0.4 s
@@ -6681,7 +6691,7 @@
                 const r = wave.radius;
                 const thickness = 70;
                 //La nappe d'eau : un anneau en dégradé, transparent derrière, bleu juste avant la crête
-                const water = ctx.createRadialGradient(center.x, center.y, Math.max(0, r - thickness), center.x, center.y, r + 10);
+                const water = ctx.createRadialGradient(wave.x, wave.y, Math.max(0, r - thickness), wave.x, wave.y, r + 10);
                 water.addColorStop(0, "rgba(77, 166, 255, 0)");
                 water.addColorStop(0.75, "rgba(77, 166, 255, 0.32)");
                 water.addColorStop(0.9, "rgba(170, 220, 255, 0.55)");
@@ -6689,8 +6699,8 @@
                 ctx.globalAlpha = fade;
                 ctx.fillStyle = water;
                 ctx.beginPath();
-                ctx.arc(center.x, center.y, r + 10, 0, Math.PI * 2);
-                ctx.arc(center.x, center.y, Math.max(0, r - thickness), 0, Math.PI * 2, true); //un trou au milieu : un anneau
+                ctx.arc(wave.x, wave.y, r + 10, 0, Math.PI * 2);
+                ctx.arc(wave.x, wave.y, Math.max(0, r - thickness), 0, Math.PI * 2, true); //un trou au milieu : un anneau
                 ctx.fill();
                 //La crête d'écume : une ligne blanche qui ondule autour du cercle
                 ctx.beginPath();
@@ -6698,8 +6708,8 @@
                 for (let k = 0; k <= steps; k++) {
                     const angle = k / steps * Math.PI * 2;
                     const wobble = Math.sin(angle * 9 + wave.time * 6) * 3 + Math.sin(angle * 23 - wave.time * 4) * 1.5;
-                    const x = center.x + Math.cos(angle) * (r + wobble);
-                    const y = center.y + Math.sin(angle) * (r + wobble);
+                    const x = wave.x + Math.cos(angle) * (r + wobble);
+                    const y = wave.y + Math.sin(angle) * (r + wobble);
                     if (k === 0) {
                         ctx.moveTo(x, y);
                     } else {
@@ -7330,20 +7340,20 @@
                     { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "FRÊLE", name: "Naïade", description: "Ennemis frêles : +2% de dégâts subis", effect: { stat: "fragility", value: 0.02 } }
                 ],
-                //Les compétences de la branche "écume" (ids spray1 à spray4 dans la forme "waves") : la vague va plus loin,
-                //d'autant plus que Poséidon tire loin
+                //Les compétences de la branche "écume" (ids spray1 à spray4 dans la forme "waves") : de la portée,
+                //donc une vague qui va plus loin (elle va jusqu'à la portée de Poséidon)
                 extraSkills: {
                     spray1: { label: "POR", name: "Cymo", description: "+20 de portée", effect: { stat: "range", value: 20 } },
-                    spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon", effect: { stat: "waveRangeScale", value: 0.5 } },
+                    spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : +60 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 60 } },
                     spray3: { label: "POR", name: "Rhodé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon", effect: { stat: "waveRangeScale", value: 0.5 } }
+                    spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : +80 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 80 } }
                 },
                 shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "waveRadius", value: 220 }, { stat: "fragility", value: 0.35 }] },
+                    start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "fragility", value: 0.35 }] },
                     notables: [
                         { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "VAGUE", name: "Galatée", description: "+40 de portée de la vague", effect: { stat: "waveRadius", value: 40 } },
+                        { label: "POR", name: "Galatée", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
                         { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
                         { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
                         { label: "FRÊLE", name: "Glaucos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
@@ -7354,7 +7364,7 @@
                     keystones: [
                         { label: "OCÉAN", name: "Amphitrite", description: "Bouclier des marées : chaque vague te rend invincible pendant 2 s", effect: { stat: "tideShield", value: 2 } },
                         { label: "ABYSS", name: "Céto", description: "Ennemis frêles : +15% de dégâts subis", effect: { stat: "fragility", value: 0.15 } },
-                        { label: "VAGUE", name: "Triton", description: "La vague revient 40% plus souvent et va 80 plus loin", effects: [{ stat: "abilityHaste", value: 0.4 }, { stat: "waveRadius", value: 80 }] }
+                        { label: "VAGUE", name: "Triton", description: "La vague revient 40% plus souvent, et +80 de portée", effects: [{ stat: "abilityHaste", value: 0.4 }, { stat: "range", value: 80 }] }
                     ],
                     grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s", effects: [{ stat: "fragility", value: 0.25 }, { stat: "tideShield", value: 1 }] }
                 }
@@ -8054,8 +8064,6 @@
             vineDuration: function (value) { return ["Durée des lianes", "+" + formatNumber(value) + " s"]; },
             moonArrow: function (value) { return ["Dégâts de la flèche de lune", "x" + formatNumber(value)]; },
             tideWave: function (value) { return ["Recul de la vague", "+" + formatNumber(value) + " px"]; },
-            waveRadius: function (value) { return ["Portée de la vague", "+" + formatNumber(value) + " px"]; },
-            waveRangeScale: function (value) { return ["Portée de la vague (part de la portée de tir)", "+" + formatNumber(value * 100) + "%"]; },
             fragility: function (value) { return ["Dégâts subis par les ennemis frêles", "+" + formatNumber(value * 100) + "%"]; },
             tideShield: function (value) { return ["Bouclier des marées", "+" + formatNumber(value) + " s"]; },
             chainArcs: function (value) { return ["Éclairs par balle", "+" + formatNumber(value)]; },

@@ -93,7 +93,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
-| 5 | Thétis | Départ | Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s |
+| 5 | Thétis | Départ | Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s |
 | 9 | Océanide IV | Mineure | +0.02 PV régénérés par seconde |
 | 13 | Naïade IV | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 21 | Néréide V | Mineure | +1 PV max |
@@ -106,7 +106,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 37 | Néréide III | Mineure | +1 PV max |
 | 37 | Océanide I | Mineure | +0.02 PV régénérés par seconde |
 | 38 | Glaucos | Notable | Ennemis frêles : +5% de dégâts subis |
-| 44 | Galatée | Notable | +40 de portée de la vague |
+| 44 | Galatée | Notable | +40 de portée (la vague va aussi plus loin) |
 | 45 | Cymo | Mineure | +20 de portée |
 | 45 | Néréide I, VI | Mineure | +1 PV max, chacun |
 | 45 | Océanide III | Mineure | +0.02 PV régénérés par seconde |
@@ -120,15 +120,15 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 62 | Leucothée | Notable | La vague revient 15% plus souvent |
 | 72 | Céto | Keystone | Ennemis frêles : +15% de dégâts subis |
 | 73 | Océanide VII | Mineure | +0.02 PV régénérés par seconde |
-| 74 | Cymopolée | Notable | Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon |
+| 74 | Cymopolée | Notable | Ressac : +60 de portée (la vague va aussi plus loin) |
 | 77 | Naïade VII | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 80 | Protée | Notable | +10% de chance d'esquiver un coup |
 | 81 | Néréide VIII | Mineure | +1 PV max |
 | 82 | Amphitrite | Keystone | Bouclier des marées : chaque vague te rend invincible pendant 2 s |
 | 85 | Océanide VIII | Mineure | +0.02 PV régénérés par seconde |
-| 86 | Benthésicymé | Notable | Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon |
+| 86 | Benthésicymé | Notable | Houle : +80 de portée (la vague va aussi plus loin) |
 | 86 | Palémon | Notable | +30 de recul de la vague |
-| 92 | Triton | Keystone | La vague revient 40% plus souvent et va 80 plus loin |
+| 92 | Triton | Keystone | La vague revient 40% plus souvent, et +80 de portée |
 | 98 | Nérée | Notable | +3 PV max |
 | 150 | Océanos | Grande keystone | GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s |
 

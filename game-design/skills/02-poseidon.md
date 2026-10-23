@@ -21,28 +21,28 @@
 |---|---|---|
 | **Amphitrite** (OCÉAN) | Bouclier des marées : chaque vague te rend invincible pendant 2 s | 82 XP |
 | **Céto** (ABYSS) | Ennemis frêles : +15% de dégâts subis | 72 XP |
-| **Triton** (VAGUE) | La vague revient 40% plus souvent et va 80 plus loin | 92 XP |
+| **Triton** (VAGUE) | La vague revient 40% plus souvent, et +80 de portée | 92 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Doris** (REG) | +0.05 PV régénérés par seconde | 62 XP |
-| **Galatée** (VAGUE) | +40 de portée de la vague | 44 XP |
+| **Galatée** (POR) | +40 de portée (la vague va aussi plus loin) | 44 XP |
 | **Protée** (ESQ) | +10% de chance d'esquiver un coup | 80 XP |
 | **Phorcys** (BOUC) | Bouclier : bloque un coup, se recharge en 10 s | 26 XP |
 | **Glaucos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 38 XP |
 | **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 62 XP |
 | **Palémon** (RECUL) | +30 de recul de la vague | 86 XP |
 | **Nérée** (PV) | +3 PV max | 98 XP |
-| **Cymopolée** (RESSAC) | Ressac : la vague va plus loin, de 50% de la portée de tir de Poséidon | 74 XP |
-| **Benthésicymé** (HOULE) | Houle : la vague va encore plus loin, de 50% de plus de la portée de tir de Poséidon | 86 XP |
+| **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 74 XP |
+| **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 86 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thétis** (VAGUE) | Raz-de-marée : toutes les 10 s, une vague part de toi, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s | 5 XP |
+| **Thétis** (VAGUE) | Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s | 5 XP |
 
 ## Petites compétences
 

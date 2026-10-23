@@ -1380,5 +1380,10 @@ window.TRADUCTIONS.zh = {
     "Portée de la vague (part de la portée de tir)": "浪潮范围（占射程比例）",
     "Graphismes": "画质",
     "Élevés (plus belles animations)": "高（更好看的动画）",
-    "Simples (plus rapide)": "简单（更流畅）"
+    "Simples (plus rapide)": "简单（更流畅）",
+    "+40 de portée (la vague va aussi plus loin)": "射程 +40（浪潮也更远）",
+    "Ressac : +60 de portée (la vague va aussi plus loin)": "回浪：射程 +60（浪潮也更远）",
+    "Houle : +80 de portée (la vague va aussi plus loin)": "涌浪：射程 +80（浪潮也更远）",
+    "La vague revient 40% plus souvent, et +80 de portée": "浪潮频率 +40%，射程 +80",
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "海啸：每 10 秒从波塞冬身边涌出一道浪潮，直到其射程，击退敌人、使其减速并变得脆弱：4 秒内受到的伤害 +35%"
 };
