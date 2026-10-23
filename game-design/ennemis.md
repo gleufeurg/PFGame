@@ -98,7 +98,7 @@ Pour qu'on voie bien un super ennemi ou le premier ennemi d'un nouveau mouvement
 
 | Arrivée | Alerte | Seul pendant |
 | --- | --- | --- |
-| Super ennemi jamais vaincu | 8 s (`BOSS_WARNING_TIME`) | 10 s ou jusqu'à sa mort (`BOSS_SOLO_TIME`) |
+| Super ennemi jamais vaincu (1re rencontre) | 8 s (`BOSS_WARNING_TIME`) | **jusqu'à sa mort** : aucun autre ennemi n'apparaît, le joueur se concentre sur le combat |
 | Super ennemi déjà vaincu qui revient | 5 s (`BOSS_REPEAT_WARNING_TIME`) | 10 s ou jusqu'à sa mort |
 | Premier ennemi d'un nouveau mouvement | 3 s (`MOVEMENT_WARNING_TIME`) | 5 s ou jusqu'à sa mort (`MOVEMENT_SOLO_TIME`) |
 

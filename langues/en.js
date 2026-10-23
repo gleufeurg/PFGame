@@ -1385,5 +1385,9 @@ window.TRADUCTIONS.en = {
     "Ressac : +60 de portée (la vague va aussi plus loin)": "Surf: +60 range (the wave also reaches farther)",
     "Houle : +80 de portée (la vague va aussi plus loin)": "Swell: +80 range (the wave also reaches farther)",
     "La vague revient 40% plus souvent, et +80 de portée": "The wave comes back 40% more often, and +80 range",
-    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Tidal wave: every 10 s, a wave spreads out from Poseidon up to his range, pushes enemies back, slows them and makes them frail: +35% damage taken for 4 s"
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Tidal wave: every 10 s, a wave spreads out from Poseidon up to his range, pushes enemies back, slows them and makes them frail: +35% damage taken for 4 s",
+    "Dans le shop": "In the shop",
+    "Débloque le lien d'orbite « {name} »": "Unlocks the “{name}” orbit link",
+    "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "Unlocks orbit links: Right, then Left, then Both sides, then Opposite",
+    "À débloquer dans le shop : « Liens d'orbite »": "Unlock in the shop: “Orbit links”"
 };

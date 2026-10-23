@@ -1385,5 +1385,9 @@ window.TRADUCTIONS.zh = {
     "Ressac : +60 de portée (la vague va aussi plus loin)": "回浪：射程 +60（浪潮也更远）",
     "Houle : +80 de portée (la vague va aussi plus loin)": "涌浪：射程 +80（浪潮也更远）",
     "La vague revient 40% plus souvent, et +80 de portée": "浪潮频率 +40%，射程 +80",
-    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "海啸：每 10 秒从波塞冬身边涌出一道浪潮，直到其射程，击退敌人、使其减速并变得脆弱：4 秒内受到的伤害 +35%"
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "海啸：每 10 秒从波塞冬身边涌出一道浪潮，直到其射程，击退敌人、使其减速并变得脆弱：4 秒内受到的伤害 +35%",
+    "Dans le shop": "在商店",
+    "Débloque le lien d'orbite « {name} »": "解锁轨道连结「{name}」",
+    "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "解锁轨道连结：右侧，然后左侧，然后两侧，最后对面",
+    "À débloquer dans le shop : « Liens d'orbite »": "在商店解锁：「轨道连结」"
 };

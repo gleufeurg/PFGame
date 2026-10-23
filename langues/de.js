@@ -1385,5 +1385,9 @@ window.TRADUCTIONS.de = {
     "Ressac : +60 de portée (la vague va aussi plus loin)": "Brandung: +60 Reichweite (auch die Welle reicht weiter)",
     "Houle : +80 de portée (la vague va aussi plus loin)": "Dünung: +80 Reichweite (auch die Welle reicht weiter)",
     "La vague revient 40% plus souvent, et +80 de portée": "Die Welle kommt 40% öfter, und +80 Reichweite",
-    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Flutwelle: Alle 10 s geht eine Welle von Poseidon bis zu seiner Reichweite aus, stößt Gegner zurück, verlangsamt sie und macht sie brüchig: +35% erlittener Schaden für 4 s"
+    "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s": "Flutwelle: Alle 10 s geht eine Welle von Poseidon bis zu seiner Reichweite aus, stößt Gegner zurück, verlangsamt sie und macht sie brüchig: +35% erlittener Schaden für 4 s",
+    "Dans le shop": "Im Shop",
+    "Débloque le lien d'orbite « {name} »": "Schaltet die Orbit-Verbindung „{name}“ frei",
+    "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé": "Schaltet Orbit-Verbindungen frei: Rechts, dann Links, dann Beide Seiten, dann Gegenüber",
+    "À débloquer dans le shop : « Liens d'orbite »": "Im Shop freischalten: „Orbit-Verbindungen“"
 };
