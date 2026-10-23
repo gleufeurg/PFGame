@@ -6625,7 +6625,7 @@
             if (stats.tideShield > 0) {
                 tideShieldTimer = Math.max(tideShieldTimer, stats.tideShield);
             }
-            playSound("shieldBlock");
+            playSound("tideWave"); //un son de vague qui gonfle, déferle et se retire
         }
 
         function updateTideWaves(deltaTime) {
@@ -6975,9 +6975,9 @@
                     [292, 246], [330, 216], [366, 188, "notable"], [404, 166], [442, 164, "notable"],
                     [466, 184, "keystone"], [432, 192], [410, 214], [408, 240], [426, 258]
                 ].map(toPercent));
-                //L'écume : une petite branche qui s'envole du "C" de la 1re crête, en haut à gauche, comme les embruns d'une vague
-                //(compétences de portée de la vague, voir extraSkills)
-                b.chain("top4", "spray", [[88, 122], [64, 108, "notable"], [44, 88], [30, 62, "notable"]].map(toPercent));
+                //L'écume : une branche qui part de Doris (la crête en haut à gauche) et redescend en courbe,
+                //comme la face d'une vague vue de profil (compétences de portée de la vague, voir extraSkills)
+                b.chain("top3", "spray", [[100, 98], [78, 110, "notable"], [64, 134], [56, 166, "notable"]].map(toPercent));
                 //Les deux rangées se touchent, comme sur le dessin
                 b.layout["top7"].links.push("low5");
                 b.layout["top15"].links.push("low14");
@@ -9381,6 +9381,56 @@
             oscillator.stop(startTime + duration);
         }
 
+        //UN SON DE VAGUE : du "bruit" (un souffle, comme le son "chhh" d'une radio mal réglée) qu'on filtre.
+        //Le filtre s'ouvre puis se referme (le son passe de sourd à brillant puis redevient sourd) pendant que le volume
+        //monte et redescend : on entend l'eau qui gonfle, déferle, puis se retire. Le son glisse aussi un peu de gauche à droite.
+        let noiseBuffer = null;   // 3 secondes de bruit, fabriquées une seule fois
+
+        function getNoiseBuffer() {
+            if (noiseBuffer === null) {
+                noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 3, audioContext.sampleRate);
+                const data = noiseBuffer.getChannelData(0);
+                let smooth = 0;
+                for (let i = 0; i < data.length; i++) {
+                    smooth = smooth * 0.6 + (Math.random() * 2 - 1) * 0.4; //un bruit un peu adouci (moins de sifflement)
+                    data[i] = smooth;
+                }
+            }
+            return noiseBuffer;
+        }
+
+        function playWaveSound(output, duration = 2.2, volume = 0.8) {
+            const startTime = audioContext.currentTime;
+            const source = audioContext.createBufferSource();
+            source.buffer = getNoiseBuffer();
+            const filter = audioContext.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.Q.value = 0.8;
+            filter.frequency.setValueAtTime(250, startTime);
+            filter.frequency.exponentialRampToValueAtTime(1800, startTime + duration * 0.35); //la vague se lève et déferle
+            filter.frequency.exponentialRampToValueAtTime(300, startTime + duration);         //puis se retire
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(volume, startTime + duration * 0.3);   //monte doucement
+            gain.gain.linearRampToValueAtTime(volume * 0.45, startTime + duration * 0.6);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration);              //et se retire
+            let last = gain;
+            if (audioContext.createStereoPanner !== undefined) { //panoramique : pas sur tous les navigateurs
+                const panner = audioContext.createStereoPanner();
+                panner.pan.setValueAtTime(-0.4, startTime);
+                panner.pan.linearRampToValueAtTime(0.4, startTime + duration);
+                gain.connect(panner);
+                last = panner;
+            }
+            source.connect(filter);
+            filter.connect(gain);
+            last.connect(output);
+            source.start(startTime);
+            source.stop(startTime + duration);
+            //Un petit "plouf" grave au début, quand la vague se forme
+            playTone(140, 70, 0.5, "sine", volume * 0.15, 0, output);
+        }
+
         //La liste des sons : category = "ui" (menus) ou "sfx" (jeu). Modifie les nombres pour changer les sons.
         //play(out) reçoit la sortie de sa catégorie et la donne à playTone
         const SOUNDS = {
@@ -9397,7 +9447,8 @@
             menuClose: { category: "ui", play: function (out) { playTone(660, 440, 0.12, "sine", 0.2, 0, out); } },
             buy: { category: "ui", play: function (out) { playTone(660, 660, 0.08, "square", 0.12, 0, out); playTone(990, 990, 0.12, "square", 0.12, 0.08, out); } },
             denied: { category: "ui", play: function (out) { playTone(160, 120, 0.15, "sawtooth", 0.15, 0, out); } },
-            click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } }
+            click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } },
+            tideWave: { category: "sfx", play: function (out) { playWaveSound(out); } }
         };
 
         function playSound(name) {
