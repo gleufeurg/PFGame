@@ -171,7 +171,7 @@ Un ennemi sur 10 a un mouvement spécial, choisi parmi ceux déjà débloqués. 
 **Sauter dans le temps** fait arriver d'un coup tous les ennemis de la durée sautée, puis il faut attendre :
 
 ```
-recharge du saut = max(8 ; 0,6 × secondes sautées)      (SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_PER_SECOND)
+recharge du saut = entre 8 et 120 : 0,6 × secondes sautées      (SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_PER_SECOND, SKIP_COOLDOWN_MAX)
 ```
 
 Ex : +10 s → 8 s de recharge, +30 s → 18 s, +100 s → 60 s (en temps de jeu).
