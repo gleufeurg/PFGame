@@ -1426,5 +1426,9 @@ window.TRADUCTIONS.zh = {
     "⌛ Cronos ralentit ton temps !": "⌛ 克洛诺斯减慢了你的时间！",
     "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 九头蛇的最后一波从四面八方袭来！",
     "État": "状态",
-    "Pétrifiée par Méduse": "被美杜莎石化"
+    "Pétrifiée par Méduse": "被美杜莎石化",
+    "La partie continue quand le jeu n'est pas affiché": "游戏不在屏幕上时继续运行",
+    "(autre onglet, fenêtre réduite)": "（其他标签页、窗口最小化）",
+    "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 你离开期间（{time}）：+{gold} 金币，+{xp} XP",
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 游戏正在追赶错过的时间：还剩 {time}"
 };

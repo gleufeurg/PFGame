@@ -1426,5 +1426,9 @@ window.TRADUCTIONS.en = {
     "⌛ Cronos ralentit ton temps !": "⌛ Cronus slows down your time!",
     "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 The Hydra's last wave is coming from everywhere!",
     "État": "State",
-    "Pétrifiée par Méduse": "Turned to stone by Medusa"
+    "Pétrifiée par Méduse": "Turned to stone by Medusa",
+    "La partie continue quand le jeu n'est pas affiché": "The run keeps going when the game isn't on screen",
+    "(autre onglet, fenêtre réduite)": "(another tab, minimized window)",
+    "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 While you were away ({time}): +{gold} gold, +{xp} XP",
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ The game is catching up on lost time: {time} left"
 };
