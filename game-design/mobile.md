@@ -9,7 +9,7 @@ Le jeu reste **un seul fichier `index.html`**. Pour en faire une application And
 | `package.json` | la liste des outils (Capacitor 8.5.3) et les commandes `npm run ...` | oui |
 | `package-lock.json` | les versions exactes installées (créé par `npm install`, ne pas modifier à la main) | oui |
 | `capacitor.config.json` | le nom de l'appli (`appName`) et son identifiant (`appId`) | oui |
-| `scripts/copier-jeu.js` | copie `index.html` et le dossier `polices/` dans `www/`, et y ajoute `capacitor.js` (la bibliothèque `@capacitor/core`, qui donne accès aux plugins comme AdMob) | oui |
+| `scripts/copier-jeu.js` | copie `index.html`, `reglages.js` (les statistiques du jeu) et les dossiers `polices/` et `langues/` dans `www/`, et y ajoute `capacitor.js` (la bibliothèque `@capacitor/core`, qui donne accès aux plugins comme AdMob) | oui |
 | `android/` | le projet Android, ouvert par Android Studio | oui |
 | `www/` | la copie du jeu mise dans l'appli (recréée à chaque fois) | non |
 | `node_modules/` | les outils téléchargés par `npm install` | non |
@@ -54,7 +54,7 @@ Pas de téléphone sous la main ? Dans Android Studio, **Device Manager** permet
 
 ### Après une modification du jeu
 
-Le jeu dans l'appli est une **copie** de `index.html` et des polices. Cette copie est **automatique** : à chaque ▶ Run (ou à chaque compilation), Android Studio lance d'abord la tâche `copierLeJeu` (fichier `android/app/copier-jeu.gradle`), qui fait `npm install`, `npm run build` puis `npx cap copy android` (la copie du jeu, sans toucher aux plugins).
+Le jeu dans l'appli est une **copie** de `index.html`, de `reglages.js`, des traductions et des polices. Cette copie est **automatique** : à chaque ▶ Run (ou à chaque compilation), Android Studio lance d'abord la tâche `copierLeJeu` (fichier `android/app/copier-jeu.gradle`), qui fait `npm install`, `npm run build` puis `npx cap copy android` (la copie du jeu, sans toucher aux plugins).
 
 Donc, après une modification (la tienne ou un push de Claude) : **Pull** dans GitHub Desktop, puis **▶ Run** dans Android Studio. C'est tout.
 

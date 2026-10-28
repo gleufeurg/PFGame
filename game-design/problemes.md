@@ -72,7 +72,7 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 ### Les pouvoirs des dieux ne sont pas encore équilibrés (les deux branches)
 
 - **Pourquoi :** les chiffres (dégâts, fréquence, rayons) ont été choisis à l'estime, et testés seulement en simulation. Arès gagne des dégâts pour toujours sans limite, et le cri de guerre presque permanent quand son arbre est rempli peut devenir trop fort ; la foudre de Zeus peut tout raser quand l'écran est plein.
-- **Que faire :** jouer chaque dieu, puis régler les chiffres dans `SKILL_TREES_DATA` (compétences) et dans la partie `POUVOIRS DES DIEUX` du code (`WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...). Le rythme général (prix, apparition, vie des ennemis) a été rééquilibré avec le joueur robot (voir [rythme.md](rythme.md)), mais pas chaque pouvoir un par un.
+- **Que faire :** jouer chaque dieu, puis régler les chiffres avec l'éditeur de réglages (catégories « Pouvoirs des dieux » et « Combos d'orbite » : `WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...) et, pour chaque compétence, dans `SKILL_TREES_DATA` (`index.html`). Le rythme général (prix, apparition, vie des ennemis) a été rééquilibré avec le joueur robot (voir [rythme.md](rythme.md)), mais pas chaque pouvoir un par un.
 
 ### L'XP ne sert plus à rien en fin de jeu (les deux branches)
 
@@ -91,6 +91,13 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Ce qu'on voit :** chaque projet est dans la fenêtre des skills d'un dieu, et la liste des dieux ne montre que les dieux achetés et le suivant. En 10 minutes de jeu, un visiteur (un recruteur) voit 3 projets ; il en faut 40 pour en voir 6, et des heures pour les 12.
 - **Pourquoi :** c'est le rythme voulu pour le jeu (voir [rythme.md](rythme.md)), mais un recruteur n'a pas forcément le temps de jouer.
 - **Que faire (choix à faire) :** sur `portfolio`, montrer tous les projets dans la liste des dieux (même ceux pas encore achetés, en aperçu), ou ajouter un bouton « Voir tous les projets ».
+
+### Certains textes du jeu citent des réglages (les deux branches)
+
+- **Ce qu'on voit :** dans l'éditeur de réglages, quelques nombres ont un ⚠️ : ils sont aussi écrits dans un texte du jeu. Si on les change, le texte ne suit pas. Exemples : « les ennemis touchés brûlent pendant 3 s » (combo Feu de forêt, `COMBO_BURN_DURATION`), les bonus du lien « Opposé » (`OPPOSITE_BONUSES`), « Toutes les 5 minutes » dans le tutoriel (l'heure des super ennemis), « x2, puis x4 » dans le shop (`GAME_SPEED_OPTIONS`).
+- **Pourquoi :** ces textes sont écrits à la main, et traduits dans les 6 langues. Les descriptions du shop, elles, se mettent à jour toutes seules (« +{value} PV max »).
+- **De même :** la valeur de **chaque compétence** des skill trees n'est pas dans l'éditeur : elle est écrite dans sa description (« +0.5 dégât par balle »), dans `SKILL_TREES_DATA`. On la change à la main dans `index.html`, avec sa description et ses traductions.
+- **Que faire :** après avoir changé un réglage ⚠️, changer aussi le texte dans `index.html` et dans `langues/` (ou demander à Claude). Plus tard, ces textes pourraient s'écrire avec `{value}`, comme ceux du shop.
 
 ### Performances avec énormément d'ennemis (les deux branches)
 
