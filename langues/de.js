@@ -1416,5 +1416,6 @@ window.TRADUCTIONS.de = {
     "Une compétence peut être débloquée": "Eine Fähigkeit kann freigeschaltet werden",
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Nächster Gott im Shop („Neue Gottheit“)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tippe auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Lange drücken zum Erstatten, zwei Finger zum Zoomen.",
-    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Klicke auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Rechtsklick zum Erstatten."
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Klicke auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Rechtsklick zum Erstatten.",
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Zeitsprung lädt auf: noch {seconds} s"
 };

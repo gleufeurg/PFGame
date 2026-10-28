@@ -212,6 +212,53 @@
             background-color: var(--ui-accent-hover);
         }
 
+        /*TEMPS DE RECHARGE DU SAUT (comme les sorts de League of Legends) : un voile sombre recouvre le bouton et "tourne"
+          comme une aiguille, la partie claire grandit dans le sens des aiguilles d'une montre ; les secondes restantes au milieu.
+          --cooldown-progress (posé sur #timeControls) : 1 = la recharge commence, 0 = c'est prêt.*/
+        .skipButton {
+            position: relative;
+            overflow: hidden; /*le voile ne dépasse pas des coins arrondis*/
+        }
+
+        .cooldownSweep, .cooldownText {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .cooldownSweep {
+            background: conic-gradient(transparent calc((1 - var(--cooldown-progress, 0)) * 1turn), rgba(0, 0, 12, 0.66) 0);
+        }
+
+        .cooldownText {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.15em;
+            font-weight: 900;
+            text-shadow: 0 1px 3px #000000;
+        }
+
+        #timeControls.skipCooldown .canCooldown .cooldownSweep,
+        #timeControls.skipCooldown .canCooldown .cooldownText {
+            opacity: 1;
+        }
+
+        #timeControls.skipCooldown .canCooldown .skipLabel {
+            opacity: 0.15; /*le texte du bouton s'efface sous le compte à rebours*/
+        }
+
+        .skipButton.justReady { /*la recharge est finie : le bouton brille un instant*/
+            animation: cooldownReady 0.7s ease-out;
+        }
+
+        @keyframes cooldownReady {
+            0% { filter: brightness(2); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.85), 0 4px 0 var(--ui-accent-dark); }
+            100% { filter: brightness(1); box-shadow: 0 0 0 14px rgba(255, 255, 255, 0), 0 4px 0 var(--ui-accent-dark); }
+        }
+
         .speedGroup { /*les 3 boutons de vitesse collés ensemble*/
             display: flex;
             align-self: flex-start;
@@ -4961,8 +5008,65 @@
             return options.length > 0 ? options[options.length - 1] : 0;
         }
 
+        //TEMPS DE RECHARGE : après un saut, il faut attendre avant le suivant (sinon les sauts s'enchaînent, les ennemis
+        //s'empilent et le jeu rame). La recharge dépend du saut : SKIP_COOLDOWN_PER_SECOND seconde par seconde sautée,
+        //au moins SKIP_COOLDOWN_MIN. Elle compte en temps de JEU : elle s'arrête quand le jeu est en pause.
+        const SKIP_COOLDOWN_MIN = 8;             // secondes
+        const SKIP_COOLDOWN_PER_SECOND = 0.6;    // ex : saut de +100 s -> 60 s de recharge
+        let skipCooldown = 0;                    // secondes qui restent avant le prochain saut (0 = prêt)
+        let skipCooldownMax = 0;                 // durée totale de la recharge en cours (pour l'animation)
+        let shownCooldownSeconds = -1;           // le nombre affiché sur les boutons (on ne le réécrit que s'il change)
+
+        function updateSkipCooldown(deltaTime) {
+            if (skipCooldown <= 0) {
+                return;
+            }
+            skipCooldown = Math.max(0, skipCooldown - deltaTime);
+            if (skipCooldown === 0) {
+                playSound("skipReady");
+                for (const button of timeControls.querySelectorAll(".canCooldown")) {
+                    button.classList.remove("justReady");
+                    void button.offsetWidth; //astuce : pour pouvoir rejouer l'animation
+                    button.classList.add("justReady");
+                }
+            }
+        }
+
+        //L'animation : appelée à chaque image (juste quelques variables CSS et un nombre)
+        function updateSkipCooldownDisplay() {
+            const isCoolingDown = skipCooldown > 0;
+            timeControls.classList.toggle("skipCooldown", isCoolingDown);
+            if (!isCoolingDown) {
+                shownCooldownSeconds = -1;
+                return;
+            }
+            timeControls.style.setProperty("--cooldown-progress", skipCooldown / skipCooldownMax);
+            const seconds = Math.ceil(skipCooldown);
+            if (seconds !== shownCooldownSeconds) {
+                shownCooldownSeconds = seconds;
+                for (const text of timeControls.querySelectorAll(".cooldownText")) {
+                    text.textContent = text.dataset.prefix + seconds; //dataset.prefix = l'attribut data-prefix (le sablier du bouton du menu)
+                }
+            }
+        }
+
+        //Le voile et le compte à rebours, à mettre dans un bouton qui affiche la recharge.
+        //prefix : un texte avant les secondes (le bouton du menu affiche "⏳ 12", pour ne pas confondre avec sa vitesse x2)
+        function addCooldownLayers(button, prefix = "") {
+            button.classList.add("canCooldown");
+            button.appendChild(createElementWithText("span", "cooldownSweep", ""));
+            const text = createElementWithText("span", "cooldownText", skipCooldown > 0 ? prefix + Math.ceil(skipCooldown) : "");
+            text.dataset.prefix = prefix;
+            button.appendChild(text);
+        }
+
         function skipTime(seconds) {
             if (isGameOver || isPaused || !getUnlockedSkipOptions().includes(seconds)) {
+                return;
+            }
+            if (skipCooldown > 0) {
+                showToast(t("⏳ Saut dans le temps en recharge : encore {seconds} s", { seconds: Math.ceil(skipCooldown) }));
+                playSound("denied");
                 return;
             }
             //Pas de saut pendant l'arrivée d'un super ennemi ou d'un nouvel ennemi, et on s'arrête juste avant la prochaine
@@ -4997,6 +5101,9 @@
 
             playSound("skip");
             showToast(t("⏩ +{seconds} s : {count} ennemis arrivent !", { seconds: formatNumber(Math.round(skipped - Math.max(0, remaining))), count: spawnedCount }));
+            skipCooldownMax = Math.max(SKIP_COOLDOWN_MIN, skipped * SKIP_COOLDOWN_PER_SECOND);
+            skipCooldown = skipCooldownMax;
+            shownCooldownSeconds = -1;
         }
 
         //Un bouton orange par option de TIME_SKIP_OPTIONS (verrouillé tant qu'il n'est pas acheté dans le shop)
@@ -5009,9 +5116,12 @@
                 const button = document.createElement("button");
                 button.className = "skipButton";
                 button.disabled = !isUnlocked;
-                button.textContent = (isUnlocked ? "⏩ +" : "+") + seconds + " s"; //bloqué (shop ou Premium) : pas d'icône, le bouton est gris (CSS :disabled)
+                button.appendChild(createElementWithText("span", "skipLabel", (isUnlocked ? "⏩ +" : "+") + seconds + " s")); //bloqué (shop ou Premium) : pas d'icône, le bouton est gris (CSS :disabled)
                 button.title = isUnlocked ? t("Passer {seconds} secondes", { seconds: seconds })
                     : PREMIUM_SKIPS.includes(seconds) ? t("Avec le Pack Premium") : t("À débloquer dans le shop : « Sauter dans le temps »");
+                if (isUnlocked) {
+                    addCooldownLayers(button); //le voile de la recharge
+                }
                 button.addEventListener("click", function () { skipTime(seconds); });
                 skipButtons.appendChild(button);
             }
@@ -5059,7 +5169,10 @@
 
         //Le bouton affiche la vitesse actuelle, ex: "⏩ x2 ▾"
         function updateTimeMenuButton() {
-            timeMenuButton.innerHTML = "⏩ x" + gameSpeed + " <span class='arrow'>▸</span>";
+            timeMenuButton.innerHTML = "<span class='skipLabel'>⏩ x" + gameSpeed + " <span class='arrow'>▸</span></span>";
+            if (getUnlockedSkipOptions().length > 0) {
+                addCooldownLayers(timeMenuButton, "⏳ "); //la recharge du saut se voit même quand le menu est fermé
+            }
             timeMenuButton.classList.toggle("open", !timeMenu.classList.contains("hidden")); //toggle(classe, vrai/faux) : ajoute ou enlève
         }
 
@@ -9975,6 +10088,7 @@
             roundXp = 0;
             runGold = 0;
             runXp = 0;
+            skipCooldown = 0;
             computeStats();
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;
@@ -11112,6 +11226,7 @@
             buy: { category: "ui", play: function (out) { playTone(660, 660, 0.08, "square", 0.12, 0, out); playTone(990, 990, 0.12, "square", 0.12, 0.08, out); } },
             denied: { category: "ui", play: function (out) { playTone(160, 120, 0.15, "sawtooth", 0.15, 0, out); } },
             click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } },
+            skipReady: { category: "ui", play: function (out) { playTone(1320, 1320, 0.08, "sine", 0.1, 0, out); playTone(1760, 1760, 0.16, "sine", 0.1, 0.07, out); } }, //le saut est de nouveau prêt
             tideWave: { category: "sfx", play: function (out) { playWaveSound(out); } },
             bloom: { category: "sfx", play: function (out) { playBloomSound(out); } }
         };
@@ -11911,6 +12026,7 @@
             }
 
             runTimeDisplay.textContent = formatTime(runTime);
+            updateSkipCooldownDisplay();
             badgeTimer -= deltaTime;
             if (badgeTimer <= 0) {
                 badgeTimer = 0.5; //2 fois par seconde suffit (l'XP change à chaque ennemi tué)
@@ -11935,6 +12051,7 @@
             updateHazards(deltaTime);
             updateFireTrails(deltaTime);
             updatePlanetPowers(deltaTime);
+            updateSkipCooldown(deltaTime);
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;
             updateShield(deltaTime);

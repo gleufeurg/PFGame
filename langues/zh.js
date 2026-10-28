@@ -1416,5 +1416,6 @@ window.TRADUCTIONS.zh = {
     "Une compétence peut être débloquée": "有技能可以解锁",
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "商店中下一个可购买的神（“新神祇”）",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "点击技能来选择它，然后点“解锁”。长按退还，双指缩放。",
-    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "点击技能来选择它，然后点“解锁”。右键退还。"
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "点击技能来选择它，然后点“解锁”。右键退还。",
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ 时间跳跃冷却中：还剩 {seconds} 秒"
 };

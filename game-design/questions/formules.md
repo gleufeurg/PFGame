@@ -168,6 +168,14 @@ chance qu'un ennemi soit un super ennemi déjà vaincu = 0,001 + 0,00002 × t
 
 Un ennemi sur 10 a un mouvement spécial, choisi parmi ceux déjà débloqués. Les alertes et les arrivées seules sont détaillées dans [ennemis.md](../ennemis.md).
 
+**Sauter dans le temps** fait arriver d'un coup tous les ennemis de la durée sautée, puis il faut attendre :
+
+```
+recharge du saut = max(8 ; 0,6 × secondes sautées)      (SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_PER_SECOND)
+```
+
+Ex : +10 s → 8 s de recharge, +30 s → 18 s, +100 s → 60 s (en temps de jeu).
+
 ### Leurs dégâts sur le joueur
 
 ```
