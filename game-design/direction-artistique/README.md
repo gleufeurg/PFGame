@@ -49,6 +49,10 @@ Réglage « Graphismes » des paramètres (`isHighGraphics`). En graphismes simp
 
 Les 3 orbites des planètes (130, 200 et 270 px) sont de fins cercles très discrets, de la couleur `ORBIT_COLOR` (le thème ou le décor la choisit). Une orbite vide est en pointillés, pour montrer qu'on peut y mettre une planète. Celle du milieu tourne dans l'autre sens : les planètes se croisent, comme dans une maquette du système solaire. Pendant qu'on fait glisser une planète, les 3 cercles sont pleins et l'orbite où elle va prend sa couleur. Dans la fenêtre des skills, les planètes de chaque orbite sont de petits losanges de leur couleur, comme dans le jeu.
 
+## Le tutoriel
+
+Le reste de l'écran s'assombrit (un voile bleu nuit à 60 %), sauf un **projecteur** : un trou au bord arrondi, de la couleur d'accent du thème, autour de ce qu'on montre (rond autour d'une planète). En graphismes élevés, son bord palpite doucement entre la couleur d'accent et le blanc ; en graphismes simples, il reste fixe. Quand on passe à la bulle suivante, le projecteur glisse vers sa nouvelle cible. La bulle reprend le style des fenêtres du jeu (fond du thème, bord de la couleur d'accent, titre en Nunito épais), avec « Compris » comme bouton principal et « Passer le tutoriel » en simple lien souligné, discret, pour qu'on ne le touche pas sans le vouloir.
+
 ## Les thèmes drapeaux
 
 Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.

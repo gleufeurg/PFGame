@@ -8,6 +8,7 @@
 | T | passe le plus grand saut de temps débloqué (rien tant qu'aucun n'est acheté) |
 | R | rejoue (écran de game over) |
 | Échap | ferme la fenêtre ouverte, sinon ouvre les paramètres |
+| Entrée, Espace ou Échap | pendant une bulle du tutoriel : « Compris » (les autres touches ne font rien tant qu'elle est affichée) |
 
 Pendant qu'on tape un code de triche, S, T et R ne se déclenchent pas : taper « hestia » n'ouvre pas les skills sur le « s ».
 
@@ -26,6 +27,7 @@ Le jeu repère un écran tactile avec `IS_TOUCH_DEVICE` (la question CSS `pointe
 | Bouton « Débloquer », ou 2e toucher sur la même compétence | l'achète |
 | Appui long (0,55 s) sur une compétence prise | la rembourse (petite vibration) |
 | Deux doigts dans l'arbre | zoomer (pincer) ; un doigt pour le déplacer |
+| Bulle du tutoriel | bouton « Compris » ; pour « Ta première planète », toucher la planète éclairée |
 
 Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 px au lieu de 8). Le zoom du navigateur (double toucher, pincer la page) est coupé.
 
@@ -47,7 +49,7 @@ Option **« Graphismes nets »** dans les paramètres (cochée par défaut, rete
 
 ## La sauvegarde
 
-La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite, ordre des planètes et orbite de chaque planète (`planetOrbits`). Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).
+La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite, ordre des planètes, orbite de chaque planète (`planetOrbits`) et bulles du tutoriel déjà vues (`tutorial`). Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).
 
 - **Quand :** à chaque changement de progression (achat, compétence, lien, planète déplacée), à chaque mort, toutes les 5 secondes, et quand on quitte ou cache le jeu (passer à une autre appli sur téléphone).
 - **Ce qui n'est pas gardé :** la partie en cours (ennemis, chrono, vie) : en revenant, on recommence une partie, avec toute sa progression.
@@ -111,9 +113,30 @@ Comment ça marche (partie `START & UPDATE`, « ARRIÈRE-PLAN ») :
 
 Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (cochée par défaut, clé `pauseInMenus`) : cochée, le jeu s'arrête quand la fenêtre des skills ou les paramètres sont ouverts ; décochée, il continue. Si le joueur meurt pendant qu'il regarde ses skills, la fenêtre se ferme et le shop s'affiche.
 
-## Aide à l'écran
+## Le tutoriel
 
-L'ancienne phrase d'aide en bas de l'écran (« Clique sur une planète… ») a été retirée : elle reviendra seulement dans le tutoriel, au moment d'acheter la première planète.
+Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL` du code, liste `TUTORIAL_STEPS`). Pendant une bulle, le jeu est en pause et l'écran est assombri, sauf un **projecteur** autour de ce qu'elle montre (son bord palpite en graphismes élevés). La bulle se met à côté de ce qu'elle montre : dessous, au-dessus, à droite ou à gauche, à la place qui le cache le moins, sans sortir de l'écran. Sur un écran bas (téléphone en paysage), elle est plus large et moins haute.
+
+| Bulle | Quand elle arrive | Ce qu'elle montre et explique |
+| --- | --- | --- |
+| Bienvenue ! | au lancement du jeu (après 0,7 s) | au milieu : le triangle tire tout seul ; un ennemi qui touche fait perdre autant de vie qu'il lui en reste |
+| Or et XP | après 5 ennemis tués | l'or et l'XP (en haut à gauche) : l'or pour le shop, l'XP pour les compétences |
+| Les ennemis | après 10 s de partie | au milieu : les 4 éléments (couleur, vitesse, solidité), la vie qui monte avec le temps, le contour jaune des mouvements spéciaux |
+| Le shop | à la 1re mort | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort |
+| Ta première planète | au début de la partie qui suit l'achat du 1er dieu | la planète. **Il faut cliquer (ou toucher) la planète** pour continuer (pas de bouton « Compris », Entrée ne fait rien) : ça ouvre son arbre |
+| Les compétences | à la 1re ouverture de l'arbre d'un dieu en orbite | l'arbre : choisir une étoile, « Débloquer », commencer par l'étoile qui brille, les voies |
+| Tes statistiques | juste après | le panneau des stats, qui clignote quand une stat change. Sur petit écran, le panneau s'ouvre en entier et la bulle dit qu'on appuie sur son titre pour le replier |
+| Les liens d'orbite | à la 1re ouverture d'un arbre quand le 1er lien est acheté | la zone « Liens d'orbite » : emprunter l'attribut d'une voisine de son orbite |
+| Les orbites | au début de la partie qui suit l'achat du 2e dieu | la 2e planète : la faire glisser pour changer sa place ou son orbite |
+| Le temps | au début de la partie qui suit le 1er achat de temps (vitesse ou saut) | le bouton du temps : x2, x4, le saut (touche T à l'ordinateur) et son temps de recharge |
+| Un super ennemi ! | au 1er duel (5:00) | au milieu : le chrono s'arrête, vitesse x1, beaucoup de vie, certains ont un pouvoir |
+
+- **« Compris »** passe à la bulle suivante. Si plusieurs bulles arrivent en même temps (ex : « Les orbites » et « Le temps »), elles s'affichent l'une après l'autre.
+- **« Passer le tutoriel »** (lien discret en bas de chaque bulle) : plus aucune bulle. Un message rappelle qu'on peut le recommencer dans les paramètres.
+- **Paramètres** : la case « Tutoriel » (décochée = passé, la recocher le remet en marche) et le bouton **« Recommencer »**, qui ferme les paramètres et repart de « Bienvenue ! ».
+- **Souris ou doigt** : à la souris les bulles disent « Clique », au doigt « Touche » (`textTouch`, ex : la planète, l'arbre) ; la touche T n'est citée qu'à l'ordinateur. Sur petit écran, `textSmall` ajoute des précisions (le panneau des stats).
+- **Sauvegarde** : les bulles déjà vues et « Passer » sont gardés (`tutorial` dans la sauvegarde). Une sauvegarde d'avant le tutoriel compte comme « tout vu » : le joueur connaît déjà le jeu (il peut le revoir avec « Recommencer »). « Effacer ma progression » le fait recommencer.
+- **Ajouter une bulle** : une ligne dans `TUTORIAL_STEPS` (titre, texte, cible : un sélecteur CSS comme `"#hud"`, `"planet"` ou `"planet2"`), ses traductions dans `langues/`, et un `triggerTutorial("nom")` à l'endroit du code où elle doit arriver.
 
 ## Le temps
 
