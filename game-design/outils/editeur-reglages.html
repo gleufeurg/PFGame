@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Éditeur de réglages</title>
+    <!--
+    ÉDITEUR DE RÉGLAGES : toutes les statistiques du jeu (reglages.js), rangées par catégories et sous-catégories.
+    Pour l'ouvrir : double-clic sur ce fichier (il s'ouvre dans ton navigateur, pas besoin d'internet).
+    1. Change des valeurs (elles deviennent orange).
+    2. « Tester dans le jeu » ouvre le jeu avec ces valeurs, sans rien sauvegarder.
+    3. « Enregistrer » réécrit reglages.js (à la racine du dossier du jeu). Puis Commit et Push dans GitHub Desktop.
+    -->
+    <style>
+        @font-face {
+            font-family: "Nunito";
+            font-weight: 200 1000;
+            font-display: swap;
+            src: url("../../polices/nunito-latin-wght-normal.woff2") format("woff2");
+        }
+
+        @font-face {
+            font-family: "Nunito";
+            font-weight: 200 1000;
+            font-display: swap;
+            src: url("../../polices/nunito-latin-ext-wght-normal.woff2") format("woff2");
+            unicode-range: U+0100-02BA, U+02BD-02C5, U+1E00-1E9F, U+2020, U+20A0-20AB, U+2C60-2C7F;
+        }
+
+        :root { /*les couleurs du jeu (thème par défaut)*/
+            --bg: #1a2330;
+            --panel: #1f2a39;
+            --surface: #253244;
+            --surface-hover: #2e3d52;
+            --relief: #121a24;
+            --text: #ffffff;
+            --heading: #ffd2a8;
+            --muted: #aaaacc;
+            --line: rgba(255, 255, 255, 0.12);
+            --accent: #ff8a1f;
+            --accent-hover: #ffa54d;
+            --accent-dark: #b4590b;
+            --accent-text: #1a0a00;
+            --accent-soft: rgba(255, 138, 31, 0.12);
+            --error: #ff6b6b;
+            --error-soft: rgba(255, 107, 107, 0.14);
+            --success: #4dff88;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Nunito", sans-serif;
+            font-size: 15px;
+        }
+
+        header {
+            position: sticky; /*reste en haut quand on fait défiler*/
+            top: 0;
+            z-index: 5;
+            padding: 14px 20px 12px;
+            background: var(--panel);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--heading);
+        }
+
+        .subtitle {
+            margin: 2px 0 10px;
+            color: var(--muted);
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #search {
+            flex: 1 1 260px;
+            min-width: 0;
+            padding: 9px 12px;
+            border: 2px solid var(--surface-hover);
+            border-radius: 10px;
+            background: var(--bg);
+            color: var(--text);
+            font: inherit;
+        }
+
+        #search:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        #status {
+            flex: 0 1 auto;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        #status.hasChanges {
+            color: var(--accent);
+        }
+
+        button {
+            padding: 9px 14px;
+            border: 2px solid var(--surface-hover);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--surface-hover);
+        }
+
+        button.primary {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: var(--accent-text);
+            box-shadow: 0 3px 0 var(--accent-dark);
+        }
+
+        button.primary:hover {
+            background: var(--accent-hover);
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        .notice { /*un message (enregistré, brouillon retrouvé, erreur...)*/
+            margin: 12px 20px 0;
+            padding: 10px 14px;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            background: var(--accent-soft);
+            line-height: 1.45;
+        }
+
+        .notice.success {
+            border-color: var(--success);
+            background: rgba(77, 255, 136, 0.1);
+        }
+
+        .notice.error {
+            border-color: var(--error);
+            background: var(--error-soft);
+        }
+
+        .notice ol {
+            margin: 6px 0 0;
+            padding-left: 22px;
+        }
+
+        details#help {
+            margin: 12px 20px 0;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: var(--panel);
+            line-height: 1.5;
+        }
+
+        details#help summary {
+            font-weight: 800;
+            cursor: pointer;
+            color: var(--heading);
+        }
+
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.86em;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 20px;
+            padding: 16px 20px 40px;
+        }
+
+        nav {
+            position: sticky;
+            top: calc(var(--header-height, 140px) + 16px);
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        nav button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            border-color: transparent;
+            background: transparent;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        nav button.active {
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+
+        nav .count {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        nav .count.changed {
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        main h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--heading);
+        }
+
+        .group { /*une sous-catégorie : une carte*/
+            margin-bottom: 16px;
+            padding: 12px 16px 6px;
+            border-radius: 14px;
+            background: var(--panel);
+            box-shadow: 0 3px 0 var(--relief);
+        }
+
+        .group h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .row { /*un réglage : son texte à gauche, sa valeur à droite*/
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 4px 16px;
+            padding: 9px 8px;
+            border-top: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        .group .row:first-of-type {
+            border-top: none;
+        }
+
+        .row.changed {
+            background: var(--accent-soft);
+        }
+
+        .row.invalid {
+            background: var(--error-soft);
+        }
+
+        .rowText {
+            min-width: 0;
+        }
+
+        .label {
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .name { /*le nom dans le code*/
+            display: block;
+            margin-top: 2px;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .where { /*dans la recherche : catégorie › sous-catégorie*/
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .field input[type="number"], .field input[type="text"] {
+            width: 120px;
+            padding: 7px 9px;
+            border: 2px solid var(--surface-hover);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font: inherit;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .row.changed .field input {
+            border-color: var(--accent);
+            color: var(--accent-hover);
+        }
+
+        .row.invalid .field input {
+            border-color: var(--error);
+        }
+
+        .field input:disabled {
+            opacity: 0.4;
+        }
+
+        .unit {
+            min-width: 34px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .infinite { /*la case "∞ sans limite"*/
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--muted);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .resetButton {
+            width: 34px;
+            padding: 6px 0;
+            visibility: hidden; /*seulement pour un réglage changé*/
+        }
+
+        .row.changed .resetButton {
+            visibility: visible;
+        }
+
+        .rowInfo { /*sous le réglage : la valeur d'avant, l'erreur, l'avertissement*/
+            grid-column: 1 / -1;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .before {
+            color: var(--accent-hover);
+        }
+
+        .errorText {
+            color: var(--error);
+            font-weight: 700;
+        }
+
+        .warning {
+            color: var(--heading);
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 20px 0;
+        }
+
+        /*PETIT ÉCRAN : les catégories passent en haut, en une ligne qui défile*/
+        @media (max-width: 760px) {
+            header {
+                position: static;
+            }
+
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 12px;
+                padding: 12px;
+            }
+
+            nav {
+                position: static;
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+
+            nav button {
+                width: auto;
+                flex: 0 0 auto;
+            }
+
+            .row {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .field {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Réglages du jeu</h1>
+        <p class="subtitle" id="subtitle">Toutes les statistiques de Geometry : Idle defense, rangées par catégories.</p>
+        <div class="toolbar">
+            <input type="search" id="search" placeholder="Chercher un réglage (ex : vitesse, Cerbère, prix, BOSSES)" aria-label="Chercher un réglage">
+            <span id="status">Aucun changement</span>
+            <button id="testButton" title="Ouvre le jeu dans un nouvel onglet avec les valeurs changées (rien n'y est sauvegardé)">▶ Tester dans le jeu</button>
+            <button id="saveButton" class="primary" title="Réécrit le fichier reglages.js">💾 Enregistrer</button>
+            <button id="resetAllButton" title="Revenir aux valeurs du fichier reglages.js">↺ Tout annuler</button>
+        </div>
+    </header>
+
+    <div id="notices"></div>
+
+    <details id="help">
+        <summary>Comment ça marche ?</summary>
+        <ol>
+            <li><strong>Change des valeurs.</strong> Un réglage changé devient orange, avec sa valeur d'avant en dessous (le bouton ↺ la remet). Tes changements sont gardés dans ce navigateur tant que tu ne les as pas enregistrés.</li>
+            <li><strong>« ▶ Tester dans le jeu »</strong> ouvre le jeu dans un nouvel onglet avec ces valeurs. Pendant ce test, rien n'est sauvegardé : ta progression ne change pas (un bandeau 🧪 le rappelle).</li>
+            <li><strong>« 💾 Enregistrer »</strong> réécrit le fichier <code>reglages.js</code>. Choisis celui qui est <strong>à la racine du dossier du jeu</strong> (à côté de <code>index.html</code>) et remplace-le. Si ton navigateur ne sait pas enregistrer directement, le fichier est téléchargé : mets-le à la place de l'ancien.</li>
+            <li>Recharge le jeu (F5) : il utilise les nouvelles valeurs. Puis, dans GitHub Desktop : <strong>Commit</strong>, puis <strong>Push</strong> (le site et l'appli prendront les nouvelles valeurs).</li>
+            <li>Les documents de <code>game-design/</code> citent les valeurs : relance <code>node game-design/outils/generer-docs.js</code> (prix, skills, la liste des réglages), ou demande à Claude de les mettre à jour.</li>
+        </ol>
+        <p>Les pourcentages s'écrivent ici en % (10 = 10 %). Dans le fichier, ils sont en fraction (0.1). Le petit nom gris sous chaque réglage est son nom dans le code (<code>index.html</code> le lit avec <code>reglage("NOM")</code>). ⚠️ = ce nombre est aussi écrit dans un texte du jeu : si tu le changes, pense à changer ce texte.</p>
+    </details>
+
+    <div class="layout">
+        <nav id="categoryNav" aria-label="Catégories"></nav>
+        <main id="settingsView"></main>
+    </div>
+
+    <script src="../../reglages.js"></script>
+    <script src="format-reglages.js"></script>
+    <script>
+        /////////////////////
+        ////LES RÉGLAGES/////  lus dans reglages.js (const REGLAGES)
+        /////////////////////
+        const DRAFT_KEY = "editeurReglages.brouillon"; // les changements pas encore enregistrés (dans ce navigateur)
+        const notices = document.getElementById("notices");
+        const categoryNav = document.getElementById("categoryNav");
+        const settingsView = document.getElementById("settingsView");
+        const searchInput = document.getElementById("search");
+        const statusText = document.getElementById("status");
+
+        //reason = pourquoi ce message (ex : "invalid" : il disparaît tout seul quand plus aucune case n'est rouge)
+        function showNotice(html, kind, reason) {
+            const notice = document.createElement("div");
+            notice.className = "notice " + (kind || "");
+            notice.innerHTML = html;
+            notices.innerHTML = "";
+            notices.dataset.reason = reason || "";
+            notices.appendChild(notice);
+        }
+
+        if (typeof REGLAGES === "undefined") {
+            showNotice("<strong>Le fichier reglages.js n'a pas pu être lu.</strong> Il doit être à la racine du dossier du jeu (à côté de <code>index.html</code>), et cette page dans <code>game-design/outils/</code>. S'il y est, il a peut-être une faute de frappe : ouvre la console (F12) pour voir laquelle.", "error");
+            throw new Error("reglages.js introuvable"); //on s'arrête là
+        }
+
+        //Tous les réglages en une liste : { category, group, name, setting }
+        const entries = [];
+        for (const category of Object.keys(REGLAGES)) {
+            for (const group of Object.keys(REGLAGES[category])) {
+                for (const name of Object.keys(REGLAGES[category][group])) {
+                    entries.push({ category: category, group: group, name: name, setting: REGLAGES[category][group][name] });
+                }
+            }
+        }
+        const fileValues = {};    // NOM -> la valeur du fichier (celle d'avant les changements)
+        const currentValues = {}; // NOM -> la valeur choisie ici
+        const invalidNames = new Set(); // les réglages dont la case contient une valeur impossible
+        for (const entry of entries) {
+            fileValues[entry.name] = copyValue(entry.setting.valeur);
+            currentValues[entry.name] = copyValue(entry.setting.valeur);
+        }
+        document.getElementById("subtitle").textContent = entries.length + " statistiques de Geometry : Idle defense, rangées en " + Object.keys(REGLAGES).length + " catégories.";
+
+        function copyValue(value) {
+            return Array.isArray(value) ? value.slice() : value;
+        }
+
+        function sameValue(a, b) {
+            if (Array.isArray(a) || Array.isArray(b)) {
+                return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every(function (x, i) { return x === b[i]; });
+            }
+            return a === b;
+        }
+
+        function getChangedNames() {
+            return entries.map(function (entry) { return entry.name; }).filter(function (name) { return !sameValue(currentValues[name], fileValues[name]); });
+        }
+
+        /////////////////////
+        ////AFFICHAGE////////
+        /////////////////////
+        //Un pourcentage s'affiche x100 (0.1 -> 10) ; on arrondit pour ne pas afficher 10.000000000000002
+        function toDisplay(setting, value) {
+            if (Array.isArray(value)) {
+                return value.join(", ");
+            }
+            if (value === Infinity) {
+                return "";
+            }
+            return String(setting.unite === "%" ? Math.round(value * 100 * 1e9) / 1e9 : value);
+        }
+
+        //Le texte d'une valeur, avec son unité (pour « avant : ... »)
+        function describeValue(setting, value) {
+            if (value === Infinity) {
+                return "∞ (sans limite)";
+            }
+            return toDisplay(setting, value) + (setting.unite ? " " + setting.unite : "");
+        }
+
+        //Lit ce qui est écrit dans la case. Renvoie { value } ou { error }
+        function parseInput(setting, text) {
+            const min = setting.min !== undefined ? setting.min : 0;
+            if (Array.isArray(setting.valeur)) {
+                const parts = text.split(",").map(function (part) { return part.trim(); }).filter(function (part) { return part !== ""; });
+                const numbers = parts.map(function (part) { return Number(part.replace(",", ".")); });
+                if (numbers.length === 0 || numbers.some(function (n) { return !Number.isFinite(n) || n < min; })) {
+                    return { error: "Écris des nombres séparés par des virgules, ex : 1, 2, 4" };
+                }
+                return { value: numbers };
+            }
+            const number = Number(text.trim().replace(",", ".")); //on accepte la virgule française : 0,5 = 0.5
+            if (text.trim() === "" || !Number.isFinite(number)) {
+                return { error: "Écris un nombre" };
+            }
+            const value = setting.unite === "%" ? number / 100 : number;
+            if (value < min) {
+                return { error: min === 0 ? "Pas de nombre négatif ici" : "Au moins " + toDisplay(setting, min) };
+            }
+            return { value: value };
+        }
+
+        let currentCategory = Object.keys(REGLAGES)[0];
+
+        function renderNav() {
+            categoryNav.innerHTML = "";
+            const changed = new Set(getChangedNames());
+            const categories = Object.keys(REGLAGES);
+            if (changed.size > 0) {
+                categories.unshift("__changes"); //unshift = ajoute au début
+            }
+            for (const category of categories) {
+                const isChanges = category === "__changes";
+                const names = isChanges ? [...changed] : entries.filter(function (entry) { return entry.category === category; }).map(function (entry) { return entry.name; });
+                const changedCount = names.filter(function (name) { return changed.has(name); }).length;
+                const button = document.createElement("button");
+                button.className = category === currentCategory && searchInput.value.trim() === "" ? "active" : "";
+                const title = document.createElement("span");
+                title.textContent = isChanges ? "★ Mes changements" : category;
+                const count = document.createElement("span");
+                count.className = "count" + (changedCount > 0 ? " changed" : "");
+                count.textContent = changedCount > 0 ? changedCount : names.length;
+                count.title = changedCount > 0 ? changedCount + " changé(s)" : names.length + " réglages";
+                button.append(title, count);
+                button.addEventListener("click", function () {
+                    currentCategory = category;
+                    searchInput.value = "";
+                    render();
+                    window.scrollTo(0, 0);
+                });
+                categoryNav.appendChild(button);
+            }
+        }
+
+        //Sans accents ni majuscules, pour chercher "cerbere" et trouver "Cerbère"
+        function simplify(text) {
+            return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+        }
+
+        function renderSettings() {
+            settingsView.innerHTML = "";
+            const query = simplify(searchInput.value.trim());
+            let shown;
+            let title;
+            if (query !== "") {
+                const words = query.split(/\s+/);
+                shown = entries.filter(function (entry) {
+                    const haystack = simplify([entry.category, entry.group, entry.name, entry.setting.texte, entry.setting.unite].join(" "));
+                    return words.every(function (word) { return haystack.includes(word); });
+                });
+                title = shown.length + " réglage(s) pour « " + searchInput.value.trim() + " »";
+            } else if (currentCategory === "__changes") {
+                const changed = new Set(getChangedNames());
+                shown = entries.filter(function (entry) { return changed.has(entry.name); });
+                title = "Mes changements (pas encore enregistrés)";
+            } else {
+                shown = entries.filter(function (entry) { return entry.category === currentCategory; });
+                title = currentCategory;
+            }
+            const heading = document.createElement("h2");
+            heading.textContent = title;
+            settingsView.appendChild(heading);
+            if (shown.length === 0) {
+                const empty = document.createElement("p");
+                empty.className = "empty";
+                empty.textContent = query !== "" ? "Aucun réglage ne correspond. Essaie un autre mot (ex : vie, vitesse, prix, taille)." : "Aucun changement pour l'instant.";
+                settingsView.appendChild(empty);
+                return;
+            }
+            //Une carte par sous-catégorie (dans une recherche : "Catégorie › Sous-catégorie")
+            const showPath = query !== "" || currentCategory === "__changes";
+            let card = null;
+            let lastGroup = null;
+            for (const entry of shown) {
+                const groupTitle = showPath ? entry.category + " › " + entry.group : entry.group;
+                if (groupTitle !== lastGroup) {
+                    card = document.createElement("section");
+                    card.className = "group";
+                    const h3 = document.createElement("h3");
+                    h3.textContent = groupTitle;
+                    card.appendChild(h3);
+                    settingsView.appendChild(card);
+                    lastGroup = groupTitle;
+                }
+                card.appendChild(createRow(entry));
+            }
+        }
+
+        function createRow(entry) {
+            const setting = entry.setting;
+            invalidNames.delete(entry.name); //la case repart de la dernière valeur correcte
+            const row = document.createElement("div");
+            row.className = "row";
+            const inputId = "input-" + entry.name;
+
+            const text = document.createElement("div");
+            text.className = "rowText";
+            const label = document.createElement("label");
+            label.className = "label";
+            label.htmlFor = inputId;
+            label.textContent = setting.texte + (setting.texteDuJeu ? " ⚠️" : "");
+            const name = document.createElement("code");
+            name.className = "name";
+            name.textContent = entry.name;
+            text.append(label, name);
+
+            const field = document.createElement("div");
+            field.className = "field";
+            const input = document.createElement("input");
+            input.id = inputId;
+            input.type = Array.isArray(setting.valeur) ? "text" : "number";
+            if (input.type === "number") {
+                input.step = "any";
+                input.inputMode = "decimal";
+            }
+            const unit = document.createElement("span");
+            unit.className = "unit";
+            unit.textContent = setting.unite;
+            const reset = document.createElement("button");
+            reset.className = "resetButton";
+            reset.type = "button";
+            reset.textContent = "↺";
+            reset.title = "Revenir à la valeur du fichier : " + describeValue(setting, fileValues[entry.name]);
+            reset.setAttribute("aria-label", reset.title);
+            const info = document.createElement("div");
+            info.className = "rowInfo";
+
+            let infiniteBox = null;
+            if (setting.infini) {
+                const infiniteLabel = document.createElement("label");
+                infiniteLabel.className = "infinite";
+                infiniteBox = document.createElement("input");
+                infiniteBox.type = "checkbox";
+                infiniteLabel.append(infiniteBox, document.createTextNode("∞"));
+                infiniteLabel.title = "Sans limite (amélioration infinie)";
+                field.append(input, unit, infiniteLabel, reset);
+            } else {
+                field.append(input, unit, reset);
+            }
+            row.append(text, field, info);
+
+            //Met la ligne à jour (orange si changée, rouge si impossible, la valeur d'avant, l'avertissement)
+            function refreshRow() {
+                const value = currentValues[entry.name];
+                const isChanged = !sameValue(value, fileValues[entry.name]);
+                row.classList.toggle("changed", isChanged);
+                row.classList.toggle("invalid", invalidNames.has(entry.name));
+                info.innerHTML = "";
+                if (invalidNames.has(entry.name)) {
+                    const error = document.createElement("span");
+                    error.className = "errorText";
+                    error.textContent = row.dataset.error;
+                    info.appendChild(error);
+                } else if (isChanged) {
+                    const before = document.createElement("span");
+                    before.className = "before";
+                    before.textContent = "avant : " + describeValue(setting, fileValues[entry.name]);
+                    info.appendChild(before);
+                }
+                if (setting.texteDuJeu && (isChanged || invalidNames.has(entry.name))) {
+                    const warning = document.createElement("div");
+                    warning.className = "warning";
+                    warning.textContent = "⚠️ Ce nombre est aussi écrit dans " + setting.texteDuJeu + " : pense à changer ce texte.";
+                    info.appendChild(warning);
+                } else if (setting.texteDuJeu) {
+                    label.title = "Ce nombre est aussi écrit dans " + setting.texteDuJeu;
+                }
+            }
+
+            function showValue() {
+                const value = currentValues[entry.name];
+                input.value = toDisplay(setting, value);
+                input.disabled = value === Infinity;
+                if (infiniteBox !== null) {
+                    infiniteBox.checked = value === Infinity;
+                }
+            }
+
+            input.addEventListener("input", function () {
+                const result = parseInput(setting, input.value);
+                if (result.error) {
+                    invalidNames.add(entry.name);
+                    row.dataset.error = result.error;
+                } else {
+                    invalidNames.delete(entry.name);
+                    currentValues[entry.name] = result.value;
+                }
+                refreshRow();
+                onValuesChanged();
+            });
+            if (infiniteBox !== null) {
+                infiniteBox.addEventListener("change", function () {
+                    if (infiniteBox.checked) {
+                        currentValues[entry.name] = Infinity;
+                        invalidNames.delete(entry.name);
+                    } else {
+                        //on repart d'un nombre : celui du fichier s'il n'était pas infini, sinon 10
+                        currentValues[entry.name] = fileValues[entry.name] === Infinity ? 10 : fileValues[entry.name];
+                    }
+                    showValue();
+                    refreshRow();
+                    onValuesChanged();
+                });
+            }
+            reset.addEventListener("click", function () {
+                currentValues[entry.name] = copyValue(fileValues[entry.name]);
+                invalidNames.delete(entry.name);
+                showValue();
+                refreshRow();
+                onValuesChanged();
+            });
+            showValue();
+            refreshRow();
+            return row;
+        }
+
+        //Après chaque changement : le compteur, les catégories, et le brouillon (pour ne rien perdre si on ferme la page)
+        function onValuesChanged() {
+            const changed = getChangedNames();
+            statusText.textContent = changed.length === 0 ? "Aucun changement" : changed.length + " réglage(s) changé(s), pas encore enregistré(s)";
+            statusText.classList.toggle("hasChanges", changed.length > 0);
+            document.getElementById("resetAllButton").disabled = changed.length === 0 && invalidNames.size === 0;
+            if (invalidNames.size === 0 && notices.dataset.reason === "invalid") {
+                notices.innerHTML = ""; //plus de case rouge : le message n'a plus lieu d'être
+                notices.dataset.reason = "";
+            }
+            renderNav();
+            saveDraft(changed);
+        }
+
+        function render() {
+            renderNav();
+            renderSettings();
+            onValuesChanged();
+        }
+
+        searchInput.addEventListener("input", function () {
+            renderNav();
+            renderSettings();
+        });
+
+        /////////////////////
+        ////BROUILLON////////  les changements pas encore enregistrés, gardés dans ce navigateur
+        /////////////////////
+        //JSON ne sait pas écrire Infinity : on l'écrit "Infinity" (en texte)
+        function getChangesObject(names) {
+            const changes = {};
+            for (const name of names) {
+                changes[name] = currentValues[name] === Infinity ? "Infinity" : currentValues[name];
+            }
+            return changes;
+        }
+
+        function saveDraft(changedNames) {
+            try {
+                if (changedNames.length === 0) {
+                    localStorage.removeItem(DRAFT_KEY);
+                } else {
+                    localStorage.setItem(DRAFT_KEY, JSON.stringify(getChangesObject(changedNames)));
+                }
+            } catch (error) {
+                //pas de stockage (navigation privée...) : tant pis, on garde les changements tant que la page est ouverte
+            }
+        }
+
+        function loadDraft() {
+            let draft = null;
+            try {
+                draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+            } catch (error) {
+            }
+            if (draft === null) {
+                return;
+            }
+            let restored = 0;
+            for (const name of Object.keys(draft)) {
+                if (!(name in currentValues)) {
+                    continue; //un réglage qui n'existe plus
+                }
+                const value = draft[name] === "Infinity" ? Infinity : draft[name];
+                if (!sameValue(value, fileValues[name])) {
+                    currentValues[name] = value;
+                    restored++;
+                }
+            }
+            if (restored > 0) {
+                showNotice("Tes <strong>" + restored + " changement(s) d'avant</strong> ont été retrouvés : ils ne sont pas encore enregistrés dans reglages.js. Voir « ★ Mes changements ».");
+            }
+        }
+
+        /////////////////////
+        ////TESTER///////////  ouvre le jeu avec les valeurs changées : index.html#test={...}
+        /////////////////////
+        document.getElementById("testButton").addEventListener("click", function () {
+            if (invalidNames.size > 0) {
+                showNotice("Corrige d'abord les cases en rouge (" + invalidNames.size + ").", "error", "invalid");
+                return;
+            }
+            const changes = getChangesObject(getChangedNames());
+            const url = "../../index.html" + (Object.keys(changes).length > 0 ? "#test=" + encodeURIComponent(JSON.stringify(changes)) : "");
+            window.open(url, "_blank"); //un nouvel onglet
+        });
+
+        /////////////////////
+        ////ENREGISTRER//////  réécrit reglages.js
+        /////////////////////
+        let savedFileHandle = null; // le fichier choisi au 1er enregistrement (les suivants vont directement dedans)
+
+        function buildSettingsObject() {
+            const settings = {};
+            for (const entry of entries) {
+                settings[entry.category] = settings[entry.category] || {};
+                settings[entry.category][entry.group] = settings[entry.category][entry.group] || {};
+                settings[entry.category][entry.group][entry.name] = Object.assign({}, entry.setting, { valeur: currentValues[entry.name] });
+            }
+            return settings;
+        }
+
+        async function saveSettingsFile() {
+            if (invalidNames.size > 0) {
+                showNotice("Corrige d'abord les cases en rouge (" + invalidNames.size + ") : elles ne peuvent pas être enregistrées.", "error", "invalid");
+                return;
+            }
+            const changed = getChangedNames();
+            const text = formatSettingsFile(buildSettingsObject());
+            let savedDirectly = false;
+            if (window.showSaveFilePicker) { //Chrome, Edge : on écrit directement dans le fichier choisi
+                try {
+                    if (savedFileHandle === null) {
+                        savedFileHandle = await window.showSaveFilePicker({
+                            suggestedName: "reglages.js",
+                            types: [{ description: "Réglages du jeu", accept: { "text/javascript": [".js"] } }]
+                        });
+                    }
+                    const writable = await savedFileHandle.createWritable();
+                    await writable.write(text);
+                    await writable.close();
+                    savedDirectly = true;
+                } catch (error) {
+                    if (error.name === "AbortError") {
+                        return; //la fenêtre a été fermée sans choisir de fichier
+                    }
+                    savedFileHandle = null;
+                    console.error(error);
+                }
+            }
+            if (!savedDirectly) { //sinon : on télécharge le fichier
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(new Blob([text], { type: "text/javascript" }));
+                link.download = "reglages.js";
+                link.click();
+                URL.revokeObjectURL(link.href);
+            }
+            for (const entry of entries) { //les valeurs enregistrées deviennent celles "du fichier"
+                fileValues[entry.name] = copyValue(currentValues[entry.name]);
+            }
+            render();
+            const steps = "<ol><li>Recharge le jeu (F5) : il utilise les nouvelles valeurs.</li><li>Dans GitHub Desktop : <strong>Commit</strong>, puis <strong>Push</strong>.</li><li>Mets à jour les documents de <code>game-design/</code> (relance <code>generer-docs.js</code>, ou demande à Claude).</li></ol>";
+            if (savedDirectly) {
+                showNotice("✔ <strong>Enregistré</strong> (" + changed.length + " réglage(s) changé(s)). Vérifie que c'est bien le <code>reglages.js</code> à la racine du dossier du jeu." + steps, "success");
+            } else {
+                showNotice("✔ <strong>reglages.js a été téléchargé</strong> (" + changed.length + " réglage(s) changé(s)). Mets-le à la place de l'ancien, à la racine du dossier du jeu (à côté de <code>index.html</code>)." + steps, "success");
+            }
+        }
+        document.getElementById("saveButton").addEventListener("click", saveSettingsFile);
+
+        document.getElementById("resetAllButton").addEventListener("click", function () {
+            if (!confirm("Annuler tous les changements pas encore enregistrés ?")) {
+                return;
+            }
+            for (const entry of entries) {
+                currentValues[entry.name] = copyValue(fileValues[entry.name]);
+            }
+            invalidNames.clear();
+            notices.innerHTML = "";
+            render();
+        });
+
+        //La colonne des catégories reste visible sous le haut de la page (dont la hauteur dépend de la largeur)
+        function updateHeaderHeight() {
+            document.documentElement.style.setProperty("--header-height", document.querySelector("header").offsetHeight + "px");
+        }
+        window.addEventListener("resize", updateHeaderHeight);
+        updateHeaderHeight();
+
+        loadDraft();
+        render();
+    </script>
+</body>
+</html>

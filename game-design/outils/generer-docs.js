@@ -1,6 +1,7 @@
 // Régénère les documents de game design à partir des données du jeu (index.html) :
 //   game-design/skills/*.md  (skill trees, combos, fusions)
 //   game-design/prix.md      (prix du shop et des skills)
+//   game-design/reglages.md  (tous les réglages de reglages.js, avec leur valeur)
 // Utilisation (il faut Node.js et Playwright) :  node game-design/outils/generer-docs.js
 const { chromium } = require('playwright');
 const fs = require('fs'); const path = require('path');
@@ -16,8 +17,9 @@ const data = await p.evaluate(()=>({
     paths: t.paths.map(p=>({name:p.name, description:p.description})),
     nodes: t.nodes.map(n=>({id:n.id, role:n.role, label:n.label, name:n.name, description:n.description, cost:n.cost, path:n.path})) })),
   attributes: ATTRIBUTES, combos: COMBOS, fusions: FUSIONS, modes: LINK_MODES, opposite: OPPOSITE_BONUSES,
-  shop: SHOP_ITEMS.map(i=>({name:i.name, description:i.description, baseCost:i.baseCost, costGrowth:i.costGrowth, maxLevel: Number.isFinite(i.maxLevel) ? i.maxLevel : null})), // null = amélioration infinie (Infinity ne passe pas en JSON)
-  costs: { SKILL_COST_BASE, SKILL_COST_PER_STEP, NOTABLE_COST_MULTIPLIER, KEYSTONE_COST, GRAND_COST, SKILL_TIER_GROWTH }
+  shop: SHOP_ITEMS.map(i=>({name:i.name, description:getShopItemDescription(i), baseCost:i.baseCost, costGrowth:i.costGrowth, maxLevel: Number.isFinite(i.maxLevel) ? i.maxLevel : null})), // null = amélioration infinie (Infinity ne passe pas en JSON)
+  costs: { SKILL_COST_BASE, SKILL_COST_PER_STEP, NOTABLE_COST_MULTIPLIER, KEYSTONE_COST, GRAND_COST, SKILL_TIER_GROWTH },
+  settings: JSON.parse(JSON.stringify(REGLAGES, (k, v) => v === Infinity ? 'Infinity' : v)) // Infinity ne passe pas en JSON
 }));
 await b.close();
 fs.mkdirSync(OUT, {recursive:true});
@@ -102,5 +104,25 @@ for (const {t, total} of index) {
     return `| ${g.n.cost} | ${name} | ${ROLE_FR[g.n.role]} | ${g.n.description}${g.nums.length > 1 ? ', chacun' : ''} |`; }).join('\n') + '\n\n';
 }
 fs.writeFileSync(path.join(ROOT, 'game-design', 'prix.md'), px);
-console.log('Documents régénérés : skills/ et prix.md');
+
+// reglages.md : tous les réglages de reglages.js (catégorie > sous-catégorie > réglage), avec leur valeur
+const settingValue = (r) => {
+  const one = (v) => v === 'Infinity' ? '∞' : dec(r.unite === '%' ? Math.round(v * 100 * 1e9) / 1e9 : v);
+  return (Array.isArray(r.valeur) ? r.valeur.map(one).join(' ; ') : one(r.valeur)) + (r.unite && r.valeur !== 'Infinity' ? ' ' + r.unite : '');
+};
+const S = data.settings;
+const settingCount = Object.values(S).reduce((a, c) => a + Object.values(c).reduce((b, g) => b + Object.keys(g).length, 0), 0);
+let rg = `# Les réglages du jeu\n\nGénéré à partir de \`reglages.js\` par \`game-design/outils/generer-docs.js\`.\n\n`;
+rg += `Toutes les statistiques du jeu (${settingCount} réglages) sont dans le fichier \`reglages.js\`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre \`game-design/outils/editeur-reglages.html\` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).\n\n`;
+rg += `- Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans \`reglages.js\` (10 % = 0.1).\n- Le **nom dans le code** est celui que \`index.html\` lit avec \`reglage("NOM")\`.\n- ⚠️ = ce nombre est aussi écrit dans un texte du jeu : si on le change, il faut aussi changer ce texte (dans \`index.html\` et \`langues/\`).\n- Les valeurs de **chaque compétence** des skill trees ne sont pas ici : elles sont écrites dans leur description (voir [skills/](skills/README.md)), dans \`SKILL_TREES_DATA\` (\`index.html\`).\n\n`;
+rg += `## Sommaire\n\n` + Object.keys(S).map(c => `- [${c}](#${c.toLowerCase().replace(/[^\p{L}\p{N} -]/gu, '').replace(/ /g, '-')}) : ${Object.keys(S[c]).join(', ')}`).join('\n') + '\n\n';
+for (const [category, groups] of Object.entries(S)) {
+  rg += `## ${category}\n\n`;
+  for (const [group, settings] of Object.entries(groups)) {
+    rg += `### ${group}\n\n| Réglage | Valeur | Nom dans le code |\n| --- | --- | --- |\n`;
+    rg += Object.entries(settings).map(([name, r]) => `| ${r.texte}${r.texteDuJeu ? ' ⚠️ (aussi écrit dans ' + r.texteDuJeu + ')' : ''} | ${settingValue(r)} | \`${name}\` |`).join('\n') + '\n\n';
+  }
+}
+fs.writeFileSync(path.join(ROOT, 'game-design', 'reglages.md'), rg);
+console.log('Documents régénérés : skills/, prix.md et reglages.md');
 })();

@@ -2,7 +2,7 @@
 
 > **La question :** les formules mathématiques du jeu (dégâts, combos, pouvoirs, vie des ennemis, joueur, prix).
 
-Tous les calculs du jeu, tels qu'ils sont écrits dans `index.html`. Les noms entre `accents graves` sont les constantes ou les stats du code : les changer change le jeu. Quand ce document et le code ne disent pas la même chose, c'est le code qui a raison, et il faut corriger ce document.
+Tous les calculs du jeu, tels qu'ils sont écrits dans `index.html`. Les noms entre `accents graves` sont les constantes ou les stats du code : les changer change le jeu. Leurs valeurs sont dans `reglages.js` (la liste à jour : [reglages.md](../reglages.md)) et se changent avec l'éditeur de réglages (`game-design/outils/editeur-reglages.html`). Les nombres de ce document sont les valeurs actuelles : si on change un réglage, il faut aussi les changer ici. Quand ce document et le code ne disent pas la même chose, c'est le code qui a raison, et il faut corriger ce document.
 
 Notations :
 - `max(a, b)` = le plus grand des deux, `min(a, b)` = le plus petit.

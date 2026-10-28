@@ -33,7 +33,7 @@ jobs:
       - name: Préparer le dossier du site (seulement le jeu)
         run: |
           mkdir _site
-          cp index.html confidentialite.html _site/
+          cp index.html reglages.js confidentialite.html _site/
           cp -r langues polices _site/
           ls -R _site
 

@@ -2036,6 +2036,21 @@
             border-left-color: #ff6b6b;
         }
 
+        /*MODE TEST de l'éditeur de réglages : un petit bandeau en bas à gauche*/
+        #testSettingsBanner {
+            position: fixed;
+            left: 12px;
+            bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 6;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: rgba(255, 170, 51, 0.85);
+            color: #1a1000;
+            font-size: 13px;
+            font-weight: 700;
+            pointer-events: none; /*les clics passent au travers*/
+        }
+
         /*TUTORIEL : un voile sombre, un "projecteur" sur ce qu'on montre, et une bulle à côté*/
         #tutorialLayer {
             position: fixed;
@@ -2626,6 +2641,9 @@
         </div>
     </div>
 
+    <!-- MODE TEST de l'éditeur de réglages (seulement sur ton ordinateur) : voir RÉGLAGES -->
+    <div id="testSettingsBanner" class="hidden">🧪 Réglages de test : rien n'est sauvegardé</div>
+
     <!-- TUTORIEL : une bulle qui explique le jeu au bon moment, avec un "projecteur" sur ce qu'elle montre (voir TUTORIEL) -->
     <div id="tutorialLayer" class="hidden">
         <div id="tutorialSpotlight" class="hidden"></div>
@@ -2708,7 +2726,58 @@
     <script src="langues/de.js"></script>
     <script src="langues/zh.js"></script>
     <script src="langues/ja.js"></script>
+    <!-- RÉGLAGES : toutes les statistiques du jeu (vie, vitesse, prix...), à changer avec game-design/outils/editeur-reglages.html -->
+    <script src="reglages.js"></script>
     <script>
+        /////////////////////
+        ////RÉGLAGES/////////  Les statistiques du jeu (vie, vitesse, taille, prix...) sont dans reglages.js, rangées par catégories
+        /////////////////////
+        //Pour les changer : ouvre game-design/outils/editeur-reglages.html (ou change une "valeur" à la main dans reglages.js).
+        //Dans le code, reglage("NOM") donne la valeur d'un réglage, ex : reglage("ENEMY_SPAWN_INTERVAL_START") -> 1.2
+        //⚠️ Une nouvelle statistique du jeu s'ajoute dans reglages.js (catégorie, sous-catégorie, unité, texte), puis se lit avec reglage().
+        const SETTING_VALUES = {}; // "NOM" -> sa valeur, toutes catégories confondues
+        for (const category of Object.values(REGLAGES)) {      //Object.values = les valeurs d'un objet (ici : les catégories)
+            for (const group of Object.values(category)) {      //les sous-catégories
+                for (const name of Object.keys(group)) {
+                    SETTING_VALUES[name] = group[name].valeur;
+                }
+            }
+        }
+
+        //MODE TEST de l'éditeur de réglages : son bouton « Tester dans le jeu » ouvre index.html#test={"NOM": valeur, ...}
+        //avec les valeurs à essayer. Seulement sur ton ordinateur (fichier ou serveur local), jamais sur le site.
+        //Pendant un test, rien n'est sauvegardé (ta vraie progression ne change pas) et un bandeau le rappelle.
+        function readTestSettings() {
+            const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+            if (!isLocal || !location.hash.startsWith("#test=")) {
+                return null;
+            }
+            try {
+                const values = JSON.parse(decodeURIComponent(location.hash.slice("#test=".length)));
+                for (const name of Object.keys(values)) {
+                    if (values[name] === "Infinity") {
+                        values[name] = Infinity; //JSON ne sait pas écrire Infinity : l'éditeur l'envoie en texte
+                    }
+                }
+                return values;
+            } catch (error) {
+                console.error("Réglages de test illisibles :", error);
+                return null;
+            }
+        }
+        const TEST_SETTINGS = readTestSettings();
+        if (TEST_SETTINGS !== null) {
+            Object.assign(SETTING_VALUES, TEST_SETTINGS); //les valeurs à essayer remplacent celles de reglages.js
+        }
+
+        function reglage(name) {
+            if (!(name in SETTING_VALUES)) {
+                console.error("Réglage introuvable dans reglages.js : " + name);
+            }
+            return SETTING_VALUES[name];
+        }
+
+
         /////////////
         ////LANGUES//  Le jeu est écrit en français ; t("texte") renvoie ce texte dans la langue choisie
         /////////////
@@ -2872,8 +2941,8 @@
 
         //CAMÉRA : quand la portée du joueur dépasse l'écran, on dézoome pour qu'elle remplisse environ 95% de la largeur.
         //Le "monde" (ennemis, planètes, balles) garde ses vraies distances en pixels : seul le dessin est réduit.
-        const CAMERA_RANGE_SCREEN_RATIO = 0.95;  // la portée occupe au plus 95% de la demi-largeur de l'écran (sur les côtés)
-        const CAMERA_MAX_RANGE = 1000;           // au-delà de cette portée, on ne dézoome plus
+        const CAMERA_RANGE_SCREEN_RATIO = reglage("CAMERA_RANGE_SCREEN_RATIO");  // la portée occupe au plus 95% de la demi-largeur de l'écran (sur les côtés)
+        const CAMERA_MAX_RANGE = reglage("CAMERA_MAX_RANGE");           // au-delà de cette portée, on ne dézoome plus
         const CAMERA_SMOOTHING = 2;              // vitesse du zoom (plus grand = plus rapide)
         let cameraZoom = 1;                      // 1 = normal, 0.5 = on voit 2 fois plus loin
         let shakeX = 0;                          // décalage de la secousse de l'écran (en pixels d'écran)
@@ -4232,37 +4301,37 @@
         //  Ex : +30 de portée chez Héphaïstos = seulement la planète Héphaïstos, pas les autres ni le joueur.
         //(Plus tard : des pouvoirs pour qu'une planète profite des stats d'une autre. Voir game-design/statistiques.md)
         const BASE_STATS = {
-            maxHealth: 10,        // points de vie max
-            regen: 0,             // PV regagnés par seconde
-            dodgeChance: 0,       // chance d'esquiver un coup (0.1 = 10%)
-            shield: 0,            // 1 ou plus = un bouclier bloque un coup, puis se recharge
-            shieldRecharge: 1,    // vitesse de recharge du bouclier (1.5 = 50% plus rapide)
-            lifeOnKill: 0,        // PV regagnés à chaque ennemi tué
-            damage: 1,            // dégâts par balle
-            attackSpeed: 1,       // multiplicateur de cadence de tir (1 = normal, 1.5 = 50% plus rapide)
-            range: 300,           // distance max pour viser, en pixels
-            bulletSpeed: 1,       // multiplicateur de vitesse des balles
-            bulletCount: 1,       // nombre de balles par tir (côte à côte, en "mur")
-            critChance: 0,        // chance de coup critique (0.1 = 10%)
-            critDamage: 2,        // dégâts d'un coup critique (2 = 200% des dégâts normaux)
-            lifeOnHit: 0,         // PV regagnés par le joueur à chaque balle qui touche
-            maxHealthOnHit: 0,    // PV max gagnés (pour la partie) à chaque balle qui touche
-            comboProcChance: 0,   // chance, à chaque tir, de déclencher un effet de combo au hasard
-            goldMultiplier: 1,    // multiplicateur d'or gagné
-            xpMultiplier: 1       // multiplicateur d'XP gagnée
+            maxHealth: reglage("BASE_STATS.maxHealth"),        // points de vie max
+            regen: reglage("BASE_STATS.regen"),             // PV regagnés par seconde
+            dodgeChance: reglage("BASE_STATS.dodgeChance"),       // chance d'esquiver un coup (0.1 = 10%)
+            shield: reglage("BASE_STATS.shield"),            // 1 ou plus = un bouclier bloque un coup, puis se recharge
+            shieldRecharge: reglage("BASE_STATS.shieldRecharge"),    // vitesse de recharge du bouclier (1.5 = 50% plus rapide)
+            lifeOnKill: reglage("BASE_STATS.lifeOnKill"),        // PV regagnés à chaque ennemi tué
+            damage: reglage("BASE_STATS.damage"),            // dégâts par balle
+            attackSpeed: reglage("BASE_STATS.attackSpeed"),       // multiplicateur de cadence de tir (1 = normal, 1.5 = 50% plus rapide)
+            range: reglage("BASE_STATS.range"),           // distance max pour viser, en pixels
+            bulletSpeed: reglage("BASE_STATS.bulletSpeed"),       // multiplicateur de vitesse des balles
+            bulletCount: reglage("BASE_STATS.bulletCount"),       // nombre de balles par tir (côte à côte, en "mur")
+            critChance: reglage("BASE_STATS.critChance"),        // chance de coup critique (0.1 = 10%)
+            critDamage: reglage("BASE_STATS.critDamage"),        // dégâts d'un coup critique (2 = 200% des dégâts normaux)
+            lifeOnHit: reglage("BASE_STATS.lifeOnHit"),         // PV regagnés par le joueur à chaque balle qui touche
+            maxHealthOnHit: reglage("BASE_STATS.maxHealthOnHit"),    // PV max gagnés (pour la partie) à chaque balle qui touche
+            comboProcChance: reglage("BASE_STATS.comboProcChance"),   // chance, à chaque tir, de déclencher un effet de combo au hasard
+            goldMultiplier: reglage("BASE_STATS.goldMultiplier"),    // multiplicateur d'or gagné
+            xpMultiplier: reglage("BASE_STATS.xpMultiplier")       // multiplicateur d'XP gagnée
         };
         //Les stats de départ de chaque planète (seulement des stats de tir)
         const PLANET_BASE_STATS = {
-            damage: 1,
-            attackSpeed: 1,       // 1 tir par seconde (voir PLANET_FIRE_INTERVAL)
-            range: 250,           // depuis la planète
-            bulletSpeed: 1,
-            bulletCount: 1,
-            critChance: 0,
-            critDamage: 2,
-            lifeOnHit: 0,
-            maxHealthOnHit: 0,
-            comboProcChance: 0
+            damage: reglage("PLANET_BASE_STATS.damage"),
+            attackSpeed: reglage("PLANET_BASE_STATS.attackSpeed"),       // 1 tir par seconde (voir PLANET_FIRE_INTERVAL)
+            range: reglage("PLANET_BASE_STATS.range"),           // depuis la planète
+            bulletSpeed: reglage("PLANET_BASE_STATS.bulletSpeed"),
+            bulletCount: reglage("PLANET_BASE_STATS.bulletCount"),
+            critChance: reglage("PLANET_BASE_STATS.critChance"),
+            critDamage: reglage("PLANET_BASE_STATS.critDamage"),
+            lifeOnHit: reglage("PLANET_BASE_STATS.lifeOnHit"),
+            maxHealthOnHit: reglage("PLANET_BASE_STATS.maxHealthOnHit"),
+            comboProcChance: reglage("PLANET_BASE_STATS.comboProcChance")
         };
         //LES POUVOIRS DES DIEUX : des stats de planète en plus, données par SON skill tree (0 = pas de pouvoir).
         //Chaque dieu a sa façon de se battre (voir game-design/statistiques.md et la partie POUVOIRS DES DIEUX plus bas).
@@ -4399,10 +4468,11 @@
         //LES 3 ORBITES : chaque planète tourne sur l'une d'elles (planet.orbit = 0, 1 ou 2), et ne se lie qu'aux planètes de SON orbite.
         //On change l'orbite d'une planète en la faisant glisser dans le jeu, ou avec les boutons « Orbite » de la fenêtre des skills.
         //radius = rayon en pixels ; speed = vitesse de rotation en radians par seconde (négative = dans l'autre sens).
+        //Rayons et vitesses : dans reglages.js (catégorie « Planètes », sous-catégorie « Orbites »)
         const ORBITS = [
-            { name: "Intérieure", radius: 130, speed: 0.25 },
-            { name: "Milieu", radius: 200, speed: -0.17 },     // l'orbite du milieu tourne à l'envers des deux autres
-            { name: "Extérieure", radius: 270, speed: 0.12 }
+            { name: "Intérieure", radius: reglage("ORBITS.inner.radius"), speed: reglage("ORBITS.inner.speed") },
+            { name: "Milieu", radius: reglage("ORBITS.middle.radius"), speed: reglage("ORBITS.middle.speed") },     // l'orbite du milieu tourne à l'envers des deux autres
+            { name: "Extérieure", radius: reglage("ORBITS.outer.radius"), speed: reglage("ORBITS.outer.speed") }
         ];
         translateFields(ORBITS, ["name"]);
         const orbitRotations = ORBITS.map(function () { return 0; }); // l'angle actuel de chaque orbite (map = un 0 par orbite)
@@ -4456,7 +4526,7 @@
         }
 
         //PLAYER HEALTH
-        const PLAYER_RADIUS = 32;
+        const PLAYER_RADIUS = reglage("PLAYER_RADIUS");
         const PLAYER_HIT_FLASH_DURATION = 0.15;   // secondes
         let playerHealth = 0;                     // mis à la vie max au démarrage
         let playerHitTimer = 0;
@@ -4479,7 +4549,7 @@
         }
 
         //BOUCLIER : bloque un coup, puis se recharge pendant SHIELD_COOLDOWN secondes
-        const SHIELD_COOLDOWN = 10;
+        const SHIELD_COOLDOWN = reglage("SHIELD_COOLDOWN");
         const SHIELD_COLOR = "#7df9ff";
         let isShieldReady = false;
         let shieldTimer = SHIELD_COOLDOWN;        // plein au départ : le bouclier est prêt tout de suite
@@ -4500,7 +4570,7 @@
 
         //ESQUIVE : plafonnée à DODGE_MAX. Sans plafond, toutes les compétences d'esquive réunies donnaient 126 % :
         //le joueur n'était plus jamais touché, et une partie ne finissait jamais.
-        const DODGE_MAX = 0.75;
+        const DODGE_MAX = reglage("DODGE_MAX");
 
         function getDodgeChance() {
             return Math.min(DODGE_MAX, playerStats.dodgeChance);
@@ -4711,7 +4781,7 @@
         }
 
         // RÉGLAGES DES PLANÈTES (les rayons des orbites sont dans ORBITS)
-        const PLANET_SIZE = 20;
+        const PLANET_SIZE = reglage("PLANET_SIZE");
         const PLANET_CLICK_MARGIN = IS_TOUCH_DEVICE ? 20 : 8;            // pixels en plus autour de la planète pour cliquer plus facilement (plus au doigt)
 
         // CRÉATION (une seule fois, au démarrage) : une planète par skill tree déjà débloqué (aucun au début : elles s'achètent dans le shop)
@@ -5134,10 +5204,10 @@
         }
         //Fréquence d'apparition : elle augmente petit à petit pendant la partie
         //(Avant : 2.4 s au début. Les testeurs s'ennuyaient au début de chaque partie : il y a maintenant 2 fois plus d'ennemis au départ.)
-        const ENEMY_SPAWN_INTERVAL_START = 1.2;  // au début : un ennemi toutes les X secondes
-        const ENEMY_SPAWN_INTERVAL_MIN = 0.35;   // jamais plus rapide que ça
-        const ENEMY_SPAWN_RAMP = 0.005;          // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
-        const ENEMY_FIRST_SPAWN_DELAY = 0.3;     // le 1er ennemi arrive après X secondes (au lieu d'attendre un intervalle entier)
+        const ENEMY_SPAWN_INTERVAL_START = reglage("ENEMY_SPAWN_INTERVAL_START");  // au début : un ennemi toutes les X secondes
+        const ENEMY_SPAWN_INTERVAL_MIN = reglage("ENEMY_SPAWN_INTERVAL_MIN");   // jamais plus rapide que ça
+        const ENEMY_SPAWN_RAMP = reglage("ENEMY_SPAWN_RAMP");          // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
+        const ENEMY_FIRST_SPAWN_DELAY = reglage("ENEMY_FIRST_SPAWN_DELAY");     // le 1er ennemi arrive après X secondes (au lieu d'attendre un intervalle entier)
         //Le minuteur démarre presque "plein" : le 1er ennemi apparaît dès ENEMY_FIRST_SPAWN_DELAY
         let enemySpawnTimer = ENEMY_SPAWN_INTERVAL_START - ENEMY_FIRST_SPAWN_DELAY;
         let runTime = 0;                         // secondes écoulées depuis le début de la partie
@@ -5153,7 +5223,7 @@
 
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
-        const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
+        const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS");   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
 
         //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut ni passer le temps, ni accélérer
         const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
@@ -5175,9 +5245,9 @@
         //TEMPS DE RECHARGE : après un saut, il faut attendre avant le suivant (sinon les sauts s'enchaînent, les ennemis
         //s'empilent et le jeu rame). La recharge dépend du saut : SKIP_COOLDOWN_PER_SECOND seconde par seconde sautée,
         //au moins SKIP_COOLDOWN_MIN. Elle compte en temps de JEU : elle s'arrête quand le jeu est en pause.
-        const SKIP_COOLDOWN_MIN = 8;             // secondes
-        const SKIP_COOLDOWN_PER_SECOND = 0.6;    // ex : saut de +100 s -> 60 s de recharge
-        const SKIP_COOLDOWN_MAX = 120;           // jamais plus de 2 minutes d'attente (même pour un très grand saut)
+        const SKIP_COOLDOWN_MIN = reglage("SKIP_COOLDOWN_MIN");             // secondes
+        const SKIP_COOLDOWN_PER_SECOND = reglage("SKIP_COOLDOWN_PER_SECOND");    // ex : saut de +100 s -> 60 s de recharge
+        const SKIP_COOLDOWN_MAX = reglage("SKIP_COOLDOWN_MAX");           // jamais plus de 2 minutes d'attente (même pour un très grand saut)
         let skipCooldown = 0;                    // secondes qui restent avant le prochain saut (0 = prêt)
         let skipCooldownMax = 0;                 // durée totale de la recharge en cours (pour l'animation)
         let shownCooldownSeconds = -1;           // le nombre affiché sur les boutons (on ne le réécrit que s'il change)
@@ -5298,7 +5368,7 @@
         renderSkipButtons();
 
         //VITESSE DU JEU : x1, x2, x4... (multiplie le temps qui passe à chaque image)
-        const GAME_SPEED_OPTIONS = [1, 2, 4];
+        const GAME_SPEED_OPTIONS = reglage("GAME_SPEED_OPTIONS");
         let gameSpeed = 1;
         const speedButtons = document.getElementById("speedButtons");
 
@@ -5398,20 +5468,21 @@
         }
 
         //TYPES (éléments)
+        //Leurs chiffres (vitesse, vie, or, XP) sont dans reglages.js : catégorie « Ennemis »
         const ENEMY_TYPES = {
-            water: { color: "#4da6ff", speed: 50, minHealth: 1.4, maxHealth: 2.2, gold: 1, xp: 1 },
-            fire: { color: "#ff5533", speed: 90, minHealth: 0.8, maxHealth: 1.2, gold: 1, xp: 1 },
-            plant: { color: "#55dd55", speed: 35, minHealth: 2.2, maxHealth: 3.4, gold: 1, xp: 1 },
-            air: { color: "#e0f7ff", speed: 70, minHealth: 0.6, maxHealth: 1, gold: 1, xp: 1 }
+            water: { color: "#4da6ff", speed: reglage("ENEMY_TYPES.water.speed"), minHealth: reglage("ENEMY_TYPES.water.minHealth"), maxHealth: reglage("ENEMY_TYPES.water.maxHealth"), gold: reglage("ENEMY_TYPES.water.gold"), xp: reglage("ENEMY_TYPES.water.xp") },
+            fire: { color: "#ff5533", speed: reglage("ENEMY_TYPES.fire.speed"), minHealth: reglage("ENEMY_TYPES.fire.minHealth"), maxHealth: reglage("ENEMY_TYPES.fire.maxHealth"), gold: reglage("ENEMY_TYPES.fire.gold"), xp: reglage("ENEMY_TYPES.fire.xp") },
+            plant: { color: "#55dd55", speed: reglage("ENEMY_TYPES.plant.speed"), minHealth: reglage("ENEMY_TYPES.plant.minHealth"), maxHealth: reglage("ENEMY_TYPES.plant.maxHealth"), gold: reglage("ENEMY_TYPES.plant.gold"), xp: reglage("ENEMY_TYPES.plant.xp") },
+            air: { color: "#e0f7ff", speed: reglage("ENEMY_TYPES.air.speed"), minHealth: reglage("ENEMY_TYPES.air.minHealth"), maxHealth: reglage("ENEMY_TYPES.air.maxHealth"), gold: reglage("ENEMY_TYPES.air.gold"), xp: reglage("ENEMY_TYPES.air.xp") }
         };
 
         //VIE QUI MONTE : la vie des ennemis (ci-dessus = au tout début) est multipliée par ce nombre, qui grandit avec le temps.
         //Ex : 1:00 -> x1.4, 5:00 -> x4.1, 10:00 -> x11, 20:00 -> x50, 30:00 -> x160
         //La dernière partie (x ENEMY_HEALTH_LATE_GROWTH chaque minute) fait monter la fin de partie plus vite : une partie finit toujours,
         //et chaque amélioration fait tenir un peu plus longtemps (avant, les parties pouvaient durer sans fin).
-        const ENEMY_HEALTH_GROWTH = 0.3;            // +30% par minute...
-        const ENEMY_HEALTH_GROWTH_SQUARED = 0.03;   // ...plus une petite part qui accélère (minutes au carré)...
-        const ENEMY_HEALTH_LATE_GROWTH = 1.05;      // ...et le tout multiplié par 1.05 chaque minute (5% de plus par minute, qui s'accumulent)
+        const ENEMY_HEALTH_GROWTH = reglage("ENEMY_HEALTH_GROWTH");            // +30% par minute...
+        const ENEMY_HEALTH_GROWTH_SQUARED = reglage("ENEMY_HEALTH_GROWTH_SQUARED");   // ...plus une petite part qui accélère (minutes au carré)...
+        const ENEMY_HEALTH_LATE_GROWTH = reglage("ENEMY_HEALTH_LATE_GROWTH");      // ...et le tout multiplié par 1.05 chaque minute (5% de plus par minute, qui s'accumulent)
 
         function getEnemyHealthScale() {
             const minutes = runTime / 60;
@@ -5419,9 +5490,9 @@
         }
 
         //TAILLE : plus un ennemi a de vie, plus il est gros (et il rétrécit quand on l'abîme)
-        const ENEMY_BASE_SIZE = 4;           // taille d'un ennemi à 0 PV
-        const ENEMY_SIZE_PER_HEALTH = 4;     // pixels de rayon en plus par point de vie "de départ" (la taille ne grossit pas avec le temps)
-        const ENEMY_SHRINK_SPEED = 10;       // vitesse à laquelle il rétrécit jusqu'à sa nouvelle taille
+        const ENEMY_BASE_SIZE = reglage("ENEMY_BASE_SIZE");           // taille d'un ennemi à 0 PV
+        const ENEMY_SIZE_PER_HEALTH = reglage("ENEMY_SIZE_PER_HEALTH");     // pixels de rayon en plus par point de vie "de départ" (la taille ne grossit pas avec le temps)
+        const ENEMY_SHRINK_SPEED = reglage("ENEMY_SHRINK_SPEED");       // vitesse à laquelle il rétrécit jusqu'à sa nouvelle taille
 
         function getEnemyTargetSize(health) {
             return ENEMY_BASE_SIZE + Math.max(0, health) * ENEMY_SIZE_PER_HEALTH;
@@ -5436,16 +5507,16 @@
         //Les virgules comptent (0.4 PV restant = 0.4 dégât), même si la vie du joueur est affichée sans virgule.
 
         //MOVEMENTS
-        const SPECIAL_MOVEMENT_CHANCE = 0.1;  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
+        const SPECIAL_MOVEMENT_CHANCE = reglage("SPECIAL_MOVEMENT_CHANCE");  // 10% des ennemis ont un mouvement spécial, les 90% autres vont tout droit
         //DÉBLOCAGE : aucun mouvement spécial au début. Chacun arrive à son heure (en secondes de jeu) :
         //à ce moment-là, un 1er ennemi avec ce mouvement apparaît tout de suite, pour montrer au joueur ce qui l'attend.
         const MOVEMENT_UNLOCKS = [
-            { movement: "spiral", time: 60, name: "Spirale" },     // 1:00
-            { movement: "zigzag", time: 300, name: "Zigzag" },     // 5:00
-            { movement: "wave", time: 600, name: "Onduleux" }      // 10:00
+            { movement: "spiral", time: reglage("MOVEMENT_UNLOCKS.spiral.time"), name: "Spirale" },     // 1:00
+            { movement: "zigzag", time: reglage("MOVEMENT_UNLOCKS.zigzag.time"), name: "Zigzag" },     // 5:00
+            { movement: "wave", time: reglage("MOVEMENT_UNLOCKS.wave.time"), name: "Onduleux" }      // 10:00
         ];
         translateFields(MOVEMENT_UNLOCKS, ["name"]);
-        const MOVEMENT_VARIATION_TIME = 750;  // 12:30 : à partir de là, chaque ennemi spécial varie son mouvement (vitesse, arrêts, forme...)
+        const MOVEMENT_VARIATION_TIME = reglage("MOVEMENT_VARIATION_TIME");  // 12:30 : à partir de là, chaque ennemi spécial varie son mouvement (vitesse, arrêts, forme...)
         const movementsIntroducedThisRun = new Set(); // les mouvements dont le 1er ennemi est déjà apparu pendant cette partie
 
         //Les mouvements spéciaux déjà débloqués à ce moment de la partie
@@ -5505,14 +5576,14 @@
             }
             return null; //rond
         }
-        const ENEMY_WAVE_AMPLITUDE = 40;     // écart max sur le côté, en pixels
-        const ENEMY_WAVE_FREQUENCY = 3;      // vitesse des oscillations
-        const ENEMY_SPIRAL_SPEED = 0.4;      // vitesse de rotation autour du joueur
+        const ENEMY_WAVE_AMPLITUDE = reglage("ENEMY_WAVE_AMPLITUDE");     // écart max sur le côté, en pixels
+        const ENEMY_WAVE_FREQUENCY = reglage("ENEMY_WAVE_FREQUENCY");      // vitesse des oscillations
+        const ENEMY_SPIRAL_SPEED = reglage("ENEMY_SPIRAL_SPEED");      // vitesse de rotation autour du joueur
 
         //VARIATIONS : chaque ennemi spécial tire au hasard son propre "style" de mouvement à son apparition,
         //pour que deux zigzags (ou deux spirales) ne se ressemblent jamais
-        const ZIGZAG_STOP_AND_GO_CHANCE = 0.4;  // chance qu'un zigzag s'arrête à chaque virage puis reparte d'un coup
-        const SPIRAL_OVAL_MAX = 0.6;            // à quel point une spirale peut être ovale (0 = cercle parfait)
+        const ZIGZAG_STOP_AND_GO_CHANCE = reglage("ZIGZAG_STOP_AND_GO_CHANCE");  // chance qu'un zigzag s'arrête à chaque virage puis reparte d'un coup
+        const SPIRAL_OVAL_MAX = reglage("SPIRAL_OVAL_MAX");            // à quel point une spirale peut être ovale (0 = cercle parfait)
 
         //Avant MOVEMENT_VARIATION_TIME, tous les ennemis d'un même mouvement bougent pareil (réglages "standard").
         //Après, chacun tire au hasard ses propres réglages : vitesse, charges (stop and go), forme de la spirale...
@@ -5697,21 +5768,22 @@
         //speed : 5 fois plus rapides qu'avant (les testeurs les trouvaient trop lents).
         //Cerbère et l'Hydre ont moins de vie qu'au début (40 et 90) : ils bloquaient trop longtemps les premières parties.
         //ability = son pouvoir unique : "split" (l'Hydre se dédouble), "petrify" (Méduse pétrifie les planètes), "slowTime" (Cronos ralentit ton temps)
+        //Leurs chiffres (heure d'arrivée, vie, taille, vitesse, or, XP) sont dans reglages.js : catégorie « Super ennemis »
         const BOSSES = [
-            { id: "cerbere", name: "Cerbère", time: 300, element: "fire", color: "#ff3b2f", health: 15, size: 34, speed: 60, sides: 3, gold: 15, xp: 15 },
-            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 600, element: "water", color: "#2f8bff", health: 60, size: 38, speed: 55, sides: 9, gold: 25, xp: 25, ability: "split" },
-            { id: "meduse", feminine: true, name: "Méduse", time: 900, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 50, sides: 6, gold: 40, xp: 40, ability: "petrify" },
-            { id: "typhon", name: "Typhon", time: 1200, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 50, sides: 4, gold: 60, xp: 60 },
-            { id: "chimere", feminine: true, name: "Chimère", time: 1500, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 45, sides: 5, gold: 90, xp: 90 },
-            { id: "charybde", feminine: true, name: "Charybde", time: 1800, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 45, sides: 8, gold: 130, xp: 130 },
-            { id: "python", name: "Python", time: 2100, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 40, sides: 7, gold: 180, xp: 180 },
-            { id: "cronos", name: "Cronos", time: 2400, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 40, sides: 12, gold: 260, xp: 260, ability: "slowTime" }
+            { id: "cerbere", name: "Cerbère", time: reglage("BOSSES.cerbere.time"), element: "fire", color: "#ff3b2f", health: reglage("BOSSES.cerbere.health"), size: reglage("BOSSES.cerbere.size"), speed: reglage("BOSSES.cerbere.speed"), sides: 3, gold: reglage("BOSSES.cerbere.gold"), xp: reglage("BOSSES.cerbere.xp") },
+            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: reglage("BOSSES.hydre.time"), element: "water", color: "#2f8bff", health: reglage("BOSSES.hydre.health"), size: reglage("BOSSES.hydre.size"), speed: reglage("BOSSES.hydre.speed"), sides: 9, gold: reglage("BOSSES.hydre.gold"), xp: reglage("BOSSES.hydre.xp"), ability: "split" },
+            { id: "meduse", feminine: true, name: "Méduse", time: reglage("BOSSES.meduse.time"), element: "plant", color: "#3fd46a", health: reglage("BOSSES.meduse.health"), size: reglage("BOSSES.meduse.size"), speed: reglage("BOSSES.meduse.speed"), sides: 6, gold: reglage("BOSSES.meduse.gold"), xp: reglage("BOSSES.meduse.xp"), ability: "petrify" },
+            { id: "typhon", name: "Typhon", time: reglage("BOSSES.typhon.time"), element: "air", color: "#d8f3ff", health: reglage("BOSSES.typhon.health"), size: reglage("BOSSES.typhon.size"), speed: reglage("BOSSES.typhon.speed"), sides: 4, gold: reglage("BOSSES.typhon.gold"), xp: reglage("BOSSES.typhon.xp") },
+            { id: "chimere", feminine: true, name: "Chimère", time: reglage("BOSSES.chimere.time"), element: "fire", color: "#ff8a1a", health: reglage("BOSSES.chimere.health"), size: reglage("BOSSES.chimere.size"), speed: reglage("BOSSES.chimere.speed"), sides: 5, gold: reglage("BOSSES.chimere.gold"), xp: reglage("BOSSES.chimere.xp") },
+            { id: "charybde", feminine: true, name: "Charybde", time: reglage("BOSSES.charybde.time"), element: "water", color: "#1fd1c1", health: reglage("BOSSES.charybde.health"), size: reglage("BOSSES.charybde.size"), speed: reglage("BOSSES.charybde.speed"), sides: 8, gold: reglage("BOSSES.charybde.gold"), xp: reglage("BOSSES.charybde.xp") },
+            { id: "python", name: "Python", time: reglage("BOSSES.python.time"), element: "plant", color: "#9be22d", health: reglage("BOSSES.python.health"), size: reglage("BOSSES.python.size"), speed: reglage("BOSSES.python.speed"), sides: 7, gold: reglage("BOSSES.python.gold"), xp: reglage("BOSSES.python.xp") },
+            { id: "cronos", name: "Cronos", time: reglage("BOSSES.cronos.time"), element: "air", color: "#c9a8ff", health: reglage("BOSSES.cronos.health"), size: reglage("BOSSES.cronos.size"), speed: reglage("BOSSES.cronos.speed"), sides: 12, gold: reglage("BOSSES.cronos.gold"), xp: reglage("BOSSES.cronos.xp"), ability: "slowTime" }
         ];
         translateFields(BOSSES, ["name"]);
         //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie.
         //Une fois vaincu, un super ennemi devient un ennemi (rare) comme les autres : pas d'alerte, les autres ennemis continuent d'arriver.
-        const BOSS_RANDOM_CHANCE_START = 0.001;     // 0.1% au début
-        const BOSS_RANDOM_CHANCE_PER_SECOND = 0.00002; // +0.002% par seconde de jeu (≈ 0.7% à 5 minutes)
+        const BOSS_RANDOM_CHANCE_START = reglage("BOSS_RANDOM_CHANCE_START");     // 0.1% au début
+        const BOSS_RANDOM_CHANCE_PER_SECOND = reglage("BOSS_RANDOM_CHANCE_PER_SECOND"); // +0.002% par seconde de jeu (≈ 0.7% à 5 minutes)
 
         const defeatedBossIds = new Set();          // Set = une liste sans doublons (les super ennemis déjà vaincus, toutes parties confondues)
         const bossesSpawnedThisRun = new Set();     // ceux déjà apparus à leur heure pendant cette partie
@@ -5792,31 +5864,31 @@
         //LES POUVOIRS DES SUPER ENNEMIS (ils ne s'en servent que quand ils sont à l'écran)
         //MÉDUSE : son regard pétrifie une planète au hasard : elle devient grise, ne tire plus, n'a plus de pouvoir,
         //et son lien d'orbite est annulé... jusqu'à la mort de Méduse.
-        const MEDUSA_GAZE_INTERVAL = 6;       // secondes entre deux regards
-        const MEDUSA_FIRST_GAZE = 2.5;        // le 1er regard, X secondes après son arrivée à l'écran
+        const MEDUSA_GAZE_INTERVAL = reglage("MEDUSA_GAZE_INTERVAL");       // secondes entre deux regards
+        const MEDUSA_FIRST_GAZE = reglage("MEDUSA_FIRST_GAZE");        // le 1er regard, X secondes après son arrivée à l'écran
         const MEDUSA_COLOR = "#ff5fa2";       // le rose de son regard
         const PETRIFIED_COLOR = "#9a9a9a";    // une planète en pierre
         const PETRIFIED_SIDE_COLOR = "#5c5c5c";
         const PETRIFY_SHAKE_DURATION = 0.6;   // la planète touchée tremble
         //CRONOS : il ralentit TON temps : toi, tes planètes, tes balles et tes pouvoirs vont à CRONOS_SLOW_FACTOR de leur vitesse
         //(les ennemis, eux, non) pendant CRONOS_SLOW_DURATION secondes.
-        const CRONOS_SLOW_INTERVAL = 10;
-        const CRONOS_FIRST_SLOW = 3;
-        const CRONOS_SLOW_DURATION = 4;
-        const CRONOS_SLOW_FACTOR = 0.35;
+        const CRONOS_SLOW_INTERVAL = reglage("CRONOS_SLOW_INTERVAL");
+        const CRONOS_FIRST_SLOW = reglage("CRONOS_FIRST_SLOW");
+        const CRONOS_SLOW_DURATION = reglage("CRONOS_SLOW_DURATION");
+        const CRONOS_SLOW_FACTOR = reglage("CRONOS_SLOW_FACTOR");
         const CRONOS_COLOR = "#b18cff";
         //HYDRE DE LERNE : à sa mort, elle se dédouble (2 têtes), puis chaque tête en donne 2 (4 têtes), puis 2 encore (8 têtes).
         //Quand les 8 dernières têtes sont tuées, une dernière VAGUE de petites hydres arrive de partout, comme une vague de zombies.
-        const HYDRA_MAX_GENERATION = 3;       // 1 -> 2 -> 4 -> 8 têtes
-        const HYDRA_HEALTH_SHARE = 0.55;      // chaque nouvelle tête a 55% de la vie de sa mère...
-        const HYDRA_SIZE_SHARE = 0.78;        // ...78% de sa taille...
-        const HYDRA_SPEED_BONUS = 0.15;       // ...15% de vitesse en plus...
-        const HYDRA_REWARD_SHARE = 0.4;       // ...et 40% de son or et de son XP
-        const HYDRA_WAVE_COUNT = 30;          // têtes de la dernière vague (pendant le duel)
-        const HYDRA_WAVE_COUNT_REPEAT = 14;   // ...quand l'Hydre revient comme ennemi rare
-        const HYDRA_WAVE_HEALTH = 0.08;       // vie d'une tête de la vague (x la vie de la 1re hydre)
-        const HYDRA_WAVE_SIZE = 12;
-        const HYDRA_WAVE_REWARD = 0.06;       // or et XP d'une tête de la vague (x ceux de la 1re hydre)
+        const HYDRA_MAX_GENERATION = reglage("HYDRA_MAX_GENERATION");       // 1 -> 2 -> 4 -> 8 têtes
+        const HYDRA_HEALTH_SHARE = reglage("HYDRA_HEALTH_SHARE");      // chaque nouvelle tête a 55% de la vie de sa mère...
+        const HYDRA_SIZE_SHARE = reglage("HYDRA_SIZE_SHARE");        // ...78% de sa taille...
+        const HYDRA_SPEED_BONUS = reglage("HYDRA_SPEED_BONUS");       // ...15% de vitesse en plus...
+        const HYDRA_REWARD_SHARE = reglage("HYDRA_REWARD_SHARE");       // ...et 40% de son or et de son XP
+        const HYDRA_WAVE_COUNT = reglage("HYDRA_WAVE_COUNT");          // têtes de la dernière vague (pendant le duel)
+        const HYDRA_WAVE_COUNT_REPEAT = reglage("HYDRA_WAVE_COUNT_REPEAT");   // ...quand l'Hydre revient comme ennemi rare
+        const HYDRA_WAVE_HEALTH = reglage("HYDRA_WAVE_HEALTH");       // vie d'une tête de la vague (x la vie de la 1re hydre)
+        const HYDRA_WAVE_SIZE = reglage("HYDRA_WAVE_SIZE");
+        const HYDRA_WAVE_REWARD = reglage("HYDRA_WAVE_REWARD");       // or et XP d'une tête de la vague (x ceux de la 1re hydre)
         let timeDistortionTimer = 0;          // > 0 : Cronos a ralenti ton temps
         const gazeEffects = [];               // les regards de Méduse (animation)
         const clockEffects = [];              // les horloges de Cronos (animation)
@@ -6124,9 +6196,9 @@
         //1. Une ALERTE s'affiche quelques secondes avant (et une flèche montre d'où il va venir) : plus aucun ennemi n'apparaît,
         //   le joueur a le temps de nettoyer l'écran.
         //2. Il arrive, et les autres ennemis attendent encore un peu (soloTimer), ou jusqu'à sa mort.
-        const BOSS_WARNING_TIME = 8;          // secondes d'alerte avant un super ennemi jamais vaincu
-        const MOVEMENT_WARNING_TIME = 3;      // secondes d'alerte avant le 1er ennemi d'un nouveau mouvement
-        const MOVEMENT_SOLO_TIME = 5;
+        const BOSS_WARNING_TIME = reglage("BOSS_WARNING_TIME");          // secondes d'alerte avant un super ennemi jamais vaincu
+        const MOVEMENT_WARNING_TIME = reglage("MOVEMENT_WARNING_TIME");      // secondes d'alerte avant le 1er ennemi d'un nouveau mouvement
+        const MOVEMENT_SOLO_TIME = reglage("MOVEMENT_SOLO_TIME");
         let spawnEvent = null;                // l'arrivée annoncée : { boss ou unlock, timer (secondes avant l'arrivée), angle }
         let soloTimer = 0;                    // > 0 : l'ennemi spécial vient d'arriver, les autres attendent
         let soloEnemy = null;
@@ -6608,9 +6680,9 @@
         ///BULLETS///
         /////////////
         const bullets = [];
-        const BASE_FIRE_INTERVAL = 0.35;     // un tir toutes les X secondes (divisé par playerStats.attackSpeed)
-        const BASE_BULLET_SPEED = 400;       // pixels par seconde (multiplié par playerStats.bulletSpeed)
-        const BULLET_SIZE = 4;
+        const BASE_FIRE_INTERVAL = reglage("BASE_FIRE_INTERVAL");     // un tir toutes les X secondes (divisé par playerStats.attackSpeed)
+        const BASE_BULLET_SPEED = reglage("BASE_BULLET_SPEED");       // pixels par seconde (multiplié par playerStats.bulletSpeed)
+        const BULLET_SIZE = reglage("BULLET_SIZE");
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
 
@@ -6620,11 +6692,11 @@
             homingBullets = localStorage.getItem("homingBullets") !== "0";
         } catch (error) {
         }
-        const BOUNCE_RANGE = 180;            // distance max d'un rebond (Artémis), en pixels
-        const MIN_SHOOTER_SPEED = 0.15;      // une planète tire toujours au moins à 15% de la cadence normale (Héphaïstos est lent)
+        const BOUNCE_RANGE = reglage("BOUNCE_RANGE");            // distance max d'un rebond (Artémis), en pixels
+        const MIN_SHOOTER_SPEED = reglage("MIN_SHOOTER_SPEED");      // une planète tire toujours au moins à 15% de la cadence normale (Héphaïstos est lent)
 
         //BALLES PAR TIR : les balles en plus partent côte à côte, comme un "mur" (pas vers d'autres ennemis)
-        const BULLET_WALL_SPACING = 10;      // écart entre deux balles du mur, en pixels
+        const BULLET_WALL_SPACING = reglage("BULLET_WALL_SPACING");      // écart entre deux balles du mur, en pixels
 
         //Un tir complet de "stats.bulletCount" balles, depuis (x, y) vers "target", avec les stats de celui qui tire
         function fireVolley(x, y, target, stats, color, effects, ringColor) {
@@ -6663,7 +6735,7 @@
         }
 
         //Taille d'une balle (rayon en pixels) selon les stats du tireur
-        const MIN_BULLET_SIZE_FACTOR = 0.4;   // une balle ne rétrécit jamais sous 40% de sa taille
+        const MIN_BULLET_SIZE_FACTOR = reglage("MIN_BULLET_SIZE_FACTOR");   // une balle ne rétrécit jamais sous 40% de sa taille
         function getBulletSize(stats) {
             return BULLET_SIZE * Math.max(MIN_BULLET_SIZE_FACTOR, stats.bulletSize || 1);
         }
@@ -6908,7 +6980,7 @@
 
         //LES PLANÈTES TIRENT AUSSI : chacune sur l'ennemi le plus proche d'elle, avec des balles de sa couleur et SES stats
         //(planet.stats = PLANET_BASE_STATS + les stats de tir de son skill tree + les liens "opposé" reçus)
-        const PLANET_FIRE_INTERVAL = 1;      // un tir toutes les X secondes (divisé par la vitesse d'attaque de la planète)
+        const PLANET_FIRE_INTERVAL = reglage("PLANET_FIRE_INTERVAL");      // un tir toutes les X secondes (divisé par la vitesse d'attaque de la planète)
 
         function updatePlanetShooting(deltaTime) {
             for (const planet of planets) {
@@ -6982,18 +7054,18 @@
         //Le lien traverse le milieu : le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur
         //(vie, bouclier, régénération... : seul le joueur peut être touché) ne vont qu'à lui. Clé = l'attribut du dieu d'EN FACE.
         const OPPOSITE_BONUSES = {
-            fire: { name: "Forge", description: "+1 dégât par balle", effects: [{ stat: "damage", value: 1 }] },
-            water: { name: "Marée protectrice", description: "un bouclier qui bloque un coup, et se recharge 50% plus vite", centerOnly: true, effects: [{ stat: "shield", value: 1 }, { stat: "shieldRecharge", value: 0.5 }] },
-            plant: { name: "Sève", description: "+0.03 PV pour toi à chaque balle qui touche", effects: [{ stat: "lifeOnHit", value: 0.03 }] },
-            air: { name: "Vent arrière", description: "+25% de vitesse d'attaque", effects: [{ stat: "attackSpeed", value: 0.25 }] },
-            light: { name: "Clarté", description: "+10% de chance de coup critique", effects: [{ stat: "critChance", value: 0.1 }] },
-            moon: { name: "Œil de la chasseresse", description: "+60 de portée", effects: [{ stat: "range", value: 60 }] },
-            aegis: { name: "Stratégie", description: "15% de chance, à chaque tir, de déclencher un effet de combo au hasard", effects: [{ stat: "comboProcChance", value: 0.15 }] },
-            thunder: { name: "Colère de Zeus", description: "+50% de dégâts critiques", effects: [{ stat: "critDamage", value: 0.5 }] },
-            war: { name: "Soif de sang", description: "+0.5 PV pour toi à chaque ennemi tué", centerOnly: true, effects: [{ stat: "lifeOnKill", value: 0.5 }] },
-            love: { name: "Charme durable", description: "+0.001 PV max pour toi à chaque balle qui touche", effects: [{ stat: "maxHealthOnHit", value: 0.001 }] },
-            swift: { name: "Messager", description: "+50% de vitesse des balles", effects: [{ stat: "bulletSpeed", value: 0.5 }] },
-            hearth: { name: "Foyer", description: "+0.15 PV régénérés par seconde pour toi", centerOnly: true, effects: [{ stat: "regen", value: 0.15 }] }
+            fire: { name: "Forge", description: "+1 dégât par balle", effects: [{ stat: "damage", value: reglage("OPPOSITE_BONUSES.fire.damage") }] },
+            water: { name: "Marée protectrice", description: "un bouclier qui bloque un coup, et se recharge 50% plus vite", centerOnly: true, effects: [{ stat: "shield", value: reglage("OPPOSITE_BONUSES.water.shield") }, { stat: "shieldRecharge", value: reglage("OPPOSITE_BONUSES.water.shieldRecharge") }] },
+            plant: { name: "Sève", description: "+0.03 PV pour toi à chaque balle qui touche", effects: [{ stat: "lifeOnHit", value: reglage("OPPOSITE_BONUSES.plant.lifeOnHit") }] },
+            air: { name: "Vent arrière", description: "+25% de vitesse d'attaque", effects: [{ stat: "attackSpeed", value: reglage("OPPOSITE_BONUSES.air.attackSpeed") }] },
+            light: { name: "Clarté", description: "+10% de chance de coup critique", effects: [{ stat: "critChance", value: reglage("OPPOSITE_BONUSES.light.critChance") }] },
+            moon: { name: "Œil de la chasseresse", description: "+60 de portée", effects: [{ stat: "range", value: reglage("OPPOSITE_BONUSES.moon.range") }] },
+            aegis: { name: "Stratégie", description: "15% de chance, à chaque tir, de déclencher un effet de combo au hasard", effects: [{ stat: "comboProcChance", value: reglage("OPPOSITE_BONUSES.aegis.comboProcChance") }] },
+            thunder: { name: "Colère de Zeus", description: "+50% de dégâts critiques", effects: [{ stat: "critDamage", value: reglage("OPPOSITE_BONUSES.thunder.critDamage") }] },
+            war: { name: "Soif de sang", description: "+0.5 PV pour toi à chaque ennemi tué", centerOnly: true, effects: [{ stat: "lifeOnKill", value: reglage("OPPOSITE_BONUSES.war.lifeOnKill") }] },
+            love: { name: "Charme durable", description: "+0.001 PV max pour toi à chaque balle qui touche", effects: [{ stat: "maxHealthOnHit", value: reglage("OPPOSITE_BONUSES.love.maxHealthOnHit") }] },
+            swift: { name: "Messager", description: "+50% de vitesse des balles", effects: [{ stat: "bulletSpeed", value: reglage("OPPOSITE_BONUSES.swift.bulletSpeed") }] },
+            hearth: { name: "Foyer", description: "+0.15 PV régénérés par seconde pour toi", centerOnly: true, effects: [{ stat: "regen", value: reglage("OPPOSITE_BONUSES.hearth.regen") }] }
         };
         translateFields(OPPOSITE_BONUSES, ["name", "description"]);
 
@@ -7310,51 +7382,51 @@
         };
 
         //Réglages des effets (pour un combo de force 1)
-        const COMBO_EXPLOSION_RADIUS = 70;      // pixels
-        const COMBO_EXPLOSION_DAMAGE = 0.8;     // x les dégâts de la balle, pour chaque ennemi autour
-        const COMBO_BURN_DURATION = 3;          // secondes
-        const COMBO_BURN_DPS = 0.6;             // dégâts par seconde (x les dégâts de la balle)
-        const COMBO_SLOW_DURATION = 2;
-        const COMBO_SLOW_FACTOR = 0.45;         // vitesse des ennemis ralentis (45%)
-        const COMBO_FREEZE_DURATION = 1.2;      // gelé = immobile
-        const COMBO_ROOT_DURATION = 0.6;
-        const COMBO_FREEZE_AREA_DURATION = 0.7; // gel de zone (Blizzard) : plus court, car il touche beaucoup d'ennemis
-        const COMBO_KNOCKBACK = 30;             // pixels de recul
-        const COMBO_HEAL = 0.08;                // PV rendus par coup
-        const COMBO_CRIT_CHANCE = 0.2;          // chance de critique en plus (s'ajoute à celle du joueur)
-        const COMBO_CRIT_BONUS_DAMAGE = 1;      // +100% de dégâts critiques (200% -> 300%)
-        const COMBO_PIERCE_COUNT = 1;           // ennemis traversés
-        const COMBO_CHAIN_RANGE = 160;          // distance max du rebond
-        const COMBO_CHAIN_DAMAGE = 0.7;
-        const COMBO_SPLIT_DAMAGE = 0.5;
-        const COMBO_WEAKEN_DURATION = 3;        // "affaibli" : subit plus de dégâts
-        const COMBO_WEAKEN_MULTIPLIER = 1.5;
-        const COMBO_POISON_DURATION = 4;
-        const COMBO_POISON_DPS = 0.5;
-        const COMBO_POISON_SPREAD = 2;          // nombre de voisins contaminés quand un empoisonné meurt
-        const COMBO_METEOR_DAMAGE = 3;
-        const COMBO_VORTEX_RADIUS = 110;
-        const COMBO_VORTEX_PULL = 0.6;          // 0 = n'attire pas, 1 = colle tout le monde sur l'impact
-        const COMBO_SHIELD_CHARGE = 0.6;        // secondes de recharge du bouclier gagnées par coup
-        const COMBO_EXECUTE_THRESHOLD = 0.2;    // achève sous 20% de vie (pas les super ennemis)
-        const COMBO_ZONE_DURATION = 3;          // braises / flaque toxique au sol
-        const COMBO_ZONE_RADIUS = 45;
-        const COMBO_MINE_DURATION = 6;          // graine explosive : disparaît si personne ne marche dessus
-        const COMBO_MINE_DAMAGE = 2.5;          // x les dégâts de la balle
-        const COMBO_NOVA_COUNT = 6;             // éclats qui partent dans toutes les directions
-        const COMBO_NOVA_DAMAGE = 0.6;
-        const COMBO_ECHO_DELAY = 0.5;           // l'écho frappe une 2e fois après 0.5 s
-        const COMBO_CONFUSE_DURATION = 1.5;     // l'ennemi repart en arrière
-        const COMBO_REWIND_CHANCE = 0.25;       // chance de renvoyer l'ennemi au bord de l'écran
-        const COMBO_BLACKHOLE_DURATION = 2;
-        const COMBO_BLACKHOLE_RADIUS = 150;
-        const COMBO_THUNDER_TARGETS = 2;        // ennemis frappés par la foudre (au hasard, sur tout l'écran)
-        const COMBO_THUNDER_DAMAGE = 1.5;
-        const COMBO_BLEED_DURATION = 4;
-        const COMBO_BLEED_DPS = 0.3;            // ajouté à chaque coup : les saignements s'additionnent
-        const COMBO_BLEED_MAX = 3;              // saignement max (x les dégâts de la balle)
-        const COMBO_CHARM_DURATION = 2.5;       // l'ennemi charmé fait demi-tour...
-        const COMBO_CHARM_DPS = 3;              // ...et blesse les ennemis qu'il touche (dégâts par seconde)
+        const COMBO_EXPLOSION_RADIUS = reglage("COMBO_EXPLOSION_RADIUS");      // pixels
+        const COMBO_EXPLOSION_DAMAGE = reglage("COMBO_EXPLOSION_DAMAGE");     // x les dégâts de la balle, pour chaque ennemi autour
+        const COMBO_BURN_DURATION = reglage("COMBO_BURN_DURATION");          // secondes
+        const COMBO_BURN_DPS = reglage("COMBO_BURN_DPS");             // dégâts par seconde (x les dégâts de la balle)
+        const COMBO_SLOW_DURATION = reglage("COMBO_SLOW_DURATION");
+        const COMBO_SLOW_FACTOR = reglage("COMBO_SLOW_FACTOR");         // vitesse des ennemis ralentis (45%)
+        const COMBO_FREEZE_DURATION = reglage("COMBO_FREEZE_DURATION");      // gelé = immobile
+        const COMBO_ROOT_DURATION = reglage("COMBO_ROOT_DURATION");
+        const COMBO_FREEZE_AREA_DURATION = reglage("COMBO_FREEZE_AREA_DURATION"); // gel de zone (Blizzard) : plus court, car il touche beaucoup d'ennemis
+        const COMBO_KNOCKBACK = reglage("COMBO_KNOCKBACK");             // pixels de recul
+        const COMBO_HEAL = reglage("COMBO_HEAL");                // PV rendus par coup
+        const COMBO_CRIT_CHANCE = reglage("COMBO_CRIT_CHANCE");          // chance de critique en plus (s'ajoute à celle du joueur)
+        const COMBO_CRIT_BONUS_DAMAGE = reglage("COMBO_CRIT_BONUS_DAMAGE");      // +100% de dégâts critiques (200% -> 300%)
+        const COMBO_PIERCE_COUNT = reglage("COMBO_PIERCE_COUNT");           // ennemis traversés
+        const COMBO_CHAIN_RANGE = reglage("COMBO_CHAIN_RANGE");          // distance max du rebond
+        const COMBO_CHAIN_DAMAGE = reglage("COMBO_CHAIN_DAMAGE");
+        const COMBO_SPLIT_DAMAGE = reglage("COMBO_SPLIT_DAMAGE");
+        const COMBO_WEAKEN_DURATION = reglage("COMBO_WEAKEN_DURATION");        // "affaibli" : subit plus de dégâts
+        const COMBO_WEAKEN_MULTIPLIER = reglage("COMBO_WEAKEN_MULTIPLIER");
+        const COMBO_POISON_DURATION = reglage("COMBO_POISON_DURATION");
+        const COMBO_POISON_DPS = reglage("COMBO_POISON_DPS");
+        const COMBO_POISON_SPREAD = reglage("COMBO_POISON_SPREAD");          // nombre de voisins contaminés quand un empoisonné meurt
+        const COMBO_METEOR_DAMAGE = reglage("COMBO_METEOR_DAMAGE");
+        const COMBO_VORTEX_RADIUS = reglage("COMBO_VORTEX_RADIUS");
+        const COMBO_VORTEX_PULL = reglage("COMBO_VORTEX_PULL");          // 0 = n'attire pas, 1 = colle tout le monde sur l'impact
+        const COMBO_SHIELD_CHARGE = reglage("COMBO_SHIELD_CHARGE");        // secondes de recharge du bouclier gagnées par coup
+        const COMBO_EXECUTE_THRESHOLD = reglage("COMBO_EXECUTE_THRESHOLD");    // achève sous 20% de vie (pas les super ennemis)
+        const COMBO_ZONE_DURATION = reglage("COMBO_ZONE_DURATION");          // braises / flaque toxique au sol
+        const COMBO_ZONE_RADIUS = reglage("COMBO_ZONE_RADIUS");
+        const COMBO_MINE_DURATION = reglage("COMBO_MINE_DURATION");          // graine explosive : disparaît si personne ne marche dessus
+        const COMBO_MINE_DAMAGE = reglage("COMBO_MINE_DAMAGE");          // x les dégâts de la balle
+        const COMBO_NOVA_COUNT = reglage("COMBO_NOVA_COUNT");             // éclats qui partent dans toutes les directions
+        const COMBO_NOVA_DAMAGE = reglage("COMBO_NOVA_DAMAGE");
+        const COMBO_ECHO_DELAY = reglage("COMBO_ECHO_DELAY");           // l'écho frappe une 2e fois après 0.5 s
+        const COMBO_CONFUSE_DURATION = reglage("COMBO_CONFUSE_DURATION");     // l'ennemi repart en arrière
+        const COMBO_REWIND_CHANCE = reglage("COMBO_REWIND_CHANCE");       // chance de renvoyer l'ennemi au bord de l'écran
+        const COMBO_BLACKHOLE_DURATION = reglage("COMBO_BLACKHOLE_DURATION");
+        const COMBO_BLACKHOLE_RADIUS = reglage("COMBO_BLACKHOLE_RADIUS");
+        const COMBO_THUNDER_TARGETS = reglage("COMBO_THUNDER_TARGETS");        // ennemis frappés par la foudre (au hasard, sur tout l'écran)
+        const COMBO_THUNDER_DAMAGE = reglage("COMBO_THUNDER_DAMAGE");
+        const COMBO_BLEED_DURATION = reglage("COMBO_BLEED_DURATION");
+        const COMBO_BLEED_DPS = reglage("COMBO_BLEED_DPS");            // ajouté à chaque coup : les saignements s'additionnent
+        const COMBO_BLEED_MAX = reglage("COMBO_BLEED_MAX");              // saignement max (x les dégâts de la balle)
+        const COMBO_CHARM_DURATION = reglage("COMBO_CHARM_DURATION");       // l'ennemi charmé fait demi-tour...
+        const COMBO_CHARM_DPS = reglage("COMBO_CHARM_DPS");              // ...et blesse les ennemis qu'il touche (dégâts par seconde)
 
         //Les éclairs de la foudre (juste pour l'affichage)
         const lightningBolts = [];
@@ -7366,10 +7438,10 @@
 
         //TRAÎNÉE DE FEU (Héphaïstos) : derrière chaque balle, des petits points de feu qui s'éteignent peu à peu.
         //Un ennemi qui touche un point brûle (brûlure = dps du point, pendant FIRE_TRAIL_BURN_TIME secondes).
-        const FIRE_TRAIL_STEP = 14;             // un point de feu tous les X pixels parcourus par la balle
-        const FIRE_TRAIL_DURATION = 1.2;        // secondes avant qu'un point s'éteigne (+ fireTrailDuration)
-        const FIRE_TRAIL_RADIUS = 9;            // rayon d'un point, en pixels (x la taille des balles, x (1 + fireTrailWidth))
-        const FIRE_TRAIL_BURN_TIME = 1;         // secondes de brûlure après avoir touché la traînée
+        const FIRE_TRAIL_STEP = reglage("FIRE_TRAIL_STEP");             // un point de feu tous les X pixels parcourus par la balle
+        const FIRE_TRAIL_DURATION = reglage("FIRE_TRAIL_DURATION");        // secondes avant qu'un point s'éteigne (+ fireTrailDuration)
+        const FIRE_TRAIL_RADIUS = reglage("FIRE_TRAIL_RADIUS");            // rayon d'un point, en pixels (x la taille des balles, x (1 + fireTrailWidth))
+        const FIRE_TRAIL_BURN_TIME = reglage("FIRE_TRAIL_BURN_TIME");         // secondes de brûlure après avoir touché la traînée
         const MAX_FIRE_TRAIL_POINTS = 600;      // au-delà, les plus vieux points s'éteignent (pour que le jeu reste fluide)
         const fireTrails = [];
 
@@ -7988,26 +8060,26 @@
         } catch (error) {
         }
 
-        const WAR_CRY_DAMAGE = 0.15;         // Arès : +15% de dégâts par point de cri de guerre
-        const WAR_CRY_CRIT_CHANCE = 0.04;    // +4% de chance de critique par point
-        const WAR_CRY_CRIT_DAMAGE = 0.2;     // +20% de dégâts critiques par point
-        const WAR_CRY_BASE_DURATION = 4;     // secondes
+        const WAR_CRY_DAMAGE = reglage("WAR_CRY_DAMAGE");         // Arès : +15% de dégâts par point de cri de guerre
+        const WAR_CRY_CRIT_CHANCE = reglage("WAR_CRY_CRIT_CHANCE");    // +4% de chance de critique par point
+        const WAR_CRY_CRIT_DAMAGE = reglage("WAR_CRY_CRIT_DAMAGE");     // +20% de dégâts critiques par point
+        const WAR_CRY_BASE_DURATION = reglage("WAR_CRY_BASE_DURATION");     // secondes
         let warCryTimer = 0;                 // > 0 : le cri de guerre est actif
         let warCryLevel = 0;
 
-        const WEAKEN_FROM_BLOOM = 3;         // Déméter : secondes d'affaiblissement (+50% de dégâts subis)
-        const VINE_BASE_DURATION = 2.5;      // Déméter : secondes d'immobilisation d'une liane
-        const VINE_LIFETIME = 8;             // une liane qui n'a attrapé personne disparaît après X secondes
-        const MOON_ARROW_SIZE = 2.6;         // Artémis : la flèche est X fois plus grosse qu'une balle
-        const MOON_ARROW_SPEED = 1.8;        // ...et X fois plus rapide
-        const TIDE_SLOW_DURATION = 1.5;      // Poséidon : secondes de ralenti après la vague
-        const FRAGILE_DURATION = 4;          // secondes pendant lesquelles un ennemi reste frêle
-        const BOSS_KNOCKBACK_FACTOR = 0.3;   // les super ennemis sont moins repoussés
-        const ARC_BASE_RANGE = 120;          // Zeus : portée d'un éclair, en pixels
-        const CONDUCT_DURATION = 6;          // secondes pendant lesquelles un ennemi reste conducteur
-        const BOLT_BASE_RADIUS = 90;         // zone électrocutée par la foudre, en pixels
-        const BOLT_SPLASH_DAMAGE = 0.5;      // dégâts des ennemis électrocutés autour (x les dégâts de la balle)
-        const BOLT_COOLDOWN = 1;             // un même ennemi ne reçoit pas la foudre 2 fois en moins de X secondes
+        const WEAKEN_FROM_BLOOM = reglage("WEAKEN_FROM_BLOOM");         // Déméter : secondes d'affaiblissement (+50% de dégâts subis)
+        const VINE_BASE_DURATION = reglage("VINE_BASE_DURATION");      // Déméter : secondes d'immobilisation d'une liane
+        const VINE_LIFETIME = reglage("VINE_LIFETIME");             // une liane qui n'a attrapé personne disparaît après X secondes
+        const MOON_ARROW_SIZE = reglage("MOON_ARROW_SIZE");         // Artémis : la flèche est X fois plus grosse qu'une balle
+        const MOON_ARROW_SPEED = reglage("MOON_ARROW_SPEED");        // ...et X fois plus rapide
+        const TIDE_SLOW_DURATION = reglage("TIDE_SLOW_DURATION");      // Poséidon : secondes de ralenti après la vague
+        const FRAGILE_DURATION = reglage("FRAGILE_DURATION");          // secondes pendant lesquelles un ennemi reste frêle
+        const BOSS_KNOCKBACK_FACTOR = reglage("BOSS_KNOCKBACK_FACTOR");   // les super ennemis sont moins repoussés
+        const ARC_BASE_RANGE = reglage("ARC_BASE_RANGE");          // Zeus : portée d'un éclair, en pixels
+        const CONDUCT_DURATION = reglage("CONDUCT_DURATION");          // secondes pendant lesquelles un ennemi reste conducteur
+        const BOLT_BASE_RADIUS = reglage("BOLT_BASE_RADIUS");         // zone électrocutée par la foudre, en pixels
+        const BOLT_SPLASH_DAMAGE = reglage("BOLT_SPLASH_DAMAGE");      // dégâts des ennemis électrocutés autour (x les dégâts de la balle)
+        const BOLT_COOLDOWN = reglage("BOLT_COOLDOWN");             // un même ennemi ne reçoit pas la foudre 2 fois en moins de X secondes
         const MAX_BOLTS_PER_STEP = 6;        // la foudre en chaîne est étalée sur plusieurs images (sinon le jeu ralentit)
         const MAX_BOLT_HITS_PER_STEP = 150;  // ...et au plus X ennemis électrocutés par pas de jeu (dans une foule très dense, la suite attend)
         const MAX_PENDING_BOLTS = 400;
@@ -8021,11 +8093,11 @@
         //Les pouvoirs qui reviennent régulièrement. interval = secondes entre deux fois (divisé par 1 + abilityHaste).
         //isActive(stats) : la planète a-t-elle ce pouvoir ? use(planet) : le lancer (renvoie false s'il n'y a rien à faire : il attendra)
         const PLANET_POWERS = [
-            { key: "charm", interval: 8, isActive: function (stats) { return stats.charmRadius > 0; }, use: useCharmPulse },
-            { key: "warCry", interval: 12, isActive: function (stats) { return stats.warCry > 0; }, use: useWarCry },
-            { key: "bloom", interval: 9, isActive: function (stats) { return stats.bloomHeal > 0 || stats.vineCount > 0; }, use: useBloom },
-            { key: "moonArrow", interval: 6, isActive: function (stats) { return stats.moonArrow > 0; }, use: useMoonArrow },
-            { key: "tide", interval: 10, isActive: function (stats) { return stats.tideWave > 0; }, use: useTideWave }
+            { key: "charm", interval: reglage("PLANET_POWERS.charm.interval"), isActive: function (stats) { return stats.charmRadius > 0; }, use: useCharmPulse },
+            { key: "warCry", interval: reglage("PLANET_POWERS.warCry.interval"), isActive: function (stats) { return stats.warCry > 0; }, use: useWarCry },
+            { key: "bloom", interval: reglage("PLANET_POWERS.bloom.interval"), isActive: function (stats) { return stats.bloomHeal > 0 || stats.vineCount > 0; }, use: useBloom },
+            { key: "moonArrow", interval: reglage("PLANET_POWERS.moonArrow.interval"), isActive: function (stats) { return stats.moonArrow > 0; }, use: useMoonArrow },
+            { key: "tide", interval: reglage("PLANET_POWERS.tide.interval"), isActive: function (stats) { return stats.tideWave > 0; }, use: useTideWave }
         ];
 
         function getPowerInterval(power, stats) {
@@ -8282,8 +8354,8 @@
         //jusqu'à la portée de Poséidon (prise au moment du lancer) : améliorer sa portée, c'est agrandir sa vague.
         //Quand son front arrive sur un ennemi, il est ralenti, devient frêle, puis la vague l'emporte avec elle (en s'éloignant de Poséidon),
         //jusqu'à TIDE_PUSH_FACTOR x le recul de la vague (moins pour un super ennemi). Ensuite, elle passe par-dessus lui.
-        const TIDE_WAVE_SPEED = 320;        // vitesse du front de la vague, en pixels par seconde
-        const TIDE_PUSH_FACTOR = 2;         // distance max dont un ennemi est emporté = recul de la vague x ce nombre
+        const TIDE_WAVE_SPEED = reglage("TIDE_WAVE_SPEED");        // vitesse du front de la vague, en pixels par seconde
+        const TIDE_PUSH_FACTOR = reglage("TIDE_PUSH_FACTOR");         // distance max dont un ennemi est emporté = recul de la vague x ce nombre
         const tideWaves = [];               // les vagues en train d'avancer
 
         function useTideWave(planet) {
@@ -9626,12 +9698,12 @@
         //COÛTS (en XP) : coût de base + un supplément par "pas" depuis le départ,
         //puis x SKILL_TIER_GROWTH par dieu : le 1er dieu x1, le 2e x1.5, le 3e x2.25... (voir createSkillTree).
         //Les derniers dieux arrivent quand on gagne beaucoup d'XP : sans ça, tout leur arbre se remplissait d'un coup.
-        const SKILL_TIER_GROWTH = 1.5;
-        const SKILL_COST_BASE = 5;
-        const SKILL_COST_PER_STEP = 4;
-        const NOTABLE_COST_MULTIPLIER = 1.5;
-        const KEYSTONE_COST = 60;            // + 2 par pas
-        const GRAND_COST = 150;
+        const SKILL_TIER_GROWTH = reglage("SKILL_TIER_GROWTH");
+        const SKILL_COST_BASE = reglage("SKILL_COST_BASE");
+        const SKILL_COST_PER_STEP = reglage("SKILL_COST_PER_STEP");
+        const NOTABLE_COST_MULTIPLIER = reglage("NOTABLE_COST_MULTIPLIER");
+        const KEYSTONE_COST = reglage("KEYSTONE_COST");            // + 2 par pas
+        const GRAND_COST = reglage("GRAND_COST");
 
         //Distance (en nombre de liens) de chaque compétence jusqu'au départ : on avance "par vagues" depuis le départ
         function computeDepths(layout) {
@@ -10837,25 +10909,26 @@
         /////////////////////
         //Améliorations de base, achetées avec l'or quand on meurt. Le prix augmente à chaque niveau.
         //maxLevel: Infinity = amélioration INFINIE (∞) : on peut l'acheter sans fin, de plus en plus cher (prix x costGrowth à chaque niveau)
+        //Les prix, niveaux max et effets sont dans reglages.js : catégorie « Shop ». "{value}" dans une description = la valeur de l'effet.
         const SHOP_ITEMS = [
-            { name: "Cadence de tir", description: "+10% de vitesse d'attaque", baseCost: 10, costGrowth: 1.5, maxLevel: Infinity, level: 0, effect: { stat: "attackSpeed", value: 0.1 } },
-            { name: "Portée", description: "+25 de portée", baseCost: 10, costGrowth: 1.5, maxLevel: 8, level: 0, effect: { stat: "range", value: 25 } },
-            { name: "Balle supplémentaire", description: "+1 balle par tir", baseCost: 60, costGrowth: 2.5, maxLevel: 3, level: 0, effect: { stat: "bulletCount", value: 1 } },
-            { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: Infinity, level: 0, effect: { stat: "maxHealth", value: 2 } },
-            { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "damage", value: 1 } },
-            { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "regen", value: 0.05 } },
-            { name: "Chance de critique", description: "+2% de chance de coup critique", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critChance", value: 0.02 } },
-            { name: "Dégâts critiques", description: "+20% de dégâts critiques", baseCost: 20, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "critDamage", value: 0.2 } },
-            { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
+            { key: "attackSpeed", name: "Cadence de tir", description: "+{value}% de vitesse d'attaque", baseCost: reglage("SHOP_ITEMS.attackSpeed.baseCost"), costGrowth: reglage("SHOP_ITEMS.attackSpeed.costGrowth"), maxLevel: reglage("SHOP_ITEMS.attackSpeed.maxLevel"), level: 0, effect: { stat: "attackSpeed", value: reglage("SHOP_ITEMS.attackSpeed.value") } },
+            { key: "range", name: "Portée", description: "+{value} de portée", baseCost: reglage("SHOP_ITEMS.range.baseCost"), costGrowth: reglage("SHOP_ITEMS.range.costGrowth"), maxLevel: reglage("SHOP_ITEMS.range.maxLevel"), level: 0, effect: { stat: "range", value: reglage("SHOP_ITEMS.range.value") } },
+            { key: "bulletCount", name: "Balle supplémentaire", description: "+{value} balle par tir", baseCost: reglage("SHOP_ITEMS.bulletCount.baseCost"), costGrowth: reglage("SHOP_ITEMS.bulletCount.costGrowth"), maxLevel: reglage("SHOP_ITEMS.bulletCount.maxLevel"), level: 0, effect: { stat: "bulletCount", value: reglage("SHOP_ITEMS.bulletCount.value") } },
+            { key: "maxHealth", name: "Vie max", description: "+{value} PV max", baseCost: reglage("SHOP_ITEMS.maxHealth.baseCost"), costGrowth: reglage("SHOP_ITEMS.maxHealth.costGrowth"), maxLevel: reglage("SHOP_ITEMS.maxHealth.maxLevel"), level: 0, effect: { stat: "maxHealth", value: reglage("SHOP_ITEMS.maxHealth.value") } },
+            { key: "damage", name: "Dégâts", description: "+{value} dégât par balle", baseCost: reglage("SHOP_ITEMS.damage.baseCost"), costGrowth: reglage("SHOP_ITEMS.damage.costGrowth"), maxLevel: reglage("SHOP_ITEMS.damage.maxLevel"), level: 0, effect: { stat: "damage", value: reglage("SHOP_ITEMS.damage.value") } },
+            { key: "regen", name: "Régénération", description: "+{value} PV par seconde", baseCost: reglage("SHOP_ITEMS.regen.baseCost"), costGrowth: reglage("SHOP_ITEMS.regen.costGrowth"), maxLevel: reglage("SHOP_ITEMS.regen.maxLevel"), level: 0, effect: { stat: "regen", value: reglage("SHOP_ITEMS.regen.value") } },
+            { key: "critChance", name: "Chance de critique", description: "+{value}% de chance de coup critique", baseCost: reglage("SHOP_ITEMS.critChance.baseCost"), costGrowth: reglage("SHOP_ITEMS.critChance.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critChance.maxLevel"), level: 0, effect: { stat: "critChance", value: reglage("SHOP_ITEMS.critChance.value") } },
+            { key: "critDamage", name: "Dégâts critiques", description: "+{value}% de dégâts critiques", baseCost: reglage("SHOP_ITEMS.critDamage.baseCost"), costGrowth: reglage("SHOP_ITEMS.critDamage.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critDamage.maxLevel"), level: 0, effect: { stat: "critDamage", value: reglage("SHOP_ITEMS.critDamage.value") } },
+            { key: "bulletSpeed", name: "Vitesse des balles", description: "+{value}% de vitesse des balles", baseCost: reglage("SHOP_ITEMS.bulletSpeed.baseCost"), costGrowth: reglage("SHOP_ITEMS.bulletSpeed.costGrowth"), maxLevel: reglage("SHOP_ITEMS.bulletSpeed.maxLevel"), level: 0, effect: { stat: "bulletSpeed", value: reglage("SHOP_ITEMS.bulletSpeed.value") } },
             //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades)
-            { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 20, costGrowth: 4, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
-            { name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: 15, costGrowth: 3, maxLevel: 3, level: 0, effect: null, timeUpgrade: "skip" },
+            { key: "speed", name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: reglage("SHOP_ITEMS.speed.baseCost"), costGrowth: reglage("SHOP_ITEMS.speed.costGrowth"), maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
+            { key: "skip", name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: reglage("SHOP_ITEMS.skip.baseCost"), costGrowth: reglage("SHOP_ITEMS.skip.costGrowth"), maxLevel: 3, level: 0, effect: null, timeUpgrade: "skip" },
             //Pas d'effet de stat : débloque les liens d'orbite, un par niveau (voir LINK_UNLOCK_ORDER)
-            { name: "Liens d'orbite", description: "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé", baseCost: 30, costGrowth: 2.5, maxLevel: 4, level: 0, effect: null, linkUpgrade: true },
+            { key: "links", name: "Liens d'orbite", description: "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé", baseCost: reglage("SHOP_ITEMS.links.baseCost"), costGrowth: reglage("SHOP_ITEMS.links.costGrowth"), maxLevel: 4, level: 0, effect: null, linkUpgrade: true },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite.
             //Le 1er dieu coûte peu (20 or : on l'a dès la 1re mort), puis chaque dieu coûte 2.5 fois plus cher (avant : 50 or, x1.8) :
             //les premiers dieux arrivent plus vite, et les derniers prennent des heures au lieu d'arriver tous dans la même heure.
-            { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 20, costGrowth: 2.5, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
+            { key: "god", name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: reglage("SHOP_ITEMS.god.baseCost"), costGrowth: reglage("SHOP_ITEMS.god.costGrowth"), maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
 
         for (const item of SHOP_ITEMS) {
@@ -10869,6 +10942,16 @@
 
         function getShopItemCost(item) {
             return Math.round(item.baseCost * Math.pow(item.costGrowth, item.level)); //Math.pow(a, b) = a puissance b
+        }
+
+        //Le texte d'une amélioration, avec la valeur de reglages.js : "+{value}% de vitesse d'attaque" -> "+10% de vitesse d'attaque"
+        const SHOP_PERCENT_STATS = ["attackSpeed", "critChance", "critDamage", "bulletSpeed"]; // écrites en % (0.1 -> 10)
+        function getShopItemDescription(item) {
+            if (item.effect === null) {
+                return item.description;
+            }
+            const value = SHOP_PERCENT_STATS.includes(item.effect.stat) ? item.effect.value * 100 : item.effect.value;
+            return item.description.split("{value}").join(formatNumber(value)); //split + join = remplace tous les {value}
         }
 
         function openGameOver() {
@@ -10931,7 +11014,7 @@
             for (const item of SHOP_ITEMS) {
                 const cost = getShopItemCost(item);
                 const isMaxed = item.level >= item.maxLevel;
-                let description = item.description;
+                let description = getShopItemDescription(item);
                 if (item.unlocksGod && !isMaxed) {
                     const nextGod = SKILL_TREES.find(function (tree) { return tree.isLocked; }); //find = le premier qui correspond
                     description = t("{name} et son skill tree rejoignent l'orbite", { name: nextGod.name });
@@ -11068,7 +11151,7 @@
         document.getElementById("restartButton").addEventListener("click", function () { restartGame(0); });
 
         //PALIERS : un bouton par super ennemi déjà vaincu, pour recommencer juste après lui
-        const CHECKPOINT_OFFSET = 2;   // secondes après l'heure du super ennemi
+        const CHECKPOINT_OFFSET = reglage("CHECKPOINT_OFFSET");   // secondes après l'heure du super ennemi
         const checkpointArea = document.getElementById("checkpointArea");
         const checkpointButtons = document.getElementById("checkpointButtons");
 
@@ -11101,8 +11184,8 @@
         let savedPlanetOrbits = {};         // nom de la planète -> son orbite (0 = intérieure, 1 = milieu, 2 = extérieure)
 
         function saveProgress() {
-            if (!isProgressLoaded || isProgressErased) {
-                return;
+            if (!isProgressLoaded || isProgressErased || TEST_SETTINGS !== null) {
+                return; //TEST_SETTINGS : mode test de l'éditeur de réglages, rien n'est sauvegardé
             }
             const data = {
                 version: SAVE_VERSION,
@@ -12857,6 +12940,7 @@
             }
             applyTheme(savedTheme); //dessine aussi le fond
             tutorialCheckbox.checked = !tutorialSkipped;
+            document.getElementById("testSettingsBanner").classList.toggle("hidden", TEST_SETTINGS === null);
             setTimeout(function () { triggerTutorial("welcome"); }, 700); //TUTORIEL : la 1re bulle, juste après l'arrivée du 1er ennemi
             requestAnimationFrame(gameUpdate);
         }

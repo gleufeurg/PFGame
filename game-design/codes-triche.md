@@ -20,3 +20,7 @@ Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un 
 Ce ne sont pas des codes mais des raccourcis : la touche T passe le plus grand saut de temps débloqué, et les boutons orange « ⏩ » font la même chose.
 
 Tous les codes sont dans `CHEAT_CODES` dans `index.html`.
+
+## Tester des réglages (mode test)
+
+L'éditeur de réglages (`game-design/outils/editeur-reglages.html`, voir [README.md](README.md)) a un bouton **« ▶ Tester dans le jeu »** : il ouvre le jeu avec les valeurs changées, écrites dans l'adresse (`index.html#test={"NOM": valeur, ...}`, lues par `readTestSettings`). Comme les codes, ce mode ne marche que sur ton ordinateur (fichier ou `localhost`), jamais sur le site. Pendant un test, **rien n'est sauvegardé** (ta progression ne change pas) et un bandeau « 🧪 Réglages de test » le rappelle en bas à gauche. Pour revenir au jeu normal : recharger `index.html` sans le `#test=...`.
