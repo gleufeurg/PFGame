@@ -1405,5 +1405,16 @@ window.TRADUCTIONS.zh = {
     "Brûlure de la traînée de feu (par seconde)": "火焰轨迹燃烧（每秒）",
     "Durée de la traînée de feu": "火焰轨迹持续时间",
     "Largeur de la traînée de feu": "火焰轨迹宽度",
-    "Temps de survie": "生存时间"
+    "Temps de survie": "生存时间",
+    "Compétences (S)": "技能（S）",
+    "Débloquer · {cost} XP": "解锁 · {cost} XP",
+    "Pas assez d'XP ({cost} XP)": "XP 不足（{cost} XP）",
+    "ou touche encore l'étoile": "或再次点击这颗星",
+    "ou clique encore sur l'étoile": "或再次点击这颗星",
+    "Clique sur l'étoile pour la choisir": "点击这颗星来选择它",
+    "Dieux": "众神",
+    "Une compétence peut être débloquée": "有技能可以解锁",
+    "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "商店中下一个可购买的神（“新神祇”）",
+    "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "点击技能来选择它，然后点“解锁”。长按退还，双指缩放。",
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "点击技能来选择它，然后点“解锁”。右键退还。"
 };

@@ -648,7 +648,7 @@
 
         #treeCanvas { /*la "fenêtre" sur l'arbre : on peut zoomer (molette) et se déplacer (cliquer-glisser)*/
             position: relative;
-            height: clamp(360px, calc(100vh - 360px), 900px); /*entre 360px et 900px selon la hauteur de l'écran (sous les onglets des dieux)*/
+            height: clamp(360px, calc(100vh - 210px), 1000px); /*entre 360px et 1000px selon la hauteur de l'écran (la description est maintenant DANS l'arbre)*/
             margin: 16px 0;
             overflow: hidden; /*ce qui dépasse est caché*/
             border-radius: 12px;
@@ -764,7 +764,7 @@
         #lockedTreeBanner {
             display: none;
             position: absolute;
-            top: 12px;
+            bottom: 12px;      /*en bas : le haut de l'arbre sert à la carte des compétences*/
             left: 50%;
             transform: translateX(-50%);
             z-index: 2;
@@ -851,25 +851,279 @@
             opacity: 0.4;
         }
 
-        /*CARTE DE DESCRIPTION d'une compétence (sous l'arbre)*/
-        #nodeInfo {
-            min-height: 112px;
-            margin: 0;
-            padding: 12px 16px;
+        /*CARTE D'UNE COMPÉTENCE : en grand, par-dessus l'arbre (en haut, ou en bas si la compétence est en haut de la fenêtre).
+          Au survol de la souris c'est un aperçu ("preview" : la souris passe à travers), au 1er clic elle reste, avec le bouton Débloquer.*/
+        #nodeCard {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            margin: 0 auto;      /*left + right + margin auto = centrée*/
+            max-width: 560px;
+            z-index: 3;
             box-sizing: border-box;
-            border-radius: 10px;
-            background: var(--ui-surface);
-            border-left: 5px solid var(--tree-color);
-            display: grid;
-            grid-template-columns: 1fr auto; /*à gauche le texte, à droite les pastilles coût / état*/
-            gap: 6px 16px;
-            align-items: center;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid var(--tree-color);
+            background-color: var(--ui-panel);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px color-mix(in srgb, var(--tree-color) 30%, transparent);
+            text-align: left;
+            cursor: default;
+            animation: cardIn 0.15s ease-out;
         }
 
-        #nodeInfo.empty { /*rien de survolé : juste une petite aide*/
+        #nodeCard.atBottom { /*la compétence est en haut de la fenêtre : la carte passe en bas pour ne pas la cacher*/
+            top: auto;
+            bottom: 12px;
+            right: 64px;         /*laisse la place aux boutons de zoom*/
+        }
+
+        #nodeCard.preview {
+            pointer-events: none; /*aperçu : la souris "passe à travers", on peut survoler les étoiles en dessous*/
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cardHeader {
             display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cardClose {
+            margin-left: auto;   /*tout à droite*/
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--ui-line);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--ui-text);
+            font-size: 20px;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .cardGains { /*ce que la compétence donne : le plus gros de la carte*/
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin: 10px 0 6px;
+        }
+
+        .cardGain {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .gainValue {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--tree-color);
+            text-shadow: 0 0 12px color-mix(in srgb, var(--tree-color) 45%, transparent);
+            white-space: nowrap;
+        }
+
+        .cardGain.negative .gainValue {
+            color: #ff6b6b;
+            text-shadow: none;
+        }
+
+        .cardDescription {
+            font-size: 15px;
             color: var(--ui-muted);
-            border-left-color: var(--ui-line);
+        }
+
+        .cardFooter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .buyButton { /*« Débloquer · 25 XP » : seul bouton qui achète (plus d'achat par erreur en cliquant pour regarder)*/
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--tree-color);
+            color: #0d0d14;
+            font: inherit;
+            font-size: 17px;
+            font-weight: 900;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+            cursor: pointer;
+        }
+
+        .buyButton:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .buyButton:disabled {
+            background-color: var(--ui-relief);
+            color: var(--ui-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cardHint {
+            font-size: 13px;
+            color: var(--ui-muted);
+        }
+
+        #treeHint { /*petite aide quand aucune compétence n'est choisie*/
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 64px;
+            margin: 0 auto;
+            max-width: 560px;
+            z-index: 2;
+            padding: 7px 14px;
+            border-radius: 999px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--ui-text);
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /*GAINS EN POP-UP : à l'achat, ce qu'on gagne apparaît en grand au milieu de l'arbre, monte et s'efface*/
+        #gainPopups {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .gainPopup {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 42%;
+            text-align: center;
+            animation: gainPopup 1.9s ease-out forwards;
+        }
+
+        .gainPopupLine {
+            font-size: 38px;
+            font-weight: 900;
+            color: var(--tree-color);
+            text-shadow: 0 3px 0 rgba(0, 0, 0, 0.55), 0 0 24px color-mix(in srgb, var(--tree-color) 60%, transparent);
+            white-space: nowrap;
+        }
+
+        .gainPopupLine.negative {
+            color: #ff6b6b;
+        }
+
+        @keyframes gainPopup { /*apparaît en grossissant, reste un instant, puis monte en s'effaçant*/
+            0% { opacity: 0; transform: translateY(14px) scale(0.6); }
+            14% { opacity: 1; transform: translateY(0) scale(1.18); }
+            26% { transform: translateY(0) scale(1); }
+            65% { opacity: 1; transform: translateY(-14px) scale(1); }
+            100% { opacity: 0; transform: translateY(-70px) scale(0.95); }
+        }
+
+        /*LISTE DES DIEUX : à gauche de la fenêtre des skills, pour passer d'un dieu à l'autre en un clic*/
+        #godList {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 16px;
+        }
+
+        #godList h3 {
+            margin: 0 0 4px;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ui-accent);
+        }
+
+        .godListItem {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 36px;
+            padding: 6px 10px;
+            box-sizing: border-box;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background-color: var(--ui-surface);
+            color: var(--ui-text);
+            font: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .godListItem:hover {
+            background-color: var(--ui-surface-hover);
+        }
+
+        .godListItem.current { /*le dieu affiché : bordure de sa couleur*/
+            border-color: var(--god-color);
+            background-color: color-mix(in srgb, var(--god-color) 14%, var(--ui-surface));
+        }
+
+        .godDiamond { /*petit losange de la couleur du dieu, comme sa planète*/
+            flex: none;
+            width: 12px;
+            height: 12px;
+            transform: rotate(45deg);
+            background-color: var(--god-color);
+        }
+
+        .godName {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis; /*"…" si le nom est trop long*/
+            white-space: nowrap;
+        }
+
+        .godProgress {
+            font-size: 12px;
+            color: var(--ui-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .godListItem.lockedGod {
+            opacity: 0.6;
+        }
+
+        .godListItem.lockedGod .godDiamond {
+            background-color: var(--ui-muted);
+        }
+
+        .godDot, #skillsBadge { /*point turquoise : une compétence peut être débloquée avec l'XP qu'on a*/
+            flex: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3fe0c5;
+            box-shadow: 0 0 8px #3fe0c5;
+            animation: badgePulse 1.1s ease-in-out infinite alternate;
+        }
+
+        @keyframes badgePulse {
+            from { transform: scale(0.8); opacity: 0.7; }
+            to { transform: scale(1.15); opacity: 1; }
         }
 
         .infoTitle {
@@ -880,8 +1134,8 @@
         }
 
         .infoName {
-            font-size: 20px;
-            font-weight: 800;
+            font-size: 22px;
+            font-weight: 900;
             color: var(--tree-color);
         }
 
@@ -1648,30 +1902,78 @@
             touch-action: none; /*le doigt sert au jeu (glisser une planète), pas à faire défiler ou zoomer la page*/
         }
 
-        #skillsButton { /*bouton "Skills" en bas à droite, caché sur ordinateur*/
-            display: none;
+        /*BOUTON DES SKILL TREES : sur ordinateur, à gauche de la roue crantée (même style) ; au doigt, en bas à droite (voir plus bas)*/
+        #skillsButton {
             position: fixed;
-            right: calc(14px + env(safe-area-inset-right)); /*env(safe-area-inset-...) = la place prise par l'encoche ou la barre du téléphone*/
-            bottom: calc(14px + env(safe-area-inset-bottom));
-            z-index: 1;
-            padding: 12px 18px;
-            border: 3px solid var(--ui-border);
-            border-radius: 12px;
-            background-color: #0b0b2ecc;
-            color: var(--ui-text);
-            font-size: 17px;
-            font-weight: 800;
+            top: 12px;
+            right: 72px;
+            z-index: 10; /*comme la roue : au-dessus des menus (il ouvre ET ferme la fenêtre des skills)*/
+            width: 50px;
+            height: 50px;
+            padding: 9px;
+            border: 3px solid var(--ui-accent);
+            border-radius: 10px;
+            background-color: transparent;
+            color: var(--ui-accent);
+            cursor: pointer;
         }
 
-        .skillNode.touchSelected .star { /*1er toucher sur une compétence : elle est "visée", un 2e toucher l'achète*/
+        #skillsButton:hover, #skillsButton.active {
+            background-color: var(--ui-accent-soft);
+        }
+
+        #skillsButton svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        #skillsButton .skillsButtonText {
+            display: none; /*sur ordinateur : juste l'icône*/
+        }
+
+        #skillsBadge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 14px;
+            height: 14px;
+        }
+
+        .skillNode.selected .star { /*la compétence choisie (1er clic) : un contour ; un 2e clic ou le bouton Débloquer l'achète*/
             outline: 3px solid var(--tree-color);
             outline-offset: 4px;
         }
 
+        .skillNode.selected {
+            z-index: 2;
+            filter: drop-shadow(0 0 10px var(--tree-color));
+        }
+
         /*(pointer: coarse) = l'écran se pilote au doigt (pas de souris précise)*/
         @media (pointer: coarse) {
-            #skillsButton {
-                display: block;
+            #skillsButton { /*bouton "Skills" en bas à droite, facile à atteindre avec le pouce*/
+                top: auto;
+                right: calc(14px + env(safe-area-inset-right)); /*env(safe-area-inset-...) = la place prise par l'encoche ou la barre du téléphone*/
+                bottom: calc(14px + env(safe-area-inset-bottom));
+                z-index: 1;
+                width: auto;
+                height: auto;
+                padding: 12px 18px;
+                border: 3px solid var(--ui-border);
+                border-radius: 12px;
+                background-color: #0b0b2ecc;
+                color: var(--ui-text);
+                font-size: 17px;
+                font-weight: 800;
+            }
+
+            #skillsButton svg {
+                display: none;
+            }
+
+            #skillsButton .skillsButtonText {
+                display: inline;
             }
 
             .shopItem, .linkOption, .timeOption { /*les doigts sont moins précis qu'une souris : boutons un peu plus grands*/
@@ -1722,21 +2024,31 @@
             }
 
             #treeCanvas {
-                height: 55vh; /*l'arbre prend la moitié de la hauteur de l'écran*/
+                height: 62vh; /*l'arbre prend plus de la moitié de la hauteur de l'écran (la description est dedans)*/
                 margin: 8px 0;
             }
 
-            #nodeInfo {
-                grid-template-columns: 1fr; /*texte et pastilles l'un sous l'autre*/
-                min-height: 0;
+            #nodeCard {
+                left: 6px;
+                right: 6px;
+                padding: 10px 12px;
             }
 
-            .infoChips { /*les pastilles passent SOUS le texte (sinon elles créent une 2e colonne qui sort de l'écran)*/
-                grid-column: 1;
-                grid-row: auto;
-                flex-direction: row;
-                flex-wrap: wrap;
-                align-items: flex-start;
+            #nodeCard.atBottom {
+                right: 52px;
+            }
+
+            .gainValue {
+                font-size: 22px;
+            }
+
+            .cardGain {
+                font-size: 16px;
+            }
+
+            .gainPopupLine {
+                font-size: 26px;
+                white-space: normal;
             }
 
             .infoChip {
@@ -1744,7 +2056,7 @@
             }
 
             .infoName {
-                font-size: 17px;
+                font-size: 18px;
             }
 
             #shopItems {
@@ -1845,6 +2157,18 @@
 
             .hudValue {
                 font-size: 18px;
+            }
+        }
+        /*ÉCRAN ÉTROIT : les fenêtres commencent sous la roue crantée (et le bouton des skills), au lieu de passer dessous*/
+        @media (max-width: 900px) {
+            #gameOverPanel {
+                padding-top: calc(64px + env(safe-area-inset-top));
+            }
+        }
+
+        @media (max-width: 900px) and (pointer: fine) {
+            #skillTreePanel {
+                padding-top: 64px;
             }
         }
         /*CODE DE SAUVEGARDE (Paramètres)*/
@@ -1956,8 +2280,13 @@
     <div id="toast" class="hiddenToast"></div>
     <!-- ALERTE : un super ennemi (ou un nouvel ennemi) arrive dans quelques secondes -->
     <div id="spawnAlert" class="hidden"></div>
-    <!-- Bouton "Compétences" : visible seulement sur écran tactile (sur ordinateur, il y a la touche S) -->
-    <button id="skillsButton" aria-label="Compétences">✦ Skills</button>
+    <!-- Bouton des SKILL TREES (comme la touche S) : à gauche de la roue sur ordinateur, en bas à droite au doigt.
+         Le point turquoise = une compétence peut être débloquée avec l'XP qu'on a. -->
+    <button id="skillsButton" aria-label="Compétences" title="Compétences (S)">
+        <svg viewBox="0 0 24 24"><path d="M10 3l2.2 6.3L18.5 11.5l-6.3 2.2L10 20l-2.2-6.3L1.5 11.5l6.3-2.2z M19 1.5l0.9 2.6 2.6 0.9-2.6 0.9-0.9 2.6-0.9-2.6-2.6-0.9 2.6-0.9z M18.5 15l0.7 1.8 1.8 0.7-1.8 0.7-0.7 1.8-0.7-1.8-1.8-0.7 1.8-0.7z"/></svg>
+        <span class="skillsButtonText">✦ Skills</span>
+        <span id="skillsBadge" class="hidden"></span>
+    </button>
     <button id="settingsButton" aria-label="Paramètres" title="Paramètres (Échap)">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.67 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.61.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.04.24.25.42.49.42h3.84c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
     </button>
@@ -1967,6 +2296,7 @@
     <div id="skillTreePanel" class="overlay hidden">
         <div class="panel">
             <section id="projectArea">
+                <nav id="godList"></nav> <!-- la liste des dieux : un clic pour passer de l'un à l'autre (rempli par renderGodList) -->
                 <h2 id="projectTitle"></h2>
                 <div id="projectContent" class="placeholder"></div>
                 <div id="orbitLinkArea"></div>
@@ -1992,8 +2322,10 @@
                         <button id="treeZoomOut" title="Dézoomer">−</button>
                         <button id="treeZoomFit" title="Voir tout l'arbre">⤢</button>
                     </div>
+                    <div id="treeHint"></div>                  <!-- petite aide quand aucune compétence n'est choisie -->
+                    <div id="nodeCard" class="hidden"></div>   <!-- la carte de la compétence survolée ou choisie, en grand -->
+                    <div id="gainPopups"></div>                <!-- les gains d'un achat, en grand au milieu, qui s'effacent -->
                 </div>
-                <div id="nodeInfo"></div>
             </section>
             <section id="treeBonusArea"></section>
         </div>
@@ -8311,7 +8643,12 @@
         const treeXp = document.getElementById("treeXp");
         const treeLinks = document.getElementById("treeLinks");
         const treeNodes = document.getElementById("treeNodes");
-        const nodeInfo = document.getElementById("nodeInfo");
+        const nodeCard = document.getElementById("nodeCard");      // la carte de la compétence survolée ou choisie
+        const treeHint = document.getElementById("treeHint");      // la petite aide quand rien n'est choisi
+        const gainPopups = document.getElementById("gainPopups");  // les gains d'un achat, en grand
+        const godList = document.getElementById("godList");
+        const skillsButton = document.getElementById("skillsButton");
+        const skillsBadge = document.getElementById("skillsBadge");
         const treeBonusArea = document.getElementById("treeBonusArea");
         const orbitLinkArea = document.getElementById("orbitLinkArea");
         let currentTree = null;
@@ -8395,7 +8732,9 @@
             const wasOpen = currentTree !== null;
             currentTree = tree;
             lastOpenedTree = tree;
-            selectedTouchNode = null;
+            selectedNode = null;
+            previewNode = null;
+            skillsButton.classList.add("active");
             updatePause();
             playSound(wasOpen ? "click" : "menuOpen");
             skillTreePanel.style.setProperty("--tree-color", tree.color); //variable CSS utilisée par les couleurs de l'arbre
@@ -8405,18 +8744,21 @@
             treeTitle.textContent = tree.name;
             treeTitle.classList.toggle("locked", tree.isLocked); //dieu pas encore en orbite : titre gris
             updateGodNav();
+            renderGodList();
             renderOrbitLinks(tree);
-            showNodeInfoHint();
             renderSkillTree();
             skillTreePanel.classList.remove("hidden");
             showStatsPanel();
             setupTreeWorld(); //après l'affichage : il faut que la fenêtre soit visible pour connaître sa taille
+            showNodeInfoHint();
         }
 
         function closeSkillTree() {
             skillTreePanel.classList.add("hidden");
             hideStatsPanel();
             currentTree = null;
+            selectedNode = null;
+            skillsButton.classList.remove("active");
             updatePause();
             playSound("menuClose");
         }
@@ -8474,6 +8816,17 @@
         //"+20" ou "-30" (avec le signe dans les deux cas)
         function formatSigned(value) {
             return (value >= 0 ? "+" : "") + formatNumber(value);
+        }
+
+        //CE QUE DONNE UN EFFET, en clair : { label: "Dégâts par balle", value: "+0.5", isNegative } (carte et pop-up des skills)
+        function describeEffect(effect) {
+            if (effect.stat === "damageVs") {
+                return { label: t("Dégâts vs {element}", { element: ELEMENT_NAMES[effect.element] }), value: formatSigned(effect.value), isNegative: effect.value < 0 };
+            }
+            const row = BONUS_FORMATS[effect.stat](effect.value);
+            //Une baisse s'écrit avec un vrai signe moins : "+-35%" ou "-35%" -> "−35%"
+            const value = String(row[1]).replace("+-", "−").replace(/^-/, "−");
+            return { label: t(row[0]), value: value, isNegative: effect.value < 0 };
         }
 
         //COLONNE DE DROITE : tout ce que cet arbre nous apporte (progression, pouvoirs, total des stats)
@@ -8660,10 +9013,28 @@
                 button.appendChild(label);
                 button.style.left = node.x + "%";
                 button.style.top = node.y + "%";
-                if (node === selectedTouchNode) {
-                    button.classList.add("touchSelected");
+                if (node === selectedNode) {
+                    button.classList.add("selected");
                 }
-                button.addEventListener("mouseenter", function () { showNodeInfo(node); });
+                //SOURIS : survoler une étoile montre sa carte (un aperçu) ; quand la souris repart, on revient à la compétence choisie
+                button.addEventListener("mouseenter", function () {
+                    if (lastNodePointerType === "touch") {
+                        return; //au doigt, pas de survol (le navigateur envoie quand même un "mouseenter" au toucher)
+                    }
+                    previewNode = node;
+                    showNodeInfo(node, node !== selectedNode);
+                });
+                button.addEventListener("mouseleave", function () {
+                    if (previewNode !== node) {
+                        return;
+                    }
+                    previewNode = null;
+                    if (selectedNode !== null) {
+                        showNodeInfo(selectedNode);
+                    } else {
+                        showNodeInfoHint();
+                    }
+                });
                 //AU DOIGT : on retient que c'est un doigt, et un appui long (sans bouger) rembourse la compétence
                 button.addEventListener("pointerdown", function (event) {
                     lastNodePointerType = event.pointerType; //"mouse", "touch" ou "pen"
@@ -8694,9 +9065,10 @@
                         wasLongPress = false;
                         return;
                     }
-                    //Au doigt, pas de survol : le 1er toucher montre la description, le 2e achète
-                    if (lastNodePointerType === "touch" && selectedTouchNode !== node) {
-                        selectTouchNode(node, button);
+                    //1er clic (ou toucher) : on CHOISIT la compétence (sa carte reste, avec le bouton « Débloquer »).
+                    //On l'achète avec ce bouton, ou en cliquant une 2e fois sur la même étoile : plus d'achat par erreur en regardant.
+                    if (selectedNode !== node) {
+                        selectNode(node);
                         return;
                     }
                     unlockNode(node);
@@ -8713,9 +9085,10 @@
             justUnlockedNode = null; //l'animation n'est jouée qu'une fois
         }
 
-        //COMPÉTENCES AU DOIGT
+        //CHOISIR UNE COMPÉTENCE (souris et doigt) ; au doigt, un appui long la rembourse
         const NODE_LONG_PRESS_TIME = 550;   // millisecondes d'appui pour rembourser
-        let selectedTouchNode = null;       // la compétence touchée une 1re fois (un 2e toucher l'achète)
+        let selectedNode = null;            // la compétence choisie (1er clic) : sa carte reste affichée, avec le bouton « Débloquer »
+        let previewNode = null;             // la compétence survolée à la souris (sa carte s'affiche le temps du survol)
         let lastNodePointerType = "mouse";
         let longPressTimer = null;
         let wasLongPress = false;
@@ -8724,14 +9097,26 @@
             clearTimeout(longPressTimer); //clearTimeout = annule le setTimeout s'il n'a pas encore eu lieu
         }
 
-        function selectTouchNode(node, button) {
-            selectedTouchNode = node;
-            for (const other of treeNodes.querySelectorAll(".touchSelected")) { //querySelectorAll = tous les éléments qui correspondent
-                other.classList.remove("touchSelected");
+        function selectNode(node) {
+            selectedNode = node;
+            for (const other of treeNodes.querySelectorAll(".selected")) { //querySelectorAll = tous les éléments qui correspondent
+                other.classList.remove("selected");
             }
-            button.classList.add("touchSelected");
+            const index = currentTree.nodes.indexOf(node);
+            if (treeNodes.children[index] !== undefined) {
+                treeNodes.children[index].classList.add("selected"); //les boutons sont dans le même ordre que les compétences
+            }
             playSound("click");
             showNodeInfo(node);
+        }
+
+        function deselectNode() {
+            selectedNode = null;
+            previewNode = null;
+            for (const other of treeNodes.querySelectorAll(".selected")) {
+                other.classList.remove("selected");
+            }
+            showNodeInfoHint();
         }
 
         //Une ligne SVG entre deux compétences
@@ -8747,14 +9132,15 @@
             return line;
         }
 
-        //Petite aide quand aucune compétence n'est survolée
+        //Petite aide quand aucune compétence n'est choisie (la carte est cachée)
         function showNodeInfoHint() {
-            nodeInfo.className = "empty";
-            nodeInfo.textContent = currentTree.isLocked
+            nodeCard.classList.add("hidden");
+            treeHint.classList.remove("hidden");
+            treeHint.textContent = currentTree.isLocked
                 ? t(IS_TOUCH_DEVICE ? "Aperçu : {name} n'est pas encore en orbite. Touche une compétence pour voir ce qu'elle fera." : "Aperçu : {name} n'est pas encore en orbite. Survole une compétence pour voir ce qu'elle fera.", { name: currentTree.name })
                 : IS_TOUCH_DEVICE
-                    ? t("Touche une compétence pour voir ce qu'elle fait, touche-la encore pour la débloquer avec ton XP, appui long pour la rembourser. Deux doigts pour zoomer.")
-                    : t("Survole une compétence pour voir ce qu'elle fait, clique pour la débloquer avec ton XP, clic droit pour la rembourser.");
+                    ? t("Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.")
+                    : t("Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.");
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
@@ -8768,48 +9154,104 @@
             return element;
         }
 
-        //Carte de description : nom + rôle en haut, effet en gros, et à droite le coût et l'état
-        function showNodeInfo(node) {
+        //LA CARTE D'UNE COMPÉTENCE : nom et rôle, ce qu'elle donne EN GROS (une ligne par stat), sa description,
+        //puis son coût et le bouton « Débloquer ». isPreview = true : simple aperçu au survol (sans bouton, la souris passe à travers).
+        function showNodeInfo(node, isPreview = false) {
             const state = getNodeState(currentTree, node);
-            nodeInfo.className = "";
-            nodeInfo.textContent = ""; //vide la carte avant de la remplir
+            nodeCard.textContent = ""; //vide la carte avant de la remplir
+            nodeCard.classList.remove("hidden");
+            nodeCard.classList.toggle("preview", isPreview);
+            treeHint.classList.add("hidden");
+            placeNodeCard(node);
 
-            const title = createElementWithText("div", "infoTitle", "");
-            title.appendChild(createElementWithText("span", "infoName", node.name));
+            const header = createElementWithText("div", "cardHeader", "");
+            header.appendChild(createElementWithText("span", "infoName", node.name));
             const isBig = node.role === "keystone" || node.role === "grand";
-            title.appendChild(createElementWithText("span", "infoRole" + (isBig ? " big" : ""), ROLE_NAMES[node.role]));
-            nodeInfo.appendChild(title);
+            header.appendChild(createElementWithText("span", "infoRole" + (isBig ? " big" : ""), ROLE_NAMES[node.role]));
+            if (!isPreview) {
+                const close = createElementWithText("button", "cardClose", "×");
+                close.title = t("Fermer");
+                close.addEventListener("click", function (event) {
+                    event.stopPropagation(); //le clic ne "remonte" pas jusqu'à l'arbre
+                    deselectNode();
+                });
+                header.appendChild(close);
+            }
+            nodeCard.appendChild(header);
 
-            //L'effet, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
-            nodeInfo.appendChild(createElementWithText("div", "infoEffect", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
+            //CE QUE ÇA DONNE : une ligne par stat, en gros (ex : « +0.5  Dégâts par balle »)
+            const gains = createElementWithText("div", "cardGains", "");
+            for (const effect of node.effects) {
+                const gain = describeEffect(effect);
+                const line = createElementWithText("div", "cardGain" + (gain.isNegative ? " negative" : ""), "");
+                line.appendChild(createElementWithText("span", "gainValue", gain.value));
+                line.appendChild(createElementWithText("span", "", gain.label));
+                gains.appendChild(line);
+            }
+            nodeCard.appendChild(gains);
+            //La description, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
+            nodeCard.appendChild(createElementWithText("div", "cardDescription", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
 
-            const chips = createElementWithText("div", "infoChips", "");
+            const footer = createElementWithText("div", "cardFooter", "");
             if (currentTree.isLocked) {
-                chips.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
-                chips.appendChild(createElementWithText("span", "infoChip blocked", t("{name} n'est pas encore en orbite", { name: currentTree.name })));
+                footer.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
+                footer.appendChild(createElementWithText("span", "infoChip blocked", t("{name} n'est pas encore en orbite", { name: currentTree.name })));
             } else if (state === "unlocked") {
-                chips.appendChild(createElementWithText("span", "infoChip ok", t("✔ Débloquée")));
-                if (canRefundNode(currentTree, node)) {
+                footer.appendChild(createElementWithText("span", "infoChip ok", t("✔ Débloquée")));
+                if (!isPreview && canRefundNode(currentTree, node)) {
                     const refund = createElementWithText("button", "refundButton", t("↩ Rembourser (+{xp} XP)", { xp: node.cost }));
-                    refund.addEventListener("click", function () { refundNode(node); });
-                    chips.appendChild(refund);
-                } else {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("D'autres compétences en dépendent")));
+                    refund.addEventListener("click", function (event) {
+                        event.stopPropagation();
+                        refundNode(node);
+                    });
+                    footer.appendChild(refund);
+                } else if (!isPreview) {
+                    footer.appendChild(createElementWithText("span", "infoChip blocked", t("D'autres compétences en dépendent")));
                 }
+            } else if (state === "locked") {
+                footer.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
+                footer.appendChild(createElementWithText("span", "infoChip blocked", t("Débloque une voisine d'abord")));
+            } else if (isPreview) {
+                footer.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
+                footer.appendChild(createElementWithText("span", "cardHint", t("Clique sur l'étoile pour la choisir")));
             } else {
-                chips.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
-                if (state === "locked") {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("Débloque une voisine d'abord")));
-                } else if (xp < node.cost) {
-                    chips.appendChild(createElementWithText("span", "infoChip blocked", t("Pas assez d'XP")));
-                } else {
-                    chips.appendChild(createElementWithText("span", "infoChip ready", IS_TOUCH_DEVICE ? t("Touche encore pour débloquer") : t("Clique pour débloquer")));
+                const canBuy = xp >= node.cost;
+                const buy = createElementWithText("button", "buyButton", canBuy ? t("Débloquer · {cost} XP", { cost: node.cost }) : t("Pas assez d'XP ({cost} XP)", { cost: node.cost }));
+                buy.disabled = !canBuy;
+                buy.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                    unlockNode(node);
+                });
+                footer.appendChild(buy);
+                if (canBuy) {
+                    footer.appendChild(createElementWithText("span", "cardHint", IS_TOUCH_DEVICE ? t("ou touche encore l'étoile") : t("ou clique encore sur l'étoile")));
                 }
             }
-            nodeInfo.appendChild(chips);
+            nodeCard.appendChild(footer);
+        }
+
+        //La carte se met en haut de l'arbre, sauf si la compétence est dans le haut de la fenêtre : elle passe alors en bas (pour ne pas la cacher)
+        function placeNodeCard(node) {
+            const nodeScreenY = treePanY + node.y / 100 * treeWorldHeight * treeZoom;
+            nodeCard.classList.toggle("atBottom", nodeScreenY < treeCanvas.clientHeight * 0.45);
+        }
+
+        //À l'achat : ce qu'on gagne apparaît en grand au milieu de l'arbre, monte et s'efface
+        function showGainPopup(node) {
+            const popup = createElementWithText("div", "gainPopup", "");
+            for (const effect of node.effects) {
+                const gain = describeEffect(effect);
+                popup.appendChild(createElementWithText("div", "gainPopupLine" + (gain.isNegative ? " negative" : ""), gain.value + " " + gain.label));
+            }
+            gainPopups.appendChild(popup);
+            popup.addEventListener("animationend", function () { popup.remove(); }); //remove = l'enlève de la page
         }
 
         function unlockNode(node) {
+            if (node.unlocked) {
+                showNodeInfo(node); //déjà prise : on montre juste sa carte (avec le bouton Rembourser)
+                return;
+            }
             if (currentTree.isLocked || getNodeState(currentTree, node) !== "available" || xp < node.cost) {
                 showNodeInfo(node);
                 playSound("denied");
@@ -8819,11 +9261,15 @@
             xp -= node.cost;
             node.unlocked = true;
             justUnlockedNode = node; //pour l'animation du lien qui se remplit
+            selectedNode = node;     //sa carte reste affichée (avec ✔ Débloquée)
             refreshStats();
             updateHud();
             renderSkillTree();
+            renderGodList();
+            updateSkillsBadge();
             renderStatsPanel(true); //anime les stats qui viennent d'augmenter
             showNodeInfo(node);
+            showGainPopup(node);
         }
 
         //REMBOURSER : on récupère tout l'XP d'une compétence, à condition que les autres restent reliées au départ
@@ -8870,8 +9316,53 @@
             refreshStats();
             updateHud();
             renderSkillTree();
+            renderGodList();
+            updateSkillsBadge();
             renderStatsPanel(true);
-            showNodeInfo(node);
+            if (selectedNode === node || previewNode === node) {
+                showNodeInfo(node);
+            }
+        }
+
+        //LISTE DES DIEUX (à gauche) : les dieux en orbite + le prochain à acheter. Un point turquoise = une compétence à prendre.
+        function renderGodList() {
+            godList.textContent = "";
+            godList.appendChild(createElementWithText("h3", "", t("Dieux")));
+            for (const tree of getBrowsableTrees()) {
+                const item = createElementWithText("button", "godListItem", "");
+                item.classList.toggle("current", tree === currentTree);
+                item.classList.toggle("lockedGod", tree.isLocked);
+                item.style.setProperty("--god-color", tree.color);
+                item.appendChild(createElementWithText("span", "godDiamond", ""));
+                item.appendChild(createElementWithText("span", "godName", tree.name));
+                const owned = tree.nodes.filter(function (node) { return node.unlocked; }).length;
+                item.appendChild(createElementWithText("span", "godProgress", tree.isLocked ? "🔒" : owned + "/" + tree.nodes.length));
+                if (hasAffordableSkill(tree)) {
+                    item.appendChild(createElementWithText("span", "godDot", ""));
+                    item.title = t("Une compétence peut être débloquée");
+                } else if (tree.isLocked) {
+                    item.title = t("Prochain dieu à acheter dans le shop (« Nouvelle divinité »)");
+                }
+                item.addEventListener("click", function () {
+                    if (tree !== currentTree) {
+                        openSkillTree(tree);
+                    }
+                });
+                godList.appendChild(item);
+            }
+        }
+
+        //Ce dieu a-t-il une compétence qu'on peut débloquer tout de suite avec l'XP qu'on a ?
+        function hasAffordableSkill(tree) {
+            if (tree.isLocked) {
+                return false;
+            }
+            return tree.nodes.some(function (node) { return !node.unlocked && node.cost <= xp && getNodeState(tree, node) === "available"; });
+        }
+
+        //Le point turquoise sur le bouton des skills : au moins une compétence à prendre, chez n'importe quel dieu
+        function updateSkillsBadge() {
+            skillsBadge.classList.toggle("hidden", !SKILL_TREES.some(hasAffordableSkill));
         }
 
         document.getElementById("closeTreeButton").addEventListener("click", closeSkillTree);
@@ -9032,6 +9523,16 @@
             zoomTreeAt(treeCanvas.clientWidth / 2, treeCanvas.clientHeight / 2, 1 / TREE_ZOOM_STEP);
         });
         document.getElementById("treeZoomFit").addEventListener("click", fitTree);
+
+        //Cliquer sur le fond de l'arbre (pas sur une étoile ni sur la carte) : plus aucune compétence choisie
+        treeCanvas.addEventListener("click", function (event) {
+            if (treeWasDragged || event.target.closest(".skillNode, #nodeCard, #treeZoomControls") !== null) {
+                return;
+            }
+            if (selectedNode !== null) {
+                deselectNode();
+            }
+        });
 
         //Cliquer sur le fond sombre (en dehors de la fenêtre) ferme aussi l'arbre
         skillTreePanel.addEventListener("click", function (event) {
@@ -10521,8 +11022,11 @@
             }
         });
 
-        //TÉLÉPHONE : le bouton "Skills" remplace la touche S, et l'aide parle de toucher au lieu de cliquer
-        document.getElementById("skillsButton").addEventListener("click", toggleSkillTreeWindow);
+        //BOUTON DES SKILLS (comme la touche S) : ouvre la fenêtre des skills, ou la ferme
+        skillsButton.addEventListener("click", function (event) {
+            event.stopPropagation(); //sinon le clic arriverait aussi sur le fond de la fenêtre des skills, qui la referme
+            toggleSkillTreeWindow();
+        });
 
         settingsPanel.addEventListener("click", function (event) {
             if (event.target === settingsPanel) {
@@ -10693,6 +11197,7 @@
         const MAX_FRAME_TIME = 0.1;   // si le navigateur a "gelé" (onglet caché...), on ne rattrape pas plus que ça
         const MAX_STEP = 1 / 60;      // taille max d'un pas de simulation, en secondes
         let frameTime = 0;            // durée réelle de la dernière image (pour le décor)
+        let badgeTimer = 0;           // prochaine mise à jour du point turquoise du bouton des skills
 
         function gameUpdate(currentTime) {
             const deltaTime = Math.min(MAX_FRAME_TIME, (currentTime - lastTime) / 1000); //DeltaTime en secondes
@@ -10710,6 +11215,11 @@
             }
 
             runTimeDisplay.textContent = formatTime(runTime);
+            badgeTimer -= deltaTime;
+            if (badgeTimer <= 0) {
+                badgeTimer = 0.5; //2 fois par seconde suffit (l'XP change à chaque ennemi tué)
+                updateSkillsBadge();
+            }
             updateCamera(deltaTime);
             drawCanvas();
             requestAnimationFrame(gameUpdate);

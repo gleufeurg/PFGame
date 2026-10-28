@@ -4,7 +4,7 @@
 
 | Touche | Effet |
 | --- | --- |
-| S | ouvre la fenêtre des skills (le dernier arbre vu), ou la ferme |
+| S | ouvre la fenêtre des skills (le dernier arbre vu), ou la ferme (comme le bouton ✦ à gauche de la roue crantée) |
 | T | passe le plus grand saut de temps débloqué (rien tant qu'aucun n'est acheté) |
 | R | rejoue (écran de game over) |
 | Échap | ferme la fenêtre ouverte, sinon ouvre les paramètres |
@@ -19,11 +19,11 @@ Le jeu repère un écran tactile avec `IS_TOUCH_DEVICE` (la question CSS `pointe
 | --- | --- |
 | Toucher une planète | ouvre son arbre de compétences |
 | Glisser une planète | change sa place dans l'orbite |
-| Bouton « ✦ Skills » (en bas à droite) | remplace la touche S |
+| Bouton « ✦ Skills » (en bas à droite) | remplace la touche S (point turquoise : une compétence peut être prise) |
 | Bouton du temps (à côté du chrono) | vitesses et sauts de temps, comme à l'ordinateur |
 | Roue crantée | paramètres (remplace Échap) |
-| 1er toucher sur une compétence | montre sa fiche (l'étoile est entourée) |
-| 2e toucher sur la même compétence | l'achète |
+| 1er toucher sur une compétence | la choisit : sa carte s'affiche en grand, avec le bouton « Débloquer » (l'étoile est entourée) |
+| Bouton « Débloquer », ou 2e toucher sur la même compétence | l'achète |
 | Appui long (0,55 s) sur une compétence prise | la rembourse (petite vibration) |
 | Deux doigts dans l'arbre | zoomer (pincer) ; un doigt pour le déplacer |
 
@@ -133,9 +133,11 @@ Avant un super ennemi ou le premier ennemi d'un nouveau mouvement : un bandeau s
 
 ## La fenêtre des skills
 
-- **Passer d'un dieu à l'autre :** flèches **‹ ›** de chaque côté du nom du dieu, **glisser le doigt** (ou la souris) vers la gauche ou la droite sur la fenêtre (en dehors de l'arbre, où glisser sert à le déplacer), ou **flèches ← →** du clavier. On parcourt les dieux en orbite, plus le prochain dieu à acheter (en aperçu). Les autres dieux ne sont pas affichés, pour ne pas surcharger la fenêtre.
+- **Ouvrir :** clic sur une planète, touche **S**, ou le **bouton ✦** (à gauche de la roue crantée sur ordinateur, « ✦ Skills » en bas à droite au doigt). Un **point turquoise** sur ce bouton signale qu'au moins une compétence peut être débloquée avec l'XP qu'on a (`updateSkillsBadge`, 2 fois par seconde).
+- **Passer d'un dieu à l'autre :** la **liste des dieux**, en haut de la colonne de gauche (`renderGodList`) : chaque dieu avec son losange de couleur, ses compétences prises (ex : 12/39) et un point turquoise s'il a une compétence à prendre ; le prochain dieu à acheter a un cadenas. Aussi : flèches **‹ ›** de chaque côté du nom du dieu, **glisser le doigt** (ou la souris) vers la gauche ou la droite sur la fenêtre (en dehors de l'arbre, où glisser sert à le déplacer), ou **flèches ← →** du clavier. On parcourt les dieux en orbite, plus le prochain dieu à acheter (en aperçu). Les autres dieux ne sont pas affichés, pour ne pas surcharger la fenêtre.
 - **Prochain dieu (pas encore en orbite) :** son arbre s'affiche quand même, assombri et verrouillé, pour montrer au joueur ce qui l'attend. On peut le parcourir mais pas acheter.
-- **Acheter :** clic sur une compétence disponible (au doigt : deux touchers, voir plus haut). Le lien depuis la compétence voisine se remplit, et l'étoile éclot.
+- **La carte d'une compétence** s'affiche **en grand, par-dessus l'arbre** : en haut, ou en bas si la compétence est dans le haut de la fenêtre (pour ne pas la cacher). Elle montre le nom et le rôle, puis **ce que la compétence donne, en gros** (une ligne par stat, ex : « +0.5 Dégâts par balle », en rouge si c'est une baisse ; `describeEffect`), la description, le coût et le bouton d'achat. À la souris, survoler une étoile montre un aperçu de sa carte.
+- **Acheter (sans achat par erreur) :** le 1er clic (ou toucher) **choisit** la compétence : sa carte reste affichée, avec le bouton **« Débloquer · 25 XP »**. On l'achète avec ce bouton, ou en cliquant une 2e fois sur la même étoile. Le × de la carte, ou un clic sur le fond de l'arbre, enlève le choix. À l'achat, le lien depuis la compétence voisine se remplit, l'étoile éclot, et **les gains apparaissent en grand au milieu de l'arbre**, puis montent et s'effacent (`showGainPopup`).
 - **Rembourser :** clic droit sur une compétence prise (au doigt : appui long), ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
 - **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie. Au début, seul « Aucun » est disponible : l'amélioration **« Liens d'orbite »** du shop (4 niveaux : 30, 75, 188 puis 469 or) débloque Droite, puis Gauche, puis Les deux côtés, puis Opposé (`LINK_UNLOCK_ORDER`). Les liens pas encore achetés sont gris, avec « Dans le shop ». Une ancienne sauvegarde garde les liens que le joueur utilisait déjà (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
 

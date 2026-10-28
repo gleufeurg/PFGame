@@ -1405,5 +1405,16 @@ window.TRADUCTIONS.en = {
     "Brûlure de la traînée de feu (par seconde)": "Fire trail burn (per second)",
     "Durée de la traînée de feu": "Fire trail duration",
     "Largeur de la traînée de feu": "Fire trail width",
-    "Temps de survie": "Survival time"
+    "Temps de survie": "Survival time",
+    "Compétences (S)": "Skills (S)",
+    "Débloquer · {cost} XP": "Unlock · {cost} XP",
+    "Pas assez d'XP ({cost} XP)": "Not enough XP ({cost} XP)",
+    "ou touche encore l'étoile": "or tap the star again",
+    "ou clique encore sur l'étoile": "or click the star again",
+    "Clique sur l'étoile pour la choisir": "Click the star to select it",
+    "Dieux": "Gods",
+    "Une compétence peut être débloquée": "A skill can be unlocked",
+    "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Next god to buy in the shop (“New deity”)",
+    "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tap a skill to select it, then “Unlock”. Long press to refund it, two fingers to zoom.",
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Click a skill to select it, then “Unlock”. Right-click to refund it."
 };

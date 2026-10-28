@@ -1405,5 +1405,16 @@ window.TRADUCTIONS.de = {
     "Brûlure de la traînée de feu (par seconde)": "Brand der Feuerspur (pro Sekunde)",
     "Durée de la traînée de feu": "Dauer der Feuerspur",
     "Largeur de la traînée de feu": "Breite der Feuerspur",
-    "Temps de survie": "Überlebenszeit"
+    "Temps de survie": "Überlebenszeit",
+    "Compétences (S)": "Fähigkeiten (S)",
+    "Débloquer · {cost} XP": "Freischalten · {cost} XP",
+    "Pas assez d'XP ({cost} XP)": "Nicht genug XP ({cost} XP)",
+    "ou touche encore l'étoile": "oder tippe erneut auf den Stern",
+    "ou clique encore sur l'étoile": "oder klicke erneut auf den Stern",
+    "Clique sur l'étoile pour la choisir": "Klicke auf den Stern, um ihn auszuwählen",
+    "Dieux": "Götter",
+    "Une compétence peut être débloquée": "Eine Fähigkeit kann freigeschaltet werden",
+    "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Nächster Gott im Shop („Neue Gottheit“)",
+    "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tippe auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Lange drücken zum Erstatten, zwei Finger zum Zoomen.",
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Klicke auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Rechtsklick zum Erstatten."
 };
