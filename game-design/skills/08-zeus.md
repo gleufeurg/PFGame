@@ -5,9 +5,19 @@
 | Attribut | ⚡ Foudre |
 | Couleur | `#5ce1e6` |
 | Forme de l'arbre | éclair (`bolt`) |
-| Compétences | 30 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 23784 |
+| Compétences | 34 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 17822 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°8) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie des éclairs** | Plus d'éclairs, qui vont plus loin. | **Hébé** (+1 éclair par balle) ; **Némésis** (+1 dégât par balle) ; **Olympios** (+2 éclairs par balle et +40 de portée des éclairs) ; **Io** (Éclairs : +15% de dégâts) ; **Salmonée** (+1 éclair par balle) | 14 | 9516 |
+| **Voie du bélier** | Une balle de plus par tir, et des tirs plus rapides. | **Eiréné** (+1 éclair par balle) ; **Eunomia** (+40 de portée des éclairs) ; **Ammon** (+1 balle par tir) ; **Horkos** (Éclairs : +10% de dégâts) ; **Ganymède** (+10% de vitesse d'attaque) ; **Dodone** (+20% de vitesse d'attaque) | 15 | 11022 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Hébé** (ÉCLAIR) | +1 éclair par balle | 444 XP |
 | **Némésis** (DMG) | +1 dégât par balle | 649 XP |
 | **Io** (ÉCLAIR) | Éclairs : +15% de dégâts | 1162 XP |
+| **Salmonée** (ÉCLAIR) | +1 éclair par balle | 1059 XP |
+| **Dodone** (VIT) | +20% de vitesse d'attaque | 1162 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Astrapé** (DMG) | +0.5 dégât par balle | ×6 | 154 à 1111 XP |
+| **Astrapé** (DMG) | +0.5 dégât par balle | ×7 | 154 à 1111 XP |
 | **Brontè** (VIT) | +5% de vitesse d'attaque | ×6 | 222 à 974 XP |
-| **Kéraunos** (ÉCLAIR) | Éclairs : +5% de dégâts | ×5 | 154 à 837 XP |
+| **Kéraunos** (ÉCLAIR) | Éclairs : +5% de dégâts | ×6 | 154 à 837 XP |
 
 ## ↔️ Lien « Opposé » vers Zeus
 

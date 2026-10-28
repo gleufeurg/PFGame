@@ -5,9 +5,20 @@
 | Attribut | 🌿 Plante |
 | Couleur | `#55dd55` |
 | Forme de l'arbre | fleur (`flower`) |
-| Compétences | 49 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 2628 |
+| Compétences | 55 (11 notables, 3 keystones, 1 grande keystone) |
+| Voies | 3 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 2209 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°3) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie des racines** | Immobiliser les ennemis avec des lianes. | **Karpos** (Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis)) ; **Despina** (+1 liane à chaque rayon de vie) | 7 | 442 |
+| **Voie des moissons** | Te soigner plus fort et plus souvent. | **Triptolème** (Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent) ; **Métanire** (Le rayon de vie soigne 0.5 PV de plus) | 7 | 442 |
+| **Voie de la forêt** | Un rayon de vie plus grand, qui fait aussi pousser des lianes. | **Pan** (+60 de rayon du rayon de vie et +2 lianes) ; **Dryope** (+25 de rayon du rayon de vie) | 7 | 442 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +46,9 @@
 | **Eubouleus** (LIANE) | +1 liane à chaque rayon de vie | 86 XP |
 | **Carpo** (FLEUR) | Le rayon de vie revient 15% plus souvent | 45 XP |
 | **Anthée** (LIANE) | Les lianes immobilisent 1 s de plus | 86 XP |
+| **Despina** (LIANE) | +1 liane à chaque rayon de vie | 99 XP |
+| **Métanire** (SOIN) | Le rayon de vie soigne 0.5 PV de plus | 99 XP |
+| **Dryope** (FLEUR) | +25 de rayon du rayon de vie | 99 XP |
 
 ## Départ
 
@@ -48,9 +62,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Dryade** (VIE) | +0.05 PV regagné par ennemi tué | ×12 | 20 à 47 XP |
-| **Hamadryade** (XP) | +5% d'XP gagnée | ×12 | 29 à 47 XP |
-| **Mélie** (FLEUR) | +8 de rayon du rayon de vie | ×12 | 38 à 38 XP |
+| **Dryade** (VIE) | +0.05 PV regagné par ennemi tué | ×13 | 20 à 56 XP |
+| **Hamadryade** (XP) | +5% d'XP gagnée | ×13 | 29 à 56 XP |
+| **Mélie** (FLEUR) | +8 de rayon du rayon de vie | ×13 | 38 à 56 XP |
 
 ## ↔️ Lien « Opposé » vers Déméter
 

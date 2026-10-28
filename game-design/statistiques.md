@@ -50,6 +50,10 @@ Chaque dieu a sa façon de se battre, que son skill tree construit petit à peti
 
 Apollon, Athéna, Hermès et Hestia n'ont pas encore de pouvoir : leurs arbres donnent seulement des stats.
 
+## Les voies des skill trees
+
+Chaque skill tree a 2 ou 3 **voies** exclusives : prendre une compétence d'une voie bloque les autres voies du même arbre (on peut changer en remboursant les compétences de sa voie). Chaque voie mène à des keystones qui donnent une façon de jouer différente à la planète : par exemple, Héphaïstos joue en « coups lourds » (Voie du marteau) ou en « brûler et traverser » (Voie de la lave). Au bout de chaque voie, 1 ou 2 compétences de plus ont été ajoutées pour agrandir les arbres (445 compétences avant, 498 maintenant). La liste des voies est dans les fiches de [skills/](skills/README.md).
+
 ## Balles par tir : un « mur »
 
 Les balles en plus partent côte à côte, à 10 px d'écart (`BULLET_WALL_SPACING`), dans la même direction : avec 4 balles par tir, on tire un mur de 4 balles. Les balles du milieu suivent la cible, celles des bords filent tout droit en parallèle.

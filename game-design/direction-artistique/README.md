@@ -22,6 +22,7 @@ Images de référence pour les formes des skill trees, et les choix de style val
 - Le nom est écrit sous l'étoile.
 - Pas d'aura ni de flou lumineux.
 - Les liens entre compétences ne doivent jamais se croiser. Le jeu le vérifie et affiche un avertissement dans la console (F12) si c'est le cas.
+- **Les voies** (choix exclusifs) : une large lueur douce sous les liens de la voie (or `#ffcf5c`, violet `#b98cff`, turquoise `#4fd1a5` : 1re, 2e et 3e voie, quelle que soit la couleur du dieu), et son nom en lettres épaisses de la même couleur, avec un contour de la couleur du fond pour rester lisible. Une voie bloquée devient grise, son nom barré ; ses étoiles sont grises, ternes et leur petit nom barré ; ses liens sont en pointillés.
 - Les tuiles hexagonales ont été essayées, puis abandonnées.
 
 ## Style général

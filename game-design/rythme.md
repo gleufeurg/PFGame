@@ -42,6 +42,8 @@ Les formules sont dans [questions/formules.md](questions/formules.md), les prix 
 
 ## Les mesures
 
+Ces mesures ont été faites avant l'ajout des **voies** dans les skill trees (on ne peut plus tout prendre dans un arbre) ; à refaire avec `outils/joueur-robot.js` si besoin.
+
 Minutes de jeu réelles pour obtenir chaque dieu (le robot) :
 
 | Dieu | Avant | Après |
@@ -51,13 +53,13 @@ Minutes de jeu réelles pour obtenir chaque dieu (le robot) :
 | 3ᵉ | 10 min | 6 min |
 | 4ᵉ | 16 min | 12 min |
 | 5ᵉ | 28 min | 22 min |
-| 6ᵉ | 39 min | 30 min |
+| 6ᵉ | 39 min | 31 min |
 | 7ᵉ | 45 min | 38 min |
 | 8ᵉ | 48 min | 50 min |
 | 9ᵉ | 52 min | 1 h 01 |
 | 10ᵉ | 1 h 04 | 1 h 36 |
 | 11ᵉ | 1 h 04 | 2 h 50 |
-| 12ᵉ | 1 h 20 | pas encore à 3 h 25 (vers 5 h 30 d'après la cagnotte) |
+| 12ᵉ | 1 h 20 | pas encore à 5 h de jeu |
 
 Et pour un **nouveau joueur** (aucune amélioration), la 1ʳᵉ partie, en moyenne sur 20 parties :
 
@@ -68,7 +70,7 @@ Et pour un **nouveau joueur** (aucune amélioration), la 1ʳᵉ partie, en moyen
 | Ennemis tués dans les 30 premières secondes | 11 | 19 |
 | Dieux achetés à la 1ʳᵉ mort | 1 | 2 le plus souvent (20 + 50 or) |
 
-**Avant**, à partir de 1 h 20, tout était acheté et les parties duraient 60 minutes sans que le robot meure (le bug de l'esquive). **Après**, les dernières parties durent 25 à 37 minutes de jeu (6 à 9 minutes réelles en x4) et rapportent 28 000 à 62 000 or : il faut 5 à 10 parties pour chacun des derniers dieux, et l'or en trop part dans les améliorations infinies (à 3 h 25, le robot avait acheté environ 40 niveaux de plus que l'ancien maximum de ces 5 améliorations).
+**Avant**, à partir de 1 h 20, tout était acheté et les parties duraient 60 minutes sans que le robot meure (le bug de l'esquive). **Après**, les dernières parties durent 25 à 39 minutes de jeu (6 à 10 minutes réelles en x4) et rapportent 28 000 à 62 000 or : il faut 5 à 10 parties pour chacun des derniers dieux, et l'or en trop part dans les améliorations infinies (à 5 h, le robot avait acheté environ 50 niveaux de plus que l'ancien maximum de ces 5 améliorations).
 
 La courbe est plus régulière : les 4 premiers dieux arrivent plus vite (l'action du début, les premiers dieux moins chers), le milieu ressemble à avant, et la fin s'étale sur des heures au lieu de s'arrêter d'un coup.
 
