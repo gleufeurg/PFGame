@@ -7,10 +7,10 @@ Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un 
 | Code | Effet |
 | --- | --- |
 | nom d'un dieu, sans accent : `hephaistos`, `poseidon`, `demeter`, `eole`, `apollon`, `artemis`, `athena`, `zeus`, `ares`, `aphrodite`, `hermes`, `hestia` | ce dieu rejoint l'orbite et tout son skill tree est débloqué |
-| `ragnarok` | **tout le jeu débloqué** : shop au maximum, tous les dieux avec leurs skill trees complets, tous les super ennemis vaincus (donc tous les paliers du menu de mort), et sur `monetisation` le Pack Premium et le Pack Soutien |
+| `ragnarok` | **tout le jeu débloqué** : shop au maximum (les améliorations infinies au niveau 20), tous les dieux avec leurs skill trees complets, tous les super ennemis vaincus (donc tous les paliers du menu de mort), et sur `monetisation` le Pack Premium et le Pack Soutien |
 | `pantheon` | tous les dieux en orbite, avec tous leurs skill trees complets |
 | `olympe` | tous les dieux rejoignent l'orbite (skill trees vides) |
-| `cresus` | tout le shop au maximum (donc aussi tous les dieux et toutes les options de temps) |
+| `cresus` | tout le shop au maximum (donc aussi tous les dieux et toutes les options de temps) ; les améliorations infinies n'ont pas de maximum : elles passent au niveau 20 (`CHEAT_INFINITE_LEVEL`) |
 | `ploutos` | +1000 or et +1000 XP (c'était l'ancien code `zeus`) |
 | `midas` | or et XP ×10 par ennemi (retaper pour couper) |
 | `achille` | invincible (retaper pour couper) |

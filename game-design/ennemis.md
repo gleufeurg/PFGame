@@ -14,36 +14,40 @@ Il y a 4 ennemis normaux, un par élément, et chacun a 25 % de chances d'appara
 | Plante | `#55dd55` | 2,2 à 3,4 | 35 | 1 | 1 |
 
 - **Dégâts :** un ennemi qui touche le joueur lui fait autant de dégâts que sa vie restante (1 PV restant = 1 dégât), puis disparaît. Les virgules comptent (0,4 PV restant = 0,4 dégât), même si la vie du joueur est affichée sans virgule. Un ennemi abîmé fait donc moins mal.
-- **Vie qui monte :** la vie ci-dessus est multipliée par un nombre qui grandit avec le temps (`getEnemyHealthScale`) : 1 + 0,4 × minutes + 0,04 × minutes².
+- **Vie qui monte :** la vie ci-dessus est multipliée par un nombre qui grandit avec le temps (`getEnemyHealthScale`) : (1 + 0,3 × minutes + 0,03 × minutes²) × 1,05^minutes. Le « × 1,05 chaque minute » (`ENEMY_HEALTH_LATE_GROWTH`) compte peu au début mais fait monter vite la fin de partie : une partie finit toujours, et chaque amélioration fait tenir un peu plus longtemps. Avant le rééquilibrage, c'était 1 + 0,4 × minutes + 0,04 × minutes² : en fin de jeu, les parties pouvaient durer sans fin.
 
-| Temps de jeu | Multiplicateur de vie | Plante (la plus solide) |
-| --- | --- | --- |
-| 0:00 | ×1 | 2,2 à 3,4 PV |
-| 1:00 | ×1,44 | 3,2 à 4,9 PV |
-| 5:00 | ×4 | 8,8 à 13,6 PV |
-| 10:00 | ×9 | 20 à 31 PV |
-| 20:00 | ×25 | 55 à 85 PV |
+| Temps de jeu | Multiplicateur de vie | Plante (la plus solide) | Avant le rééquilibrage |
+| --- | --- | --- | --- |
+| 0:00 | ×1 | 2,2 à 3,4 PV | ×1 |
+| 1:00 | ×1,4 | 3,1 à 4,7 PV | ×1,44 |
+| 5:00 | ×4,1 | 9,1 à 14 PV | ×4 |
+| 10:00 | ×11 | 25 à 39 PV | ×9 |
+| 20:00 | ×50 | 111 à 171 PV | ×25 |
+| 30:00 | ×160 | 352 à 544 PV | ×49 |
+| 40:00 | ×429 | 945 à 1 460 PV | ×81 |
 
 - **Taille :** rayon = 4 px + 4 px par PV « de départ » (sans le multiplicateur du temps, pour que les ennemis ne deviennent pas géants). Une plante fait 13 à 18 px de rayon, un air 6 à 8 px. L'ennemi rétrécit quand on l'abîme.
 - **Récompenses :** chaque ennemi normal donne 1 or et 1 XP, avant les bonus des skills (« or gagné », « XP gagnée »).
 
 ## L'apparition
 
-Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,35 s atteint vers 8 min. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
+Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,35 s atteint vers 8:06. Les testeurs s'ennuyaient au début de chaque partie : depuis le rééquilibrage, il y a 2 fois plus d'ennemis au départ (un toutes les 1,2 s au lieu de 2,4 s), puis la montée est plus douce, pour que le milieu de partie ne soit pas plus dur qu'avant. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
 
 **Avec la caméra :** quand la portée du joueur dépasse l'écran, la caméra dézoome pour que la portée occupe environ 95 % de la demi-largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`), et pour que les 3 orbites des planètes restent à l'écran (voir [interface.md](interface.md)). Les ennemis naissent toujours hors de l'écran visible. Au-delà de 1000 px de portée (`CAMERA_MAX_RANGE`), la caméra ne dézoome plus, et les ennemis naissent n'importe où entre le bord de l'écran et 1000 px du centre.
 
-| Temps de jeu | Écart entre deux ennemis | Ennemis par minute |
-| --- | --- | --- |
-| 0:00 | 2,4 s | 25 |
-| 0:30 | 1,76 s | 34 |
-| 1:00 | 1,4 s | 43 |
-| 2:00 | 0,98 s | 61 |
-| 3:00 | 0,76 s | 79 |
-| 5:00 | 0,52 s | 115 |
-| 8:00 et après | 0,35 s | 171 |
+| Temps de jeu | Écart entre deux ennemis | Ennemis par minute | Avant le rééquilibrage |
+| --- | --- | --- | --- |
+| 0:00 | 1,2 s | 50 | 25 |
+| 0:30 | 1,04 s | 58 | 34 |
+| 1:00 | 0,92 s | 65 | 43 |
+| 2:00 | 0,75 s | 80 | 61 |
+| 3:00 | 0,63 s | 95 | 79 |
+| 5:00 | 0,48 s | 125 | 115 |
+| 8:06 et après | 0,35 s | 171 | 171 (dès 8:08) |
 
-Formule : écart = 2,4 ÷ (1 + 0,012 × secondes de jeu), jamais moins de 0,35 s. Les réglages sont `ENEMY_SPAWN_INTERVAL_START`, `ENEMY_SPAWN_RAMP`, `ENEMY_SPAWN_INTERVAL_MIN` et `ENEMY_FIRST_SPAWN_DELAY`.
+Formule : écart = 1,2 ÷ (1 + 0,005 × secondes de jeu), jamais moins de 0,35 s (avant : 2,4 ÷ (1 + 0,012 × secondes)). Les réglages sont `ENEMY_SPAWN_INTERVAL_START`, `ENEMY_SPAWN_RAMP`, `ENEMY_SPAWN_INTERVAL_MIN` et `ENEMY_FIRST_SPAWN_DELAY`.
+
+Pour un nouveau joueur (10 PV, 1 dégât, aucune amélioration), la 1re partie dure en moyenne **1:46** et rapporte **82 or** (avant : 2:11 pour 75 or), avec **19 ennemis** tués dans les 30 premières secondes (avant : 11). Mesuré sur 20 parties ; voir [rythme.md](rythme.md) pour le rythme de toute la progression.
 
 ## Les mouvements spéciaux
 
@@ -72,18 +76,19 @@ Les réglages communs sont `ENEMY_WAVE_AMPLITUDE` (40 px), `ENEMY_WAVE_FREQUENCY
 Un monstre de la mythologie arrive **toutes les 5 minutes**, de 5:00 à 40:00, après une alerte (voir « Les arrivées spéciales » ci-dessous). Il va tout droit et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive.
 
 - **Ils sont 5 fois plus rapides** qu'avant (les testeurs les trouvaient trop lents).
-- **Leur vie monte avec le temps**, comme celle des ennemis normaux : la vie du tableau (celle qu'ils auraient au tout début) est multipliée par l'échelle de vie au moment de leur arrivée (×4 à 5:00, ×9 à 10:00, ×81 à 40:00 ; voir [questions/formules.md](questions/formules.md)). Sinon, les derniers seraient bien plus faibles que les ennemis normaux de leur époque.
+- **Leur vie monte avec le temps**, comme celle des ennemis normaux : la vie du tableau (celle qu'ils auraient au tout début) est multipliée par l'échelle de vie au moment de leur arrivée (×4,1 à 5:00, ×11 à 10:00, ×429 à 40:00 ; voir [questions/formules.md](questions/formules.md)). Sinon, les derniers seraient bien plus faibles que les ennemis normaux de leur époque.
+- **Cerbère et l'Hydre ont moins de vie** depuis le rééquilibrage (15 au lieu de 40, et 60 au lieu de 90) : le joueur robot mourait 2 ou 3 parties de suite contre eux, ce qui bloquait le début du jeu.
 
 | Arrivée | Super ennemi | Élément | Vie (×échelle) | Vie à son heure | Vitesse (px/s) | Taille (rayon, px) | Pointes | Or | XP | Pouvoir |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 5:00 | Cerbère | feu | 40 | 160 | 60 | 34 | 3 | 15 | 15 | — |
-| 10:00 | Hydre de Lerne | eau | 90 | 810 | 55 | 38 | 9 | 25 | 25 | se dédouble, puis dernière vague |
-| 15:00 | Méduse | plante | 160 | 2 560 | 50 | 42 | 6 | 40 | 40 | pétrifie les planètes |
-| 20:00 | Typhon | air | 260 | 6 500 | 50 | 46 | 4 | 60 | 60 | — |
-| 25:00 | Chimère | feu | 400 | 14 400 | 45 | 50 | 5 | 90 | 90 | — |
-| 30:00 | Charybde | eau | 600 | 29 400 | 45 | 54 | 8 | 130 | 130 | — |
-| 35:00 | Python | plante | 850 | 54 400 | 40 | 58 | 7 | 180 | 180 | — |
-| 40:00 | Cronos | air | 1 200 | 97 200 | 40 | 64 | 12 | 260 | 260 | ralentit ton temps |
+| 5:00 | Cerbère | feu | 15 | 62 | 60 | 34 | 3 | 15 | 15 | — |
+| 10:00 | Hydre de Lerne | eau | 60 | 684 | 55 | 38 | 9 | 25 | 25 | se dédouble, puis dernière vague |
+| 15:00 | Méduse | plante | 160 | 4 075 | 50 | 42 | 6 | 40 | 40 | pétrifie les planètes |
+| 20:00 | Typhon | air | 260 | 13 107 | 50 | 46 | 4 | 60 | 60 | — |
+| 25:00 | Chimère | feu | 400 | 36 912 | 45 | 50 | 5 | 90 | 90 | — |
+| 30:00 | Charybde | eau | 600 | 95 940 | 45 | 54 | 8 | 130 | 130 | — |
+| 35:00 | Python | plante | 850 | 226 185 | 40 | 58 | 7 | 180 | 180 | — |
+| 40:00 | Cronos | air | 1 200 | 515 280 | 40 | 64 | 12 | 260 | 260 | ralentit ton temps |
 
 - **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie, pour un **duel** (voir ci-dessous).
 - **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Il devient alors un ennemi (rare) comme les autres : **pas d'alerte ni de duel**, il arrive au milieu des ennemis normaux, qui continuent d'apparaître, et il n'arrête pas « Sauter dans le temps » (il peut même arriver pendant un saut). **Il garde son pouvoir** (Méduse pétrifie, l'Hydre se dédouble...).

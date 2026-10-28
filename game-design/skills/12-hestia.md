@@ -6,41 +6,41 @@
 | Couleur | `#c4734a` |
 | Forme de l'arbre | brasero (`hearth`) |
 | Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1179 |
+| XP pour tout débloquer | 101976 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°12) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Ananké** (ANANKÉ) | +8 PV max | 150 XP |
+| **Ananké** (ANANKÉ) | +8 PV max | 12975 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Vesta** (VESTA) | +5 PV max | 78 XP |
-| **Boulaia** (CONSEIL) | +0.15 PV régénérés par seconde | 72 XP |
-| **Sôtéria** (SALUT) | +10% de chance d'esquiver un coup | 72 XP |
+| **Vesta** (VESTA) | +5 PV max | 6747 XP |
+| **Boulaia** (CONSEIL) | +0.15 PV régénérés par seconde | 6228 XP |
+| **Sôtéria** (SALUT) | +10% de chance d'esquiver un coup | 6228 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Tabiti** (REG) | +0.05 PV régénérés par seconde | 38 XP |
-| **Agathodaimon** (PV) | +2 PV max | 26 XP |
-| **Philotès** (VIE) | +0.2 PV regagné par ennemi tué | 26 XP |
-| **Eucléia** (ESQ) | +5% de chance d'esquiver un coup | 38 XP |
-| **Homonoia** (REG) | +0.05 PV régénérés par seconde | 62 XP |
-| **Euthénia** (PV) | +3 PV max | 74 XP |
-| **Elpis** (REG) | +0.1 PV régénérés par seconde | 62 XP |
-| **Hestiade** (ESQ) | +5% de chance d'esquiver un coup | 74 XP |
+| **Tabiti** (REG) | +0.05 PV régénérés par seconde | 3287 XP |
+| **Agathodaimon** (PV) | +2 PV max | 2249 XP |
+| **Philotès** (VIE) | +0.2 PV regagné par ennemi tué | 2249 XP |
+| **Eucléia** (ESQ) | +5% de chance d'esquiver un coup | 3287 XP |
+| **Homonoia** (REG) | +0.05 PV régénérés par seconde | 5363 XP |
+| **Euthénia** (PV) | +3 PV max | 6401 XP |
+| **Elpis** (REG) | +0.1 PV régénérés par seconde | 5363 XP |
+| **Hestiade** (ESQ) | +5% de chance d'esquiver un coup | 6401 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Rhéa** (PV) | +2 PV max | 5 XP |
+| **Rhéa** (PV) | +2 PV max | 432 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Vestale** (REG) | +0.02 PV régénérés par seconde | ×5 | 21 à 45 XP |
-| **Lare** (PV) | +1 PV max | ×5 | 9 à 45 XP |
-| **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 13 à 33 XP |
+| **Vestale** (REG) | +0.02 PV régénérés par seconde | ×5 | 1816 à 3892 XP |
+| **Lare** (PV) | +1 PV max | ×5 | 778 à 3892 XP |
+| **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 1124 à 2854 XP |
 
 ## ↔️ Lien « Opposé » vers Hestia
 

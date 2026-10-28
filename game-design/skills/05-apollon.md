@@ -6,41 +6,41 @@
 | Couleur | `#ffd84d` |
 | Forme de l'arbre | soleil (`sun`) |
 | Compétences | 49 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1455 |
+| XP pour tout débloquer | 7368 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°5) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Chaos** (BANG) | +100% d'or gagné | 150 XP |
+| **Chaos** (BANG) | +100% d'or gagné | 759 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Ploutos** (TRÉSOR) | +50% d'or gagné | 72 XP |
-| **Astéria** (NOVA) | +1 balle par tir | 76 XP |
-| **Érébos** (TROU) | +3 dégâts par balle | 72 XP |
+| **Ploutos** (TRÉSOR) | +50% d'or gagné | 365 XP |
+| **Astéria** (NOVA) | +1 balle par tir | 385 XP |
+| **Érébos** (TROU) | +3 dégâts par balle | 365 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Kairos** (OR) | +15% d'or gagné | 20 XP |
-| **Eutychia** (OR) | +25% d'or gagné | 20 XP |
-| **Coéos** (XP) | +10% d'XP gagnée | 38 XP |
-| **Mnémosyne** (XP) | +20% d'XP gagnée | 50 XP |
-| **Hypérion** (DMG) | +1 dégât par balle | 44 XP |
-| **Astrée** (AIR) | +1 dégât contre les ennemis d'air | 44 XP |
-| **Agathodaïmon** (OR) | +10% d'or gagné | 50 XP |
-| **Théia** (DMG) | +1 dégât par balle | 38 XP |
+| **Kairos** (OR) | +15% d'or gagné | 101 XP |
+| **Eutychia** (OR) | +25% d'or gagné | 101 XP |
+| **Coéos** (XP) | +10% d'XP gagnée | 192 XP |
+| **Mnémosyne** (XP) | +20% d'XP gagnée | 253 XP |
+| **Hypérion** (DMG) | +1 dégât par balle | 223 XP |
+| **Astrée** (AIR) | +1 dégât contre les ennemis d'air | 223 XP |
+| **Agathodaïmon** (OR) | +10% d'or gagné | 253 XP |
+| **Théia** (DMG) | +1 dégât par balle | 192 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Tyché** (OR) | +10% d'or gagné | 5 XP |
+| **Tyché** (OR) | +10% d'or gagné | 25 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Pléiade** (OR) | +5% d'or gagné | ×12 | 9 à 29 XP |
-| **Hyade** (XP) | +5% d'XP gagnée | ×12 | 13 à 33 XP |
-| **Titanide** (DMG) | +0.5 dégât par balle | ×12 | 9 à 29 XP |
+| **Pléiade** (OR) | +5% d'or gagné | ×12 | 46 à 147 XP |
+| **Hyade** (XP) | +5% d'XP gagnée | ×12 | 66 à 167 XP |
+| **Titanide** (DMG) | +0.5 dégât par balle | ×12 | 46 à 147 XP |
 
 ## ↔️ Lien « Opposé » vers Apollon
 

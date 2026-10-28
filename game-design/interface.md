@@ -126,11 +126,7 @@ Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout 
 | Accélérer le temps | vitesse x2 | vitesse x4 | — |
 | Sauter dans le temps | saut de +10 s | saut de +30 s | saut de +100 s |
 
-<<<<<<< HEAD
-Les boutons pas encore achetés restent visibles avec un cadenas. Sur la branche `monetisation`, le Pack Premium ajoute les vitesses x8 et x10 et les sauts de +500 s et +999 s (boutons marqués 💎, voir [monetisation.md](monetisation.md)).
-=======
-Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
->>>>>>> portfolio
+Les boutons pas encore achetés restent visibles, en gris ; leur bulle d'aide dit comment les débloquer. Sur la branche `monetisation`, le Pack Premium ajoute les vitesses x8 et x10 et les sauts de +500 s et +999 s (« Avec le Pack Premium », voir [monetisation.md](monetisation.md)). De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 
 **Temps de recharge du saut** (comme les sorts de League of Legends) : après un saut, il faut attendre avant le suivant, sinon les sauts s'enchaînent, les ennemis s'empilent et le jeu rame. Pendant la recharge, un voile sombre recouvre les boutons de saut **et** le bouton du menu du temps (même fermé) ; il « tourne » comme une aiguille : la partie claire grandit dans le sens des aiguilles d'une montre. Les secondes restantes s'affichent au milieu (« ⏳ 12 » sur le bouton du menu, pour ne pas confondre avec la vitesse). Quand c'est prêt, les boutons brillent un instant, avec un petit « ding » (`skipReady`). Un saut tenté pendant la recharge (bouton ou touche T) affiche « ⏳ Saut dans le temps en recharge : encore 12 s ». La recharge compte en temps de jeu (elle s'arrête quand le jeu est en pause) et repart de zéro à chaque partie. Formule dans [questions/formules.md](questions/formules.md).
 
@@ -141,6 +137,10 @@ En haut du menu de mort, sous « GAME OVER », 3 grandes cartes résument la par
 - **Temps de survie**.
 
 Juste en dessous, **l'or disponible** (le total à dépenser dans le shop), en gros avec une pièce. L'or et l'XP de la partie sont comptés dans `runGold` et `runXp` (remis à 0 à chaque nouvelle partie).
+
+## Le shop : les améliorations infinies
+
+Cinq améliorations du joueur (le triangle du milieu) sont **infinies** : Dégâts, Cadence de tir, Vie max, Régénération et Dégâts critiques (`maxLevel: Infinity` dans `SHOP_ITEMS`). Le shop affiche « (niv. 12/∞) » : on peut toujours les acheter, chaque niveau coûtant 1,5 ou 1,6 fois plus que le précédent. Avant, elles s'arrêtaient au niveau 8 ou 10, et les testeurs n'avaient plus rien à acheter après une heure de jeu. Les autres (Portée, Vitesse des balles, Balle supplémentaire, Chance de critique, les dieux, le temps et les liens) gardent un niveau maximum : une portée, une vitesse ou une chance sans limite casseraient le jeu (la chance de critique ne peut pas dépasser 100 %). Le détail des prix est dans [prix.md](prix.md), le rythme dans [rythme.md](rythme.md).
 
 ## Le menu de mort : les paliers
 
@@ -200,6 +200,6 @@ Tout en bas des paramètres : « Un jeu créé par Evangeline Lefevre », puis l
 À droite, quand la fenêtre des skills ou le game over est ouvert (en bas sur écran étroit, repliable sur petit écran). Ses sections :
 - **Vie** et **Attaque (toi)** : les stats du triangle du milieu.
 - **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. Les **pouvoirs** du dieu (taille des balles, rayon de charme, éclairs...) s'affichent aussi, avec « toutes les X s » pour ceux qui reviennent régulièrement, et le nombre d'ennemis tués pour la soif de gloire d'Arès. La planète du skill tree ouvert passe en premier.
-- **Défense**, **Gains** et **Ennemis**.
+- **Défense**, **Gains** et **Ennemis**. L'esquive affichée est celle qui compte vraiment : au plus 75 % (`DODGE_MAX`), avec « (maximum) » quand les compétences en donnent plus.
 
 Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`). Pour les stats où un nombre plus bas est mieux (la recharge du bouclier), la couleur est inversée (`LOWER_IS_BETTER_STATS`).

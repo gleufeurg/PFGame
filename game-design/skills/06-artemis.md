@@ -6,40 +6,40 @@
 | Couleur | `#c7b8ff` |
 | Forme de l'arbre | arc et flèche (`bow`) |
 | Compétences | 22 (7 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 743 |
+| XP pour tout débloquer | 5640 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°6) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Agrotera** (LUNE) | la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle | 150 XP |
+| **Agrotera** (LUNE) | la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle | 1139 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Orion** (ORION) | Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches | 64 XP |
-| **Hippolyte** (ARC) | Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent | 64 XP |
-| **Actéon** (CERF) | +1 rebond et +25% de vitesse d'attaque | 76 XP |
+| **Orion** (ORION) | Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches | 486 XP |
+| **Hippolyte** (ARC) | Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent | 486 XP |
+| **Actéon** (CERF) | +1 rebond et +25% de vitesse d'attaque | 577 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Callisto** (VIT) | +10% de vitesse d'attaque | 14 XP |
-| **Britomartis** (DMG) | +1 dégât par balle | 14 XP |
-| **Aréthuse** (LUNE) | Flèche de lune : +1 fois les dégâts d'une balle | 32 XP |
-| **Opis** (VEL) | +20% de vitesse des balles | 32 XP |
-| **Cyrène** (LUNE) | La flèche de lune revient 15% plus souvent | 20 XP |
-| **Atalante** (VIT) | +15% de vitesse d'attaque | 38 XP |
-| **Procris** (DMG) | +1 dégât par balle | 56 XP |
+| **Callisto** (VIT) | +10% de vitesse d'attaque | 106 XP |
+| **Britomartis** (DMG) | +1 dégât par balle | 106 XP |
+| **Aréthuse** (LUNE) | Flèche de lune : +1 fois les dégâts d'une balle | 243 XP |
+| **Opis** (VEL) | +20% de vitesse des balles | 243 XP |
+| **Cyrène** (LUNE) | La flèche de lune revient 15% plus souvent | 152 XP |
+| **Atalante** (VIT) | +15% de vitesse d'attaque | 289 XP |
+| **Procris** (DMG) | +1 dégât par balle | 425 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Léto** (LUNE) | Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle) | 5 XP |
+| **Léto** (LUNE) | Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle) | 38 XP |
 
 ## Petites compétences
 
@@ -47,9 +47,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Nymphe** (POR) | +10 de portée | ×4 | 9 à 25 XP |
-| **Oréade** (DMG) | +0.5 dégât par balle | ×3 | 17 à 29 XP |
-| **Pléione** (VEL) | +8% de vitesse des balles | ×3 | 9 à 21 XP |
+| **Nymphe** (POR) | +10 de portée | ×4 | 68 à 190 XP |
+| **Oréade** (DMG) | +0.5 dégât par balle | ×3 | 129 à 220 XP |
+| **Pléione** (VEL) | +8% de vitesse des balles | ×3 | 68 à 159 XP |
 
 ## ↔️ Lien « Opposé » vers Artémis
 

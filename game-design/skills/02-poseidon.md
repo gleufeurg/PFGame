@@ -6,43 +6,43 @@
 | Couleur | `#4da6ff` |
 | Forme de l'arbre | vagues (`waves`) |
 | Compétences | 40 (10 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 2202 |
+| XP pour tout débloquer | 3316 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°2) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Océanos** (MER) | ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | 150 XP |
+| **Océanos** (MER) | ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s | 225 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Amphitrite** (OCÉAN) | Bouclier des marées : chaque vague te rend invincible pendant 2 s | 82 XP |
-| **Céto** (ABYSS) | Ennemis frêles : +15% de dégâts subis | 72 XP |
-| **Triton** (VAGUE) | La vague revient 40% plus souvent, et +80 de portée | 92 XP |
+| **Amphitrite** (OCÉAN) | Bouclier des marées : chaque vague te rend invincible pendant 2 s | 123 XP |
+| **Céto** (ABYSS) | Ennemis frêles : +15% de dégâts subis | 108 XP |
+| **Triton** (VAGUE) | La vague revient 40% plus souvent, et +80 de portée | 138 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Doris** (REG) | +0.05 PV régénérés par seconde | 62 XP |
-| **Galatée** (POR) | +40 de portée (la vague va aussi plus loin) | 44 XP |
-| **Protée** (ESQ) | +10% de chance d'esquiver un coup | 80 XP |
-| **Phorcys** (BOUC) | Bouclier : bloque un coup, se recharge en 10 s | 26 XP |
-| **Glaucos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 38 XP |
-| **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 62 XP |
-| **Palémon** (RECUL) | +30 de recul de la vague | 86 XP |
-| **Nérée** (PV) | +3 PV max | 98 XP |
-| **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 80 XP |
-| **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 92 XP |
+| **Doris** (REG) | +0.05 PV régénérés par seconde | 93 XP |
+| **Galatée** (POR) | +40 de portée (la vague va aussi plus loin) | 66 XP |
+| **Protée** (ESQ) | +10% de chance d'esquiver un coup | 120 XP |
+| **Phorcys** (BOUC) | Bouclier : bloque un coup, se recharge en 10 s | 39 XP |
+| **Glaucos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 57 XP |
+| **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 93 XP |
+| **Palémon** (RECUL) | +30 de recul de la vague | 129 XP |
+| **Nérée** (PV) | +3 PV max | 147 XP |
+| **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 120 XP |
+| **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 138 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thétis** (VAGUE) | Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s | 5 XP |
+| **Thétis** (VAGUE) | Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s | 8 XP |
 
 ## Petites compétences
 
@@ -50,11 +50,11 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Néréide** (PV) | +1 PV max | ×8 | 21 à 81 XP |
-| **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 9 à 85 XP |
-| **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 13 à 77 XP |
-| **Cymo** (POR) | +20 de portée | ×1 | 49 à 49 XP |
-| **Rhodé** (POR) | +30 de portée | ×1 | 57 à 57 XP |
+| **Néréide** (PV) | +1 PV max | ×8 | 32 à 122 XP |
+| **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 14 à 128 XP |
+| **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 20 à 116 XP |
+| **Cymo** (POR) | +20 de portée | ×1 | 74 à 74 XP |
+| **Rhodé** (POR) | +30 de portée | ×1 | 86 à 86 XP |
 
 ## ↔️ Lien « Opposé » vers Poséidon
 

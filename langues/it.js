@@ -1437,5 +1437,6 @@ window.TRADUCTIONS.it = {
     "seule ici": "da solo qui",
     "vide": "vuota",
     "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "Un pianeta si collega solo a quelli della sua orbita. Puoi anche trascinarlo nel gioco.",
-    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Da solo sulla sua orbita: nessun vicino a cui collegarsi. Metti un altro pianeta su questa orbita."
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Da solo sulla sua orbita: nessun vicino a cui collegarsi. Metti un altro pianeta su questa orbita.",
+    "(maximum)": "(massimo)"
 };

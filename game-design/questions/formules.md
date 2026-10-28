@@ -124,11 +124,11 @@ temps entre deux pouvoirs = temps de base ÷ (1 + abilityHaste)
 ### Leur vie
 
 ```
-échelle de vie(t) = 1 + 0,4 × m + 0,04 × m²
+échelle de vie(t) = (1 + 0,3 × m + 0,03 × m²) × 1,05^m
 vie de départ     = un nombre au hasard entre min et max du type × échelle de vie(t)
 ```
 
-Exemples : 1:00 → ×1,44 ; 5:00 → ×4 ; 10:00 → ×9 ; 20:00 → ×25 ; 40:00 → ×81.
+Exemples : 1:00 → ×1,4 ; 5:00 → ×4,1 ; 10:00 → ×11 ; 20:00 → ×50 ; 30:00 → ×160 ; 40:00 → ×429. Le « × 1,05^m » (5 % de plus chaque minute, qui s'accumulent) compte peu au début et beaucoup à la fin : une partie finit toujours. Avant le rééquilibrage : 1 + 0,4 × m + 0,04 × m² (40:00 → ×81).
 
 Pendant un **duel** contre un super ennemi, t ne bouge pas (le chrono est arrêté) : la vie des ennemis n'augmente pas.
 
@@ -174,7 +174,7 @@ Les multiplicateurs de statut :
 ### L'apparition
 
 ```
-écart entre deux ennemis = max(0,35 ; 2,4 ÷ (1 + 0,012 × t))   secondes
+écart entre deux ennemis = max(0,35 ; 1,2 ÷ (1 + 0,005 × t))   secondes      (avant : 2,4 ÷ (1 + 0,012 × t))
 chance qu'un ennemi soit un super ennemi déjà vaincu = 0,001 + 0,00002 × t
 ```
 
@@ -215,7 +215,7 @@ Il regagne des PV de plusieurs façons, sans jamais dépasser ses PV max :
 
 1. Code de triche « achille » : aucun dégât.
 2. Bouclier des marées actif (Poséidon) : aucun dégât.
-3. Esquive : il a « chance d'esquive » de chances de ne rien prendre.
+3. Esquive : il a min(chance d'esquive ; 75 %) de chances de ne rien prendre (`DODGE_MAX`). Sans ce plafond, toutes les compétences d'esquive réunies donnaient 126 % : le joueur n'était plus jamais touché.
 4. Bouclier prêt : il bloque le coup, puis se recharge en 10 ÷ recharge du bouclier secondes.
 5. Sinon : PV = PV − dégâts au contact. **Il meurt si PV < 1** : la vie affichée est arrondie en dessous, donc 0,9 PV s'affiche 0.
 
@@ -258,16 +258,25 @@ Les multiplicateurs commencent à 1 et augmentent avec les compétences, par exe
 
 ```
 prix du shop    = arrondi(prix de départ × multiplicateur ^ niveau déjà acheté)
+nouveau dieu    = arrondi(30 × 2,4 ^ dieux déjà achetés)        (avant : 50 × 1,8 ^ ...)
 ```
 
-Le prix d'un skill dépend de son type et de son nombre de **pas** : le nombre de liens entre l'étoile de départ et lui.
+Les améliorations **infinies** (Dégâts, Cadence de tir, Vie max, Régénération, Dégâts critiques) suivent la même formule, sans niveau maximum : chaque niveau coûte 1,5 ou 1,6 fois plus que le précédent.
 
-| Type de skill | Prix |
+Le prix d'un skill dépend de son type, de son nombre de **pas** (le nombre de liens entre l'étoile de départ et lui) et du **rang du dieu** dans l'ordre d'achat (le 1er dieu = rang 0) :
+
+```
+prix d'un skill = arrondi(prix de base × 1,5 ^ rang du dieu)      (SKILL_TIER_GROWTH)
+```
+
+| Type de skill | Prix de base |
 | --- | --- |
 | Départ | 5 XP |
 | Mineure | 5 + 4 × pas |
 | Notable | arrondi((5 + 4 × pas) × 1,5) |
 | Keystone | 60 + 2 × pas |
 | Grande keystone | 150 |
+
+Ex : une mineure à 3 pas coûte 17 XP chez Héphaïstos (rang 0), 26 chez Poséidon (rang 1) et 1 470 chez Hestia (rang 11).
 
 Le détail des prix, dieu par dieu, est dans [prix.md](../prix.md). Rembourser un skill rend tout son XP.

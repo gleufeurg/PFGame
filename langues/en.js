@@ -1437,5 +1437,6 @@ window.TRADUCTIONS.en = {
     "seule ici": "alone here",
     "vide": "empty",
     "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "A planet only links with planets on its own orbit. You can also drag it in the game.",
-    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Alone on its orbit: no neighbour to link with. Put another planet on this orbit."
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Alone on its orbit: no neighbour to link with. Put another planet on this orbit.",
+    "(maximum)": "(maximum)"
 };

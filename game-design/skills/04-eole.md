@@ -6,41 +6,41 @@
 | Couleur | `#e0f7ff` |
 | Forme de l'arbre | souffles de vent (`wind`) |
 | Compétences | 45 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 2117 |
+| XP pour tout débloquer | 7143 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°4) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thyella** (TEMPÊTE) | +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins | 150 XP |
+| **Thyella** (TEMPÊTE) | +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins | 506 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Séléné** (RAFALE) | Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins | 72 XP |
-| **Phaéton** (x2) | +1 balle par tir | 92 XP |
-| **Astraïos** (OURAG) | Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites | 90 XP |
+| **Séléné** (RAFALE) | Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins | 243 XP |
+| **Phaéton** (x2) | +1 balle par tir | 311 XP |
+| **Astraïos** (OURAG) | Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites | 304 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Éos** (POR) | +30 de portée | 26 XP |
-| **Héméra** (VIT) | +20% de vitesse d'attaque | 44 XP |
-| **Iris** (VEL) | +20% de vitesse des balles | 74 XP |
-| **Borée** (VIT) | +15% de vitesse d'attaque | 38 XP |
-| **Notos** (AIR) | +1 dégât contre les plantes | 74 XP |
-| **Euros** (AIR) | +2 dégâts contre les plantes | 32 XP |
-| **Phosphoros** (VEL) | +30% de vitesse des balles | 44 XP |
-| **Hespéros** (VIT) | +10% de vitesse d'attaque | 68 XP |
+| **Éos** (POR) | +30 de portée | 88 XP |
+| **Héméra** (VIT) | +20% de vitesse d'attaque | 149 XP |
+| **Iris** (VEL) | +20% de vitesse des balles | 250 XP |
+| **Borée** (VIT) | +15% de vitesse d'attaque | 128 XP |
+| **Notos** (AIR) | +1 dégât contre les plantes | 250 XP |
+| **Euros** (AIR) | +2 dégâts contre les plantes | 108 XP |
+| **Phosphoros** (VEL) | +30% de vitesse des balles | 149 XP |
+| **Hespéros** (VIT) | +10% de vitesse d'attaque | 230 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Zéphyr** (VIT) | +10% de vitesse d'attaque | 5 XP |
+| **Zéphyr** (VIT) | +10% de vitesse d'attaque | 17 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Aura** (POR) | +15 de portée | ×11 | 9 à 61 XP |
-| **Héliade** (VEL) | +10% de vitesse des balles | ×11 | 13 à 65 XP |
-| **Anémoï** (VIT) | +6% de vitesse d'attaque | ×10 | 21 à 65 XP |
+| **Aura** (POR) | +15 de portée | ×11 | 30 à 206 XP |
+| **Héliade** (VEL) | +10% de vitesse des balles | ×11 | 44 à 219 XP |
+| **Anémoï** (VIT) | +6% de vitesse d'attaque | ×10 | 71 à 219 XP |
 
 ## ↔️ Lien « Opposé » vers Éole
 

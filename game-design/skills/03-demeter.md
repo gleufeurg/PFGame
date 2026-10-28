@@ -6,41 +6,41 @@
 | Couleur | `#55dd55` |
 | Forme de l'arbre | fleur (`flower`) |
 | Compétences | 49 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1171 |
+| XP pour tout débloquer | 2628 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°3) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Gaïa** (GAÏA) | +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | 150 XP |
+| **Gaïa** (GAÏA) | +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | 338 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Karpos** (ARBRE) | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) | 68 XP |
-| **Triptolème** (MOISS) | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent | 68 XP |
-| **Pan** (FORÊT) | +60 de rayon du rayon de vie et +2 lianes | 68 XP |
+| **Karpos** (ARBRE) | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) | 153 XP |
+| **Triptolème** (MOISS) | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent | 153 XP |
+| **Pan** (FORÊT) | +60 de rayon du rayon de vie et +2 lianes | 153 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thallo** (XP) | +10% d'XP gagnée | 20 XP |
-| **Auxo** (SOIN) | Le rayon de vie soigne 0.5 PV de plus | 38 XP |
-| **Chloris** (REG) | +0.05 PV régénérés par seconde | 20 XP |
-| **Aristée** (VIE) | +0.2 PV regagnés par ennemi tué | 38 XP |
-| **Iasion** (FLEUR) | +25 de rayon du rayon de vie | 20 XP |
-| **Eubouleus** (LIANE) | +1 liane à chaque rayon de vie | 38 XP |
-| **Carpo** (FLEUR) | Le rayon de vie revient 15% plus souvent | 20 XP |
-| **Anthée** (LIANE) | Les lianes immobilisent 1 s de plus | 38 XP |
+| **Thallo** (XP) | +10% d'XP gagnée | 45 XP |
+| **Auxo** (SOIN) | Le rayon de vie soigne 0.5 PV de plus | 86 XP |
+| **Chloris** (REG) | +0.05 PV régénérés par seconde | 45 XP |
+| **Aristée** (VIE) | +0.2 PV regagnés par ennemi tué | 86 XP |
+| **Iasion** (FLEUR) | +25 de rayon du rayon de vie | 45 XP |
+| **Eubouleus** (LIANE) | +1 liane à chaque rayon de vie | 86 XP |
+| **Carpo** (FLEUR) | Le rayon de vie revient 15% plus souvent | 45 XP |
+| **Anthée** (LIANE) | Les lianes immobilisent 1 s de plus | 86 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Perséphone** (VIE) | Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s) | 5 XP |
+| **Perséphone** (VIE) | Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s) | 11 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Dryade** (VIE) | +0.05 PV regagné par ennemi tué | ×12 | 9 à 21 XP |
-| **Hamadryade** (XP) | +5% d'XP gagnée | ×12 | 13 à 21 XP |
-| **Mélie** (FLEUR) | +8 de rayon du rayon de vie | ×12 | 17 à 17 XP |
+| **Dryade** (VIE) | +0.05 PV regagné par ennemi tué | ×12 | 20 à 47 XP |
+| **Hamadryade** (XP) | +5% d'XP gagnée | ×12 | 29 à 47 XP |
+| **Mélie** (FLEUR) | +8 de rayon du rayon de vie | ×12 | 38 à 38 XP |
 
 ## ↔️ Lien « Opposé » vers Déméter
 

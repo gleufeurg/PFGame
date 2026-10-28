@@ -1437,5 +1437,6 @@ window.TRADUCTIONS.ja = {
     "seule ici": "ここだけ",
     "vide": "空き",
     "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "惑星は同じ軌道の惑星としかつながれません。ゲーム中にドラッグして動かすこともできます。",
-    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "この軌道にひとりきり：つなげる隣の惑星がありません。この軌道に別の惑星を置きましょう。"
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "この軌道にひとりきり：つなげる隣の惑星がありません。この軌道に別の惑星を置きましょう。",
+    "(maximum)": "（上限）"
 };

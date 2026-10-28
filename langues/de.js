@@ -1437,5 +1437,6 @@ window.TRADUCTIONS.de = {
     "seule ici": "allein hier",
     "vide": "leer",
     "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "Ein Planet verbindet sich nur mit Planeten seiner Umlaufbahn. Du kannst ihn auch im Spiel ziehen.",
-    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Allein auf seiner Umlaufbahn: kein Nachbar zum Verbinden. Setze einen anderen Planeten auf diese Umlaufbahn."
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Allein auf seiner Umlaufbahn: kein Nachbar zum Verbinden. Setze einen anderen Planeten auf diese Umlaufbahn.",
+    "(maximum)": "(Maximum)"
 };
