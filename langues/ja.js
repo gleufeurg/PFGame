@@ -1405,5 +1405,16 @@ window.TRADUCTIONS.ja = {
     "Brûlure de la traînée de feu (par seconde)": "炎の軌跡の燃焼（毎秒）",
     "Durée de la traînée de feu": "炎の軌跡の持続時間",
     "Largeur de la traînée de feu": "炎の軌跡の幅",
-    "Temps de survie": "生存時間"
+    "Temps de survie": "生存時間",
+    "Compétences (S)": "スキル（S）",
+    "Débloquer · {cost} XP": "解放 · {cost} XP",
+    "Pas assez d'XP ({cost} XP)": "XPが足りない（{cost} XP）",
+    "ou touche encore l'étoile": "または星をもう一度タップ",
+    "ou clique encore sur l'étoile": "または星をもう一度クリック",
+    "Clique sur l'étoile pour la choisir": "星をクリックして選択",
+    "Dieux": "神々",
+    "Une compétence peut être débloquée": "解放できるスキルがあります",
+    "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "ショップで次に買える神（「新たな神」）",
+    "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "スキルをタップして選び、「解放」を押す。長押しで払い戻し、2本指でズーム。",
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "スキルをクリックして選び、「解放」を押す。右クリックで払い戻し。"
 };

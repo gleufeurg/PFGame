@@ -1405,5 +1405,16 @@ window.TRADUCTIONS.it = {
     "Brûlure de la traînée de feu (par seconde)": "Bruciatura della scia di fuoco (al secondo)",
     "Durée de la traînée de feu": "Durata della scia di fuoco",
     "Largeur de la traînée de feu": "Larghezza della scia di fuoco",
-    "Temps de survie": "Tempo di sopravvivenza"
+    "Temps de survie": "Tempo di sopravvivenza",
+    "Compétences (S)": "Abilità (S)",
+    "Débloquer · {cost} XP": "Sblocca · {cost} XP",
+    "Pas assez d'XP ({cost} XP)": "XP insufficienti ({cost} XP)",
+    "ou touche encore l'étoile": "o tocca di nuovo la stella",
+    "ou clique encore sur l'étoile": "o clicca di nuovo sulla stella",
+    "Clique sur l'étoile pour la choisir": "Clicca sulla stella per sceglierla",
+    "Dieux": "Dèi",
+    "Une compétence peut être débloquée": "Si può sbloccare un'abilità",
+    "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Prossimo dio da comprare nel negozio («Nuova divinità»)",
+    "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tocca un'abilità per sceglierla, poi «Sblocca». Tieni premuto per rimborsarla, due dita per lo zoom.",
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Clicca su un'abilità per sceglierla, poi «Sblocca». Clic destro per rimborsarla."
 };
