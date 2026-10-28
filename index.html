@@ -940,6 +940,114 @@
             color: #ffd84d;
         }
 
+        /*RÉSUMÉ DE LA PARTIE (menu de mort) : l'or, l'XP et le temps de la partie, en gros, qui comptent jusqu'à leur valeur*/
+        #runSummary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr)); /*3 cartes de même largeur*/
+            gap: 12px;
+        }
+
+        .runCard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 14px 10px;
+            border-radius: 14px;
+            background-color: var(--ui-surface);
+            box-shadow: 0 4px 0 var(--ui-relief);
+        }
+
+        .runCardLabel {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+        }
+
+        .runCardValue {
+            display: inline-block; /*nécessaire pour que "scale" fonctionne sur du texte*/
+            font-size: 34px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums; /*chiffres de même largeur : le nombre ne "tremble" pas en comptant*/
+            line-height: 1.1;
+        }
+
+        .goldCard {
+            background: linear-gradient(180deg, rgba(255, 216, 77, 0.18), rgba(255, 216, 77, 0.04)), var(--ui-surface);
+            box-shadow: 0 4px 0 var(--ui-relief), 0 0 0 2px rgba(255, 216, 77, 0.55) inset, 0 0 24px rgba(255, 216, 77, 0.25);
+        }
+
+        .goldCard .runCardValue {
+            color: #ffd84d;
+            text-shadow: 0 0 14px rgba(255, 216, 77, 0.6);
+        }
+
+        .xpCard .runCardValue {
+            color: #3fe0c5;
+            text-shadow: 0 0 12px rgba(63, 224, 197, 0.45);
+        }
+
+        .runCard .goldIcon {
+            width: 28px;
+            height: 28px;
+        }
+
+        .runCard .xpIcon {
+            width: 20px;
+            height: 20px;
+            margin: 4px;
+        }
+
+        .runCardIcon {
+            font-size: 24px;
+            line-height: 28px;
+        }
+
+        .runCardValue.counted { /*le nombre a fini de compter : il "saute" une fois*/
+            animation: runValuePop 0.45s ease-out;
+        }
+
+        @keyframes runValuePop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .shopGoldLine { /*"Or disponible" : le total à dépenser dans le shop*/
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .shopGoldLine #shopGold {
+            font-size: 30px;
+            text-shadow: 0 0 12px rgba(255, 216, 77, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            #runSummary {
+                gap: 8px;
+            }
+
+            .runCard {
+                padding: 10px 4px;
+            }
+
+            .runCardLabel {
+                font-size: 11px;
+                letter-spacing: 0.02em;
+            }
+
+            .runCardValue {
+                font-size: 24px;
+            }
+        }
+
         #shopItems {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /*autant de colonnes que possible, 200px min*/
@@ -1895,7 +2003,13 @@
     <div id="gameOverPanel" class="overlay hidden">
         <div class="panel">
             <h1>GAME OVER</h1>
-            <p>Or disponible : <span id="shopGold">0</span></p>
+            <!-- RÉSUMÉ DE LA PARTIE : l'or et l'XP gagnés, en gros (rempli par showRunSummary) -->
+            <div id="runSummary">
+                <div class="runCard goldCard"><span class="goldIcon"></span><span class="runCardLabel">Or gagné</span><span id="runGoldValue" class="runCardValue">+0</span></div>
+                <div class="runCard xpCard"><span class="xpIcon"></span><span class="runCardLabel">XP gagnée</span><span id="runXpValue" class="runCardValue">+0</span></div>
+                <div class="runCard"><span class="runCardIcon">⏱</span><span class="runCardLabel">Temps de survie</span><span id="runTimeValue" class="runCardValue">0:00</span></div>
+            </div>
+            <p class="shopGoldLine"><span class="goldIcon"></span>Or disponible : <span id="shopGold">0</span></p>
             <div id="shopItems"></div>
             <button id="restartButton" class="primaryButton">Rejouer (R)</button>
             <!-- PALIERS : recommencer juste après un super ennemi déjà vaincu (rempli par renderCheckpoints) -->
@@ -2445,10 +2559,11 @@
             starrySea: { name: "Mer étoilée", shadow: "#01040d", orbit: "rgba(200, 220, 255, 0.12)", reflection: 0.42, drawStatic: drawStarrySeaStatic, drawAnimated: drawStarrySeaAnimated },
             daySea: { name: "Mer en plein jour", shadow: "#04384a", orbit: "rgba(255, 255, 255, 0.2)", reflection: 0.16, drawStatic: drawDaySeaStatic, drawAnimated: drawDaySeaAnimated },
             snow: { name: "Neige", shadow: "#3a4b63", orbit: "rgba(30, 50, 80, 0.2)", reflection: 0, drawStatic: drawSnowStatic, drawAnimated: drawSnowAnimated },
-            meadow: { name: "Prairie", shadow: "#122410", orbit: "rgba(255, 255, 220, 0.14)", reflection: 0, drawStatic: drawMeadowStatic, drawAnimated: drawMeadowAnimated }
+            meadow: { name: "Prairie", shadow: "#0a1209", orbit: "rgba(255, 255, 220, 0.14)", reflection: 0, drawStatic: drawMeadowStatic, drawAnimated: drawMeadowAnimated }
         };
         translateFields(SCENES, ["name"]);
-        let currentSceneKey = "none";
+        const DEFAULT_SCENE = "starrySea";     // le décor au tout premier lancement (les joueurs préfèrent la mer étoilée)
+        let currentSceneKey = DEFAULT_SCENE;
         try {
             if (SCENES[localStorage.getItem("scene")] !== undefined) {
                 currentSceneKey = localStorage.getItem("scene");
@@ -2651,17 +2766,18 @@
             ctx.globalAlpha = 1;
         }
 
-        //PRAIRIE : de l'herbe un peu sombre (les ennemis verts restent visibles), des fleurs, et l'ombre des nuages qui passe
+        //PRAIRIE AU CRÉPUSCULE : une herbe sombre et peu contrastée, pour que les ennemis (surtout les verts) se voient bien.
+        //(La 1re version, vert vif avec beaucoup de fleurs, était illisible : les fleurs ressemblaient à des ennemis.)
         function drawMeadowStatic(bgCtx, w, h) {
-            fillVerticalGradient(bgCtx, w, h, "#3d6a2f", "#2a4f24");
-            //Des zones d'herbe plus claire, plus sèche ou plus foncée
+            fillVerticalGradient(bgCtx, w, h, "#1f3024", "#16231b");
+            //Des zones d'herbe un peu plus claire ou plus foncée, très douces
             for (const patch of createScenePoints(14, 101)) {
-                const color = patch.r > 0.66 ? "rgba(150, 170, 70, 0.16)" : (patch.r > 0.33 ? "rgba(20, 50, 20, 0.25)" : "rgba(90, 150, 70, 0.18)");
+                const color = patch.r > 0.66 ? "rgba(120, 140, 80, 0.08)" : (patch.r > 0.33 ? "rgba(5, 15, 8, 0.25)" : "rgba(70, 110, 70, 0.08)");
                 fillSoftCircle(bgCtx, patch.x * w, patch.y * h, (0.08 + patch.r * 0.16) * Math.max(w, h), color);
             }
-            //Les brins d'herbe : de petits traits penchés, en 3 teintes (un chemin par teinte, plus rapide)
-            const blades = createScenePoints(Math.round(w * h / 260), 113);
-            const tones = ["rgba(110, 160, 70, 0.55)", "rgba(40, 80, 35, 0.6)", "rgba(160, 190, 90, 0.35)"];
+            //Les brins d'herbe : de petits traits penchés, en 3 teintes discrètes (un chemin par teinte, plus rapide)
+            const blades = createScenePoints(Math.round(w * h / 420), 113);
+            const tones = ["rgba(90, 130, 80, 0.22)", "rgba(10, 25, 15, 0.45)", "rgba(130, 150, 100, 0.14)"];
             bgCtx.lineWidth = 1.2;
             bgCtx.lineCap = "round";
             tones.forEach(function (tone, index) {
@@ -2679,22 +2795,15 @@
                 });
                 bgCtx.stroke();
             });
-            //Les fleurs : un petit cœur jaune entouré de pétales colorés
-            const petalColors = ["#ffffff", "#fff3a0", "#ffb3d1", "#d6b8ff"];
-            for (const flower of createScenePoints(Math.round(w * h / 9000), 127)) {
-                const x = flower.x * w;
-                const y = flower.y * h;
+            //Quelques fleurs fermées pour la nuit : de tout petits points pâles, à peine visibles (pas de confusion avec les ennemis)
+            const petalColors = ["rgba(200, 190, 230, 0.28)", "rgba(230, 210, 160, 0.24)", "rgba(220, 170, 200, 0.24)"];
+            for (const flower of createScenePoints(Math.round(w * h / 30000), 127)) {
                 bgCtx.fillStyle = petalColors[Math.floor(flower.r * petalColors.length)];
-                for (let k = 0; k < 4; k++) {
-                    const angle = k * Math.PI / 2 + flower.r;
-                    bgCtx.beginPath();
-                    bgCtx.arc(x + Math.cos(angle) * 2.2, y + Math.sin(angle) * 2.2, 1.8, 0, Math.PI * 2);
-                    bgCtx.fill();
-                }
-                bgCtx.fillStyle = "#ffcf3d";
-                bgCtx.fillRect(x - 1, y - 1, 2, 2);
+                bgCtx.beginPath();
+                bgCtx.arc(flower.x * w, flower.y * h, 1.3, 0, Math.PI * 2);
+                bgCtx.fill();
             }
-            drawSceneVignette(bgCtx, w, h, "rgba(10, 25, 10, 0.4)");
+            drawSceneVignette(bgCtx, w, h, "rgba(3, 8, 5, 0.5)");
         }
 
         function drawMeadowAnimated(time) {
@@ -2705,15 +2814,16 @@
                 const radius = Math.max(w, h) * (0.22 + i * 0.06);
                 const x = ((seededRandom(i * 9.1) * w + time * (10 + i * 4)) % (w + radius * 2)) - radius;
                 const y = seededRandom(i * 4.7) * h;
-                fillSoftCircle(ctx, x, y, radius, "rgba(10, 30, 10, 0.16)");
+                fillSoftCircle(ctx, x, y, radius, "rgba(2, 8, 4, 0.18)");
             }
-            //Du pollen et des pétales qui volent avec le vent
-            for (const speck of POLLEN) {
-                const x = ((speck.x * w + time * (14 + speck.r * 18)) % (w + 20)) - 10;
-                const y = speck.y * h + Math.sin(time * (0.8 + speck.r) + speck.x * 20) * 12;
-                ctx.globalAlpha = 0.5 + 0.3 * Math.sin(time * 2 + speck.y * 10);
-                ctx.fillStyle = speck.r > 0.7 ? "#ffd1e3" : "#fff6c2";
-                ctx.fillRect(x, y, 2 + speck.r * 1.5, 2 + speck.r * 1.5);
+            //Quelques lucioles qui flottent doucement (peu nombreuses, petites et pâles : on ne les prend pas pour des ennemis)
+            ctx.fillStyle = "#e8f5b0";
+            for (let i = 0; i < POLLEN.length; i += 3) {
+                const speck = POLLEN[i];
+                const x = ((speck.x * w + time * (6 + speck.r * 8)) % (w + 20)) - 10;
+                const y = speck.y * h + Math.sin(time * (0.5 + speck.r) + speck.x * 20) * 14;
+                ctx.globalAlpha = 0.12 + 0.18 * Math.max(0, Math.sin(time * 1.5 + speck.y * 10));
+                ctx.fillRect(x, y, 1.5, 1.5);
             }
             ctx.globalAlpha = 1;
         }
@@ -3860,13 +3970,19 @@
         //REWARDS (or et XP)
         let gold = 0;
         let xp = 0;
+        let runGold = 0;   // or gagné pendant la partie en cours (remis à 0 à chaque nouvelle partie)
+        let runXp = 0;
         const goldDisplay = document.getElementById("gold");
         const xpDisplay = document.getElementById("xp");
 
         function gainRewards(goldAmount, xpAmount) {
             //On garde les virgules (ex: 1.1 or par ennemi avec +10%) pour que les petits bonus comptent quand même
-            gold += goldAmount * playerStats.goldMultiplier * cheatRewardMultiplier;
-            xp += xpAmount * playerStats.xpMultiplier * cheatRewardMultiplier;
+            const goldGained = goldAmount * playerStats.goldMultiplier * cheatRewardMultiplier;
+            const xpGained = xpAmount * playerStats.xpMultiplier * cheatRewardMultiplier;
+            gold += goldGained;
+            xp += xpGained;
+            runGold += goldGained; //affichés en gros au menu de mort (showRunSummary)
+            runXp += xpGained;
             updateHud();
         }
 
@@ -8972,6 +9088,45 @@
             renderCheckpoints();
             gameOverPanel.classList.remove("hidden");
             showStatsPanel();
+            showRunSummary();
+        }
+
+        //RÉSUMÉ DE LA PARTIE : l'or et l'XP gagnés "comptent" de 0 jusqu'à leur valeur, puis sautent une fois
+        const RUN_COUNT_DURATION = 1.1;   // secondes pour compter jusqu'au bout
+        let runSummaryAnimation = 0;      // numéro de l'animation en cours (pour arrêter une ancienne)
+
+        function showRunSummary() {
+            const goldValue = document.getElementById("runGoldValue");
+            const xpValue = document.getElementById("runXpValue");
+            document.getElementById("runTimeValue").textContent = formatTime(runTime);
+            const targetGold = Math.floor(runGold);
+            const targetXp = Math.floor(runXp);
+            const start = performance.now();
+            const animationId = ++runSummaryAnimation;
+            for (const element of [goldValue, xpValue]) {
+                element.classList.remove("counted");
+            }
+            const step = function (now) {
+                if (animationId !== runSummaryAnimation) {
+                    return; //une nouvelle mort a relancé le compte
+                }
+                const progress = Math.min(1, (now - start) / 1000 / RUN_COUNT_DURATION);
+                const eased = 1 - Math.pow(1 - progress, 3); //vite au début, puis ralentit (comme un compteur qui s'arrête)
+                goldValue.textContent = "+" + Math.floor(targetGold * eased);
+                xpValue.textContent = "+" + Math.floor(targetXp * eased);
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                    return;
+                }
+                for (const element of [goldValue, xpValue]) {
+                    void element.offsetWidth; //force le navigateur à "oublier" l'animation pour pouvoir la rejouer
+                    element.classList.add("counted");
+                }
+                if (targetGold > 0) {
+                    playSound("buy");
+                }
+            };
+            requestAnimationFrame(step);
         }
 
         function renderShop() {
@@ -9046,6 +9201,8 @@
         //startTime (en secondes) : 0 = une partie normale ; sinon on commence directement à ce moment (palier après un super ennemi)
         function restartGame(startTime = 0) {
             runMaxHealthBonus = 0;
+            runGold = 0;
+            runXp = 0;
             computeStats();
             playerHealth = playerStats.maxHealth;
             enemies.length = 0;

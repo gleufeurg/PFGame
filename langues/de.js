@@ -1404,5 +1404,6 @@ window.TRADUCTIONS.de = {
     "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Brand: Die Feuerspur ist doppelt so breit und hält 1 s länger",
     "Brûlure de la traînée de feu (par seconde)": "Brand der Feuerspur (pro Sekunde)",
     "Durée de la traînée de feu": "Dauer der Feuerspur",
-    "Largeur de la traînée de feu": "Breite der Feuerspur"
+    "Largeur de la traînée de feu": "Breite der Feuerspur",
+    "Temps de survie": "Überlebenszeit"
 };
