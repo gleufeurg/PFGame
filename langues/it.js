@@ -1416,5 +1416,6 @@ window.TRADUCTIONS.it = {
     "Une compétence peut être débloquée": "Si può sbloccare un'abilità",
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Prossimo dio da comprare nel negozio («Nuova divinità»)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tocca un'abilità per sceglierla, poi «Sblocca». Tieni premuto per rimborsarla, due dita per lo zoom.",
-    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Clicca su un'abilità per sceglierla, poi «Sblocca». Clic destro per rimborsarla."
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Clicca su un'abilità per sceglierla, poi «Sblocca». Clic destro per rimborsarla.",
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Salto nel tempo in ricarica: ancora {seconds} s"
 };

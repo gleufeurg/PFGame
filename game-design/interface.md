@@ -115,6 +115,8 @@ Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout 
 
 Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 
+**Temps de recharge du saut** (comme les sorts de League of Legends) : après un saut, il faut attendre avant le suivant, sinon les sauts s'enchaînent, les ennemis s'empilent et le jeu rame. Pendant la recharge, un voile sombre recouvre les boutons de saut **et** le bouton du menu du temps (même fermé) ; il « tourne » comme une aiguille : la partie claire grandit dans le sens des aiguilles d'une montre. Les secondes restantes s'affichent au milieu (« ⏳ 12 » sur le bouton du menu, pour ne pas confondre avec la vitesse). Quand c'est prêt, les boutons brillent un instant, avec un petit « ding » (`skipReady`). Un saut tenté pendant la recharge (bouton ou touche T) affiche « ⏳ Saut dans le temps en recharge : encore 12 s ». La recharge compte en temps de jeu (elle s'arrête quand le jeu est en pause) et repart de zéro à chaque partie. Formule dans [questions/formules.md](questions/formules.md).
+
 ## Le menu de mort : le résumé de la partie
 
 En haut du menu de mort, sous « GAME OVER », 3 grandes cartes résument la partie qui vient de finir (`showRunSummary`) :

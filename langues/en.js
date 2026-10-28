@@ -1416,5 +1416,6 @@ window.TRADUCTIONS.en = {
     "Une compétence peut être débloquée": "A skill can be unlocked",
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Next god to buy in the shop (“New deity”)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tap a skill to select it, then “Unlock”. Long press to refund it, two fingers to zoom.",
-    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Click a skill to select it, then “Unlock”. Right-click to refund it."
+    "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Click a skill to select it, then “Unlock”. Right-click to refund it.",
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Time skip recharging: {seconds} s left"
 };
