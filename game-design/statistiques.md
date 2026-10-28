@@ -14,7 +14,7 @@ Tous les chiffres viennent du code du jeu (`index.html`), partie `PLAYER STATS`.
 Exemple : les +30 de portée d'Aglaé (Héphaïstos) n'agrandissent que la portée de la planète Héphaïstos. Ni les autres planètes ni le joueur n'en profitent.
 
 - **Stats de tir** (`SHOOTER_STATS`) : dégâts, dégâts contre un élément, vitesse d'attaque, portée, vitesse des balles, balles par tir, chance et dégâts critiques, vie par touche, PV max par touche, effet de combo au hasard.
-- **Stats du joueur seulement** : PV max, régénération, esquive (75 % au plus : `DODGE_MAX`), bouclier, recharge du bouclier, vie par ennemi tué, or gagné, XP gagnée.
+- **Stats du joueur seulement** : PV max, régénération, esquive (en points : la chance d'esquiver = x / (x + 1), avec x = les points ÷ 100, voir [questions/formules.md](questions/formules.md)), bouclier, recharge du bouclier, vie par ennemi tué, or gagné, XP gagnée.
 
 > **Déjà fait :** le cri de guerre d'Arès donne des dégâts et des critiques à toutes les planètes (voir « Les pouvoirs des dieux »).
 > **Plus tard (pas encore fait) :** d'autres pouvoirs qui permettront à une planète de profiter des stats d'une autre planète.
@@ -46,7 +46,9 @@ Chaque dieu a sa façon de se battre, que son skill tree construit petit à peti
 | Poséidon | une vague part de sa planète, repousse les ennemis, les ralentit et les rend frêles (+35 % de dégâts subis, et plus) ; elle donne un bouclier des marées (invincible 2 à 3 s) | toutes les 10 s. La vague part de la **planète Poséidon** (là où elle est au moment du lancer) et **avance** (320 px/s, `TIDE_WAVE_SPEED`) **jusqu'à la portée de tir de Poséidon** (prise au moment du lancer) : améliorer sa portée agrandit sa vague. Quand le front atteint un ennemi, il est ralenti et devient frêle, puis la vague l'emporte en l'éloignant de Poséidon, sur au plus 2 × `tideWave` px (× 0,3 pour un super ennemi), avant de passer par-dessus lui ; un ennemi n'est jamais poussé vers le joueur. Son de vague qui gonfle, déferle et se retire (`playWaveSound`). Stats : `tideWave`, `fragility`, `tideShield`, et la portée. La branche « écume » (reliée à la Néréide I, en haut à gauche de son arbre, et qui redescend comme une vague de profil) donne de la portée |
 | Zeus | chaque balle envoie des éclairs vers les ennemis proches, qui deviennent conducteurs ; un conducteur touché par un 2e éclair reçoit la foudre, qui électrocute les ennemis autour (réaction en chaîne) | `chainArcs`, `arcDamage`, `arcRange`, `boltDamage`, `boltRadius`. La foudre en chaîne est étalée sur plusieurs images (6 par pas de jeu au plus) pour ne pas faire ramer |
 
-« Revient plus souvent » (`abilityHaste`) : le temps entre deux pouvoirs est divisé par (1 + bonus). +100 % = 2 fois plus souvent.
+**Réduction de recharge** (`cooldownReduction`, en points) : avec x points, le temps entre deux pouvoirs baisse de x / (100 + x). 25 points → 20 % plus court, 100 points → 50 % (2 fois plus souvent), 300 points → 75 %. Elle n'atteint jamais 100 %. Les compétences disent combien de points elles donnent, et leur carte le total de l'arbre (« Avec celle-ci : 45 points, soit une recharge 31% plus courte »). C'est le même calcul qu'avant (« revient 15 % plus souvent » = 15 points), écrit autrement.
+
+**L'Éveil** : quand l'arbre d'un dieu est complet, chaque niveau d'Éveil donne **+5 % de dégâts à sa planète** (ajoutés à son multiplicateur de dégâts, `damageMultiplier`), sans fin. Voir [interface.md](interface.md) (« La fenêtre des skills »).
 
 Apollon, Athéna, Hermès et Hestia n'ont pas encore de pouvoir : leurs arbres donnent seulement des stats.
 

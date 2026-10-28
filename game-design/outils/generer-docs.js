@@ -19,6 +19,7 @@ const data = await p.evaluate(()=>({
   attributes: ATTRIBUTES, combos: COMBOS, fusions: FUSIONS, modes: LINK_MODES, opposite: OPPOSITE_BONUSES,
   shop: SHOP_ITEMS.map(i=>({name:i.name, description:getShopItemDescription(i), baseCost:i.baseCost, costGrowth:i.costGrowth, maxLevel: Number.isFinite(i.maxLevel) ? i.maxLevel : null})), // null = amélioration infinie (Infinity ne passe pas en JSON)
   costs: { SKILL_COST_BASE, SKILL_COST_PER_STEP, NOTABLE_COST_MULTIPLIER, KEYSTONE_COST, GRAND_COST, SKILL_TIER_GROWTH },
+  awakening: { base: AWAKENING_BASE_COST, growth: AWAKENING_COST_GROWTH, damage: AWAKENING_DAMAGE_PER_LEVEL },
   settings: JSON.parse(JSON.stringify(REGLAGES, (k, v) => v === Infinity ? 'Infinity' : v)) // Infinity ne passe pas en JSON
 }));
 await b.close();
@@ -88,6 +89,11 @@ px += shopRows.map(({s, c, total}) => `| ${s.name} (${s.maxLevel === null ? '∞
 px += `## Les skills\n\nUn skill coûte plus cher quand il est loin du départ : chaque lien à parcourir depuis l'étoile de départ est un « pas ». Ensuite, **chaque dieu a des skills ${dec(C.SKILL_TIER_GROWTH)} fois plus chers que le dieu d'avant** (dans l'ordre d'achat du shop) : le 1er ×1, le 2e ×${dec(C.SKILL_TIER_GROWTH)}, le 3e ×${dec(Math.round(C.SKILL_TIER_GROWTH ** 2 * 100) / 100)}… (\`SKILL_TIER_GROWTH\`). Les derniers dieux arrivent quand on gagne beaucoup d'XP : sans ça, tout leur arbre se remplissait d'un coup.\n\n| Type de skill | Coût de base (XP), à multiplier par celui du dieu |\n| --- | --- |\n| Départ | ${C.SKILL_COST_BASE} |\n| Mineure | ${C.SKILL_COST_BASE} + ${C.SKILL_COST_PER_STEP} × pas |\n| Notable | (${C.SKILL_COST_BASE} + ${C.SKILL_COST_PER_STEP} × pas) × ${dec(C.NOTABLE_COST_MULTIPLIER)}, arrondi |\n| Keystone | ${C.KEYSTONE_COST} + 2 × pas |\n| Grande keystone | ${C.GRAND_COST} |\n\n| Dieu (ordre d'achat) | Multiplicateur |\n| --- | --- |\n` + data.trees.map((t, k) => `| ${k + 1}. ${t.name} | ×${dec(Math.round(C.SKILL_TIER_GROWTH ** k * 100) / 100)} |`).join('\n') + '\n\n';
 px += `| Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre (avec la voie la plus chère) |\n| --- | --- | --- | --- | --- | --- |\n`;
 px += [...index].sort((a, b) => b.total - a.total).map(({t, total, by}) => `| ${t.name} | ${t.nodes.length} | ${by('minor').length} | ${by('notable').length} | ${by('keystone').length} + ${by('grand').length} | ${fr(total)} |`).join('\n') + '\n\n';
+// L'Éveil : une fois l'arbre complet, l'XP éveille le dieu (sans fin)
+const W = data.awakening;
+const awakeningCost = (rank, level) => Math.round(W.base * Math.pow(C.SKILL_TIER_GROWTH, rank) * Math.pow(W.growth, level));
+px += `## L'Éveil\n\nQuand toutes les compétences possibles d'un dieu sont prises, son XP peut l'**éveiller**, sans fin : chaque niveau donne +${dec(Math.round(W.damage * 100))} % de dégâts à sa planète. Prix = ${W.base} XP × ${dec(C.SKILL_TIER_GROWTH)} ^ rang du dieu × ${dec(W.growth)} ^ niveaux d'Éveil déjà pris.\n\n| Dieu | Niveau 1 | Niveau 5 | Niveau 10 | Niveau 20 | Total jusqu'au niveau 10 |\n| --- | --- | --- | --- | --- | --- |\n`;
+px += data.trees.map((t, rank) => `| ${t.name} | ${fr(awakeningCost(rank, 0))} | ${fr(awakeningCost(rank, 4))} | ${fr(awakeningCost(rank, 9))} | ${fr(awakeningCost(rank, 19))} | ${fr(Array.from({length: 10}, (_, k) => awakeningCost(rank, k)).reduce((a, b) => a + b, 0))} |`).join('\n') + '\n\n';
 px += `## Le détail par dieu\n\nChaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur ordre d'achat dans le shop.\n\n`;
 for (const {t, total} of index) {
   const groups = new Map();

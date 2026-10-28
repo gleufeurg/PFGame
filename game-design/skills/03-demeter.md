@@ -17,21 +17,21 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
 | **Voie des racines** | Immobiliser les ennemis avec des lianes. | **Karpos** (Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis)) ; **Despina** (+1 liane à chaque rayon de vie) | 7 | 442 |
-| **Voie des moissons** | Te soigner plus fort et plus souvent. | **Triptolème** (Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent) ; **Métanire** (Le rayon de vie soigne 0.5 PV de plus) | 7 | 442 |
+| **Voie des moissons** | Te soigner plus fort et plus souvent. | **Triptolème** (Le rayon de vie soigne 2 PV de plus, et +30 de réduction de recharge) ; **Métanire** (Le rayon de vie soigne 0.5 PV de plus) | 7 | 442 |
 | **Voie de la forêt** | Un rayon de vie plus grand, qui fait aussi pousser des lianes. | **Pan** (+60 de rayon du rayon de vie et +2 lianes) ; **Dryope** (+25 de rayon du rayon de vie) | 7 | 442 |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Gaïa** (GAÏA) | +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent | 338 XP |
+| **Gaïa** (GAÏA) | +3 lianes, qui immobilisent 2 s de plus, et +100 de réduction de recharge du rayon de vie (2 fois plus souvent) | 338 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Karpos** (ARBRE) | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) | 153 XP |
-| **Triptolème** (MOISS) | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent | 153 XP |
+| **Triptolème** (MOISS) | Le rayon de vie soigne 2 PV de plus, et +30 de réduction de recharge | 153 XP |
 | **Pan** (FORÊT) | +60 de rayon du rayon de vie et +2 lianes | 153 XP |
 
 ## 🔹 Notables
@@ -44,7 +44,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | **Aristée** (VIE) | +0.2 PV regagnés par ennemi tué | 86 XP |
 | **Iasion** (FLEUR) | +25 de rayon du rayon de vie | 45 XP |
 | **Eubouleus** (LIANE) | +1 liane à chaque rayon de vie | 86 XP |
-| **Carpo** (FLEUR) | Le rayon de vie revient 15% plus souvent | 45 XP |
+| **Carpo** (FLEUR) | Le rayon de vie : +15 de réduction de recharge | 45 XP |
 | **Anthée** (LIANE) | Les lianes immobilisent 1 s de plus | 86 XP |
 | **Despina** (LIANE) | +1 liane à chaque rayon de vie | 99 XP |
 | **Métanire** (SOIN) | Le rayon de vie soigne 0.5 PV de plus | 99 XP |

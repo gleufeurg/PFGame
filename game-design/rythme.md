@@ -74,8 +74,18 @@ Et pour un **nouveau joueur** (aucune amélioration), la 1ʳᵉ partie, en moyen
 
 La courbe est plus régulière : les 4 premiers dieux arrivent plus vite (l'action du début, les premiers dieux moins chers), le milieu ressemble à avant, et la fin s'étale sur des heures au lieu de s'arrêter d'un coup.
 
+## Depuis : esquive en points et Éveil des dieux
+
+Après la 2e série de retours : l'esquive se calcule en points (chance = x / (x + 1), x = points ÷ 100, plus de plafond à 75 %), une amélioration « Esquive » infinie est au shop, la Portée est infinie, et l'**Éveil** donne enfin une dépense sans fin à l'XP (voir [interface.md](interface.md)). Le robot (3 heures, `joueur-robot.js 180`, qui met l'XP en trop dans l'Éveil le moins cher) :
+
+| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ | 5ᵉ | 6ᵉ | 7ᵉ | 8ᵉ | 9ᵉ | 10ᵉ | 11ᵉ |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Minutes réelles | 2 | 2 | 6 | 10 | 20 | 33 | 39 | 52 | 67 | 99 | 178 |
+
+Le rythme des dieux ne change presque pas. Le 1er niveau d'Éveil arrive vers 50 minutes ; à 3 heures, le robot en a 127 au total (répartis sur ses dieux complets). L'XP de fin de partie (20 000 à 35 000 par partie) a maintenant toujours quelque chose à acheter.
+
 ## Ce qui reste à surveiller
 
 - **L'Hydre de Lerne (10:00)** reste le plus gros mur : le robot meurt 2 ou 3 parties de suite contre elle. Si les joueurs bloquent trop, baisser sa vie (`BOSSES`) ou ses têtes (`HYDRA_HEALTH_SHARE`, `HYDRA_WAVE_COUNT`).
-- **L'XP en fin de jeu** : dès qu'un nouveau dieu arrive, son arbre se remplit en une ou deux parties, puis l'XP s'accumule sans rien à acheter en attendant le dieu suivant (voir [problemes.md](problemes.md)).
+- **L'Éveil** : à surveiller avec de vrais joueurs (son prix monte de x1,25 par niveau ; à régler dans l'éditeur de réglages, Compétences > Éveil des dieux).
 - **Le robot n'est pas un vrai joueur** : à refaire tester par des amis, en notant à quel moment ils obtiennent chaque dieu.

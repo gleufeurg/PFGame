@@ -4,8 +4,8 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum (sans les améliorations infinies) coûte **800 615 or**, dont 794 716 or pour les 12 dieux.
-- Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Vie max, Dégâts, Régénération, Dégâts critiques.
+- Tout le shop au maximum (sans les améliorations infinies) coûte **800 121 or**, dont 794 716 or pour les 12 dieux.
+- Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Portée, Vie max, Dégâts, Régénération, Esquive, Dégâts critiques.
 - Tous les skills des 12 dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **245 381 XP**.
 
 ## Le shop
@@ -18,14 +18,15 @@ Chaque niveau coûte plus cher que le précédent : prix = prix de départ × mu
 | Chance de critique (10 niv.) | +2% de chance de coup critique | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
 | Liens d'orbite (4 niv.) | Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé | ×2,5 | 30, 75, 188, 469 | 762 |
 | Balle supplémentaire (3 niv.) | +1 balle par tir | ×2,5 | 60, 150, 375 | 585 |
-| Portée (8 niv.) | +25 de portée | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171 | 494 |
 | Sauter dans le temps (3 niv.) | Débloque le saut de +10 s, puis +30 s, puis +100 s | ×3 | 15, 45, 135 | 195 |
 | Vitesse des balles (6 niv.) | +15% de vitesse des balles | ×1,4 | 8, 11, 16, 22, 31, 43 | 131 |
 | Accélérer le temps (2 niv.) | Débloque la vitesse x2, puis x4 | ×4 | 20, 80 | 100 |
 | Cadence de tir (∞) | +10% de vitesse d'attaque | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171, 256, 384, 577, 865… | ∞ |
+| Portée (∞) | +25 de portée | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171, 256, 384, 577, 865… | ∞ |
 | Vie max (∞) | +2 PV max | ×1,5 | 8, 12, 18, 27, 41, 61, 91, 137, 205, 308, 461, 692… | ∞ |
 | Dégâts (∞) | +1 dégât par balle | ×1,6 | 15, 24, 38, 61, 98, 157, 252, 403, 644, 1 031, 1 649, 2 639… | ∞ |
 | Régénération (∞) | +0.05 PV par seconde | ×1,6 | 12, 19, 31, 49, 79, 126, 201, 322, 515, 825, 1 319, 2 111… | ∞ |
+| Esquive (∞) | +5 points d'esquive | ×1,6 | 25, 40, 64, 102, 164, 262, 419, 671, 1 074, 1 718, 2 749, 4 398… | ∞ |
 | Dégâts critiques (∞) | +20% de dégâts critiques | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374, 2 199, 3 518… | ∞ |
 
 ## Les skills
@@ -69,6 +70,25 @@ Un skill coûte plus cher quand il est loin du départ : chaque lien à parcouri
 | Poséidon | 46 | 28 | 13 | 3 + 1 | 2 222 |
 | Déméter | 55 | 39 | 11 | 3 + 1 | 2 209 |
 | Héphaïstos | 43 | 25 | 12 | 4 + 1 | 1 106 |
+
+## L'Éveil
+
+Quand toutes les compétences possibles d'un dieu sont prises, son XP peut l'**éveiller**, sans fin : chaque niveau donne +5 % de dégâts à sa planète. Prix = 100 XP × 1,5 ^ rang du dieu × 1,25 ^ niveaux d'Éveil déjà pris.
+
+| Dieu | Niveau 1 | Niveau 5 | Niveau 10 | Niveau 20 | Total jusqu'au niveau 10 |
+| --- | --- | --- | --- | --- | --- |
+| Héphaïstos | 100 | 244 | 745 | 6 939 | 3 324 |
+| Poséidon | 150 | 366 | 1 118 | 10 408 | 4 988 |
+| Déméter | 225 | 549 | 1 676 | 15 613 | 7 481 |
+| Éole | 338 | 824 | 2 515 | 23 419 | 11 223 |
+| Apollon | 506 | 1 236 | 3 772 | 35 128 | 16 834 |
+| Artémis | 759 | 1 854 | 5 658 | 52 692 | 25 251 |
+| Athéna | 1 139 | 2 781 | 8 487 | 79 038 | 37 877 |
+| Zeus | 1 709 | 4 171 | 12 730 | 118 558 | 56 816 |
+| Arès | 2 563 | 6 257 | 19 095 | 177 836 | 85 225 |
+| Aphrodite | 3 844 | 9 386 | 28 643 | 266 754 | 127 835 |
+| Hermès | 5 767 | 14 078 | 42 964 | 400 132 | 191 753 |
+| Hestia | 8 650 | 21 118 | 64 446 | 600 197 | 287 630 |
 
 ## Le détail par dieu
 
@@ -142,13 +162,13 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 86 | Rhodé | Mineure | +30 de portée |
 | 92 | Néréide VII | Mineure | +1 PV max |
 | 93 | Doris | Notable | +0.05 PV régénérés par seconde |
-| 93 | Leucothée | Notable | La vague revient 15% plus souvent |
+| 93 | Leucothée | Notable | La vague : +15 de réduction de recharge |
 | 108 | Céto | Keystone | Ennemis frêles : +15% de dégâts subis |
 | 110 | Océanide VII | Mineure | +0.02 PV régénérés par seconde |
 | 116 | Naïade VII | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 120 | Cymopolée | Notable | Ressac : +60 de portée (la vague va aussi plus loin) |
 | 120 | Pontos | Notable | Ennemis frêles : +5% de dégâts subis |
-| 120 | Protée | Notable | +10% de chance d'esquiver un coup |
+| 120 | Protée | Notable | +10 points d'esquive |
 | 122 | Néréide VIII | Mineure | +1 PV max |
 | 123 | Amphitrite | Keystone | Bouclier des marées : chaque vague te rend invincible pendant 2 s |
 | 128 | Océanide VIII | Mineure | +0.02 PV régénérés par seconde |
@@ -156,9 +176,9 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 129 | Palémon | Notable | +30 de recul de la vague |
 | 134 | Océanide IX | Mineure | +0.02 PV régénérés par seconde |
 | 138 | Benthésicymé | Notable | Houle : +80 de portée (la vague va aussi plus loin) |
-| 138 | Triton | Keystone | La vague revient 40% plus souvent, et +80 de portée |
+| 138 | Triton | Keystone | La vague : +40 de réduction de recharge, et +80 de portée |
 | 147 | Nérée | Notable | +3 PV max |
-| 210 | Eurybia | Notable | La vague revient 15% plus souvent |
+| 210 | Eurybia | Notable | La vague : +15 de réduction de recharge |
 | 225 | Océanos | Grande keystone | GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s |
 
 ### Déméter (55 skills · 2 209 XP)
@@ -170,7 +190,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 29 | Hamadryade I, II, IV, V, VII, VIII, X, XI | Mineure | +5% d'XP gagnée, chacun |
 | 38 | Dryade II, V, VIII, XI | Mineure | +0.05 PV regagné par ennemi tué, chacun |
 | 38 | Mélie I, II, III, IV, V, VI, VII, VIII, IX, X, XI, XII | Mineure | +8 de rayon du rayon de vie, chacun |
-| 45 | Carpo | Notable | Le rayon de vie revient 15% plus souvent |
+| 45 | Carpo | Notable | Le rayon de vie : +15 de réduction de recharge |
 | 45 | Chloris | Notable | +0.05 PV régénérés par seconde |
 | 45 | Iasion | Notable | +25 de rayon du rayon de vie |
 | 45 | Thallo | Notable | +10% d'XP gagnée |
@@ -188,8 +208,8 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 99 | Métanire | Notable | Le rayon de vie soigne 0.5 PV de plus |
 | 153 | Karpos | Keystone | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) |
 | 153 | Pan | Keystone | +60 de rayon du rayon de vie et +2 lianes |
-| 153 | Triptolème | Keystone | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent |
-| 338 | Gaïa | Grande keystone | GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent |
+| 153 | Triptolème | Keystone | Le rayon de vie soigne 2 PV de plus, et +30 de réduction de recharge |
+| 338 | Gaïa | Grande keystone | GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et +100 de réduction de recharge du rayon de vie (2 fois plus souvent) |
 
 ### Éole (49 skills · 5 368 XP)
 
@@ -289,7 +309,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 129 | Nymphe I, III | Mineure | +10 de portée, chacun |
 | 129 | Oréade II, IV | Mineure | +0.5 dégât par balle, chacun |
 | 129 | Pléione IV | Mineure | +8% de vitesse des balles |
-| 152 | Cyrène | Notable | La flèche de lune revient 15% plus souvent |
+| 152 | Cyrène | Notable | La flèche de lune : +15 de réduction de recharge |
 | 159 | Pléione I | Mineure | +8% de vitesse des balles |
 | 190 | Nymphe II | Mineure | +10 de portée |
 | 190 | Oréade I | Mineure | +0.5 dégât par balle |
@@ -300,42 +320,42 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 243 | Opis | Notable | +20% de vitesse des balles |
 | 289 | Atalante | Notable | +15% de vitesse d'attaque |
 | 425 | Procris | Notable | +1 dégât par balle |
-| 486 | Hippolyte | Keystone | Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent |
+| 486 | Hippolyte | Keystone | Flèche de lune : +3 fois les dégâts d'une balle, et +30 de réduction de recharge |
 | 486 | Orion | Keystone | Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches |
 | 577 | Actéon | Keystone | +1 rebond et +25% de vitesse d'attaque |
-| 1139 | Agrotera | Grande keystone | GRANDE KEYSTONE : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle |
+| 1139 | Agrotera | Grande keystone | GRANDE KEYSTONE : +100 de réduction de recharge de la flèche de lune (2 fois plus souvent), et +4 fois les dégâts d'une balle |
 
 ### Athéna (55 skills · 14 047 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
 | 57 | Métis | Départ | +5% d'XP gagnée |
-| 103 | Aglaure VII | Mineure | +2% de chance d'esquiver un coup |
+| 103 | Aglaure VII | Mineure | +2 points d'esquive |
 | 103 | Nikè I | Mineure | +1 PV max |
-| 148 | Aglaure I, VIII | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 148 | Aglaure I, VIII | Mineure | +2 points d'esquive, chacun |
 | 148 | Hersé I, VII | Mineure | +4% d'XP gagnée, chacun |
 | 148 | Nikè II, VIII | Mineure | +1 PV max, chacun |
-| 194 | Aglaure II, IX | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 194 | Aglaure II, IX | Mineure | +2 points d'esquive, chacun |
 | 194 | Hersé II, VIII | Mineure | +4% d'XP gagnée, chacun |
 | 194 | Nikè IX | Mineure | +1 PV max |
-| 239 | Aglaure III | Mineure | +2% de chance d'esquiver un coup |
+| 239 | Aglaure III | Mineure | +2 points d'esquive |
 | 239 | Hersé III, IX | Mineure | +4% d'XP gagnée, chacun |
 | 239 | Nikè III, X | Mineure | +1 PV max, chacun |
-| 285 | Aglaure IV, X | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 285 | Aglaure IV, X | Mineure | +2 points d'esquive, chacun |
 | 285 | Hersé IV, X | Mineure | +4% d'XP gagnée, chacun |
 | 285 | Nikè IV | Mineure | +1 PV max |
 | 296 | Érichthonios | Notable | +1 dégât par balle |
-| 330 | Aglaure XI | Mineure | +2% de chance d'esquiver un coup |
+| 330 | Aglaure XI | Mineure | +2 points d'esquive |
 | 330 | Nikè V, XI | Mineure | +1 PV max, chacun |
 | 365 | Ergané | Notable | +1 dégât par balle |
-| 376 | Aglaure V | Mineure | +2% de chance d'esquiver un coup |
+| 376 | Aglaure V | Mineure | +2 points d'esquive |
 | 376 | Hersé V, XI | Mineure | +4% d'XP gagnée, chacun |
 | 376 | Nikè VI, XII | Mineure | +1 PV max, chacun |
-| 421 | Aglaure VI, XII | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 421 | Aglaure VI, XII | Mineure | +2 points d'esquive, chacun |
 | 421 | Hersé VI, XII | Mineure | +4% d'XP gagnée, chacun |
 | 421 | Nikè XIII | Mineure | +1 PV max |
 | 433 | Zélos | Notable | +10% de vitesse d'attaque |
-| 467 | Aglaure XIII | Mineure | +2% de chance d'esquiver un coup |
+| 467 | Aglaure XIII | Mineure | +2 points d'esquive |
 | 467 | Nikè VII | Mineure | +1 PV max |
 | 501 | Pandrosos | Notable | +2 PV max |
 | 513 | Hersé XIII | Mineure | +4% d'XP gagnée |
@@ -343,11 +363,11 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 570 | Hygie | Notable | +0.05 PV régénérés par seconde |
 | 638 | Arachné | Notable | +10% de vitesse d'attaque |
 | 706 | Aidôs | Notable | +10% d'XP gagnée |
-| 706 | Tritonis | Notable | +5% de chance d'esquiver un coup |
+| 706 | Tritonis | Notable | +5 points d'esquive |
 | 820 | Promachos | Keystone | +2 dégâts par balle |
-| 820 | Égide | Keystone | +8% de chance d'esquiver un coup |
+| 820 | Égide | Keystone | +8 points d'esquive |
 | 843 | Bellérophon | Notable | +2 dégâts par balle |
-| 843 | Pallas | Notable | +8% de chance d'esquiver un coup |
+| 843 | Pallas | Notable | +8 points d'esquive |
 | 888 | Glaucopis | Keystone | +60 de portée (les yeux de la chouette) |
 | 1709 | Parthénos | Grande keystone | GRANDE KEYSTONE : +100% d'XP gagnée |
 
@@ -406,7 +426,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 948 | Phobos II, VI | Mineure | +0.5 dégât par balle, chacun |
 | 1051 | Alala I | Mineure | +0.05 PV regagné par ennemi tué |
 | 1051 | Deimos III | Mineure | Cri de guerre : +0.3 s |
-| 1128 | Otréra | Notable | Le cri de guerre revient 15% plus souvent |
+| 1128 | Otréra | Notable | Le cri de guerre : +15 de réduction de recharge |
 | 1128 | Penthésilée | Notable | +0.2 PV regagné par ennemi tué |
 | 1256 | Deimos I | Mineure | Cri de guerre : +0.3 s |
 | 1256 | Phobos III | Mineure | +0.5 dégât par balle |
@@ -416,7 +436,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1358 | Phobos I | Mineure | +0.5 dégât par balle |
 | 1589 | Ascalaphe | Notable | Cri de guerre : +1 s |
 | 1589 | Diomède | Notable | +0.2 PV regagné par ennemi tué |
-| 1640 | Phlégyas | Keystone | Le cri de guerre revient 30% plus souvent et dure 1 s de plus |
+| 1640 | Phlégyas | Keystone | Le cri de guerre : +30 de réduction de recharge, et dure 1 s de plus |
 | 1743 | Makhai | Notable | Cri de guerre : +1 s |
 | 1743 | Éris | Notable | +1 dégât par balle |
 | 1897 | Kyknos | Keystone | Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours |
@@ -429,38 +449,38 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | --- | --- | --- | --- |
 | 192 | Éros | Départ | Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) |
 | 346 | Charis I | Mineure | +1 PV max |
-| 346 | Pothos VI | Mineure | +2% de chance d'esquiver un coup |
+| 346 | Pothos VI | Mineure | +2 points d'esquive |
 | 500 | Charis VII | Mineure | +1 PV max |
 | 500 | Himéros I, VI, IX | Mineure | +6 de rayon de charme, chacun |
 | 654 | Charis VI, IX | Mineure | +1 PV max, chacun |
 | 654 | Himéros VII | Mineure | +6 de rayon de charme |
-| 654 | Pothos I | Mineure | +2% de chance d'esquiver un coup |
+| 654 | Pothos I | Mineure | +2 points d'esquive |
 | 807 | Charis VIII | Mineure | +1 PV max |
 | 807 | Himéros VIII | Mineure | +6 de rayon de charme |
 | 961 | Charis II, IV | Mineure | +1 PV max, chacun |
-| 961 | Pothos III, V, VII, VIII | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 961 | Pothos III, V, VII, VIII | Mineure | +2 points d'esquive, chacun |
 | 1000 | Hermaphrodite | Notable | Charme : +0.5 s |
 | 1115 | Himéros II, V | Mineure | +6 de rayon de charme, chacun |
 | 1230 | Adonis | Notable | +20 de rayon de charme |
 | 1230 | Euphrosyne | Notable | +3 PV max |
 | 1230 | Hymen | Notable | +0.2 PV regagné par ennemi tué |
 | 1230 | Peitho | Notable | Charme : +0.5 s |
-| 1230 | Rhodos | Notable | Le rayon de charme revient 15% plus souvent |
+| 1230 | Rhodos | Notable | Le rayon de charme : +15 de réduction de recharge |
 | 1269 | Charis V | Mineure | +1 PV max |
 | 1269 | Himéros III, IV | Mineure | +6 de rayon de charme, chacun |
-| 1269 | Pothos II | Mineure | +2% de chance d'esquiver un coup |
+| 1269 | Pothos II | Mineure | +2 points d'esquive |
 | 1422 | Charis III | Mineure | +1 PV max |
-| 1422 | Pothos IV | Mineure | +2% de chance d'esquiver un coup |
+| 1422 | Pothos IV | Mineure | +2 points d'esquive |
 | 1576 | Charis X | Mineure | +1 PV max |
-| 1576 | Pothos IX | Mineure | +2% de chance d'esquiver un coup |
-| 1692 | Antéros | Notable | +5% de chance d'esquiver un coup |
-| 1692 | Psyché | Notable | Le rayon de charme revient 15% plus souvent |
-| 2383 | Cythérée | Keystone | Le rayon de charme revient 40% plus souvent |
+| 1576 | Pothos IX | Mineure | +2 points d'esquive |
+| 1692 | Antéros | Notable | +5 points d'esquive |
+| 1692 | Psyché | Notable | Le rayon de charme : +15 de réduction de recharge |
+| 2383 | Cythérée | Keystone | Le rayon de charme : +40 de réduction de recharge |
 | 2614 | Harmonie | Notable | +20 de rayon de charme |
 | 2614 | Énée | Notable | Charme : +0.5 s |
 | 2922 | Ourania | Keystone | Les ennemis charmés blessent 2 fois plus leurs alliés |
 | 2922 | Pandémos | Keystone | Foule : +50 de rayon de charme |
-| 5767 | Phanès | Grande keystone | GRANDE KEYSTONE : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent |
+| 5767 | Phanès | Grande keystone | GRANDE KEYSTONE : charme +1.5 s, et +100 de réduction de recharge du rayon de charme (2 fois plus souvent) |
 
 ### Hermès (30 skills · 40 307 XP)
 
@@ -468,29 +488,29 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | --- | --- | --- | --- |
 | 288 | Maïa | Départ | +5% de vitesse d'attaque |
 | 519 | Kéryx I | Mineure | +8% de vitesse des balles |
-| 750 | Agoraios II | Mineure | +2% de chance d'esquiver un coup |
+| 750 | Agoraios II | Mineure | +2 points d'esquive |
 | 750 | Hodios II | Mineure | +4% de vitesse d'attaque |
 | 807 | Autolycos | Notable | +10% d'or gagné |
 | 980 | Hodios I | Mineure | +4% de vitesse d'attaque |
 | 980 | Kéryx III | Mineure | +8% de vitesse des balles |
 | 1153 | Psychopompe | Notable | +20% de vitesse des balles |
-| 1442 | Agoraios I, III | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 1442 | Agoraios I, III | Mineure | +2 points d'esquive, chacun |
 | 1442 | Hodios III | Mineure | +4% de vitesse d'attaque |
 | 1845 | Argos | Notable | +10% de vitesse d'attaque |
 | 1845 | Daphnis | Notable | +10% de vitesse d'attaque |
 | 1845 | Myrtilos | Notable | +20% de vitesse des balles |
 | 1903 | Hodios IV | Mineure | +4% de vitesse d'attaque |
 | 1903 | Kéryx II, IV | Mineure | +8% de vitesse des balles, chacun |
-| 2134 | Agoraios IV | Mineure | +2% de chance d'esquiver un coup |
+| 2134 | Agoraios IV | Mineure | +2 points d'esquive |
 | 2191 | Angelos | Notable | +15% de vitesse d'attaque |
 | 2364 | Kéryx V | Mineure | +8% de vitesse des balles |
-| 2537 | Chioné | Notable | +5% de chance d'esquiver un coup |
-| 2537 | Eudoros | Notable | +5% de chance d'esquiver un coup |
+| 2537 | Chioné | Notable | +5 points d'esquive |
+| 2537 | Eudoros | Notable | +5 points d'esquive |
 | 2595 | Hodios V | Mineure | +4% de vitesse d'attaque |
 | 3229 | Abdère | Notable | +15% de vitesse des balles |
-| 3229 | Dolios | Notable | +5% de chance d'esquiver un coup |
+| 3229 | Dolios | Notable | +5 points d'esquive |
 | 3806 | Talaria | Keystone | +30% de vitesse d'attaque |
-| 4152 | Pétase | Keystone | +10% de chance d'esquiver un coup |
+| 4152 | Pétase | Keystone | +10 points d'esquive |
 | 4267 | Kriophoros | Notable | +20% de vitesse des balles |
 | 4498 | Caducée | Keystone | +1 balle par tir |
 | 8650 | Aion | Grande keystone | GRANDE KEYSTONE : +50% de vitesse d'attaque |
@@ -501,31 +521,31 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | --- | --- | --- | --- |
 | 432 | Rhéa | Départ | +2 PV max |
 | 778 | Lare V | Mineure | +1 PV max |
-| 1124 | Pénate I | Mineure | +2% de chance d'esquiver un coup |
+| 1124 | Pénate I | Mineure | +2 points d'esquive |
 | 12975 | Ananké | Grande keystone | GRANDE KEYSTONE : +8 PV max |
 | 1816 | Lare I | Mineure | +1 PV max |
 | 1816 | Vestale II | Mineure | +0.02 PV régénérés par seconde |
-| 2162 | Pénate IV | Mineure | +2% de chance d'esquiver un coup |
+| 2162 | Pénate IV | Mineure | +2 points d'esquive |
 | 2162 | Vestale V | Mineure | +0.02 PV régénérés par seconde |
 | 2249 | Agathodaimon | Notable | +2 PV max |
 | 2249 | Philotès | Notable | +0.2 PV regagné par ennemi tué |
 | 2508 | Lare II | Mineure | +1 PV max |
 | 2508 | Vestale I | Mineure | +0.02 PV régénérés par seconde |
-| 2854 | Pénate II, III, V | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 2854 | Pénate II, III, V | Mineure | +2 points d'esquive, chacun |
 | 2854 | Vestale VI | Mineure | +0.02 PV régénérés par seconde |
 | 3200 | Lare III | Mineure | +1 PV max |
 | 3200 | Vestale III | Mineure | +0.02 PV régénérés par seconde |
-| 3287 | Eucléia | Notable | +5% de chance d'esquiver un coup |
+| 3287 | Eucléia | Notable | +5 points d'esquive |
 | 3287 | Tabiti | Notable | +0.05 PV régénérés par seconde |
 | 3892 | Lare IV | Mineure | +1 PV max |
 | 3892 | Vestale IV | Mineure | +0.02 PV régénérés par seconde |
 | 4844 | Prytanée | Notable | +0.1 PV régénérés par seconde |
-| 4844 | Éléos | Notable | +5% de chance d'esquiver un coup |
+| 4844 | Éléos | Notable | +5 points d'esquive |
 | 5363 | Elpis | Notable | +0.1 PV régénérés par seconde |
 | 5363 | Homonoia | Notable | +0.05 PV régénérés par seconde |
 | 6228 | Boulaia | Keystone | +0.15 PV régénérés par seconde |
-| 6228 | Sôtéria | Keystone | +10% de chance d'esquiver un coup |
+| 6228 | Sôtéria | Keystone | +10 points d'esquive |
 | 6401 | Euthénia | Notable | +3 PV max |
-| 6401 | Hestiade | Notable | +5% de chance d'esquiver un coup |
+| 6401 | Hestiade | Notable | +5 points d'esquive |
 | 6747 | Vesta | Keystone | +5 PV max |
 

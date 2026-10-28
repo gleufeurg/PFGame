@@ -30,7 +30,7 @@ const ROOT = path.join(__dirname, '..', '..');
             const visitTrees = function () {
                 for (const tree of SKILL_TREES) {
                     openSkillTree(tree);
-                    showNodeInfoHint();
+                    showAwakeningCard(tree); //la carte de l'Éveil (ses textes)
                     tree.nodes.forEach(showNodeInfo);
                     for (const mode of Object.keys(LINK_MODES)) {
                         tree.linkMode = mode;

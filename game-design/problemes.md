@@ -69,12 +69,6 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Pourquoi :** les chiffres (dégâts, fréquence, rayons) ont été choisis à l'estime, et testés seulement en simulation. Arès gagne des dégâts pour toujours sans limite, et le cri de guerre presque permanent quand son arbre est rempli peut devenir trop fort ; la foudre de Zeus peut tout raser quand l'écran est plein.
 - **Que faire :** jouer chaque dieu, puis régler les chiffres avec l'éditeur de réglages (catégories « Pouvoirs des dieux » et « Combos d'orbite » : `WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...) et, pour chaque compétence, dans `SKILL_TREES_DATA` (`index.html`). Le rythme général (prix, apparition, vie des ennemis) a été rééquilibré avec le joueur robot (voir [rythme.md](rythme.md)), mais pas chaque pouvoir un par un.
 
-### L'XP ne sert plus à rien en fin de jeu (les deux branches)
-
-- **Ce qu'on voit :** avec le joueur robot, dès qu'un nouveau dieu arrive, tout son arbre se remplit en une ou deux parties ; ensuite, pendant les longues attentes avant le dieu suivant (de plus en plus cher), l'XP s'accumule sans rien à acheter (voir [rythme.md](rythme.md)).
-- **Pourquoi :** l'or a des dépenses sans fin (les améliorations infinies, les dieux de plus en plus chers), mais l'XP ne sert qu'aux compétences, qui sont en nombre limité. Le prix des compétences monte déjà de ×1,5 à chaque dieu (`SKILL_TIER_GROWTH`), ce qui étale le milieu du jeu, mais pas la fin. Avec les voies, on ne peut plus tout prendre dans un arbre : il y a encore moins de compétences à acheter, donc l'XP déborde un peu plus tôt.
-- **Que faire (choix de game design) :** donner à l'XP une dépense sans fin, par exemple un « Éveil » infini par dieu, quand son arbre est complet (+5 % de dégâts de la planète par niveau, de plus en plus cher) ; ou des arbres plus grands avec des choix (prévu : skill trees avec chemins bloqués).
-
 ### Anciennes sauvegardes : les prix ont changé (les deux branches)
 
 - **Ce qu'on voit :** depuis le rééquilibrage, les compétences d'un dieu coûtent ×1,5 par dieu (×86 chez Hestia). Une compétence achetée avant le rééquilibrage, puis remboursée, rend son **nouveau** prix : un testeur peut donc gagner de l'XP en remboursant ses anciennes compétences.

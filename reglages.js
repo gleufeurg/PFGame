@@ -12,7 +12,7 @@ const REGLAGES = {
         "Stats de départ": {
             "BASE_STATS.maxHealth": { valeur: 10, unite: "PV", texte: "Points de vie au début d'une partie" },
             "BASE_STATS.regen": { valeur: 0, unite: "PV/s", texte: "Points de vie regagnés par seconde" },
-            "BASE_STATS.dodgeChance": { valeur: 0, unite: "%", texte: "Chance d'esquiver un coup" },
+            "BASE_STATS.dodge": { valeur: 0, unite: "points", texte: "Points d'esquive au début (chance d'esquiver = x / (x + 1), avec x = les points ÷ 100)" },
             "BASE_STATS.shield": { valeur: 0, unite: "", texte: "Bouclier : 1 ou plus = un bouclier bloque un coup, puis se recharge" },
             "BASE_STATS.shieldRecharge": { valeur: 1, unite: "×", texte: "Vitesse de recharge du bouclier (1.5 = 50 % plus rapide)" },
             "BASE_STATS.lifeOnKill": { valeur: 0, unite: "PV", texte: "Points de vie regagnés à chaque ennemi tué" },
@@ -30,8 +30,7 @@ const REGLAGES = {
             "BASE_STATS.xpMultiplier": { valeur: 1, unite: "×", texte: "XP gagnée" }
         },
         "Défense": {
-            "SHIELD_COOLDOWN": { valeur: 10, unite: "s", texte: "Temps de recharge du bouclier (divisé par la vitesse de recharge)" },
-            "DODGE_MAX": { valeur: 0.75, unite: "%", texte: "Esquive maximum (même avec toutes les compétences d'esquive)" }
+            "SHIELD_COOLDOWN": { valeur: 10, unite: "s", texte: "Temps de recharge du bouclier (divisé par la vitesse de recharge)" }
         },
         "Corps": {
             "PLAYER_RADIUS": { valeur: 32, unite: "px", texte: "Taille du joueur (rayon) : un ennemi le touche à cette distance (plus sa propre taille). Change aussi le dessin" }
@@ -77,11 +76,11 @@ const REGLAGES = {
     },
     "Pouvoirs des dieux": {
         "Rythme des pouvoirs": {
-            "PLANET_POWERS.charm.interval": { valeur: 8, unite: "s", texte: "Aphrodite : temps entre deux charmes (divisé par 1 + « pouvoir plus fréquent »)" },
-            "PLANET_POWERS.warCry.interval": { valeur: 12, unite: "s", texte: "Arès : temps entre deux cris de guerre" },
-            "PLANET_POWERS.bloom.interval": { valeur: 9, unite: "s", texte: "Déméter : temps entre deux rayons de vie" },
-            "PLANET_POWERS.moonArrow.interval": { valeur: 6, unite: "s", texte: "Artémis : temps entre deux grandes flèches" },
-            "PLANET_POWERS.tide.interval": { valeur: 10, unite: "s", texte: "Poséidon : temps entre deux vagues" }
+            "PLANET_POWERS.charm.interval": { valeur: 8, unite: "s", texte: "Aphrodite : temps de recharge du charme (moins la réduction de recharge : x / (100 + x), avec x points)" },
+            "PLANET_POWERS.warCry.interval": { valeur: 12, unite: "s", texte: "Arès : temps de recharge du cri de guerre" },
+            "PLANET_POWERS.bloom.interval": { valeur: 9, unite: "s", texte: "Déméter : temps de recharge du rayon de vie" },
+            "PLANET_POWERS.moonArrow.interval": { valeur: 6, unite: "s", texte: "Artémis : temps de recharge de la grande flèche" },
+            "PLANET_POWERS.tide.interval": { valeur: 10, unite: "s", texte: "Poséidon : temps de recharge de la vague" }
         },
         "Héphaïstos : traînée de feu": {
             "FIRE_TRAIL_STEP": { valeur: 14, unite: "px", texte: "Un point de feu tous les X pixels parcourus par la balle" },
@@ -281,7 +280,7 @@ const REGLAGES = {
             "SHOP_ITEMS.range.value": { valeur: 25, unite: "px", texte: "Portée en plus, par niveau" },
             "SHOP_ITEMS.range.baseCost": { valeur: 10, unite: "or", texte: "Prix du 1er niveau" },
             "SHOP_ITEMS.range.costGrowth": { valeur: 1.5, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" },
-            "SHOP_ITEMS.range.maxLevel": { valeur: 8, unite: "", texte: "Niveau maximum", infini: true }
+            "SHOP_ITEMS.range.maxLevel": { valeur: Infinity, unite: "", texte: "Niveau maximum", infini: true }
         },
         "Balle supplémentaire": {
             "SHOP_ITEMS.bulletCount.value": { valeur: 1, unite: "", texte: "Balles par tir en plus, par niveau" },
@@ -306,6 +305,12 @@ const REGLAGES = {
             "SHOP_ITEMS.regen.baseCost": { valeur: 12, unite: "or", texte: "Prix du 1er niveau" },
             "SHOP_ITEMS.regen.costGrowth": { valeur: 1.6, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" },
             "SHOP_ITEMS.regen.maxLevel": { valeur: Infinity, unite: "", texte: "Niveau maximum", infini: true }
+        },
+        "Esquive": {
+            "SHOP_ITEMS.dodge.value": { valeur: 5, unite: "points", texte: "Points d'esquive en plus, par niveau (chance d'esquiver = x / (x + 1), avec x = les points ÷ 100)" },
+            "SHOP_ITEMS.dodge.baseCost": { valeur: 25, unite: "or", texte: "Prix du 1er niveau" },
+            "SHOP_ITEMS.dodge.costGrowth": { valeur: 1.6, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" },
+            "SHOP_ITEMS.dodge.maxLevel": { valeur: Infinity, unite: "", texte: "Niveau maximum", infini: true }
         },
         "Chance de critique": {
             "SHOP_ITEMS.critChance.value": { valeur: 0.02, unite: "%", texte: "Chance de coup critique en plus, par niveau" },
@@ -350,6 +355,11 @@ const REGLAGES = {
             "KEYSTONE_COST": { valeur: 60, unite: "XP", texte: "Prix d'une keystone (+ 2 XP par pas depuis le départ)" },
             "GRAND_COST": { valeur: 150, unite: "XP", texte: "Prix de la grande keystone" },
             "SKILL_TIER_GROWTH": { valeur: 1.5, unite: "×", texte: "Chaque dieu a des compétences X fois plus chères que le dieu d'avant" }
+        },
+        "Éveil des dieux": {
+            "AWAKENING_DAMAGE_PER_LEVEL": { valeur: 0.05, unite: "%", texte: "Dégâts en plus pour la planète, par niveau d'Éveil" },
+            "AWAKENING_BASE_COST": { valeur: 100, unite: "XP", texte: "Prix du 1er niveau d'Éveil du 1er dieu (× la hausse des compétences pour chaque dieu suivant)" },
+            "AWAKENING_COST_GROWTH": { valeur: 1.25, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau d'Éveil" }
         }
     },
     "Temps": {
@@ -358,9 +368,9 @@ const REGLAGES = {
             "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut, achetés dans le shop ; la touche T fait le plus grand)", texteDuJeu: "le shop (« +10 s, puis +30 s, puis +100 s »)" }
         },
         "Recharge du saut": {
-            "SKIP_COOLDOWN_MIN": { valeur: 8, unite: "s", texte: "Temps de recharge minimum après un saut" },
-            "SKIP_COOLDOWN_PER_SECOND": { valeur: 0.6, unite: "s", texte: "Recharge par seconde sautée (0.6 : un saut de 100 s → 60 s de recharge)" },
-            "SKIP_COOLDOWN_MAX": { valeur: 120, unite: "s", texte: "Temps de recharge maximum" }
+            "SKIP_COOLDOWN_MIN": { valeur: 4, unite: "s", texte: "Temps de recharge minimum après un saut" },
+            "SKIP_COOLDOWN_PER_SECOND": { valeur: 0.3, unite: "s", texte: "Recharge par seconde sautée (0.3 : un saut de 100 s → 30 s de recharge)" },
+            "SKIP_COOLDOWN_MAX": { valeur: 60, unite: "s", texte: "Temps de recharge maximum" }
         }
     },
     "Combos d'orbite": {
