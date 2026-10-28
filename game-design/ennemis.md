@@ -69,24 +69,49 @@ Les réglages communs sont `ENEMY_WAVE_AMPLITUDE` (40 px), `ENEMY_WAVE_FREQUENCY
 
 ## Les super ennemis
 
-Un monstre de la mythologie arrive chaque minute, de 1:00 à 8:00, **seul**, après une alerte (voir « Les arrivées spéciales » ci-dessous). Il va tout droit, lentement, et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive. Leur vie ne monte pas avec le temps.
+Un monstre de la mythologie arrive **toutes les 5 minutes**, de 5:00 à 40:00, après une alerte (voir « Les arrivées spéciales » ci-dessous). Il va tout droit et sa forme est hérissée de pointes qui tournent. Comme pour les ennemis normaux, s'il touche le joueur il lui fait autant de dégâts que sa vie restante : un super ennemi intact tue donc le joueur. Il faut l'abattre avant qu'il arrive.
 
-| Arrivée | Super ennemi | Élément | Vie (PV) | Vitesse (px/s) | Taille (rayon, px) | Pointes | Dégâts s'il touche (intact) | Or | XP |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1:00 | Cerbère | feu | 40 | 12 | 34 | 3 | 40 | 15 | 15 |
-| 2:00 | Hydre de Lerne | eau | 90 | 11 | 38 | 9 | 90 | 25 | 25 |
-| 3:00 | Méduse | plante | 160 | 10 | 42 | 6 | 160 | 40 | 40 |
-| 4:00 | Typhon | air | 260 | 10 | 46 | 4 | 260 | 60 | 60 |
-| 5:00 | Chimère | feu | 400 | 9 | 50 | 5 | 400 | 90 | 90 |
-| 6:00 | Charybde | eau | 600 | 9 | 54 | 8 | 600 | 130 | 130 |
-| 7:00 | Python | plante | 850 | 8 | 58 | 7 | 850 | 180 | 180 |
-| 8:00 | Cronos | air | 1 200 | 8 | 64 | 12 | 1 200 | 260 | 260 |
+- **Ils sont 5 fois plus rapides** qu'avant (les testeurs les trouvaient trop lents).
+- **Leur vie monte avec le temps**, comme celle des ennemis normaux : la vie du tableau (celle qu'ils auraient au tout début) est multipliée par l'échelle de vie au moment de leur arrivée (×4 à 5:00, ×9 à 10:00, ×81 à 40:00 ; voir [questions/formules.md](questions/formules.md)). Sinon, les derniers seraient bien plus faibles que les ennemis normaux de leur époque.
 
-- **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie.
-- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Il devient alors un ennemi (rare) comme les autres : **pas d'alerte**, il arrive au milieu des ennemis normaux, qui continuent d'apparaître, et il n'arrête pas « Sauter dans le temps » (il peut même arriver pendant un saut).
+| Arrivée | Super ennemi | Élément | Vie (×échelle) | Vie à son heure | Vitesse (px/s) | Taille (rayon, px) | Pointes | Or | XP | Pouvoir |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 5:00 | Cerbère | feu | 40 | 160 | 60 | 34 | 3 | 15 | 15 | — |
+| 10:00 | Hydre de Lerne | eau | 90 | 810 | 55 | 38 | 9 | 25 | 25 | se dédouble, puis dernière vague |
+| 15:00 | Méduse | plante | 160 | 2 560 | 50 | 42 | 6 | 40 | 40 | pétrifie les planètes |
+| 20:00 | Typhon | air | 260 | 6 500 | 50 | 46 | 4 | 60 | 60 | — |
+| 25:00 | Chimère | feu | 400 | 14 400 | 45 | 50 | 5 | 90 | 90 | — |
+| 30:00 | Charybde | eau | 600 | 29 400 | 45 | 54 | 8 | 130 | 130 | — |
+| 35:00 | Python | plante | 850 | 54 400 | 40 | 58 | 7 | 180 | 180 | — |
+| 40:00 | Cronos | air | 1 200 | 97 200 | 40 | 64 | 12 | 260 | 260 | ralentit ton temps |
+
+- **Tant qu'il n'est pas vaincu**, un super ennemi revient à la même heure à chaque partie, pour un **duel** (voir ci-dessous).
+- **Une fois vaincu** (message « X est vaincu »), il ne revient plus à heure fixe. Il peut en revanche remplacer un ennemi normal au hasard : 0,1 % de chances au début de la partie, +0,002 % par seconde, soit environ 0,7 % à 5 minutes (`BOSS_RANDOM_CHANCE_START`, `BOSS_RANDOM_CHANCE_PER_SECOND`). Il devient alors un ennemi (rare) comme les autres : **pas d'alerte ni de duel**, il arrive au milieu des ennemis normaux, qui continuent d'apparaître, et il n'arrête pas « Sauter dans le temps » (il peut même arriver pendant un saut). **Il garde son pouvoir** (Méduse pétrifie, l'Hydre se dédouble...).
 - **Paliers :** chaque super ennemi vaincu débloque un bouton dans le menu de mort, pour recommencer juste après lui (voir [interface.md](interface.md)).
 - **La liste des vaincus est sauvegardée** dans le navigateur, d'une partie à l'autre.
 - **Son élément compte** pour les bonus des skills « +X dégâts contre les ennemis de feu », etc.
+
+### Le duel (1re rencontre)
+
+Quand un super ennemi jamais vaincu arrive, c'est un duel entre lui et le joueur (`startBossDuel`) :
+- **le chrono s'arrête** pendant tout le combat : il affiche « ⚔️ 5:00 » en rouge et palpite. Le temps ne compte pas, donc la vie des ennemis n'augmente pas ;
+- **aucun autre ennemi n'arrive** jusqu'à la fin du combat (pour l'Hydre : jusqu'à la mort de toutes ses têtes et de sa dernière vague) ;
+- **le jeu repasse en vitesse x1** (les boutons x2, x4 sont grisés : « Pendant un duel, le jeu reste en vitesse x1 »). À la fin du duel, la vitesse choisie avant revient toute seule ;
+- **pas de saut dans le temps** (« ⚔️ Impossible de sauter le temps pendant un duel »).
+
+Le duel finit quand le super ennemi (et tout son groupe) est mort, ou s'il touche le joueur sans le tuer (bouclier, esquive...).
+
+### Les pouvoirs uniques
+
+Les super ennemis s'en servent seulement quand ils sont à l'écran. Les réglages sont en haut de la partie `SUPER ENNEMIS` de `index.html`.
+
+| Super ennemi | Pouvoir | Détails |
+| --- | --- | --- |
+| **Hydre de Lerne** | **Se dédouble** | Quand elle meurt, 2 têtes apparaissent à sa place (un peu repoussées, de part et d'autre). Chaque tête tuée en donne 2 autres : 1 → 2 → 4 → 8 têtes (`HYDRA_MAX_GENERATION` = 3). Chaque nouvelle tête a 55 % de la vie de sa mère, 78 % de sa taille, 15 % de vitesse en plus et 40 % de son or et de son XP. Les petites têtes n'ont ni nom ni barre de vie (trop de texte à l'écran). Quand les 8 dernières têtes sont tuées : **la dernière vague**, 30 petites hydres (14 si l'Hydre revient comme ennemi rare) qui arrivent de tous les côtés, pas toutes en même temps, comme une vague de zombies. Chacune a 8 % de la vie de la 1re hydre. L'Hydre est vaincue quand la vague est finie. |
+| **Méduse** | **Pétrifie une planète** | 2,5 s après son arrivée à l'écran, puis toutes les 6 s : son regard pétrifie une planète au hasard. Animation : un **cercle rose crénelé** (comme le haut d'un château) tourne autour de Méduse et autour de la planète, un rayon rose en pointillés file de l'une à l'autre, une onde de choc, et **la planète tremble** (son de pierre). La planète devient **grise, avec des fissures** : elle **ne tire plus**, n'a **plus de pouvoir**, et **son lien d'orbite est annulé** (elle ne prête plus son attribut non plus). Ça dure **jusqu'à la mort de Méduse** : la pierre éclate alors (éclats gris, onde de choc de sa couleur). Le panneau des stats affiche « État : 🗿 Pétrifiée par Méduse ». |
+| **Cronos** | **Ralentit ton temps** | 3 s après son arrivée à l'écran, puis toutes les 10 s, pendant 4 s : toi, tes planètes, tes balles et tes pouvoirs passent à **35 %** de leur vitesse (`CRONOS_SLOW_FACTOR`), mais pas les ennemis. Animation : un grand cadran d'horloge violet grandit autour de Cronos, un cadran dont les aiguilles tournent apparaît autour du joueur, et l'écran se teinte de violet (bords plus sombres en graphismes élevés). Son : une note qui descend et un tic-tac qui ralentit. |
+
+Les autres super ennemis (Cerbère, Typhon, Chimère, Charybde, Python) n'ont pas encore de pouvoir unique.
 
 ## Les arrivées spéciales : alerte, puis seul
 
@@ -98,7 +123,7 @@ Pour qu'on voie bien un super ennemi jamais vaincu ou le premier ennemi d'un nou
 
 | Arrivée | Alerte | Seul pendant |
 | --- | --- | --- |
-| Super ennemi jamais vaincu (1re rencontre) | 8 s (`BOSS_WARNING_TIME`) | **jusqu'à sa mort** : aucun autre ennemi n'apparaît, le joueur se concentre sur le combat |
+| Super ennemi jamais vaincu (1re rencontre) | 8 s (`BOSS_WARNING_TIME`) | **jusqu'à sa mort** : c'est un duel (chrono arrêté, vitesse x1, voir plus haut) |
 | Premier ennemi d'un nouveau mouvement | 3 s (`MOVEMENT_WARNING_TIME`) | 5 s ou jusqu'à sa mort (`MOVEMENT_SOLO_TIME`) |
 
 Un super ennemi **déjà vaincu** n'a plus d'arrivée spéciale (voir plus haut).

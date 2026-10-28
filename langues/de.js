@@ -1417,5 +1417,14 @@ window.TRADUCTIONS.de = {
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Nächster Gott im Shop („Neue Gottheit“)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tippe auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Lange drücken zum Erstatten, zwei Finger zum Zoomen.",
     "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Klicke auf eine Fähigkeit, um sie auszuwählen, dann auf „Freischalten“. Rechtsklick zum Erstatten.",
-    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Zeitsprung lädt auf: noch {seconds} s"
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Zeitsprung lädt auf: noch {seconds} s",
+    "⚔️ Impossible de sauter le temps pendant un duel": "⚔️ Während eines Duells kannst du keine Zeit überspringen",
+    "Pendant un duel, le jeu reste en vitesse x1": "Während eines Duells bleibt das Spiel auf x1",
+    "⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !": "⚔️ Duell gegen {name}: Die Uhr hält an, Tempo x1!",
+    "⚔️ Duel contre {name} : le chrono s'arrête !": "⚔️ Duell gegen {name}: Die Uhr hält an!",
+    "🗿 Méduse a pétrifié {name} !": "🗿 Medusa hat {name} versteinert!",
+    "⌛ Cronos ralentit ton temps !": "⌛ Kronos verlangsamt deine Zeit!",
+    "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 Die letzte Welle der Hydra kommt von überall!",
+    "État": "Zustand",
+    "Pétrifiée par Méduse": "Von Medusa versteinert"
 };

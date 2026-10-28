@@ -1417,5 +1417,14 @@ window.TRADUCTIONS.en = {
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Next god to buy in the shop (“New deity”)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tap a skill to select it, then “Unlock”. Long press to refund it, two fingers to zoom.",
     "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Click a skill to select it, then “Unlock”. Right-click to refund it.",
-    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Time skip recharging: {seconds} s left"
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Time skip recharging: {seconds} s left",
+    "⚔️ Impossible de sauter le temps pendant un duel": "⚔️ You can't skip time during a duel",
+    "Pendant un duel, le jeu reste en vitesse x1": "During a duel, the game stays at x1 speed",
+    "⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !": "⚔️ Duel against {name}: the timer stops, speed x1!",
+    "⚔️ Duel contre {name} : le chrono s'arrête !": "⚔️ Duel against {name}: the timer stops!",
+    "🗿 Méduse a pétrifié {name} !": "🗿 Medusa turned {name} to stone!",
+    "⌛ Cronos ralentit ton temps !": "⌛ Cronus slows down your time!",
+    "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 The Hydra's last wave is coming from everywhere!",
+    "État": "State",
+    "Pétrifiée par Méduse": "Turned to stone by Medusa"
 };

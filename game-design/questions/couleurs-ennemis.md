@@ -17,6 +17,8 @@ Ce qui entoure un ennemi pour montrer ce qui lui arrive (couleurs du code, parti
 | Anneau en petits pointillés, plus large | bleu (`#4da6ff`) | **Frêle** : il subit +35 % de dégâts ou plus | vague de Poséidon |
 | 4 petites étincelles qui tournent | bleu électrique (`#5ce1e6`) | **Conducteur** : un 2e éclair fera tomber la foudre sur lui | éclairs de Zeus |
 
+Une **planète grise avec des fissures** : elle a été pétrifiée par Méduse (elle ne tire plus et son lien d'orbite est annulé jusqu'à la mort de Méduse).
+
 Les autres signes, sans anneau :
 - **tout blanc un court instant** : il vient d'être touché ;
 - **onde rouge** (`#ff2a2a`) : coup critique ;

@@ -1417,5 +1417,14 @@ window.TRADUCTIONS.ja = {
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "ショップで次に買える神（「新たな神」）",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "スキルをタップして選び、「解放」を押す。長押しで払い戻し、2本指でズーム。",
     "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "スキルをクリックして選び、「解放」を押す。右クリックで払い戻し。",
-    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ タイムスキップ再使用まで：あと{seconds}秒"
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ タイムスキップ再使用まで：あと{seconds}秒",
+    "⚔️ Impossible de sauter le temps pendant un duel": "⚔️ 決闘中は時間をスキップできません",
+    "Pendant un duel, le jeu reste en vitesse x1": "決闘中はゲーム速度x1のまま",
+    "⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !": "⚔️ {name}と決闘：タイマーが止まり、速度x1！",
+    "⚔️ Duel contre {name} : le chrono s'arrête !": "⚔️ {name}と決闘：タイマーが止まる！",
+    "🗿 Méduse a pétrifié {name} !": "🗿 メドゥーサが{name}を石にした！",
+    "⌛ Cronos ralentit ton temps !": "⌛ クロノスがあなたの時間を遅くする！",
+    "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 ヒュドラの最後の波が四方から来る！",
+    "État": "状態",
+    "Pétrifiée par Méduse": "メドゥーサに石化された"
 };

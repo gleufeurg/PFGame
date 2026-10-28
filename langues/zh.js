@@ -1417,5 +1417,14 @@ window.TRADUCTIONS.zh = {
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "商店中下一个可购买的神（“新神祇”）",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "点击技能来选择它，然后点“解锁”。长按退还，双指缩放。",
     "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "点击技能来选择它，然后点“解锁”。右键退还。",
-    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ 时间跳跃冷却中：还剩 {seconds} 秒"
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ 时间跳跃冷却中：还剩 {seconds} 秒",
+    "⚔️ Impossible de sauter le temps pendant un duel": "⚔️ 决斗中无法跳过时间",
+    "Pendant un duel, le jeu reste en vitesse x1": "决斗中游戏保持 x1 速度",
+    "⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !": "⚔️ 与{name}决斗：计时停止，速度 x1！",
+    "⚔️ Duel contre {name} : le chrono s'arrête !": "⚔️ 与{name}决斗：计时停止！",
+    "🗿 Méduse a pétrifié {name} !": "🗿 美杜莎把{name}变成了石头！",
+    "⌛ Cronos ralentit ton temps !": "⌛ 克洛诺斯减慢了你的时间！",
+    "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 九头蛇的最后一波从四面八方袭来！",
+    "État": "状态",
+    "Pétrifiée par Méduse": "被美杜莎石化"
 };

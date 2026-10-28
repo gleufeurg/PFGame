@@ -1417,5 +1417,14 @@ window.TRADUCTIONS.it = {
     "Prochain dieu à acheter dans le shop (« Nouvelle divinité »)": "Prossimo dio da comprare nel negozio («Nuova divinità»)",
     "Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.": "Tocca un'abilità per sceglierla, poi «Sblocca». Tieni premuto per rimborsarla, due dita per lo zoom.",
     "Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.": "Clicca su un'abilità per sceglierla, poi «Sblocca». Clic destro per rimborsarla.",
-    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Salto nel tempo in ricarica: ancora {seconds} s"
+    "⏳ Saut dans le temps en recharge : encore {seconds} s": "⏳ Salto nel tempo in ricarica: ancora {seconds} s",
+    "⚔️ Impossible de sauter le temps pendant un duel": "⚔️ Impossibile saltare nel tempo durante un duello",
+    "Pendant un duel, le jeu reste en vitesse x1": "Durante un duello, il gioco resta a velocità x1",
+    "⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !": "⚔️ Duello contro {name}: il cronometro si ferma, velocità x1!",
+    "⚔️ Duel contre {name} : le chrono s'arrête !": "⚔️ Duello contro {name}: il cronometro si ferma!",
+    "🗿 Méduse a pétrifié {name} !": "🗿 Medusa ha pietrificato {name}!",
+    "⌛ Cronos ralentit ton temps !": "⌛ Crono rallenta il tuo tempo!",
+    "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 L'ultima ondata dell'Idra arriva da ogni parte!",
+    "État": "Stato",
+    "Pétrifiée par Méduse": "Pietrificata da Medusa"
 };
