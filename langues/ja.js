@@ -1404,5 +1404,6 @@ window.TRADUCTIONS.ja = {
     "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "業火：炎の軌跡の幅が2倍になり、1秒長く残る",
     "Brûlure de la traînée de feu (par seconde)": "炎の軌跡の燃焼（毎秒）",
     "Durée de la traînée de feu": "炎の軌跡の持続時間",
-    "Largeur de la traînée de feu": "炎の軌跡の幅"
+    "Largeur de la traînée de feu": "炎の軌跡の幅",
+    "Temps de survie": "生存時間"
 };

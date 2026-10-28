@@ -1404,5 +1404,6 @@ window.TRADUCTIONS.zh = {
     "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "烈焰：火焰轨迹宽度变为2倍，并多持续1秒",
     "Brûlure de la traînée de feu (par seconde)": "火焰轨迹燃烧（每秒）",
     "Durée de la traînée de feu": "火焰轨迹持续时间",
-    "Largeur de la traînée de feu": "火焰轨迹宽度"
+    "Largeur de la traînée de feu": "火焰轨迹宽度",
+    "Temps de survie": "生存时间"
 };

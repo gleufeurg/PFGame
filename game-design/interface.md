@@ -94,7 +94,7 @@ Liste « Morceau » dans les paramètres : « Tous, à la suite » (par défaut 
 
 ## Décor
 
-Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thème), mer étoilée, mer en plein jour, neige ou prairie. Retenue par le navigateur (clé `scene`). Détails dans [direction-artistique/README.md](direction-artistique/README.md).
+Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thème), mer étoilée, mer en plein jour, neige ou prairie. **La mer étoilée est le décor de départ** (`DEFAULT_SCENE`), car c'est celui que les joueurs préfèrent. Retenue par le navigateur (clé `scene`). Détails dans [direction-artistique/README.md](direction-artistique/README.md).
 
 ## Pause dans les menus
 
@@ -118,6 +118,14 @@ Les boutons pas encore achetés restent visibles avec un cadenas. Sur la branche
 =======
 Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 >>>>>>> portfolio
+
+## Le menu de mort : le résumé de la partie
+
+En haut du menu de mort, sous « GAME OVER », 3 grandes cartes résument la partie qui vient de finir (`showRunSummary`) :
+- **Or gagné** (carte dorée qui brille) et **XP gagnée** : les nombres comptent de 0 jusqu'à leur valeur en un peu plus d'une seconde, puis « sautent » une fois (avec le son d'achat s'il y a de l'or) ;
+- **Temps de survie**.
+
+Juste en dessous, **l'or disponible** (le total à dépenser dans le shop), en gros avec une pièce. L'or et l'XP de la partie sont comptés dans `runGold` et `runXp` (remis à 0 à chaque nouvelle partie).
 
 ## Le menu de mort : les paliers
 

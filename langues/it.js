@@ -1404,5 +1404,6 @@ window.TRADUCTIONS.it = {
     "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Rogo: la scia di fuoco è 2 volte più larga e dura 1 s in più",
     "Brûlure de la traînée de feu (par seconde)": "Bruciatura della scia di fuoco (al secondo)",
     "Durée de la traînée de feu": "Durata della scia di fuoco",
-    "Largeur de la traînée de feu": "Larghezza della scia di fuoco"
+    "Largeur de la traînée de feu": "Larghezza della scia di fuoco",
+    "Temps de survie": "Tempo di sopravvivenza"
 };

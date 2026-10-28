@@ -1404,5 +1404,6 @@ window.TRADUCTIONS.en = {
     "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus": "Blaze: the fire trail is twice as wide and lasts 1 s longer",
     "Brûlure de la traînée de feu (par seconde)": "Fire trail burn (per second)",
     "Durée de la traînée de feu": "Fire trail duration",
-    "Largeur de la traînée de feu": "Fire trail width"
+    "Largeur de la traînée de feu": "Fire trail width",
+    "Temps de survie": "Survival time"
 };
