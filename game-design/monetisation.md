@@ -6,7 +6,7 @@ Cette branche est la version « jeu » : sans la partie portfolio (les présenta
 
 | Moment | Pub | Détail |
 | --- | --- | --- |
-| Après chaque mort | pub « entre deux écrans » | elle s'affiche avant le shop ; on ne peut pas la fermer avant la fin |
+| Après chaque mort | pub « entre deux écrans » | elle s'affiche avant le shop ; on ne peut pas la fermer avant la fin. À la 1re mort, la bulle « Le shop » du tutoriel arrive après la pub (voir [interface.md](interface.md)) |
 | Bouton « 💖 Ressusciter (pub) » | pub récompensée | 1 fois par partie : toute la vie revient, les ennemis sont repoussés au bord de l'écran, la partie continue |
 | Bouton « 💰 Doubler les récompenses de ce round (pub) » | pub récompensée | 1 fois par mort : on regagne l'or et l'XP gagnés depuis le début du round (la partie, ou la dernière résurrection) |
 

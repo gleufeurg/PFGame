@@ -12,7 +12,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | [questions/](questions/README.md) | les réponses aux questions posées sur le jeu : toutes les formules ([formules.md](questions/formules.md)), les couleurs autour des ennemis… | écrit à la main |
 | [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
 | [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |
-| [interface.md](interface.md) | touches, commandes au doigt, petits écrans, sauvegarde, améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |
+| [interface.md](interface.md) | touches, commandes au doigt, petits écrans, sauvegarde, le tutoriel (ses bulles et quand elles arrivent), améliorations du temps, fenêtre des skills (onglets, remboursement), caméra | écrit à la main |
 | [mobile.md](mobile.md) | l'application Android / iPhone (Capacitor) : installer, tester sur son téléphone, publier (branche `monetisation` seulement) | écrit à la main |
 | [monetisation.md](monetisation.md) | pubs, résurrection, doublement des récompenses, Pack Premium, ce qu'il manque pour encaisser de l'argent (branche `monetisation` seulement) | écrit à la main |
 | [site-web.md](site-web.md) | le site du jeu (GitHub Pages) : seuls les fichiers du jeu sont publiés, pas `CLAUDE.md` ni `game-design/` ; le réglage à faire une fois sur GitHub | écrit à la main |

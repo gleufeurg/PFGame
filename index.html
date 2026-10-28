@@ -2112,6 +2112,99 @@
             border-left-color: #ff6b6b;
         }
 
+        /*TUTORIEL : un voile sombre, un "projecteur" sur ce qu'on montre, et une bulle à côté*/
+        #tutorialLayer {
+            position: fixed;
+            inset: 0;
+            z-index: 60; /*par-dessus tout, même les paramètres*/
+        }
+
+        #tutorialLayer.noTarget { /*rien à montrer : juste le voile*/
+            background: rgba(0, 0, 23, 0.6);
+        }
+
+        #tutorialSpotlight {
+            position: fixed;
+            border: 3px solid var(--ui-accent);
+            border-radius: 14px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 23, 0.6); /*une ombre immense : elle assombrit tout l'écran, sauf le "trou"*/
+            pointer-events: none;
+            transition: left 0.3s, top 0.3s, width 0.3s, height 0.3s;
+        }
+
+        #tutorialSpotlight.round {
+            border-radius: 50%;
+        }
+
+        #tutorialLayer.highGraphics #tutorialSpotlight { /*graphismes élevés : le bord du projecteur palpite*/
+            animation: tutorialPulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes tutorialPulse {
+            0%, 100% { border-color: var(--ui-accent); }
+            50% { border-color: #ffffff; }
+        }
+
+        #tutorialBubble {
+            position: fixed;
+            width: min(380px, calc(100vw - 24px));
+            box-sizing: border-box;
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--ui-accent);
+            background: var(--ui-surface);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            color: var(--ui-text);
+        }
+
+        #tutorialTitle {
+            font-family: Nunito, sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            color: var(--ui-accent);
+        }
+
+        #tutorialText {
+            margin: 8px 0 14px;
+            font-size: 15px;
+            line-height: 1.45;
+        }
+
+        .tutorialButtons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #tutorialSkipButton { /*discret : un simple lien souligné*/
+            padding: 8px 0;
+            border: none;
+            background: none;
+            color: var(--ui-muted);
+            font: inherit;
+            font-size: 13px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        @media (max-height: 500px) { /*téléphone en paysage (peu de hauteur) : une bulle plus large et moins haute*/
+            #tutorialBubble {
+                width: min(460px, calc(100vw - 24px));
+                padding: 10px 14px;
+            }
+
+            #tutorialTitle {
+                font-size: 17px;
+            }
+
+            #tutorialText {
+                margin: 4px 0 8px;
+                font-size: 14px;
+                line-height: 1.35;
+            }
+        }
+
         /*BOUTON "Effacer ma progression" (Paramètres)*/
         .dangerButton {
             padding: 8px 14px;
@@ -2669,6 +2762,19 @@
         </div>
     </div>
 
+    <!-- TUTORIEL : une bulle qui explique le jeu au bon moment, avec un "projecteur" sur ce qu'elle montre (voir TUTORIEL) -->
+    <div id="tutorialLayer" class="hidden">
+        <div id="tutorialSpotlight" class="hidden"></div>
+        <div id="tutorialBubble">
+            <div id="tutorialTitle"></div>
+            <p id="tutorialText"></p>
+            <div class="tutorialButtons">
+                <button id="tutorialSkipButton">Passer le tutoriel</button>
+                <button id="tutorialNextButton" class="primaryButton">Compris</button>
+            </div>
+        </div>
+    </div>
+
     <!-- PARAMÈTRES : roue crantée en haut à droite, ou touche Échap -->
     <div id="settingsPanel" class="overlay hidden">
         <div class="panel">
@@ -2716,6 +2822,11 @@
             <div class="settingRow">
                 <input type="checkbox" id="sharpGraphicsCheckbox">
                 <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
+            </div>
+            <div class="settingRow">
+                <input type="checkbox" id="tutorialCheckbox">
+                <label for="tutorialCheckbox">Tutoriel <span class="smallText">(des conseils au bon moment)</span></label>
+                <button id="restartTutorialButton" class="primaryButton">Recommencer</button>
             </div>
             <button id="adPrivacyButton" class="primaryButton hidden">Mes choix de confidentialité (pubs)</button>
             <div id="premiumBoxSettings" class="premiumBox"></div>
@@ -4588,6 +4699,7 @@
         let playerHitTimer = 0;
         let isGameOver = false;
         let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
+        let isTutorialOpen = false;               // une bulle du tutoriel est affichée (voir TUTORIEL)
         let isSettingsOpen = false;
 
         //Le jeu est en pause tant qu'un des menus est ouvert
@@ -4599,7 +4711,8 @@
         }
 
         function updatePause() {
-            isPaused = pauseInMenus && (isSettingsOpen || currentTree !== null);
+            //Une bulle du tutoriel met toujours le jeu en pause (le temps de la lire), même sans "pause dans les menus"
+            isPaused = isTutorialOpen || (pauseInMenus && (isSettingsOpen || currentTree !== null));
         }
 
         //BOUCLIER : bloque un coup, puis se recharge pendant SHIELD_COOLDOWN secondes
@@ -4815,6 +4928,9 @@
             runGold += goldGained; //affichés en gros au menu de mort (showRunSummary)
             runXp += xpGained;
             updateHud();
+            if (killsThisRun >= 5) {
+                triggerTutorial("rewards"); //TUTORIEL : après quelques ennemis tués
+            }
         }
 
         function updateHud() {
@@ -6253,6 +6369,7 @@
             updateTimeMenuButton();
             runTimeDisplay.classList.add("duel");
             showToast(wasFaster ? t("⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !", { name: boss.name }) : t("⚔️ Duel contre {name} : le chrono s'arrête !", { name: boss.name }));
+            triggerTutorial("boss"); //TUTORIEL : le 1er duel
         }
 
         function endBossDuel() {
@@ -10095,6 +10212,17 @@
             showStatsPanel();
             setupTreeWorld(); //après l'affichage : il faut que la fenêtre soit visible pour connaître sa taille
             showNodeInfoHint();
+            //TUTORIEL : l'arbre ouvert autrement qu'en cliquant sur la planète (touche S, bouton ✦) compte aussi
+            if (tutorialStep === "planet") {
+                finishTutorialStep();
+            }
+            if (!tree.isLocked) {
+                triggerTutorial("skillTree");
+                triggerTutorial("stats");
+                if (isLinkModeUnlocked("right")) {
+                    triggerTutorial("links");
+                }
+            }
         }
 
         function closeSkillTree() {
@@ -11019,6 +11147,7 @@
                 gameOverPanel.classList.remove("hidden");
                 showStatsPanel();
                 showRunSummary();
+                triggerTutorial("shop"); //TUTORIEL : à la 1re mort (après la pub)
             });
         }
 
@@ -11084,6 +11213,9 @@
 
                 const button = document.createElement("button");
                 button.className = "shopItem";
+                if (item.unlocksGod) {
+                    button.id = "shopGodItem"; //le tutoriel le montre à la 1re mort
+                }
                 button.disabled = isMaxed || gold < cost;
                 button.innerHTML =
                     "<strong>" + item.name + "</strong> " + t("(niv. {level}/{max})", { level: item.level, max: Number.isFinite(item.maxLevel) ? item.maxLevel : "∞" }) + "<br>" +
@@ -11192,6 +11324,16 @@
             gameOverPanel.classList.add("hidden");
             hideStatsPanel();
             playSound("menuClose");
+            //TUTORIEL : ce qui vient d'être acheté dans le shop
+            if (planets.length >= 1) {
+                triggerTutorial("planet");
+            }
+            if (planets.length >= 2) {
+                triggerTutorial("orbits");
+            }
+            if (SHOP_ITEMS.some(function (item) { return item.timeUpgrade && item.level > 0; })) {
+                triggerTutorial("time");
+            }
         }
 
         document.getElementById("restartButton").addEventListener("click", function () { restartGame(0); });
@@ -11241,6 +11383,7 @@
                 trees: {},  // nom du dieu -> { en orbite ?, lien, compétences prises }
                 planetOrder: planets.map(function (planet) { return planet.id; }), //map = transforme chaque élément
                 planetOrbits: {},   // nom de la planète -> son orbite
+                tutorial: { skipped: tutorialSkipped, done: [...tutorialDone] }, // [...set] = le Set en tableau
                 killStacks: killStacks   // ennemis tués par chaque dieu (Arès gagne des dégâts pour toujours)
             };
             for (const item of SHOP_ITEMS) {
@@ -11310,6 +11453,10 @@
                 const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
                 godItem.level = SKILL_TREES.filter(function (tree) { return !tree.isLocked; }).length;
                 resolvePathConflicts();
+                //TUTORIEL : une sauvegarde d'avant le tutoriel = un joueur qui connaît déjà le jeu (il peut le revoir dans les paramètres)
+                const tutorial = data.tutorial || { skipped: false, done: Object.keys(TUTORIAL_STEPS) };
+                tutorialSkipped = tutorial.skipped === true;
+                tutorialDone = new Set(Array.isArray(tutorial.done) ? tutorial.done : []);
             }
             isProgressLoaded = true;
         }
@@ -13138,6 +13285,241 @@
 
 
         /////////////////////
+        ////TUTORIEL/////////  Des bulles qui expliquent le jeu au bon moment, avec « Passer le tutoriel »
+        /////////////////////
+        //Chaque étape a un titre, un texte (textTouch = la version au doigt, textSmall = la version petit écran) et une cible à éclairer (target) :
+        //un sélecteur CSS (ex : "#hud"), "planet" (la 1re planète), "planet2" (la 2e), ou rien (la bulle au milieu).
+        //mustClick = il faut cliquer sur la planète éclairée pour continuer (pas de bouton « Compris »).
+        //Le jeu déclenche chaque étape au bon moment avec triggerTutorial("nom") (voir "TUTORIEL :" dans le code) ;
+        //une seule bulle à la fois, les autres attendent leur tour. Pendant une bulle, le jeu est en pause.
+        //Les étapes vues sont gardées dans la sauvegarde (saveProgress / loadProgress).
+        const TUTORIAL_STEPS = {
+            welcome: { title: "Bienvenue !", text: "Tu es le triangle au milieu de l'écran. Il tire tout seul sur les ennemis qui arrivent de tous les côtés. Si un ennemi te touche, tu perds autant de vie qu'il lui en reste." },
+            rewards: { title: "Or et XP", target: "#hud", text: "Chaque ennemi tué te rapporte de l'or et de l'XP. L'or se dépense dans le shop, quand tu meurs. L'XP sert à apprendre les compétences de tes dieux." },
+            enemies: { title: "Les ennemis", text: "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...)." },
+            shop: { title: "Le shop", target: "#shopGodItem", text: "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi." },
+            planet: { title: "Ta première planète", target: "planet", mustClick: true, text: "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.", textTouch: "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences." },
+            skillTree: { title: "Les compétences", target: "#treeCanvas", text: "Chaque dieu a son arbre de compétences. Clique sur une étoile pour voir ce qu'elle donne, puis sur « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres.", textTouch: "Chaque dieu a son arbre de compétences. Touche une étoile pour voir ce qu'elle donne, puis « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres." },
+            stats: { title: "Tes statistiques", target: "#statsPanel", text: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).", textSmall: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier." },
+            time: { title: "Le temps", target: "#timeMenuButton", text: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.", textTouch: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant." },
+            links: { title: "Les liens d'orbite", target: "#orbitLinkArea", text: "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici." },
+            orbits: { title: "Les orbites", target: "planet2", text: "Tu as plusieurs planètes ! Fais glisser une planète pour changer sa place, ou pour la mettre sur une autre orbite, plus près ou plus loin. Une planète ne se lie qu'à celles de son orbite." },
+            boss: { title: "Un super ennemi !", text: "Toutes les 5 minutes, un monstre de la mythologie arrive pour un duel : le chrono s'arrête et le jeu repasse en vitesse x1. Il a beaucoup de vie, et certains ont un pouvoir : abats-le avant qu'il te touche !" }
+        };
+        translateFields(TUTORIAL_STEPS, ["title", "text", "textTouch", "textSmall"]);
+
+        let tutorialDone = new Set();      // les étapes déjà vues
+        let tutorialSkipped = false;       // « Passer le tutoriel » : plus aucune bulle
+        let tutorialStep = null;           // le nom de l'étape affichée (ou null) ; isTutorialOpen est déclaré avec isPaused
+        const tutorialQueue = [];          // les étapes qui attendent leur tour
+        const tutorialLayer = document.getElementById("tutorialLayer");
+        const tutorialSpotlight = document.getElementById("tutorialSpotlight");
+        const tutorialBubble = document.getElementById("tutorialBubble");
+        const tutorialCheckbox = document.getElementById("tutorialCheckbox");
+
+        function triggerTutorial(id) {
+            if (tutorialSkipped || tutorialDone.has(id) || tutorialStep === id || tutorialQueue.includes(id)) {
+                return;
+            }
+            tutorialQueue.push(id);
+            if (tutorialStep === null) {
+                showNextTutorialStep();
+            }
+        }
+
+        function showNextTutorialStep() {
+            tutorialStep = tutorialQueue.shift(); //shift = retire et renvoie le premier de la liste
+            const step = TUTORIAL_STEPS[tutorialStep];
+            document.getElementById("tutorialTitle").textContent = step.title;
+            let text = step.text;
+            if (SMALL_SCREEN_QUERY.matches && step.textSmall) {
+                text = step.textSmall;
+            } else if (IS_TOUCH_DEVICE && step.textTouch) {
+                text = step.textTouch;
+            }
+            document.getElementById("tutorialText").textContent = text;
+            if (tutorialStep === "stats") {
+                document.body.classList.remove("statsCollapsed"); //petit écran : le panneau est replié au départ, on le montre en entier
+            }
+            document.getElementById("tutorialNextButton").classList.toggle("hidden", step.mustClick === true);
+            tutorialLayer.classList.toggle("highGraphics", isHighGraphics);
+            tutorialLayer.classList.remove("hidden");
+            isTutorialOpen = true;
+            updatePause();
+            if (step.target && step.target.startsWith("#")) {
+                const element = document.querySelector(step.target);
+                if (element !== null) {
+                    element.scrollIntoView({ block: "nearest" }); //dans une fenêtre qui défile (téléphone), on amène la cible à l'écran
+                }
+            }
+            placeTutorial();
+            playSound("menuOpen");
+        }
+
+        function finishTutorialStep() {
+            if (tutorialStep === null) {
+                return;
+            }
+            tutorialDone.add(tutorialStep);
+            tutorialStep = null;
+            saveProgress();
+            if (tutorialQueue.length > 0) {
+                showNextTutorialStep();
+                return;
+            }
+            tutorialLayer.classList.add("hidden");
+            isTutorialOpen = false;
+            updatePause();
+            playSound("menuClose");
+        }
+
+        function skipTutorial() {
+            const wasOpen = isTutorialOpen;
+            tutorialSkipped = true;
+            tutorialQueue.length = 0;
+            tutorialStep = null;
+            tutorialLayer.classList.add("hidden");
+            isTutorialOpen = false;
+            tutorialCheckbox.checked = false;
+            updatePause();
+            saveProgress();
+            if (wasOpen) {
+                showToast(t("Tutoriel passé : tu peux le recommencer dans les paramètres."));
+            }
+        }
+
+        //Paramètres : « Recommencer » le tutoriel depuis le début
+        function restartTutorial() {
+            tutorialSkipped = false;
+            tutorialDone.clear(); //clear = vide le Set
+            tutorialCheckbox.checked = true;
+            saveProgress();
+            closeSettings();
+            triggerTutorial("welcome");
+        }
+
+        //Où est la cible à l'écran ? { x, y, width, height, round } en pixels, ou null (rien à montrer, ou cachée)
+        function getTutorialTargetRect(step) {
+            if (step.target === "planet" || step.target === "planet2") {
+                const planet = planets[step.target === "planet" ? 0 : 1];
+                if (planet === undefined) {
+                    return null;
+                }
+                const box = canvas.getBoundingClientRect();
+                const x = box.left + center.x + (planet.x - center.x) * cameraZoom; //du monde à l'écran (voir screenToWorld)
+                const y = box.top + center.y + (planet.y - center.y) * cameraZoom;
+                const radius = (planet.size + 12) * cameraZoom + 12;
+                return { x: x - radius, y: y - radius, width: radius * 2, height: radius * 2, round: true };
+            }
+            if (!step.target) {
+                return null;
+            }
+            const element = document.querySelector(step.target);
+            const box = element === null ? null : element.getBoundingClientRect();
+            if (box === null || box.width === 0) {
+                return null;
+            }
+            const padding = 6;
+            return { x: box.left - padding, y: box.top - padding, width: box.width + padding * 2, height: box.height + padding * 2, round: false };
+        }
+
+        //Place le projecteur sur la cible, et la bulle à côté, en restant à l'écran.
+        //4 places possibles (dessous, au-dessus, à droite, à gauche) : on garde la 1re qui ne cache pas la cible,
+        //ou, si toutes la cachent un peu (grande cible, petit écran), celle qui en cache le moins.
+        function placeTutorial() {
+            if (tutorialStep === null) {
+                return;
+            }
+            const target = getTutorialTargetRect(TUTORIAL_STEPS[tutorialStep]);
+            tutorialLayer.classList.toggle("noTarget", target === null);
+            tutorialSpotlight.classList.toggle("hidden", target === null);
+            const width = tutorialBubble.offsetWidth;
+            const height = tutorialBubble.offsetHeight;
+            const margin = 12;
+            const maxLeft = window.innerWidth - width - margin;
+            const maxTop = window.innerHeight - height - margin;
+            let left = (window.innerWidth - width) / 2; //sans cible : au milieu
+            let top = (window.innerHeight - height) / 2;
+            if (target !== null) {
+                tutorialSpotlight.style.left = target.x + "px";
+                tutorialSpotlight.style.top = target.y + "px";
+                tutorialSpotlight.style.width = target.width + "px";
+                tutorialSpotlight.style.height = target.height + "px";
+                tutorialSpotlight.classList.toggle("round", target.round);
+                const centeredLeft = target.x + target.width / 2 - width / 2;
+                const centeredTop = target.y + target.height / 2 - height / 2;
+                const places = [
+                    { left: centeredLeft, top: target.y + target.height + margin },  //dessous
+                    { left: centeredLeft, top: target.y - margin - height },         //au-dessus
+                    { left: target.x + target.width + margin, top: centeredTop },    //à droite
+                    { left: target.x - margin - width, top: centeredTop }            //à gauche
+                ];
+                let smallestOverlap = Infinity;
+                for (const place of places) {
+                    const x = clamp(place.left, margin, maxLeft); //ramenée à l'écran
+                    const y = clamp(place.top, margin, maxTop);
+                    //la surface de la cible cachée par la bulle (0 = elle ne la touche pas)
+                    const overlapWidth = Math.max(0, Math.min(x + width, target.x + target.width) - Math.max(x, target.x));
+                    const overlapHeight = Math.max(0, Math.min(y + height, target.y + target.height) - Math.max(y, target.y));
+                    if (overlapWidth * overlapHeight < smallestOverlap) {
+                        smallestOverlap = overlapWidth * overlapHeight;
+                        left = x;
+                        top = y;
+                    }
+                }
+            }
+            tutorialBubble.style.left = clamp(left, margin, maxLeft) + "px";
+            tutorialBubble.style.top = clamp(top, margin, maxTop) + "px";
+        }
+
+        document.getElementById("tutorialNextButton").addEventListener("click", function (event) {
+            event.stopPropagation(); //le clic ne "tombe" pas sur le voile
+            finishTutorialStep();
+        });
+        document.getElementById("tutorialSkipButton").addEventListener("click", function (event) {
+            event.stopPropagation();
+            skipTutorial();
+        });
+        //Le voile bloque les clics. Pour l'étape « Ta première planète », un clic (ou toucher) sur la planète éclairée ouvre son arbre
+        tutorialLayer.addEventListener("click", function (event) {
+            const step = TUTORIAL_STEPS[tutorialStep];
+            if (step === undefined || !step.mustClick) {
+                return;
+            }
+            const target = getTutorialTargetRect(step);
+            const isInside = target !== null && Math.hypot(event.clientX - (target.x + target.width / 2), event.clientY - (target.y + target.height / 2)) <= target.width / 2;
+            if (isInside) {
+                finishTutorialStep();
+                openSkillTree(planets[0].tree);
+            }
+        });
+        //Pendant une bulle, les touches du jeu ne font rien ; Entrée, Espace ou Échap = « Compris »
+        //(true = on écoute AVANT les autres : stopPropagation les empêche de recevoir la touche)
+        document.addEventListener("keydown", function (event) {
+            if (!isTutorialOpen) {
+                return;
+            }
+            event.stopPropagation();
+            initAudio(); //la touche ne va plus jusqu'à l'écouteur qui allume le son : on l'allume ici
+            if (["Enter", " ", "Escape"].includes(event.key) && !TUTORIAL_STEPS[tutorialStep].mustClick) {
+                event.preventDefault();
+                finishTutorialStep();
+            }
+        }, true);
+        window.addEventListener("resize", placeTutorial);
+
+        tutorialCheckbox.addEventListener("change", function () {
+            if (tutorialCheckbox.checked) {
+                tutorialSkipped = false;
+                saveProgress();
+            } else {
+                skipTutorial();
+            }
+        });
+        document.getElementById("restartTutorialButton").addEventListener("click", restartTutorial);
+
+
+        /////////////////////
         ////START & UPDATE///
         /////////////////////
         let lastTime = performance.now();
@@ -13170,6 +13552,8 @@
             } catch (error) {
             }
             applyTheme(savedTheme); //dessine aussi le fond
+            tutorialCheckbox.checked = !tutorialSkipped;
+            setTimeout(function () { triggerTutorial("welcome"); }, 700); //TUTORIEL : la 1re bulle, juste après l'arrivée du 1er ennemi
             requestAnimationFrame(gameUpdate);
         }
 
@@ -13194,6 +13578,9 @@
             }
 
             updateCatchUp(); //le temps passé en arrière-plan, si le navigateur avait gelé la page
+            if (isTutorialOpen) {
+                placeTutorial(); //la cible peut bouger (zoom de la caméra, fenêtre qui défile)
+            }
             runTimeDisplay.textContent = (bossDuel !== null ? "⚔️ " : "") + formatTime(runTime); //⚔️ = duel : le chrono est arrêté
             updateSkipCooldownDisplay();
             badgeTimer -= deltaTime;
@@ -13324,6 +13711,10 @@
             //Pendant la pause (skill tree ouvert) ou le game over, plus rien ne bouge
             if (isGameOver || isPaused) {
                 return;
+            }
+            //TUTORIEL : les types d'ennemis, une fois la partie bien lancée
+            if (runTime > 10 && !tutorialSkipped && tutorialDone.has("welcome")) {
+                triggerTutorial("enemies");
             }
             //CRONOS peut ralentir TON temps : toi, tes planètes, tes balles et tes pouvoirs (pas les ennemis)
             const playerDelta = deltaTime * getPlayerTimeFactor();

@@ -31,6 +31,7 @@ const RUN_CAP = 3600;   // une partie s'arrête au plus à 60 min de jeu (sinon 
     await page.goto('file://' + path.join(ROOT, 'index.html'));
     await page.waitForTimeout(500);
     await page.evaluate(() => {
+        skipTutorial(); // pas de tutoriel : ses bulles mettraient la partie en pause
         window.robotGodFund = 0; // l'or mis de côté pour le prochain dieu
         window.robotSpeed = function () {
             const level = SHOP_ITEMS.find((item) => item.timeUpgrade === 'speed').level;
