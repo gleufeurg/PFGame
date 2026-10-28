@@ -67,7 +67,25 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 ### Les pouvoirs des dieux ne sont pas encore équilibrés (les deux branches)
 
 - **Pourquoi :** les chiffres (dégâts, fréquence, rayons) ont été choisis à l'estime, et testés seulement en simulation. Arès gagne des dégâts pour toujours sans limite, et le cri de guerre presque permanent quand son arbre est rempli peut devenir trop fort ; la foudre de Zeus peut tout raser quand l'écran est plein.
-- **Que faire :** jouer chaque dieu, puis régler les chiffres dans `SKILL_TREES_DATA` (compétences) et dans la partie `POUVOIRS DES DIEUX` du code (`WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...). Ce sera à revoir avec la vitesse de progression et les améliorations infinies.
+- **Que faire :** jouer chaque dieu, puis régler les chiffres dans `SKILL_TREES_DATA` (compétences) et dans la partie `POUVOIRS DES DIEUX` du code (`WAR_CRY_DAMAGE`, `CONDUCT_DURATION`...). Le rythme général (prix, apparition, vie des ennemis) a été rééquilibré avec le joueur robot (voir [rythme.md](rythme.md)), mais pas chaque pouvoir un par un.
+
+### L'XP ne sert plus à rien en fin de jeu (les deux branches)
+
+- **Ce qu'on voit :** avec le joueur robot, dès qu'un nouveau dieu arrive, tout son arbre se remplit en une ou deux parties ; ensuite, pendant les longues attentes avant le dieu suivant (de plus en plus cher), l'XP s'accumule sans rien à acheter (voir [rythme.md](rythme.md)).
+- **Pourquoi :** l'or a des dépenses sans fin (les améliorations infinies, les dieux de plus en plus chers), mais l'XP ne sert qu'aux compétences, qui sont en nombre limité. Le prix des compétences monte déjà de ×1,5 à chaque dieu (`SKILL_TIER_GROWTH`), ce qui étale le milieu du jeu, mais pas la fin.
+- **Que faire (choix de game design) :** donner à l'XP une dépense sans fin, par exemple un « Éveil » infini par dieu, quand son arbre est complet (+5 % de dégâts de la planète par niveau, de plus en plus cher) ; ou des arbres plus grands avec des choix (prévu : skill trees avec chemins bloqués).
+
+### Anciennes sauvegardes : les prix ont changé (les deux branches)
+
+- **Ce qu'on voit :** depuis le rééquilibrage, les compétences d'un dieu coûtent ×1,5 par dieu (×86 chez Hestia). Une compétence achetée avant le rééquilibrage, puis remboursée, rend son **nouveau** prix : un testeur peut donc gagner de l'XP en remboursant ses anciennes compétences.
+- **Pourquoi :** le jeu ne retient pas ce que chaque compétence a coûté, seulement qu'elle est prise.
+- **Que faire :** rien pour les joueurs (le jeu n'est pas encore sorti). Si besoin, effacer sa progression dans les paramètres pour repartir de zéro avec les nouveaux prix.
+
+### Les projets du portfolio se découvrent lentement (`portfolio`)
+
+- **Ce qu'on voit :** chaque projet est dans la fenêtre des skills d'un dieu, et la liste des dieux ne montre que les dieux achetés et le suivant. En 10 minutes de jeu, un visiteur (un recruteur) voit 3 projets ; il en faut 40 pour en voir 6, et des heures pour les 12.
+- **Pourquoi :** c'est le rythme voulu pour le jeu (voir [rythme.md](rythme.md)), mais un recruteur n'a pas forcément le temps de jouer.
+- **Que faire (choix à faire) :** sur `portfolio`, montrer tous les projets dans la liste des dieux (même ceux pas encore achetés, en aperçu), ou ajouter un bouton « Voir tous les projets ».
 
 ### Performances avec énormément d'ennemis (les deux branches)
 

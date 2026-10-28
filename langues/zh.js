@@ -1437,5 +1437,6 @@ window.TRADUCTIONS.zh = {
     "seule ici": "只有它",
     "vide": "空",
     "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "行星只能与同一轨道上的行星连接。你也可以在游戏中拖动它。",
-    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "它独自在这条轨道上：没有可以连接的邻居。把另一颗行星放到这条轨道上吧。"
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "它独自在这条轨道上：没有可以连接的邻居。把另一颗行星放到这条轨道上吧。",
+    "(maximum)": "（上限）"
 };

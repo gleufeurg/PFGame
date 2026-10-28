@@ -7,6 +7,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | Document | Contenu | Comment il est tenu à jour |
 | --- | --- | --- |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
+| [rythme.md](rythme.md) | le rythme de progression (quand on obtient chaque dieu), mesuré avec le joueur robot, avant et après le rééquilibrage | écrit à la main (chiffres de `outils/joueur-robot.js`) |
 | [skills/](skills/README.md) | les 12 skill trees, les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
 | [questions/](questions/README.md) | les réponses aux questions posées sur le jeu : toutes les formules ([formules.md](questions/formules.md)), les couleurs autour des ennemis… | écrit à la main |
 | [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
@@ -28,3 +29,11 @@ node game-design/outils/generer-docs.js
 ```
 
 Le script ouvre `index.html` dans un navigateur invisible, lit les données du jeu (skill trees, shop, combos) et réécrit `prix.md` et `skills/`.
+
+## Mesurer le rythme du jeu : le joueur robot
+
+```
+node game-design/outils/joueur-robot.js 120
+```
+
+Un robot joue des parties à la suite pendant 120 minutes « réelles » (le nombre est au choix), achète dans le shop et les skill trees, et affiche une ligne par partie puis le moment où il a obtenu chaque dieu. À relancer après un changement de prix, de vie des ennemis ou d'apparition, pour voir si le jeu va trop vite ou trop lentement (voir [rythme.md](rythme.md)).

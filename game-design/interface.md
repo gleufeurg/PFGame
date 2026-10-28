@@ -138,6 +138,10 @@ En haut du menu de mort, sous « GAME OVER », 3 grandes cartes résument la par
 
 Juste en dessous, **l'or disponible** (le total à dépenser dans le shop), en gros avec une pièce. L'or et l'XP de la partie sont comptés dans `runGold` et `runXp` (remis à 0 à chaque nouvelle partie).
 
+## Le shop : les améliorations infinies
+
+Cinq améliorations du joueur (le triangle du milieu) sont **infinies** : Dégâts, Cadence de tir, Vie max, Régénération et Dégâts critiques (`maxLevel: Infinity` dans `SHOP_ITEMS`). Le shop affiche « (niv. 12/∞) » : on peut toujours les acheter, chaque niveau coûtant 1,5 ou 1,6 fois plus que le précédent. Avant, elles s'arrêtaient au niveau 8 ou 10, et les testeurs n'avaient plus rien à acheter après une heure de jeu. Les autres (Portée, Vitesse des balles, Balle supplémentaire, Chance de critique, les dieux, le temps et les liens) gardent un niveau maximum : une portée, une vitesse ou une chance sans limite casseraient le jeu (la chance de critique ne peut pas dépasser 100 %). Le détail des prix est dans [prix.md](prix.md), le rythme dans [rythme.md](rythme.md).
+
 ## Le menu de mort : les paliers
 
 Sous « Rejouer », une section **Paliers** montre un bouton par super ennemi déjà vaincu, de sa couleur : « Après Cerbère (1:02) », « Après Hydre de Lerne (2:02) »… Il relance une partie qui commence directement 2 s après l'heure de ce super ennemi (`CHECKPOINT_OFFSET`). C'est un simple point de départ : rien n'apparaît pendant le temps sauté, donc il ne rapporte ni or ni XP (contrairement à « Sauter dans le temps », qui fait arriver tous les ennemis d'un coup). Les mouvements déjà débloqués à ce moment-là sont là directement, sans alerte. La section est cachée tant qu'aucun super ennemi n'est vaincu. « Rejouer » (ou la touche R) recommence toujours à 0:00.
@@ -192,6 +196,6 @@ Quand la souris survole une planète (ou pendant qu'on la touche au doigt), un c
 À droite, quand la fenêtre des skills ou le game over est ouvert (en bas sur écran étroit, repliable sur petit écran). Ses sections :
 - **Vie** et **Attaque (toi)** : les stats du triangle du milieu.
 - **Une section par planète** : toutes ses stats de tir (dégâts, vitesse d'attaque, tirs par seconde, balles par tir, portée, vitesse des balles, chance et dégâts critiques, bonus contre un élément) et son lien d'orbite. Les stats rares (vie par touche, PV max par touche, effet de combo au hasard) ne s'affichent que si la planète en a. Les **pouvoirs** du dieu (taille des balles, rayon de charme, éclairs...) s'affichent aussi, avec « toutes les X s » pour ceux qui reviennent régulièrement, et le nombre d'ennemis tués pour la soif de gloire d'Arès. La planète du skill tree ouvert passe en premier.
-- **Défense**, **Gains** et **Ennemis**.
+- **Défense**, **Gains** et **Ennemis**. L'esquive affichée est celle qui compte vraiment : au plus 75 % (`DODGE_MAX`), avec « (maximum) » quand les compétences en donnent plus.
 
 Une stat qui vient de changer clignote : **en vert si elle augmente** (ou change sans nombre), **en rouge si elle baisse** (remboursement d'une compétence, lien d'orbite changé...). On compare le premier nombre de la valeur affichée (`isStatLower`). Pour les stats où un nombre plus bas est mieux (la recharge du bouclier), la couleur est inversée (`LOWER_IS_BETTER_STATS`).

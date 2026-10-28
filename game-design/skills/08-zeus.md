@@ -6,41 +6,41 @@
 | Couleur | `#5ce1e6` |
 | Forme de l'arbre | éclair (`bolt`) |
 | Compétences | 30 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1392 |
+| XP pour tout débloquer | 23784 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°8) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Aithér** (ÉTHER) | la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin | 150 XP |
+| **Aithér** (ÉTHER) | la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin | 2563 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Aétos** (AIGLE) | Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (3 fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour | 86 XP |
-| **Ammon** (BÉLIER) | +1 balle par tir | 76 XP |
-| **Olympios** (OLYMPE) | +2 éclairs par balle et +40 de portée des éclairs | 74 XP |
+| **Aétos** (AIGLE) | Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (3 fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour | 1469 XP |
+| **Ammon** (BÉLIER) | +1 balle par tir | 1299 XP |
+| **Olympios** (OLYMPE) | +2 éclairs par balle et +40 de portée des éclairs | 1264 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Dikè** (DMG) | +1 dégât par balle | 92 XP |
-| **Eiréné** (ÉCLAIR) | +1 éclair par balle | 80 XP |
-| **Eunomia** (POR) | +40 de portée des éclairs | 68 XP |
-| **Horkos** (ÉCLAIR) | Éclairs : +10% de dégâts | 32 XP |
-| **Ganymède** (VIT) | +10% de vitesse d'attaque | 20 XP |
-| **Hébé** (ÉCLAIR) | +1 éclair par balle | 26 XP |
-| **Némésis** (DMG) | +1 dégât par balle | 38 XP |
-| **Io** (ÉCLAIR) | Éclairs : +15% de dégâts | 68 XP |
+| **Dikè** (DMG) | +1 dégât par balle | 1572 XP |
+| **Eiréné** (ÉCLAIR) | +1 éclair par balle | 1367 XP |
+| **Eunomia** (POR) | +40 de portée des éclairs | 1162 XP |
+| **Horkos** (ÉCLAIR) | Éclairs : +10% de dégâts | 547 XP |
+| **Ganymède** (VIT) | +10% de vitesse d'attaque | 342 XP |
+| **Hébé** (ÉCLAIR) | +1 éclair par balle | 444 XP |
+| **Némésis** (DMG) | +1 dégât par balle | 649 XP |
+| **Io** (ÉCLAIR) | Éclairs : +15% de dégâts | 1162 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Thémis** (ÉCLAIR) | Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur | 5 XP |
+| **Thémis** (ÉCLAIR) | Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur | 85 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Astrapé** (DMG) | +0.5 dégât par balle | ×6 | 9 à 65 XP |
-| **Brontè** (VIT) | +5% de vitesse d'attaque | ×6 | 13 à 57 XP |
-| **Kéraunos** (ÉCLAIR) | Éclairs : +5% de dégâts | ×5 | 9 à 49 XP |
+| **Astrapé** (DMG) | +0.5 dégât par balle | ×6 | 154 à 1111 XP |
+| **Brontè** (VIT) | +5% de vitesse d'attaque | ×6 | 222 à 974 XP |
+| **Kéraunos** (ÉCLAIR) | Éclairs : +5% de dégâts | ×5 | 154 à 837 XP |
 
 ## ↔️ Lien « Opposé » vers Zeus
 

@@ -6,41 +6,41 @@
 | Couleur | `#ff8fc7` |
 | Forme de l'arbre | cœur (`heart`) |
 | Compétences | 39 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1237 |
+| XP pour tout débloquer | 47558 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°10) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Phanès** (PHANÈS) | charme +1.5 s, et le rayon de charme revient 2 fois plus souvent | 150 XP |
+| **Phanès** (PHANÈS) | charme +1.5 s, et le rayon de charme revient 2 fois plus souvent | 5767 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Pandémos** (FOULE) | Foule : +50 de rayon de charme | 76 XP |
-| **Ourania** (CIEL) | Les ennemis charmés blessent 2 fois plus leurs alliés | 76 XP |
-| **Cythérée** (CYTHÈRE) | Le rayon de charme revient 40% plus souvent | 62 XP |
+| **Pandémos** (FOULE) | Foule : +50 de rayon de charme | 2922 XP |
+| **Ourania** (CIEL) | Les ennemis charmés blessent 2 fois plus leurs alliés | 2922 XP |
+| **Cythérée** (CYTHÈRE) | Le rayon de charme revient 40% plus souvent | 2383 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Peitho** (CHARME) | Charme : +0.5 s | 32 XP |
-| **Antéros** (ESQ) | +5% de chance d'esquiver un coup | 44 XP |
-| **Adonis** (CHARME) | +20 de rayon de charme | 32 XP |
-| **Psyché** (CHARME) | Le rayon de charme revient 15% plus souvent | 44 XP |
-| **Hymen** (VIE) | +0.2 PV regagné par ennemi tué | 32 XP |
-| **Euphrosyne** (PV) | +3 PV max | 32 XP |
-| **Hermaphrodite** (CHARME) | Charme : +0.5 s | 26 XP |
-| **Rhodos** (CHARME) | Le rayon de charme revient 15% plus souvent | 32 XP |
+| **Peitho** (CHARME) | Charme : +0.5 s | 1230 XP |
+| **Antéros** (ESQ) | +5% de chance d'esquiver un coup | 1692 XP |
+| **Adonis** (CHARME) | +20 de rayon de charme | 1230 XP |
+| **Psyché** (CHARME) | Le rayon de charme revient 15% plus souvent | 1692 XP |
+| **Hymen** (VIE) | +0.2 PV regagné par ennemi tué | 1230 XP |
+| **Euphrosyne** (PV) | +3 PV max | 1230 XP |
+| **Hermaphrodite** (CHARME) | Charme : +0.5 s | 1000 XP |
+| **Rhodos** (CHARME) | Le rayon de charme revient 15% plus souvent | 1230 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Éros** (CHARME) | Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) | 5 XP |
+| **Éros** (CHARME) | Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) | 192 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Charis** (PV) | +1 PV max | ×9 | 9 à 37 XP |
-| **Himéros** (CHARME) | +6 de rayon de charme | ×9 | 13 à 33 XP |
-| **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×8 | 9 à 37 XP |
+| **Charis** (PV) | +1 PV max | ×9 | 346 à 1422 XP |
+| **Himéros** (CHARME) | +6 de rayon de charme | ×9 | 500 à 1269 XP |
+| **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×8 | 346 à 1422 XP |
 
 ## ↔️ Lien « Opposé » vers Aphrodite
 

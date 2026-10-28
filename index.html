@@ -4321,6 +4321,14 @@
             }
         }
 
+        //ESQUIVE : plafonnée à DODGE_MAX. Sans plafond, toutes les compétences d'esquive réunies donnaient 126 % :
+        //le joueur n'était plus jamais touché, et une partie ne finissait jamais.
+        const DODGE_MAX = 0.75;
+
+        function getDodgeChance() {
+            return Math.min(DODGE_MAX, playerStats.dodgeChance);
+        }
+
         function damagePlayer(amount) {
             //0. Code de triche "achille" : invincible
             if (isCheatInvincible) {
@@ -4332,7 +4340,7 @@
                 return;
             }
             //1 bis. Esquive : Math.random() < 0.1 arrive 1 fois sur 10
-            if (Math.random() < playerStats.dodgeChance) {
+            if (Math.random() < getDodgeChance()) {
                 playSound("dodge");
                 return;
             }
@@ -4945,15 +4953,16 @@
             return null;
         }
         //Fréquence d'apparition : elle augmente petit à petit pendant la partie
-        const ENEMY_SPAWN_INTERVAL_START = 2.4;  // au début : un ennemi toutes les X secondes
+        //(Avant : 2.4 s au début. Les testeurs s'ennuyaient au début de chaque partie : il y a maintenant 2 fois plus d'ennemis au départ.)
+        const ENEMY_SPAWN_INTERVAL_START = 1.2;  // au début : un ennemi toutes les X secondes
         const ENEMY_SPAWN_INTERVAL_MIN = 0.35;   // jamais plus rapide que ça
-        const ENEMY_SPAWN_RAMP = 0.012;          // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
+        const ENEMY_SPAWN_RAMP = 0.005;          // vitesse de la montée en difficulté (plus grand = plus dur plus vite)
         const ENEMY_FIRST_SPAWN_DELAY = 0.3;     // le 1er ennemi arrive après X secondes (au lieu d'attendre un intervalle entier)
         //Le minuteur démarre presque "plein" : le 1er ennemi apparaît dès ENEMY_FIRST_SPAWN_DELAY
         let enemySpawnTimer = ENEMY_SPAWN_INTERVAL_START - ENEMY_FIRST_SPAWN_DELAY;
         let runTime = 0;                         // secondes écoulées depuis le début de la partie
 
-        //Ex: à 0s -> 2.4s entre 2 ennemis, à 1min -> 1.4s, à 2min -> 1s, à 5min -> 0.52s, à 8min et plus -> 0.35s
+        //Ex: à 0s -> 1.2s entre 2 ennemis, à 1min -> 0.92s, à 2min -> 0.75s, à 5min -> 0.48s, à 8min et plus -> 0.35s
         function getEnemySpawnInterval() {
             return Math.max(ENEMY_SPAWN_INTERVAL_MIN, ENEMY_SPAWN_INTERVAL_START / (1 + runTime * ENEMY_SPAWN_RAMP));
         }
@@ -5217,13 +5226,16 @@
         };
 
         //VIE QUI MONTE : la vie des ennemis (ci-dessus = au tout début) est multipliée par ce nombre, qui grandit avec le temps.
-        //Ex : 1:00 -> x1.44, 5:00 -> x4, 10:00 -> x9, 20:00 -> x25
-        const ENEMY_HEALTH_GROWTH = 0.4;            // +40% par minute...
-        const ENEMY_HEALTH_GROWTH_SQUARED = 0.04;   // ...plus une petite part qui accélère (minutes au carré)
+        //Ex : 1:00 -> x1.4, 5:00 -> x4.1, 10:00 -> x11, 20:00 -> x50, 30:00 -> x160
+        //La dernière partie (x ENEMY_HEALTH_LATE_GROWTH chaque minute) fait monter la fin de partie plus vite : une partie finit toujours,
+        //et chaque amélioration fait tenir un peu plus longtemps (avant, les parties pouvaient durer sans fin).
+        const ENEMY_HEALTH_GROWTH = 0.3;            // +30% par minute...
+        const ENEMY_HEALTH_GROWTH_SQUARED = 0.03;   // ...plus une petite part qui accélère (minutes au carré)...
+        const ENEMY_HEALTH_LATE_GROWTH = 1.05;      // ...et le tout multiplié par 1.05 chaque minute (5% de plus par minute, qui s'accumulent)
 
         function getEnemyHealthScale() {
             const minutes = runTime / 60;
-            return 1 + ENEMY_HEALTH_GROWTH * minutes + ENEMY_HEALTH_GROWTH_SQUARED * minutes * minutes;
+            return (1 + ENEMY_HEALTH_GROWTH * minutes + ENEMY_HEALTH_GROWTH_SQUARED * minutes * minutes) * Math.pow(ENEMY_HEALTH_LATE_GROWTH, minutes);
         }
 
         //TAILLE : plus un ennemi a de vie, plus il est gros (et il rétrécit quand on l'abîme)
@@ -5503,10 +5515,11 @@
         //element = son élément (pour les bonus de dégâts des skill trees), sides = nombre de pointes de sa forme.
         //health = sa vie au tout début de la partie : elle est multipliée par la "vie qui monte" à son arrivée (getEnemyHealthScale).
         //speed : 5 fois plus rapides qu'avant (les testeurs les trouvaient trop lents).
+        //Cerbère et l'Hydre ont moins de vie qu'au début (40 et 90) : ils bloquaient trop longtemps les premières parties.
         //ability = son pouvoir unique : "split" (l'Hydre se dédouble), "petrify" (Méduse pétrifie les planètes), "slowTime" (Cronos ralentit ton temps)
         const BOSSES = [
-            { id: "cerbere", name: "Cerbère", time: 300, element: "fire", color: "#ff3b2f", health: 40, size: 34, speed: 60, sides: 3, gold: 15, xp: 15 },
-            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 600, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 55, sides: 9, gold: 25, xp: 25, ability: "split" },
+            { id: "cerbere", name: "Cerbère", time: 300, element: "fire", color: "#ff3b2f", health: 15, size: 34, speed: 60, sides: 3, gold: 15, xp: 15 },
+            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 600, element: "water", color: "#2f8bff", health: 60, size: 38, speed: 55, sides: 9, gold: 25, xp: 25, ability: "split" },
             { id: "meduse", feminine: true, name: "Méduse", time: 900, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 50, sides: 6, gold: 40, xp: 40, ability: "petrify" },
             { id: "typhon", name: "Typhon", time: 1200, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 50, sides: 4, gold: 60, xp: 60 },
             { id: "chimere", feminine: true, name: "Chimère", time: 1500, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 45, sides: 5, gold: 90, xp: 90 },
@@ -9231,7 +9244,10 @@
 
         const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
 
-        //COÛTS (en XP) : coût de base + un supplément par "pas" depuis le départ
+        //COÛTS (en XP) : coût de base + un supplément par "pas" depuis le départ,
+        //puis x SKILL_TIER_GROWTH par dieu : le 1er dieu x1, le 2e x1.5, le 3e x2.25... (voir createSkillTree).
+        //Les derniers dieux arrivent quand on gagne beaucoup d'XP : sans ça, tout leur arbre se remplissait d'un coup.
+        const SKILL_TIER_GROWTH = 1.5;
         const SKILL_COST_BASE = 5;
         const SKILL_COST_PER_STEP = 4;
         const NOTABLE_COST_MULTIPLIER = 1.5;
@@ -9285,8 +9301,10 @@
             return (hash % 1000) / 1000;
         }
 
-        function createSkillTree(treeData) {
+        //tierIndex = la place du dieu dans l'ordre d'achat (0 = le 1er) : ses compétences coûtent SKILL_TIER_GROWTH ^ tierIndex fois plus
+        function createSkillTree(treeData, tierIndex) {
             const nodes = [];
+            const tierMultiplier = Math.pow(SKILL_TIER_GROWTH, tierIndex);
             const minorCounts = {}; // combien de fois chaque petite compétence a déjà été utilisée (pour les numéroter I, II, III...)
             let minorIndex = 0;
             const treeLayout = TREE_SHAPES[treeData.shape]();
@@ -9327,7 +9345,7 @@
                     id: id,
                     x: layout.x + (hashToUnit(treeData.name + id + "x") - 0.5) * 2 * jitter,
                     y: layout.y + (hashToUnit(treeData.name + id + "y") - 0.5) * 2 * jitter,
-                    cost: getSkillCost(layout.role, depths[id] || 0),
+                    cost: Math.round(getSkillCost(layout.role, depths[id] || 0) * tierMultiplier),
                     links: layout.links,
                     role: layout.role,
                     isStart: layout.role === "start",
@@ -9381,7 +9399,7 @@
 
         const SKILL_TREES = [];
         for (const treeData of SKILL_TREES_DATA) {
-            SKILL_TREES.push(createSkillTree(treeData));
+            SKILL_TREES.push(createSkillTree(treeData, SKILL_TREES.length)); //SKILL_TREES.length = sa place dans la liste (0, 1, 2...)
         }
 
         function findNode(tree, id) {
@@ -10354,23 +10372,26 @@
         ////SHOP & GAME OVER/
         /////////////////////
         //Améliorations de base, achetées avec l'or quand on meurt. Le prix augmente à chaque niveau.
+        //maxLevel: Infinity = amélioration INFINIE (∞) : on peut l'acheter sans fin, de plus en plus cher (prix x costGrowth à chaque niveau)
         const SHOP_ITEMS = [
-            { name: "Cadence de tir", description: "+10% de vitesse d'attaque", baseCost: 10, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "attackSpeed", value: 0.1 } },
+            { name: "Cadence de tir", description: "+10% de vitesse d'attaque", baseCost: 10, costGrowth: 1.5, maxLevel: Infinity, level: 0, effect: { stat: "attackSpeed", value: 0.1 } },
             { name: "Portée", description: "+25 de portée", baseCost: 10, costGrowth: 1.5, maxLevel: 8, level: 0, effect: { stat: "range", value: 25 } },
             { name: "Balle supplémentaire", description: "+1 balle par tir", baseCost: 60, costGrowth: 2.5, maxLevel: 3, level: 0, effect: { stat: "bulletCount", value: 1 } },
-            { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: 10, level: 0, effect: { stat: "maxHealth", value: 2 } },
-            { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "damage", value: 1 } },
-            { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: 8, level: 0, effect: { stat: "regen", value: 0.05 } },
+            { name: "Vie max", description: "+2 PV max", baseCost: 8, costGrowth: 1.5, maxLevel: Infinity, level: 0, effect: { stat: "maxHealth", value: 2 } },
+            { name: "Dégâts", description: "+1 dégât par balle", baseCost: 15, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "damage", value: 1 } },
+            { name: "Régénération", description: "+0.05 PV par seconde", baseCost: 12, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "regen", value: 0.05 } },
             { name: "Chance de critique", description: "+2% de chance de coup critique", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critChance", value: 0.02 } },
-            { name: "Dégâts critiques", description: "+20% de dégâts critiques", baseCost: 20, costGrowth: 1.6, maxLevel: 10, level: 0, effect: { stat: "critDamage", value: 0.2 } },
+            { name: "Dégâts critiques", description: "+20% de dégâts critiques", baseCost: 20, costGrowth: 1.6, maxLevel: Infinity, level: 0, effect: { stat: "critDamage", value: 0.2 } },
             { name: "Vitesse des balles", description: "+15% de vitesse des balles", baseCost: 8, costGrowth: 1.4, maxLevel: 6, level: 0, effect: { stat: "bulletSpeed", value: 0.15 } },
             //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades)
-            { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 40, costGrowth: 3, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
+            { name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: 20, costGrowth: 4, maxLevel: 2, level: 0, effect: null, timeUpgrade: "speed" },
             { name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: 15, costGrowth: 3, maxLevel: 3, level: 0, effect: null, timeUpgrade: "skip" },
             //Pas d'effet de stat : débloque les liens d'orbite, un par niveau (voir LINK_UNLOCK_ORDER)
             { name: "Liens d'orbite", description: "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé", baseCost: 30, costGrowth: 2.5, maxLevel: 4, level: 0, effect: null, linkUpgrade: true },
-            //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite
-            { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 50, costGrowth: 1.8, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
+            //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite.
+            //Le 1er dieu coûte peu (20 or : on l'a dès la 1re mort), puis chaque dieu coûte 2.5 fois plus cher (avant : 50 or, x1.8) :
+            //les premiers dieux arrivent plus vite, et les derniers prennent des heures au lieu d'arriver tous dans la même heure.
+            { name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: 20, costGrowth: 2.5, maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
 
         for (const item of SHOP_ITEMS) {
@@ -10464,7 +10485,7 @@
                 button.className = "shopItem";
                 button.disabled = isMaxed || gold < cost;
                 button.innerHTML =
-                    "<strong>" + item.name + "</strong> " + t("(niv. {level}/{max})", { level: item.level, max: item.maxLevel }) + "<br>" +
+                    "<strong>" + item.name + "</strong> " + t("(niv. {level}/{max})", { level: item.level, max: Number.isFinite(item.maxLevel) ? item.maxLevel : "∞" }) + "<br>" +
                     description + "<br>" +
                     "<span class='cost'>" + (isMaxed ? t("MAX") : t("{cost} or", { cost: cost })) + "</span>";
                 button.addEventListener("click", function () { buyShopItem(item); });
@@ -10947,7 +10968,7 @@
                 {
                     title: t("Défense"),
                     rows: [
-                        ["Esquive", formatPercent(playerStats.dodgeChance)],
+                        ["Esquive", formatPercent(getDodgeChance()) + (playerStats.dodgeChance > DODGE_MAX ? " " + t("(maximum)") : "")],
                         ["Bouclier", playerStats.shield > 0 ? t("Oui (recharge {seconds} s)", { seconds: formatNumber(getShieldCooldown()) }) : t("Non")]
                     ]
                 },
@@ -11350,7 +11371,10 @@
             saveDefeatedBosses();
         }
 
-        //Tout le shop au niveau maximum (donc aussi tous les dieux et toutes les options de temps)
+        //Tout le shop au niveau maximum (donc aussi tous les dieux et toutes les options de temps).
+        //Une amélioration infinie n'a pas de maximum : elle monte au niveau CHEAT_INFINITE_LEVEL.
+        const CHEAT_INFINITE_LEVEL = 20;
+
         function completeShop() {
             for (const item of SHOP_ITEMS) {
                 if (item.unlocksGod) {
@@ -11358,7 +11382,7 @@
                         unlockNextGod();
                     }
                 }
-                item.level = item.maxLevel;
+                item.level = Number.isFinite(item.maxLevel) ? item.maxLevel : Math.max(item.level, CHEAT_INFINITE_LEVEL); //isFinite = pas Infinity
             }
             syncTimeUpgrades();
             refreshStats();

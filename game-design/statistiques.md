@@ -14,7 +14,7 @@ Tous les chiffres viennent du code du jeu (`index.html`), partie `PLAYER STATS`.
 Exemple : les +30 de portée d'Aglaé (Héphaïstos) n'agrandissent que la portée de la planète Héphaïstos. Ni les autres planètes ni le joueur n'en profitent.
 
 - **Stats de tir** (`SHOOTER_STATS`) : dégâts, dégâts contre un élément, vitesse d'attaque, portée, vitesse des balles, balles par tir, chance et dégâts critiques, vie par touche, PV max par touche, effet de combo au hasard.
-- **Stats du joueur seulement** : PV max, régénération, esquive, bouclier, recharge du bouclier, vie par ennemi tué, or gagné, XP gagnée.
+- **Stats du joueur seulement** : PV max, régénération, esquive (75 % au plus : `DODGE_MAX`), bouclier, recharge du bouclier, vie par ennemi tué, or gagné, XP gagnée.
 
 > **Déjà fait :** le cri de guerre d'Arès donne des dégâts et des critiques à toutes les planètes (voir « Les pouvoirs des dieux »).
 > **Plus tard (pas encore fait) :** d'autres pouvoirs qui permettront à une planète de profiter des stats d'une autre planète.

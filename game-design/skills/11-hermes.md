@@ -6,41 +6,41 @@
 | Couleur | `#6a7dff` |
 | Forme de l'arbre | aile (`wing`) |
 | Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 1011 |
+| XP pour tout débloquer | 58299 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°11) |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Aion** (AION) | +50% de vitesse d'attaque | 150 XP |
+| **Aion** (AION) | +50% de vitesse d'attaque | 8650 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Talaria** (TALARIA) | +30% de vitesse d'attaque | 66 XP |
-| **Pétase** (PÉTASE) | +10% de chance d'esquiver un coup | 72 XP |
-| **Caducée** (CADUCÉE) | +1 balle par tir | 78 XP |
+| **Talaria** (TALARIA) | +30% de vitesse d'attaque | 3806 XP |
+| **Pétase** (PÉTASE) | +10% de chance d'esquiver un coup | 4152 XP |
+| **Caducée** (CADUCÉE) | +1 balle par tir | 4498 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Psychopompe** (VEL) | +20% de vitesse des balles | 20 XP |
-| **Argos** (VIT) | +10% de vitesse d'attaque | 32 XP |
-| **Chioné** (ESQ) | +5% de chance d'esquiver un coup | 44 XP |
-| **Autolycos** (OR) | +10% d'or gagné | 14 XP |
-| **Myrtilos** (VEL) | +20% de vitesse des balles | 32 XP |
-| **Daphnis** (VIT) | +10% de vitesse d'attaque | 32 XP |
-| **Eudoros** (ESQ) | +5% de chance d'esquiver un coup | 44 XP |
-| **Abdère** (VEL) | +15% de vitesse des balles | 56 XP |
+| **Psychopompe** (VEL) | +20% de vitesse des balles | 1153 XP |
+| **Argos** (VIT) | +10% de vitesse d'attaque | 1845 XP |
+| **Chioné** (ESQ) | +5% de chance d'esquiver un coup | 2537 XP |
+| **Autolycos** (OR) | +10% d'or gagné | 807 XP |
+| **Myrtilos** (VEL) | +20% de vitesse des balles | 1845 XP |
+| **Daphnis** (VIT) | +10% de vitesse d'attaque | 1845 XP |
+| **Eudoros** (ESQ) | +5% de chance d'esquiver un coup | 2537 XP |
+| **Abdère** (VEL) | +15% de vitesse des balles | 3229 XP |
 
 ## Départ
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Maïa** (VIT) | +5% de vitesse d'attaque | 5 XP |
+| **Maïa** (VIT) | +5% de vitesse d'attaque | 288 XP |
 
 ## Petites compétences
 
@@ -48,9 +48,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Kéryx** (VEL) | +8% de vitesse des balles | ×5 | 9 à 41 XP |
-| **Hodios** (VIT) | +4% de vitesse d'attaque | ×5 | 13 à 45 XP |
-| **Agoraios** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 13 à 37 XP |
+| **Kéryx** (VEL) | +8% de vitesse des balles | ×5 | 519 à 2364 XP |
+| **Hodios** (VIT) | +4% de vitesse d'attaque | ×5 | 750 à 2595 XP |
+| **Agoraios** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 750 à 2134 XP |
 
 ## ↔️ Lien « Opposé » vers Hermès
 
