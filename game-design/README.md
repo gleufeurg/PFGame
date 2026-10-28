@@ -6,7 +6,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 
 | Document | Contenu | Comment il est tenu à jour |
 | --- | --- | --- |
-| [reglages.md](reglages.md) | **toutes les statistiques du jeu** (vie, vitesse, taille, prix... 299 réglages) rangées par catégories, avec leur valeur actuelle ; elles se changent avec l'éditeur de réglages | généré par `outils/generer-docs.js` (à partir de `reglages.js`) |
+| [reglages.md](reglages.md) | **toutes les statistiques du jeu** (vie, vitesse, taille, prix... près de 300 réglages) rangées par catégories, avec leur valeur actuelle ; elles se changent avec l'éditeur de réglages | généré par `outils/generer-docs.js` (à partir de `reglages.js`) |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
 | [rythme.md](rythme.md) | le rythme de progression (quand on obtient chaque dieu), mesuré avec le joueur robot, avant et après le rééquilibrage | écrit à la main (chiffres de `outils/joueur-robot.js`) |
 | [skills/](skills/README.md) | les 12 skill trees et leurs voies (choix exclusifs), les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
