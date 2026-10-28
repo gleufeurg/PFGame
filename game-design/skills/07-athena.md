@@ -16,7 +16,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
-| **Voie de l'égide** | Esquiver les coups, et gagner beaucoup plus d'XP. | **Pandrosos** (+2 PV max) ; **Égide** (+8% de chance d'esquiver un coup) ; **Arachné** (+10% de vitesse d'attaque) ; **Tritonis** (+5% de chance d'esquiver un coup) ; **Parthénos** (GRANDE KEYSTONE : +100% d'XP gagnée) ; **Pallas** (+8% de chance d'esquiver un coup) | 15 | 8782 |
+| **Voie de l'égide** | Esquiver les coups, et gagner beaucoup plus d'XP. | **Pandrosos** (+2 PV max) ; **Égide** (+8 points d'esquive) ; **Arachné** (+10% de vitesse d'attaque) ; **Tritonis** (+5 points d'esquive) ; **Parthénos** (GRANDE KEYSTONE : +100% d'XP gagnée) ; **Pallas** (+8 points d'esquive) | 15 | 8782 |
 | **Voie de la lance** | Plus de dégâts et plus de portée. | **Promachos** (+2 dégâts par balle) ; **Hygie** (+0.05 PV régénérés par seconde) ; **Aidôs** (+10% d'XP gagnée) ; **Glaucopis** (+60 de portée (les yeux de la chouette)) ; **Bellérophon** (+2 dégâts par balle) | 15 | 7767 |
 
 ## ⭐ Grande keystone
@@ -29,7 +29,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Égide** (ÉGIDE) | +8% de chance d'esquiver un coup | 820 XP |
+| **Égide** (ÉGIDE) | +8 points d'esquive | 820 XP |
 | **Promachos** (LANCE) | +2 dégâts par balle | 820 XP |
 | **Glaucopis** (CHOU) | +60 de portée (les yeux de la chouette) | 888 XP |
 
@@ -40,12 +40,12 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | **Érichthonios** (DMG) | +1 dégât par balle | 296 XP |
 | **Pandrosos** (PV) | +2 PV max | 501 XP |
 | **Arachné** (VIT) | +10% de vitesse d'attaque | 638 XP |
-| **Tritonis** (ESQ) | +5% de chance d'esquiver un coup | 706 XP |
+| **Tritonis** (ESQ) | +5 points d'esquive | 706 XP |
 | **Ergané** (DMG) | +1 dégât par balle | 365 XP |
 | **Zélos** (VIT) | +10% de vitesse d'attaque | 433 XP |
 | **Hygie** (REG) | +0.05 PV régénérés par seconde | 570 XP |
 | **Aidôs** (XP) | +10% d'XP gagnée | 706 XP |
-| **Pallas** (ESQ) | +8% de chance d'esquiver un coup | 843 XP |
+| **Pallas** (ESQ) | +8 points d'esquive | 843 XP |
 | **Bellérophon** (DMG) | +2 dégâts par balle | 843 XP |
 
 ## Départ
@@ -61,7 +61,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
 | **Nikè** (PV) | +1 PV max | ×14 | 103 à 513 XP |
-| **Aglaure** (ESQ) | +2% de chance d'esquiver un coup | ×13 | 103 à 467 XP |
+| **Aglaure** (ESQ) | +2 points d'esquive | ×13 | 103 à 467 XP |
 | **Hersé** (XP) | +4% d'XP gagnée | ×13 | 148 à 513 XP |
 
 ## ↔️ Lien « Opposé » vers Athéna

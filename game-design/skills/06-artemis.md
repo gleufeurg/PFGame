@@ -17,20 +17,20 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
 | **Voie de la chasseresse** | Des balles qui rebondissent d'ennemi en ennemi. | **Callisto** (+10% de vitesse d'attaque) ; **Orion** (Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches) ; **Aréthuse** (Flèche de lune : +1 fois les dégâts d'une balle) ; **Méléagre** (Les balles rebondissent sur 1 ennemi de plus) | 7 | 1526 |
-| **Voie de la lune** | Une flèche de lune plus forte et plus fréquente. | **Britomartis** (+1 dégât par balle) ; **Opis** (+20% de vitesse des balles) ; **Hippolyte** (Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent) ; **Endymion** (Flèche de lune : +1 fois les dégâts d'une balle) | 7 | 1526 |
+| **Voie de la lune** | Une flèche de lune plus forte et plus fréquente. | **Britomartis** (+1 dégât par balle) ; **Opis** (+20% de vitesse des balles) ; **Hippolyte** (Flèche de lune : +3 fois les dégâts d'une balle, et +30 de réduction de recharge) ; **Endymion** (Flèche de lune : +1 fois les dégâts d'une balle) | 7 | 1526 |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Agrotera** (LUNE) | la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle | 1139 XP |
+| **Agrotera** (LUNE) | +100 de réduction de recharge de la flèche de lune (2 fois plus souvent), et +4 fois les dégâts d'une balle | 1139 XP |
 
 ## 🔷 Keystones
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Orion** (ORION) | Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches | 486 XP |
-| **Hippolyte** (ARC) | Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent | 486 XP |
+| **Hippolyte** (ARC) | Flèche de lune : +3 fois les dégâts d'une balle, et +30 de réduction de recharge | 486 XP |
 | **Actéon** (CERF) | +1 rebond et +25% de vitesse d'attaque | 577 XP |
 
 ## 🔹 Notables
@@ -41,7 +41,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | **Britomartis** (DMG) | +1 dégât par balle | 106 XP |
 | **Aréthuse** (LUNE) | Flèche de lune : +1 fois les dégâts d'une balle | 243 XP |
 | **Opis** (VEL) | +20% de vitesse des balles | 243 XP |
-| **Cyrène** (LUNE) | La flèche de lune revient 15% plus souvent | 152 XP |
+| **Cyrène** (LUNE) | La flèche de lune : +15 de réduction de recharge | 152 XP |
 | **Atalante** (VIT) | +15% de vitesse d'attaque | 289 XP |
 | **Procris** (DMG) | +1 dégât par balle | 425 XP |
 | **Méléagre** (REBOND) | Les balles rebondissent sur 1 ennemi de plus | 243 XP |

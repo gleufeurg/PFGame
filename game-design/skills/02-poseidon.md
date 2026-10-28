@@ -17,8 +17,8 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
 | **Voie du rivage** | Te protéger : le Bouclier des marées, et une vague qui va plus loin. | **Amphitrite** (Bouclier des marées : chaque vague te rend invincible pendant 2 s) ; **Doris** (+0.05 PV régénérés par seconde) ; **Cymopolée** (Ressac : +60 de portée (la vague va aussi plus loin)) ; **Benthésicymé** (Houle : +80 de portée (la vague va aussi plus loin)) ; **Amymone** (+40 de portée (la vague va aussi plus loin)) | 12 | 1061 |
-| **Voie des abysses** | Affaiblir : les ennemis frêles prennent beaucoup plus de dégâts. | **Glaucos** (Ennemis frêles : +5% de dégâts subis) ; **Céto** (Ennemis frêles : +15% de dégâts subis) ; **Leucothée** (La vague revient 15% plus souvent) ; **Pontos** (Ennemis frêles : +5% de dégâts subis) | 10 | 780 |
-| **Voie de la tempête** | Des vagues plus fréquentes, qui vont plus loin. | **Palémon** (+30 de recul de la vague) ; **Nérée** (+3 PV max) ; **Triton** (La vague revient 40% plus souvent, et +80 de portée) ; **Eurybia** (La vague revient 15% plus souvent) | 10 | 1326 |
+| **Voie des abysses** | Affaiblir : les ennemis frêles prennent beaucoup plus de dégâts. | **Glaucos** (Ennemis frêles : +5% de dégâts subis) ; **Céto** (Ennemis frêles : +15% de dégâts subis) ; **Leucothée** (La vague : +15 de réduction de recharge) ; **Pontos** (Ennemis frêles : +5% de dégâts subis) | 10 | 780 |
+| **Voie de la tempête** | Des vagues plus fréquentes, qui vont plus loin. | **Palémon** (+30 de recul de la vague) ; **Nérée** (+3 PV max) ; **Triton** (La vague : +40 de réduction de recharge, et +80 de portée) ; **Eurybia** (La vague : +15 de réduction de recharge) | 10 | 1326 |
 
 ## ⭐ Grande keystone
 
@@ -32,7 +32,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Amphitrite** (OCÉAN) | Bouclier des marées : chaque vague te rend invincible pendant 2 s | 123 XP |
 | **Céto** (ABYSS) | Ennemis frêles : +15% de dégâts subis | 108 XP |
-| **Triton** (VAGUE) | La vague revient 40% plus souvent, et +80 de portée | 138 XP |
+| **Triton** (VAGUE) | La vague : +40 de réduction de recharge, et +80 de portée | 138 XP |
 
 ## 🔹 Notables
 
@@ -40,17 +40,17 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Doris** (REG) | +0.05 PV régénérés par seconde | 93 XP |
 | **Galatée** (POR) | +40 de portée (la vague va aussi plus loin) | 66 XP |
-| **Protée** (ESQ) | +10% de chance d'esquiver un coup | 120 XP |
+| **Protée** (ESQ) | +10 points d'esquive | 120 XP |
 | **Phorcys** (BOUC) | Bouclier : bloque un coup, se recharge en 10 s | 39 XP |
 | **Glaucos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 57 XP |
-| **Leucothée** (VAGUE) | La vague revient 15% plus souvent | 93 XP |
+| **Leucothée** (VAGUE) | La vague : +15 de réduction de recharge | 93 XP |
 | **Palémon** (RECUL) | +30 de recul de la vague | 129 XP |
 | **Nérée** (PV) | +3 PV max | 147 XP |
 | **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 120 XP |
 | **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 138 XP |
 | **Amymone** (POR) | +40 de portée (la vague va aussi plus loin) | 129 XP |
 | **Pontos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 120 XP |
-| **Eurybia** (VAGUE) | La vague revient 15% plus souvent | 210 XP |
+| **Eurybia** (VAGUE) | La vague : +15 de réduction de recharge | 210 XP |
 
 ## Départ
 

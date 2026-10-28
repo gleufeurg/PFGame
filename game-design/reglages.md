@@ -2,7 +2,7 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (307 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
@@ -17,8 +17,8 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 - [Pouvoirs des dieux](#pouvoirs-des-dieux) : Rythme des pouvoirs, Héphaïstos : traînée de feu, Poséidon : la vague, Déméter : le rayon de vie, Artémis, Zeus, Arès : le cri de guerre, Contre les super ennemis
 - [Ennemis](#ennemis) : Feu (rouge), Eau (bleu), Plante (vert), Air (blanc), Vie qui monte avec le temps, Taille, Apparition, Mouvements spéciaux
 - [Super ennemis](#super-ennemis) : Tous les super ennemis, Cerbère, Hydre de Lerne, Méduse, Typhon, Chimère, Charybde, Python, Cronos
-- [Shop](#shop) : Cadence de tir, Portée, Balle supplémentaire, Vie max, Dégâts, Régénération, Chance de critique, Dégâts critiques, Vitesse des balles, Accélérer le temps, Sauter dans le temps, Liens d'orbite, Nouvelle divinité
-- [Compétences](#compétences) : Prix en XP
+- [Shop](#shop) : Cadence de tir, Portée, Balle supplémentaire, Vie max, Dégâts, Régénération, Esquive, Chance de critique, Dégâts critiques, Vitesse des balles, Accélérer le temps, Sauter dans le temps, Liens d'orbite, Nouvelle divinité
+- [Compétences](#compétences) : Prix en XP, Éveil des dieux
 - [Temps](#temps) : Vitesses et sauts, Recharge du saut
 - [Combos d'orbite](#combos-dorbite) : Lien « Opposé », Explosions et zones, Brûlure, poison, saignement, Ralentir et bloquer, Rebonds, éclats et foudre, Critiques, soins et bouclier
 - [Caméra](#caméra) : Dézoom selon la portée
@@ -32,7 +32,7 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 | --- | --- | --- |
 | Points de vie au début d'une partie | 10 PV | `BASE_STATS.maxHealth` |
 | Points de vie regagnés par seconde | 0 PV/s | `BASE_STATS.regen` |
-| Chance d'esquiver un coup | 0 % | `BASE_STATS.dodgeChance` |
+| Points d'esquive au début (chance d'esquiver = x / (x + 1), avec x = les points ÷ 100) | 0 points | `BASE_STATS.dodge` |
 | Bouclier : 1 ou plus = un bouclier bloque un coup, puis se recharge | 0 | `BASE_STATS.shield` |
 | Vitesse de recharge du bouclier (1.5 = 50 % plus rapide) | 1 × | `BASE_STATS.shieldRecharge` |
 | Points de vie regagnés à chaque ennemi tué | 0 PV | `BASE_STATS.lifeOnKill` |
@@ -54,7 +54,6 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
 | Temps de recharge du bouclier (divisé par la vitesse de recharge) | 10 s | `SHIELD_COOLDOWN` |
-| Esquive maximum (même avec toutes les compétences d'esquive) | 75 % | `DODGE_MAX` |
 
 ### Corps
 
@@ -121,11 +120,11 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Aphrodite : temps entre deux charmes (divisé par 1 + « pouvoir plus fréquent ») | 8 s | `PLANET_POWERS.charm.interval` |
-| Arès : temps entre deux cris de guerre | 12 s | `PLANET_POWERS.warCry.interval` |
-| Déméter : temps entre deux rayons de vie | 9 s | `PLANET_POWERS.bloom.interval` |
-| Artémis : temps entre deux grandes flèches | 6 s | `PLANET_POWERS.moonArrow.interval` |
-| Poséidon : temps entre deux vagues | 10 s | `PLANET_POWERS.tide.interval` |
+| Aphrodite : temps de recharge du charme (moins la réduction de recharge : x / (100 + x), avec x points) | 8 s | `PLANET_POWERS.charm.interval` |
+| Arès : temps de recharge du cri de guerre | 12 s | `PLANET_POWERS.warCry.interval` |
+| Déméter : temps de recharge du rayon de vie | 9 s | `PLANET_POWERS.bloom.interval` |
+| Artémis : temps de recharge de la grande flèche | 6 s | `PLANET_POWERS.moonArrow.interval` |
+| Poséidon : temps de recharge de la vague | 10 s | `PLANET_POWERS.tide.interval` |
 
 ### Héphaïstos : traînée de feu
 
@@ -403,7 +402,7 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 | Portée en plus, par niveau | 25 px | `SHOP_ITEMS.range.value` |
 | Prix du 1er niveau | 10 or | `SHOP_ITEMS.range.baseCost` |
 | Le prix est multiplié par ce nombre à chaque niveau | 1,5 × | `SHOP_ITEMS.range.costGrowth` |
-| Niveau maximum | 8 | `SHOP_ITEMS.range.maxLevel` |
+| Niveau maximum | ∞ | `SHOP_ITEMS.range.maxLevel` |
 
 ### Balle supplémentaire
 
@@ -440,6 +439,15 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 | Prix du 1er niveau | 12 or | `SHOP_ITEMS.regen.baseCost` |
 | Le prix est multiplié par ce nombre à chaque niveau | 1,6 × | `SHOP_ITEMS.regen.costGrowth` |
 | Niveau maximum | ∞ | `SHOP_ITEMS.regen.maxLevel` |
+
+### Esquive
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Points d'esquive en plus, par niveau (chance d'esquiver = x / (x + 1), avec x = les points ÷ 100) | 5 points | `SHOP_ITEMS.dodge.value` |
+| Prix du 1er niveau | 25 or | `SHOP_ITEMS.dodge.baseCost` |
+| Le prix est multiplié par ce nombre à chaque niveau | 1,6 × | `SHOP_ITEMS.dodge.costGrowth` |
+| Niveau maximum | ∞ | `SHOP_ITEMS.dodge.maxLevel` |
 
 ### Chance de critique
 
@@ -509,6 +517,14 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 | Prix de la grande keystone | 150 XP | `GRAND_COST` |
 | Chaque dieu a des compétences X fois plus chères que le dieu d'avant | 1,5 × | `SKILL_TIER_GROWTH` |
 
+### Éveil des dieux
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Dégâts en plus pour la planète, par niveau d'Éveil | 5 % | `AWAKENING_DAMAGE_PER_LEVEL` |
+| Prix du 1er niveau d'Éveil du 1er dieu (× la hausse des compétences pour chaque dieu suivant) | 100 XP | `AWAKENING_BASE_COST` |
+| Le prix est multiplié par ce nombre à chaque niveau d'Éveil | 1,25 × | `AWAKENING_COST_GROWTH` |
+
 ## Temps
 
 ### Vitesses et sauts
@@ -522,9 +538,9 @@ Toutes les statistiques du jeu (301 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Temps de recharge minimum après un saut | 8 s | `SKIP_COOLDOWN_MIN` |
-| Recharge par seconde sautée (0.6 : un saut de 100 s → 60 s de recharge) | 0,6 s | `SKIP_COOLDOWN_PER_SECOND` |
-| Temps de recharge maximum | 120 s | `SKIP_COOLDOWN_MAX` |
+| Temps de recharge minimum après un saut | 4 s | `SKIP_COOLDOWN_MIN` |
+| Recharge par seconde sautée (0.3 : un saut de 100 s → 30 s de recharge) | 0,3 s | `SKIP_COOLDOWN_PER_SECOND` |
+| Temps de recharge maximum | 60 s | `SKIP_COOLDOWN_MAX` |
 
 ## Combos d'orbite
 

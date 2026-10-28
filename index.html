@@ -749,6 +749,41 @@
             transform-origin: 0 0; /*le zoom part du coin en haut à gauche*/
         }
 
+        #awakeningButton { /*l'Éveil du dieu : en bas à gauche de l'arbre (les boutons de zoom sont à droite)*/
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            z-index: 2;
+            padding: 8px 14px;
+            border: 2px solid #ffd76a;
+            border-radius: 10px;
+            background-color: var(--ui-surface);
+            color: #ffd76a;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        #awakeningButton.locked { /*arbre pas encore complet*/
+            border-color: var(--ui-line);
+            color: var(--ui-muted);
+        }
+
+        #awakeningButton.ready { /*arbre complet et assez d'XP : il brille*/
+            background-color: #ffd76a;
+            color: #1a1000;
+            box-shadow: 0 0 14px rgba(255, 215, 106, 0.55);
+        }
+
+        #awakeningButton.ready.pulse { /*graphismes élevés : il palpite doucement*/
+            animation: awakeningPulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes awakeningPulse {
+            0%, 100% { box-shadow: 0 0 8px rgba(255, 215, 106, 0.4); }
+            50% { box-shadow: 0 0 22px rgba(255, 215, 106, 0.9); }
+        }
+
         #treeZoomControls {
             position: absolute;
             right: 10px;
@@ -1021,6 +1056,13 @@
             color: var(--ui-muted);
         }
 
+        .cardTotal { /*esquive, réduction de recharge, Éveil : le total, et ce qu'il donne vraiment*/
+            margin: 0 0 8px;
+            color: var(--tree-color);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
         .cardFooter {
             display: flex;
             align-items: center;
@@ -1058,24 +1100,6 @@
         .cardHint {
             font-size: 13px;
             color: var(--ui-muted);
-        }
-
-        #treeHint { /*petite aide quand aucune compétence n'est choisie*/
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            right: 64px;
-            margin: 0 auto;
-            max-width: 560px;
-            z-index: 2;
-            padding: 7px 14px;
-            border-radius: 999px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: var(--ui-text);
-            font-size: 13px;
-            font-weight: 700;
-            text-align: center;
-            pointer-events: none;
         }
 
         /*GAINS EN POP-UP : à l'achat, ce qu'on gagne apparaît en grand au milieu de l'arbre, monte et s'efface*/
@@ -2723,7 +2747,7 @@
                         <button id="treeZoomOut" title="Dézoomer">−</button>
                         <button id="treeZoomFit" title="Voir tout l'arbre">⤢</button>
                     </div>
-                    <div id="treeHint"></div>                  <!-- petite aide quand aucune compétence n'est choisie -->
+                    <button id="awakeningButton" class="hidden"></button> <!-- l'Éveil du dieu, quand son arbre est complet (voir ÉVEIL) -->
                     <div id="nodeCard" class="hidden"></div>   <!-- la carte de la compétence survolée ou choisie, en grand -->
                     <div id="gainPopups"></div>                <!-- les gains d'un achat, en grand au milieu, qui s'effacent -->
                 </div>
@@ -2738,8 +2762,8 @@
             <h1>GAME OVER</h1>
             <!-- RÉSUMÉ DE LA PARTIE : l'or et l'XP gagnés, en gros (rempli par showRunSummary) -->
             <div id="runSummary">
-                <div class="runCard goldCard"><span class="goldIcon"></span><span class="runCardLabel">Or gagné</span><span id="runGoldValue" class="runCardValue">+0</span></div>
-                <div class="runCard xpCard"><span class="xpIcon"></span><span class="runCardLabel">XP gagnée</span><span id="runXpValue" class="runCardValue">+0</span></div>
+                <div class="runCard goldCard"><span class="goldIcon"></span><span class="runCardLabel">OR</span><span id="runGoldValue" class="runCardValue">+0</span></div>
+                <div class="runCard xpCard"><span class="xpIcon"></span><span class="runCardLabel">XP</span><span id="runXpValue" class="runCardValue">+0</span></div>
                 <div class="runCard"><span class="runCardIcon">⏱</span><span class="runCardLabel">Temps de survie</span><span id="runTimeValue" class="runCardValue">0:00</span></div>
             </div>
             <p class="shopGoldLine"><span class="goldIcon"></span>Or disponible : <span id="shopGold">0</span></p>
@@ -2832,10 +2856,6 @@
             <div class="settingRow">
                 <input type="checkbox" id="pauseInMenusCheckbox">
                 <label for="pauseInMenusCheckbox">Mettre le jeu en pause dans les menus <span class="smallText">(paramètres et skills)</span></label>
-            </div>
-            <div class="settingRow">
-                <input type="checkbox" id="homingBulletsCheckbox">
-                <label for="homingBulletsCheckbox">Balles à tête chercheuse <span class="smallText">(décoché : les balles partent tout droit vers l'ennemi visé)</span></label>
             </div>
             <div class="settingRow">
                 <input type="checkbox" id="sharpGraphicsCheckbox">
@@ -4540,7 +4560,7 @@
         const BASE_STATS = {
             maxHealth: reglage("BASE_STATS.maxHealth"),        // points de vie max
             regen: reglage("BASE_STATS.regen"),             // PV regagnés par seconde
-            dodgeChance: reglage("BASE_STATS.dodgeChance"),       // chance d'esquiver un coup (0.1 = 10%)
+            dodge: reglage("BASE_STATS.dodge"),       // points d'esquive (la chance d'esquiver un coup : voir getDodgeChance)
             shield: reglage("BASE_STATS.shield"),            // 1 ou plus = un bouclier bloque un coup, puis se recharge
             shieldRecharge: reglage("BASE_STATS.shieldRecharge"),    // vitesse de recharge du bouclier (1.5 = 50% plus rapide)
             lifeOnKill: reglage("BASE_STATS.lifeOnKill"),        // PV regagnés à chaque ennemi tué
@@ -4577,7 +4597,7 @@
             damageMultiplier: 1,  // multiplie les dégâts de chaque balle (1 = normal, 2 = double)
             pierce: 0,            // ennemis que la balle traverse avant de disparaître (999 = tous, jusqu'au bord de l'écran)
             bounce: 0,            // rebonds : après un coup, la balle repart vers un autre ennemi proche (Artémis)
-            abilityHaste: 0,      // le pouvoir du dieu revient plus souvent (0.5 = 50% plus souvent)
+            cooldownReduction: 0, // points de réduction de recharge du pouvoir du dieu (voir getCooldownReduction)
             charmRadius: 0,       // Aphrodite : rayon du charme, en pixels (0 = pas de charme)
             charmDuration: 0,     // Aphrodite : secondes de charme
             charmPower: 0,        // Aphrodite : dégâts en plus des ennemis charmés à leurs alliés (1 = 2 fois plus)
@@ -4664,6 +4684,10 @@
             //Arès : les dégâts gagnés pour toujours avec chaque ennemi tué
             for (const planet of planets) {
                 planet.stats.damage += (killStacks[planet.id] || 0) * planet.stats.damagePerKill;
+            }
+            //ÉVEIL : chaque niveau donne des dégâts en plus à la planète du dieu (voir ÉVEIL)
+            for (const planet of planets) {
+                planet.stats.damageMultiplier += AWAKENING_DAMAGE_PER_LEVEL * planet.tree.awakening;
             }
         }
 
@@ -4805,12 +4829,12 @@
             }
         }
 
-        //ESQUIVE : plafonnée à DODGE_MAX. Sans plafond, toutes les compétences d'esquive réunies donnaient 126 % :
-        //le joueur n'était plus jamais touché, et une partie ne finissait jamais.
-        const DODGE_MAX = reglage("DODGE_MAX");
-
-        function getDodgeChance() {
-            return Math.min(DODGE_MAX, playerStats.dodgeChance);
+        //ESQUIVE : la chance d'esquiver un coup = x / (x + 1), avec x = les points d'esquive ÷ 100.
+        //Elle monte de moins en moins vite et n'atteint jamais 100 %, même avec l'amélioration infinie du shop :
+        //25 points -> 20 %, 100 points -> 50 %, 300 points -> 75 %, 900 points -> 90 %.
+        function getDodgeChance(points = playerStats.dodge) { //points = ... : la valeur si on n'en donne pas
+            const x = Math.max(0, points) / 100;
+            return x / (x + 1);
         }
 
         function damagePlayer(amount) {
@@ -5006,6 +5030,9 @@
         function updateHud() {
             setHudValue(goldDisplay, Math.floor(gold)); //on affiche sans les virgules
             setHudValue(xpDisplay, Math.floor(xp));
+            if (currentTree !== null) {
+                updateAwakeningButton(); //assez d'XP pour l'Éveil ?
+            }
         }
 
         //Change le nombre affiché, et le fait "pulser" s'il a augmenté
@@ -5506,8 +5533,8 @@
         //s'empilent et le jeu rame). La recharge dépend du saut : SKIP_COOLDOWN_PER_SECOND seconde par seconde sautée,
         //au moins SKIP_COOLDOWN_MIN. Elle compte en temps de JEU : elle s'arrête quand le jeu est en pause.
         const SKIP_COOLDOWN_MIN = reglage("SKIP_COOLDOWN_MIN");             // secondes
-        const SKIP_COOLDOWN_PER_SECOND = reglage("SKIP_COOLDOWN_PER_SECOND");    // ex : saut de +100 s -> 60 s de recharge
-        const SKIP_COOLDOWN_MAX = reglage("SKIP_COOLDOWN_MAX");           // jamais plus de 2 minutes d'attente (même pour un très grand saut)
+        const SKIP_COOLDOWN_PER_SECOND = reglage("SKIP_COOLDOWN_PER_SECOND");    // ex : 0.3 -> un saut de +100 s donne 30 s de recharge
+        const SKIP_COOLDOWN_MAX = reglage("SKIP_COOLDOWN_MAX");           // jamais plus d'attente que ça (même pour un très grand saut)
         let skipCooldown = 0;                    // secondes qui restent avant le prochain saut (0 = prêt)
         let skipCooldownMax = 0;                 // durée totale de la recharge en cours (pour l'animation)
         let shownCooldownSeconds = -1;           // le nombre affiché sur les boutons (on ne le réécrit que s'il change)
@@ -6949,12 +6976,6 @@
         const BULLET_COLOR = "#fff6b0";
         let fireTimer = 0;
 
-        //BALLES À TÊTE CHERCHEUSE (option des Paramètres, cochée par défaut, retenue par le navigateur)
-        let homingBullets = true;
-        try {
-            homingBullets = localStorage.getItem("homingBullets") !== "0";
-        } catch (error) {
-        }
         const BOUNCE_RANGE = reglage("BOUNCE_RANGE");            // distance max d'un rebond (Artémis), en pixels
         const MIN_SHOOTER_SPEED = reglage("MIN_SHOOTER_SPEED");      // une planète tire toujours au moins à 15% de la cadence normale (Héphaïstos est lent)
 
@@ -6985,7 +7006,6 @@
                 const bullet = shootAt(followsTarget ? target : null, x + sideX, y + sideY, getShotDamage(stats), color, effects, ringColor, stats);
                 bullet.dirX = dirX;
                 bullet.dirY = dirY;
-                bullet.homing = homingBullets; //option des Paramètres : suit-elle sa cible après le tir ?
                 bullet.wallX = sideX;  //elle vise la cible + son écart, pour garder la forme du mur
                 bullet.wallY = sideY;
                 bullet.proc = proc;
@@ -7177,9 +7197,7 @@
                 const bulletSpeed = BASE_BULLET_SPEED * Math.max(0.2, bullet.stats.bulletSpeed) * (bullet.speedFactor || 1); //chaque tireur a sa vitesse de balles
 
                 //La balle suit sa cible tant qu'elle est vivante (en gardant son écart dans le mur), sinon elle continue tout droit.
-                //Option "Balles à tête chercheuse" décochée : les tirs normaux gardent leur direction de départ (homing = false) ;
-                //les balles spéciales (rebonds d'Artémis, éclats des combos...) suivent toujours leur cible.
-                if (bullet.target !== null && bullet.target.alive && bullet.homing !== false) {
+                if (bullet.target !== null && bullet.target.alive) {
                     const dx = bullet.target.x + bullet.wallX - bullet.x;
                     const dy = bullet.target.y + bullet.wallY - bullet.y;
                     const distance = Math.hypot(dx, dy);
@@ -7210,7 +7228,6 @@
                         //Rebond (Artémis) : la balle repart vers l'ennemi le plus proche qu'elle n'a pas encore touché
                         bullet.bounceLeft--;
                         bullet.target = nextTarget;
-                        bullet.homing = true; //un rebond est une balle spéciale : elle file vers sa nouvelle cible
                         bullet.wallX = 0;
                         bullet.wallY = 0;
                     } else if (bullet.pierceLeft > 0) {
@@ -8312,7 +8329,7 @@
         ////POUVOIRS DES DIEUX//  Ce que chaque dieu sait faire quand on remplit son skill tree
         /////////////////////
         //Héphaïstos et Éole n'ont pas de pouvoir à part : leur skill tree change leurs TIRS (taille, cadence, dégâts, perforation).
-        //Les autres ont un POUVOIR qui revient régulièrement (toutes les X secondes, plus souvent avec "abilityHaste"),
+        //Les autres ont un POUVOIR qui revient régulièrement (toutes les X secondes, moins avec la réduction de recharge),
         //ou qui part avec leurs balles (Zeus). Tout dépend des stats de la planète (PLANET_POWER_STATS) : 0 = pas de pouvoir.
         //GRAPHISMES : "high" (élevés, par défaut) = les animations les plus belles (ex : la vague de Poséidon) ;
         //"simple" = des effets plus légers, pour les appareils lents. Réglage des Paramètres, retenu par le navigateur.
@@ -8353,7 +8370,7 @@
         //Le nom de chaque pouvoir (panneau des stats)
         const POWER_NAMES = { charm: "Rayon de charme", warCry: "Cri de guerre", bloom: "Rayon de vie", moonArrow: "Flèche de lune", tide: "Raz-de-marée" };
 
-        //Les pouvoirs qui reviennent régulièrement. interval = secondes entre deux fois (divisé par 1 + abilityHaste).
+        //Les pouvoirs qui reviennent régulièrement. interval = secondes entre deux fois (moins la réduction de recharge).
         //isActive(stats) : la planète a-t-elle ce pouvoir ? use(planet) : le lancer (renvoie false s'il n'y a rien à faire : il attendra)
         const PLANET_POWERS = [
             { key: "charm", interval: reglage("PLANET_POWERS.charm.interval"), isActive: function (stats) { return stats.charmRadius > 0; }, use: useCharmPulse },
@@ -8363,8 +8380,15 @@
             { key: "tide", interval: reglage("PLANET_POWERS.tide.interval"), isActive: function (stats) { return stats.tideWave > 0; }, use: useTideWave }
         ];
 
+        //RÉDUCTION DE RECHARGE : avec x points, la recharge d'un pouvoir baisse de x / (100 + x).
+        //Elle monte de moins en moins vite et n'atteint jamais 100 % : 25 points -> 20 %, 100 points -> 50 %, 300 points -> 75 %.
+        function getCooldownReduction(points) {
+            const x = Math.max(0, points);
+            return x / (100 + x);
+        }
+
         function getPowerInterval(power, stats) {
-            return power.interval / (1 + Math.max(0, stats.abilityHaste));
+            return power.interval * (1 - getCooldownReduction(stats.cooldownReduction));
         }
 
         function hasLivingEnemy() {
@@ -9458,7 +9482,7 @@
                     //Au bout des voies
                     shore2: { label: "POR", name: "Amymone", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
                     abyss2: { label: "FRÊLE", name: "Pontos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
-                    storm2: { label: "VAGUE", name: "Eurybia", description: "La vague revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                    storm2: { label: "VAGUE", name: "Eurybia", description: "La vague : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                     spray1: { label: "POR", name: "Cymo", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : +60 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 60 } },
                     spray3: { label: "POR", name: "Rhodé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
@@ -9476,17 +9500,17 @@
                     notables: [
                         { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                         { label: "POR", name: "Galatée", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
-                        { label: "ESQ", name: "Protée", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
+                        { label: "ESQ", name: "Protée", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } },
                         { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
                         { label: "FRÊLE", name: "Glaucos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
-                        { label: "VAGUE", name: "Leucothée", description: "La vague revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "VAGUE", name: "Leucothée", description: "La vague : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                         { label: "RECUL", name: "Palémon", description: "+30 de recul de la vague", effect: { stat: "tideWave", value: 30 } },
                         { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } }
                     ],
                     keystones: [
                         { label: "OCÉAN", name: "Amphitrite", description: "Bouclier des marées : chaque vague te rend invincible pendant 2 s", effect: { stat: "tideShield", value: 2 } },
                         { label: "ABYSS", name: "Céto", description: "Ennemis frêles : +15% de dégâts subis", effect: { stat: "fragility", value: 0.15 } },
-                        { label: "VAGUE", name: "Triton", description: "La vague revient 40% plus souvent, et +80 de portée", effects: [{ stat: "abilityHaste", value: 0.4 }, { stat: "range", value: 80 }] }
+                        { label: "VAGUE", name: "Triton", description: "La vague : +40 de réduction de recharge, et +80 de portée", effects: [{ stat: "cooldownReduction", value: 40 }, { stat: "range", value: 80 }] }
                     ],
                     grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s", effects: [{ stat: "fragility", value: 0.25 }, { stat: "tideShield", value: 1 }] }
                 }
@@ -9526,15 +9550,15 @@
                         { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
                         { label: "FLEUR", name: "Iasion", description: "+25 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 25 } },
                         { label: "LIANE", name: "Eubouleus", description: "+1 liane à chaque rayon de vie", effect: { stat: "vineCount", value: 1 } },
-                        { label: "FLEUR", name: "Carpo", description: "Le rayon de vie revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "FLEUR", name: "Carpo", description: "Le rayon de vie : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                         { label: "LIANE", name: "Anthée", description: "Les lianes immobilisent 1 s de plus", effect: { stat: "vineDuration", value: 1 } }
                     ],
                     keystones: [
                         { label: "ARBRE", name: "Karpos", description: "Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis)", effect: { stat: "vineCount", value: 3 } },
-                        { label: "MOISS", name: "Triptolème", description: "Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent", effects: [{ stat: "bloomHeal", value: 2 }, { stat: "abilityHaste", value: 0.3 }] },
+                        { label: "MOISS", name: "Triptolème", description: "Le rayon de vie soigne 2 PV de plus, et +30 de réduction de recharge", effects: [{ stat: "bloomHeal", value: 2 }, { stat: "cooldownReduction", value: 30 }] },
                         { label: "FORÊT", name: "Pan", description: "+60 de rayon du rayon de vie et +2 lianes", effects: [{ stat: "bloomRadius", value: 60 }, { stat: "vineCount", value: 2 }] }
                     ],
-                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent", effects: [{ stat: "vineCount", value: 3 }, { stat: "vineDuration", value: 2 }, { stat: "abilityHaste", value: 1 }] }
+                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et +100 de réduction de recharge du rayon de vie (2 fois plus souvent)", effects: [{ stat: "vineCount", value: 3 }, { stat: "vineDuration", value: 2 }, { stat: "cooldownReduction", value: 100 }] }
                 }
             },
             {
@@ -9659,17 +9683,17 @@
                         { label: "DMG", name: "Britomartis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "LUNE", name: "Aréthuse", description: "Flèche de lune : +1 fois les dégâts d'une balle", effect: { stat: "moonArrow", value: 1 } },
                         { label: "VEL", name: "Opis", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "LUNE", name: "Cyrène", description: "La flèche de lune revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "LUNE", name: "Cyrène", description: "La flèche de lune : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                         { label: "VIT", name: "Atalante", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
                         { label: "DMG", name: "Procris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "POR", name: "Taygète", description: "+30 de portée", effect: { stat: "range", value: 30 } }
                     ],
                     keystones: [
                         { label: "ORION", name: "Orion", description: "Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches", effect: { stat: "bounce", value: 2 } },
-                        { label: "ARC", name: "Hippolyte", description: "Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent", effects: [{ stat: "moonArrow", value: 3 }, { stat: "abilityHaste", value: 0.3 }] },
+                        { label: "ARC", name: "Hippolyte", description: "Flèche de lune : +3 fois les dégâts d'une balle, et +30 de réduction de recharge", effects: [{ stat: "moonArrow", value: 3 }, { stat: "cooldownReduction", value: 30 }] },
                         { label: "CERF", name: "Actéon", description: "+1 rebond et +25% de vitesse d'attaque", effects: [{ stat: "bounce", value: 1 }, { stat: "attackSpeed", value: 0.25 }] }
                     ],
-                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle", effects: [{ stat: "abilityHaste", value: 1 }, { stat: "moonArrow", value: 4 }] }
+                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +100 de réduction de recharge de la flèche de lune (2 fois plus souvent), et +4 fois les dégâts d'une balle", effects: [{ stat: "cooldownReduction", value: 100 }, { stat: "moonArrow", value: 4 }] }
                 }
             },
             //ATHÉNA : 2e divinité à acheter dans le shop (après Artémis). Sagesse et stratégie : défense, XP et un peu d'attaque.
@@ -9683,7 +9707,7 @@
                 },
                 minorSkills: [
                     { label: "PV", name: "Nikè", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "ESQ", name: "Aglaure", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } },
+                    { label: "ESQ", name: "Aglaure", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } },
                     { label: "XP", name: "Hersé", description: "+4% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.04 } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
@@ -9693,7 +9717,7 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    aegis2: { label: "ESQ", name: "Pallas", description: "+8% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.08 } },
+                    aegis2: { label: "ESQ", name: "Pallas", description: "+8 points d'esquive", effect: { stat: "dodge", value: 8 } },
                     spear2: { label: "DMG", name: "Bellérophon", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
                 },
                 shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
@@ -9703,14 +9727,14 @@
                         { label: "DMG", name: "Érichthonios", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "PV", name: "Pandrosos", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                         { label: "VIT", name: "Arachné", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Tritonis", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ESQ", name: "Tritonis", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                         { label: "DMG", name: "Ergané", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "VIT", name: "Zélos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                         { label: "REG", name: "Hygie", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                         { label: "XP", name: "Aidôs", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } }
                     ],
                     keystones: [
-                        { label: "ÉGIDE", name: "Égide", description: "+8% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.08 } },
+                        { label: "ÉGIDE", name: "Égide", description: "+8 points d'esquive", effect: { stat: "dodge", value: 8 } },
                         { label: "LANCE", name: "Promachos", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
                         { label: "CHOU", name: "Glaucopis", description: "+60 de portée (les yeux de la chouette)", effect: { stat: "range", value: 60 } }
                     ],
@@ -9795,14 +9819,14 @@
                         { label: "CRI", name: "Makhai", description: "Cri de guerre : +1 s", effect: { stat: "warCryDuration", value: 1 } },
                         { label: "DMG", name: "Polémos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
                         { label: "VIE", name: "Penthésilée", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "CRI", name: "Otréra", description: "Le cri de guerre revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "CRI", name: "Otréra", description: "Le cri de guerre : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                         { label: "VIT", name: "Antiope", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
                         { label: "CRI", name: "Androktasiai", description: "Cri de guerre 50% plus fort", effect: { stat: "warCry", value: 0.5 } }
                     ],
                     keystones: [
                         { label: "CYGNE", name: "Kyknos", description: "Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours", effect: { stat: "damagePerKill", value: 0.001 } },
                         { label: "CHAR", name: "Œnomaos", description: "Cri de guerre 2 fois plus fort", effect: { stat: "warCry", value: 1 } },
-                        { label: "SANG", name: "Phlégyas", description: "Le cri de guerre revient 30% plus souvent et dure 1 s de plus", effects: [{ stat: "abilityHaste", value: 0.3 }, { stat: "warCryDuration", value: 1 }] }
+                        { label: "SANG", name: "Phlégyas", description: "Le cri de guerre : +30 de réduction de recharge, et dure 1 s de plus", effects: [{ stat: "cooldownReduction", value: 30 }, { stat: "warCryDuration", value: 1 }] }
                     ],
                     grand: { label: "KÈRES", name: "Kères", description: "GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort", effects: [{ stat: "damagePerKill", value: 0.002 }, { stat: "warCry", value: 1 }] }
                 }
@@ -9819,7 +9843,7 @@
                 minorSkills: [
                     { label: "PV", name: "Charis", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
                     { label: "CHARME", name: "Himéros", description: "+6 de rayon de charme", effect: { stat: "charmRadius", value: 6 } },
-                    { label: "ESQ", name: "Pothos", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
+                    { label: "ESQ", name: "Pothos", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9836,20 +9860,20 @@
                     start: { label: "CHARME", name: "Éros", description: "Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis)", effects: [{ stat: "charmRadius", value: 80 }, { stat: "charmDuration", value: 2 }] },
                     notables: [
                         { label: "CHARME", name: "Peitho", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
-                        { label: "ESQ", name: "Antéros", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ESQ", name: "Antéros", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                         { label: "CHARME", name: "Adonis", description: "+20 de rayon de charme", effect: { stat: "charmRadius", value: 20 } },
-                        { label: "CHARME", name: "Psyché", description: "Le rayon de charme revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
+                        { label: "CHARME", name: "Psyché", description: "Le rayon de charme : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
                         { label: "VIE", name: "Hymen", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
                         { label: "PV", name: "Euphrosyne", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
                         { label: "CHARME", name: "Hermaphrodite", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
-                        { label: "CHARME", name: "Rhodos", description: "Le rayon de charme revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } }
+                        { label: "CHARME", name: "Rhodos", description: "Le rayon de charme : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } }
                     ],
                     keystones: [
                         { label: "FOULE", name: "Pandémos", description: "Foule : +50 de rayon de charme", effect: { stat: "charmRadius", value: 50 } },
                         { label: "CIEL", name: "Ourania", description: "Les ennemis charmés blessent 2 fois plus leurs alliés", effect: { stat: "charmPower", value: 1 } },
-                        { label: "CYTHÈRE", name: "Cythérée", description: "Le rayon de charme revient 40% plus souvent", effect: { stat: "abilityHaste", value: 0.4 } }
+                        { label: "CYTHÈRE", name: "Cythérée", description: "Le rayon de charme : +40 de réduction de recharge", effect: { stat: "cooldownReduction", value: 40 } }
                     ],
-                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent", effects: [{ stat: "charmDuration", value: 1.5 }, { stat: "abilityHaste", value: 1 }] }
+                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : charme +1.5 s, et +100 de réduction de recharge du rayon de charme (2 fois plus souvent)", effects: [{ stat: "charmDuration", value: 1.5 }, { stat: "cooldownReduction", value: 100 }] }
                 }
             },
             //HERMÈS : le messager, la vitesse. Cadence, vitesse des balles et esquive.
@@ -9864,7 +9888,7 @@
                 minorSkills: [
                     { label: "VEL", name: "Kéryx", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } },
                     { label: "VIT", name: "Hodios", description: "+4% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.04 } },
-                    { label: "ESQ", name: "Agoraios", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
+                    { label: "ESQ", name: "Agoraios", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9875,7 +9899,7 @@
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
                     feather2_3: { label: "VIT", name: "Angelos", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    feather5_3: { label: "ESQ", name: "Dolios", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                    feather5_3: { label: "ESQ", name: "Dolios", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                     feather8_3: { label: "VEL", name: "Kriophoros", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
                 },
                 shape: "wing",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
@@ -9884,16 +9908,16 @@
                     notables: [
                         { label: "VEL", name: "Psychopompe", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
                         { label: "VIT", name: "Argos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Chioné", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ESQ", name: "Chioné", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                         { label: "OR", name: "Autolycos", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
                         { label: "VEL", name: "Myrtilos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
                         { label: "VIT", name: "Daphnis", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Eudoros", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ESQ", name: "Eudoros", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                         { label: "VEL", name: "Abdère", description: "+15% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.15 } }
                     ],
                     keystones: [
                         { label: "TALARIA", name: "Talaria", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
-                        { label: "PÉTASE", name: "Pétase", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } },
+                        { label: "PÉTASE", name: "Pétase", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } },
                         { label: "CADUCÉE", name: "Caducée", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
                     ],
                     grand: { label: "AION", name: "Aion", description: "GRANDE KEYSTONE : +50% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.5 } }
@@ -9911,7 +9935,7 @@
                 minorSkills: [
                     { label: "REG", name: "Vestale", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
                     { label: "PV", name: "Lare", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "ESQ", name: "Pénate", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
+                    { label: "ESQ", name: "Pénate", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9921,7 +9945,7 @@
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
                     hearth2: { label: "REG", name: "Prytanée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                    safety2: { label: "ESQ", name: "Éléos", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } }
+                    safety2: { label: "ESQ", name: "Éléos", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } }
                 },
                 shape: "hearth",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
@@ -9930,16 +9954,16 @@
                         { label: "REG", name: "Tabiti", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                         { label: "PV", name: "Agathodaimon", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
                         { label: "VIE", name: "Philotès", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "ESQ", name: "Eucléia", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                        { label: "ESQ", name: "Eucléia", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
                         { label: "REG", name: "Homonoia", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
                         { label: "PV", name: "Euthénia", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
                         { label: "REG", name: "Elpis", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                        { label: "ESQ", name: "Hestiade", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } }
+                        { label: "ESQ", name: "Hestiade", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } }
                     ],
                     keystones: [
                         { label: "VESTA", name: "Vesta", description: "+5 PV max", effect: { stat: "maxHealth", value: 5 } },
                         { label: "CONSEIL", name: "Boulaia", description: "+0.15 PV régénérés par seconde", effect: { stat: "regen", value: 0.15 } },
-                        { label: "SALUT", name: "Sôtéria", description: "+10% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.1 } }
+                        { label: "SALUT", name: "Sôtéria", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } }
                     ],
                     grand: { label: "ANANKÉ", name: "Ananké", description: "GRANDE KEYSTONE : +8 PV max", effect: { stat: "maxHealth", value: 8 } }
                 }
@@ -9967,6 +9991,22 @@
         const NOTABLE_COST_MULTIPLIER = reglage("NOTABLE_COST_MULTIPLIER");
         const KEYSTONE_COST = reglage("KEYSTONE_COST");            // + 2 par pas
         const GRAND_COST = reglage("GRAND_COST");
+
+        //ÉVEIL : quand l'arbre d'un dieu est complet, l'XP sert à « l'éveiller ». Chaque niveau donne des dégâts en plus à sa planète,
+        //sans fin, et coûte plus cher que le précédent. Comme ses compétences, chaque dieu est plus cher que celui d'avant (x SKILL_TIER_GROWTH).
+        const AWAKENING_DAMAGE_PER_LEVEL = reglage("AWAKENING_DAMAGE_PER_LEVEL"); // 0.05 = +5% de dégâts par niveau
+        const AWAKENING_BASE_COST = reglage("AWAKENING_BASE_COST");               // XP du 1er niveau, pour le 1er dieu
+        const AWAKENING_COST_GROWTH = reglage("AWAKENING_COST_GROWTH");           // le prix est multiplié par ce nombre à chaque niveau
+
+        //L'arbre est complet quand chaque compétence est prise, ou bloquée par la voie choisie
+        function isTreeComplete(tree) {
+            return tree.nodes.every(function (node) { return node.unlocked || getNodeState(tree, node) === "blocked"; }); //every = "toutes"
+        }
+
+        function getAwakeningCost(tree) {
+            const tierMultiplier = Math.pow(SKILL_TIER_GROWTH, SKILL_TREES.indexOf(tree)); //indexOf = sa place : le 1er dieu x1, le 2e x1.5...
+            return Math.round(AWAKENING_BASE_COST * tierMultiplier * Math.pow(AWAKENING_COST_GROWTH, tree.awakening));
+        }
 
         //Distance (en nombre de liens) de chaque compétence jusqu'au départ : on avance "par vagues" depuis le départ
         function computeDepths(layout) {
@@ -10096,7 +10136,7 @@
 
             warnCrossingLinks(treeData.name, nodes);
             //id = le nom français (ne change jamais : sauvegarde, codes de triche) ; name = le nom affiché, dans la langue du joueur
-            return { id: treeData.name, name: t(treeData.name), color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes, paths: paths };
+            return { id: treeData.name, name: t(treeData.name), color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes, paths: paths, awakening: 0 };
         }
 
         //VÉRIFICATION : prévient dans la console (F12) si deux liens d'un arbre se croisent, pour corriger la forme
@@ -10179,7 +10219,6 @@
         const treeLinks = document.getElementById("treeLinks");
         const treeNodes = document.getElementById("treeNodes");
         const nodeCard = document.getElementById("nodeCard");      // la carte de la compétence survolée ou choisie
-        const treeHint = document.getElementById("treeHint");      // la petite aide quand rien n'est choisi
         const gainPopups = document.getElementById("gainPopups");  // les gains d'un achat, en grand
         const godList = document.getElementById("godList");
         const skillsButton = document.getElementById("skillsButton");
@@ -10283,7 +10322,7 @@
             skillTreePanel.classList.remove("hidden");
             showStatsPanel();
             setupTreeWorld(); //après l'affichage : il faut que la fenêtre soit visible pour connaître sa taille
-            showNodeInfoHint();
+            hideNodeCard();
             //TUTORIEL : l'arbre ouvert autrement qu'en cliquant sur la planète (touche S, bouton ✦) compte aussi
             if (tutorialStep === "planet") {
                 finishTutorialStep();
@@ -10323,7 +10362,7 @@
             maxHealthOnHit: function (value) { return ["PV max par touche", "+" + formatNumber(value)]; },
             comboProcChance: function (value) { return ["Effet de combo au hasard", "+" + formatNumber(value * 100) + "%"]; },
             shieldRecharge: function (value) { return ["Recharge du bouclier", "+" + formatNumber(value * 100) + "%"]; },
-            dodgeChance: function (value) { return ["Esquive", "+" + formatNumber(value * 100) + "%"]; },
+            dodge: function (value) { return ["Esquive", "+" + formatNumber(value) + " " + t("points")]; },
             shield: function () { return ["Bouclier", t("Oui")]; },
             goldMultiplier: function (value) { return ["Or gagné", "+" + formatNumber(value * 100) + "%"]; },
             xpMultiplier: function (value) { return ["XP gagnée", "+" + formatNumber(value * 100) + "%"]; },
@@ -10332,7 +10371,7 @@
             damageMultiplier: function (value) { return ["Multiplicateur de dégâts", formatSigned(value * 100) + "%"]; },
             pierce: function (value) { return ["Ennemis traversés", value >= 999 ? t("Tous") : "+" + formatNumber(value)]; },
             bounce: function (value) { return ["Rebonds", "+" + formatNumber(value)]; },
-            abilityHaste: function (value) { return ["Pouvoir plus fréquent", "+" + formatNumber(value * 100) + "%"]; },
+            cooldownReduction: function (value) { return ["Réduction de recharge", "+" + formatNumber(value) + " " + t("points")]; },
             charmRadius: function (value) { return ["Rayon de charme", "+" + formatNumber(value) + " px"]; },
             charmDuration: function (value) { return ["Durée du charme", "+" + formatNumber(value) + " s"]; },
             charmPower: function (value) { return ["Dégâts des ennemis charmés", "+" + formatNumber(value * 100) + "%"]; },
@@ -10373,6 +10412,47 @@
             return { label: t(row[0]), value: value, isNegative: effect.value < 0 };
         }
 
+        //Le total d'une stat (bilan de l'arbre, panneau des stats). La réduction de recharge dit aussi ce qu'elle donne vraiment.
+        function getBonusTotalRow(key, value) {
+            const row = BONUS_FORMATS[key](value);
+            if (key === "cooldownReduction") {
+                row[1] += " (" + t("recharge −{percent}", { percent: formatPercent(getCooldownReduction(value)) }) + ")";
+            }
+            return row;
+        }
+
+        //Le total des points d'une stat dans les compétences prises d'un arbre
+        function getTreeTotal(tree, stat) {
+            let total = 0;
+            for (const node of tree.nodes) {
+                if (node.unlocked) {
+                    for (const effect of node.effects) {
+                        if (effect.stat === stat) {
+                            total += effect.value;
+                        }
+                    }
+                }
+            }
+            return total;
+        }
+
+        //LES POINTS ET LE TOTAL (carte d'une compétence) : l'esquive et la réduction de recharge montent de moins en moins vite,
+        //on montre donc le total de points avec cette compétence, et ce qu'il donne vraiment. null = rien à montrer
+        function getPointsTotalText(effect, node) {
+            const extra = node.unlocked ? 0 : effect.value; //pas encore prise : le total AVEC elle
+            if (effect.stat === "dodge") {
+                const points = playerStats.dodge + extra;
+                const values = { points: formatNumber(points), percent: formatPercent(getDodgeChance(points)) };
+                return node.unlocked ? t("Ton total : {points} points d'esquive, soit {percent} de chance d'esquiver", values) : t("Avec celle-ci : {points} points d'esquive, soit {percent} de chance d'esquiver", values);
+            }
+            if (effect.stat === "cooldownReduction") {
+                const points = getTreeTotal(currentTree, "cooldownReduction") + extra;
+                const values = { points: formatNumber(points), percent: formatPercent(getCooldownReduction(points)) };
+                return node.unlocked ? t("Total de l'arbre : {points} points, soit une recharge {percent} plus courte", values) : t("Avec celle-ci : {points} points, soit une recharge {percent} plus courte", values);
+            }
+            return null;
+        }
+
         //COLONNE DE DROITE : tout ce que cet arbre nous apporte (progression, pouvoirs, total des stats)
         function renderTreeBonus(tree) {
             treeBonusArea.textContent = "";
@@ -10387,6 +10467,9 @@
             bar.appendChild(fill);
             progress.appendChild(bar);
             treeBonusArea.appendChild(progress);
+            if (tree.awakening > 0) {
+                treeBonusArea.appendChild(createElementWithText("div", "bonusPower", "✨ " + t("Éveil niveau {level} : +{percent} de dégâts", { level: tree.awakening, percent: formatPercent(AWAKENING_DAMAGE_PER_LEVEL * tree.awakening) })));
+            }
 
             if (unlockedNodes.length === 0) {
                 treeBonusArea.appendChild(createElementWithText("p", "bonusEmpty", t("Aucune compétence débloquée pour l'instant. Commence par l'étoile de départ !")));
@@ -10420,7 +10503,7 @@
                 if (key.startsWith("damageVs_")) {
                     row = [t("Dégâts vs {element}", { element: ELEMENT_NAMES[key.slice(9)] }), "+" + formatNumber(totals[key])]; //slice(9) = le texte après "damageVs_"
                 } else {
-                    row = BONUS_FORMATS[key](totals[key]);
+                    row = getBonusTotalRow(key, totals[key]);
                     row[0] = t(row[0]); //le nom de la stat, dans la langue du joueur
                 }
                 const line = createElementWithText("div", "bonusStat", "");
@@ -10547,6 +10630,7 @@
             const tree = currentTree;
             renderTreeBonus(tree);
             treeXp.textContent = Math.floor(xp);
+            updateAwakeningButton();
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
 
@@ -10631,7 +10715,7 @@
                     if (selectedNode !== null) {
                         showNodeInfo(selectedNode);
                     } else {
-                        showNodeInfoHint();
+                        hideNodeCard();
                     }
                 });
                 //AU DOIGT : on retient que c'est un doigt, et un appui long (sans bouger) rembourse la compétence
@@ -10715,7 +10799,7 @@
             for (const other of treeNodes.querySelectorAll(".selected")) {
                 other.classList.remove("selected");
             }
-            showNodeInfoHint();
+            hideNodeCard();
         }
 
         //Une ligne SVG entre deux compétences
@@ -10732,17 +10816,9 @@
         }
 
         //Petite aide quand aucune compétence n'est choisie (la carte est cachée)
-        function showNodeInfoHint() {
+        //Aucune compétence choisie : pas de carte (l'arbre reste dégagé)
+        function hideNodeCard() {
             nodeCard.classList.add("hidden");
-            treeHint.classList.remove("hidden");
-            treeHint.textContent = currentTree.isLocked
-                ? t(IS_TOUCH_DEVICE ? "Aperçu : {name} n'est pas encore en orbite. Touche une compétence pour voir ce qu'elle fera." : "Aperçu : {name} n'est pas encore en orbite. Survole une compétence pour voir ce qu'elle fera.", { name: currentTree.name })
-                : IS_TOUCH_DEVICE
-                    ? t("Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.")
-                    : t("Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.");
-            if (currentTree.paths.length > 0 && getChosenPath(currentTree) === null) {
-                treeHint.textContent += " " + t("Les branches colorées sont des voies : en prendre une bloque les autres.");
-            }
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
@@ -10763,7 +10839,6 @@
             nodeCard.textContent = ""; //vide la carte avant de la remplir
             nodeCard.classList.remove("hidden");
             nodeCard.classList.toggle("preview", isPreview);
-            treeHint.classList.add("hidden");
             placeNodeCard(node);
 
             const header = createElementWithText("div", "cardHeader", "");
@@ -10791,22 +10866,20 @@
                 gains.appendChild(line);
             }
             nodeCard.appendChild(gains);
+            for (const effect of node.effects) {
+                const total = getPointsTotalText(effect, node);
+                if (total !== null) {
+                    nodeCard.appendChild(createElementWithText("div", "cardTotal", total));
+                }
+            }
             //La description, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
             nodeCard.appendChild(createElementWithText("div", "cardDescription", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
-            //Une compétence d'une VOIE : le nom de la voie, sa façon de jouer, et ce que son choix bloque
+            //Une compétence d'une VOIE : le nom de la voie et sa façon de jouer
             if (node.path !== undefined) {
                 const path = currentTree.paths[node.path];
-                const chosen = getChosenPath(currentTree);
                 const box = createElementWithText("div", "cardPath voie" + node.path + (state === "blocked" ? " blocked" : ""), "");
                 box.appendChild(createElementWithText("strong", "", "⑂ " + path.name));
-                let text = path.description;
-                if (state === "blocked") {
-                    text = t("Bloquée : tu as choisi la {name}. Pour changer, rembourse les compétences de cette voie.", { name: currentTree.paths[chosen].name });
-                } else if (chosen === null) {
-                    const others = currentTree.paths.filter(function (other, index) { return index !== node.path; }).map(function (other) { return other.name; });
-                    text += " " + t("La prendre bloque : {names}.", { names: others.join(", ") });
-                }
-                box.appendChild(createElementWithText("span", "", text));
+                box.appendChild(createElementWithText("span", "", path.description));
                 nodeCard.appendChild(box);
             }
 
@@ -10891,6 +10964,104 @@
             renderStatsPanel(true); //anime les stats qui viennent d'augmenter
             showNodeInfo(node);
             showGainPopup(node);
+            if (isTreeComplete(currentTree)) { //c'était la dernière compétence possible : l'Éveil s'ouvre
+                deselectNode(); //la carte se ferme : elle cacherait le bouton de l'Éveil (en bas à gauche)
+                showToast(t("✨ Arbre complet : l'Éveil de {name} est disponible !", { name: currentTree.name }));
+                triggerTutorial("awakening");
+            }
+        }
+
+        //ÉVEIL : le bouton en bas à gauche de l'arbre (seulement pour un dieu en orbite)
+        const awakeningButton = document.getElementById("awakeningButton");
+
+        function updateAwakeningButton() {
+            const tree = currentTree;
+            const isShown = tree !== null && !tree.isLocked;
+            awakeningButton.classList.toggle("hidden", !isShown);
+            if (!isShown) {
+                return;
+            }
+            const isComplete = isTreeComplete(tree);
+            const isReady = isComplete && xp >= getAwakeningCost(tree);
+            awakeningButton.textContent = (isComplete ? "✨ " : "🔒 ") + t("Éveil") + (tree.awakening > 0 ? " · " + t("niv. {level}", { level: tree.awakening }) : "");
+            awakeningButton.classList.toggle("locked", !isComplete);
+            awakeningButton.classList.toggle("ready", isReady);
+            awakeningButton.classList.toggle("pulse", isReady && isHighGraphics); //l'animation : seulement en graphismes élevés
+        }
+
+        awakeningButton.addEventListener("click", function (event) {
+            event.stopPropagation(); //le clic ne "tombe" pas sur l'arbre (qui fermerait la carte)
+            showAwakeningCard(currentTree);
+        });
+
+        //LA CARTE DE L'ÉVEIL : comme celle d'une compétence (même place, même style)
+        function showAwakeningCard(tree) {
+            deselectNode(); //aucune compétence choisie
+            nodeCard.textContent = "";
+            nodeCard.classList.remove("hidden", "preview", "atBottom"); //la carte en haut : le bouton est en bas
+            const isComplete = isTreeComplete(tree);
+            const cost = getAwakeningCost(tree);
+
+            const header = createElementWithText("div", "cardHeader", "");
+            header.appendChild(createElementWithText("span", "infoName", "✨ " + t("Éveil de {name}", { name: tree.name })));
+            header.appendChild(createElementWithText("span", "infoRole big", t("niveau {level}", { level: tree.awakening })));
+            const close = createElementWithText("button", "cardClose", "×");
+            close.title = t("Fermer");
+            close.addEventListener("click", function (event) {
+                event.stopPropagation();
+                deselectNode();
+            });
+            header.appendChild(close);
+            nodeCard.appendChild(header);
+
+            const gains = createElementWithText("div", "cardGains", "");
+            const line = createElementWithText("div", "cardGain", "");
+            line.appendChild(createElementWithText("span", "gainValue", "+" + formatPercent(AWAKENING_DAMAGE_PER_LEVEL)));
+            line.appendChild(createElementWithText("span", "", t("Dégâts de la planète, par niveau")));
+            gains.appendChild(line);
+            nodeCard.appendChild(gains);
+            if (tree.awakening > 0) {
+                nodeCard.appendChild(createElementWithText("div", "cardTotal", t("Total : +{percent} de dégâts", { percent: formatPercent(AWAKENING_DAMAGE_PER_LEVEL * tree.awakening) })));
+            }
+            nodeCard.appendChild(createElementWithText("div", "cardDescription", t("Sans fin : chaque niveau rend {name} plus fort, et coûte plus cher que le précédent. Il faut d'abord prendre toutes les compétences possibles de son arbre.", { name: tree.name })));
+
+            const footer = createElementWithText("div", "cardFooter", "");
+            if (!isComplete) {
+                const missing = tree.nodes.filter(function (node) { return !node.unlocked && getNodeState(tree, node) !== "blocked"; }).length;
+                footer.appendChild(createElementWithText("span", "infoChip cost", cost + " XP"));
+                footer.appendChild(createElementWithText("span", "infoChip blocked", t("🔒 Encore {count} compétence(s) à prendre", { count: missing })));
+            } else {
+                const canBuy = xp >= cost;
+                const buy = createElementWithText("button", "buyButton", canBuy ? t("Éveiller · {cost} XP", { cost: cost }) : t("Pas assez d'XP ({cost} XP)", { cost: cost }));
+                buy.disabled = !canBuy;
+                buy.addEventListener("click", function (event) {
+                    event.stopPropagation();
+                    awakenTree(tree);
+                });
+                footer.appendChild(buy);
+            }
+            nodeCard.appendChild(footer);
+        }
+
+        function awakenTree(tree) {
+            const cost = getAwakeningCost(tree);
+            if (tree.isLocked || !isTreeComplete(tree) || xp < cost) {
+                playSound("denied");
+                return;
+            }
+            playSound("buy");
+            xp -= cost;
+            tree.awakening++;
+            refreshStats(); //les dégâts de la planète, et la sauvegarde
+            updateHud();
+            renderTreeBonus(tree);
+            renderStatsPanel(true);
+            showAwakeningCard(tree);
+            //le gain en grand au milieu de l'arbre, comme pour une compétence
+            const popup = createElementWithText("div", "gainPopup", "");
+            popup.appendChild(createElementWithText("div", "gainPopupLine", "✨ +" + formatPercent(AWAKENING_DAMAGE_PER_LEVEL) + " " + t("Dégâts")));
+            gainPopups.appendChild(popup);
+            popup.addEventListener("animationend", function () { popup.remove(); });
         }
 
         //REMBOURSER : on récupère tout l'XP d'une compétence, à condition que les autres restent reliées au départ
@@ -11084,8 +11255,8 @@
         }
 
         treeCanvas.addEventListener("pointerdown", function (event) {
-            if (event.target.closest("#treeZoomControls")) {
-                return; //les boutons de zoom ne déplacent pas l'arbre
+            if (event.target.closest("#treeZoomControls, #awakeningButton")) {
+                return; //les boutons de zoom et d'Éveil ne déplacent pas l'arbre
             }
             treePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
             if (treePointers.size === 2) { //un 2e doigt : on passe en mode "pincer"
@@ -11147,7 +11318,7 @@
 
         //Cliquer sur le fond de l'arbre (pas sur une étoile ni sur la carte) : plus aucune compétence choisie
         treeCanvas.addEventListener("click", function (event) {
-            if (treeWasDragged || event.target.closest(".skillNode, #nodeCard, #treeZoomControls") !== null) {
+            if (treeWasDragged || event.target.closest(".skillNode, #nodeCard, #treeZoomControls, #awakeningButton") !== null) {
                 return;
             }
             if (selectedNode !== null) {
@@ -11176,6 +11347,7 @@
             { key: "maxHealth", name: "Vie max", description: "+{value} PV max", baseCost: reglage("SHOP_ITEMS.maxHealth.baseCost"), costGrowth: reglage("SHOP_ITEMS.maxHealth.costGrowth"), maxLevel: reglage("SHOP_ITEMS.maxHealth.maxLevel"), level: 0, effect: { stat: "maxHealth", value: reglage("SHOP_ITEMS.maxHealth.value") } },
             { key: "damage", name: "Dégâts", description: "+{value} dégât par balle", baseCost: reglage("SHOP_ITEMS.damage.baseCost"), costGrowth: reglage("SHOP_ITEMS.damage.costGrowth"), maxLevel: reglage("SHOP_ITEMS.damage.maxLevel"), level: 0, effect: { stat: "damage", value: reglage("SHOP_ITEMS.damage.value") } },
             { key: "regen", name: "Régénération", description: "+{value} PV par seconde", baseCost: reglage("SHOP_ITEMS.regen.baseCost"), costGrowth: reglage("SHOP_ITEMS.regen.costGrowth"), maxLevel: reglage("SHOP_ITEMS.regen.maxLevel"), level: 0, effect: { stat: "regen", value: reglage("SHOP_ITEMS.regen.value") } },
+            { key: "dodge", name: "Esquive", description: "+{value} points d'esquive", baseCost: reglage("SHOP_ITEMS.dodge.baseCost"), costGrowth: reglage("SHOP_ITEMS.dodge.costGrowth"), maxLevel: reglage("SHOP_ITEMS.dodge.maxLevel"), level: 0, effect: { stat: "dodge", value: reglage("SHOP_ITEMS.dodge.value") } },
             { key: "critChance", name: "Chance de critique", description: "+{value}% de chance de coup critique", baseCost: reglage("SHOP_ITEMS.critChance.baseCost"), costGrowth: reglage("SHOP_ITEMS.critChance.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critChance.maxLevel"), level: 0, effect: { stat: "critChance", value: reglage("SHOP_ITEMS.critChance.value") } },
             { key: "critDamage", name: "Dégâts critiques", description: "+{value}% de dégâts critiques", baseCost: reglage("SHOP_ITEMS.critDamage.baseCost"), costGrowth: reglage("SHOP_ITEMS.critDamage.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critDamage.maxLevel"), level: 0, effect: { stat: "critDamage", value: reglage("SHOP_ITEMS.critDamage.value") } },
             { key: "bulletSpeed", name: "Vitesse des balles", description: "+{value}% de vitesse des balles", baseCost: reglage("SHOP_ITEMS.bulletSpeed.baseCost"), costGrowth: reglage("SHOP_ITEMS.bulletSpeed.costGrowth"), maxLevel: reglage("SHOP_ITEMS.bulletSpeed.maxLevel"), level: 0, effect: { stat: "bulletSpeed", value: reglage("SHOP_ITEMS.bulletSpeed.value") } },
@@ -11301,7 +11473,7 @@
                 }
                 button.disabled = isMaxed || gold < cost;
                 button.innerHTML =
-                    "<strong>" + item.name + "</strong> " + t("(niv. {level}/{max})", { level: item.level, max: Number.isFinite(item.maxLevel) ? item.maxLevel : "∞" }) + "<br>" +
+                    "<strong>" + item.name + "</strong> " + (Number.isFinite(item.maxLevel) ? t("(niv. {level}/{max})", { level: item.level, max: item.maxLevel }) : t("(niv. {level})", { level: item.level })) + "<br>" + //infinie : juste son niveau
                     description + "<br>" +
                     "<span class='cost'>" + (isMaxed ? t("MAX") : t("{cost} or", { cost: cost })) + "</span>";
                 button.addEventListener("click", function () { buyShopItem(item); });
@@ -11479,6 +11651,7 @@
                 data.trees[tree.id] = {
                     owned: !tree.isLocked,
                     linkMode: tree.linkMode,
+                    awakening: tree.awakening, // niveau d'Éveil
                     nodes: tree.nodes.filter(function (node) { return node.unlocked; }).map(function (node) { return node.id; })
                 };
             }
@@ -11511,6 +11684,7 @@
                         continue; //dieu ajouté au jeu après cette sauvegarde
                     }
                     tree.isLocked = !saved.owned;
+                    tree.awakening = Number.isInteger(saved.awakening) && saved.awakening > 0 ? saved.awakening : 0; //isInteger = un nombre entier
                     if (LINK_MODES[saved.linkMode] !== undefined) {
                         tree.linkMode = saved.linkMode;
                     }
@@ -12252,7 +12426,7 @@
                 {
                     title: t("Défense"),
                     rows: [
-                        ["Esquive", formatPercent(getDodgeChance()) + (playerStats.dodgeChance > DODGE_MAX ? " " + t("(maximum)") : "")],
+                        ["Esquive", t("{percent} ({points} points)", { percent: formatPercent(getDodgeChance()), points: formatNumber(playerStats.dodge) })],
                         ["Bouclier", playerStats.shield > 0 ? t("Oui (recharge {seconds} s)", { seconds: formatNumber(getShieldCooldown()) }) : t("Non")]
                     ]
                 },
@@ -12314,7 +12488,7 @@
                 //Les pouvoirs : la différence avec une planète "normale", et tous les combien ils reviennent
                 for (const key of Object.keys(PLANET_POWER_STATS)) {
                     if (Math.abs(stats[key] - PLANET_POWER_STATS[key]) > 0.0001) {
-                        rows.push(BONUS_FORMATS[key](stats[key] - PLANET_POWER_STATS[key]));
+                        rows.push(getBonusTotalRow(key, stats[key] - PLANET_POWER_STATS[key]));
                     }
                 }
                 for (const power of PLANET_POWERS) {
@@ -12324,6 +12498,9 @@
                 }
                 if (stats.damagePerKill > 0) {
                     rows.push(["Ennemis tués (soif de gloire)", killStacks[planet.id] || 0]);
+                }
+                if (planet.tree.awakening > 0) {
+                    rows.push(["Éveil", t("niveau {level} : +{percent} de dégâts", { level: planet.tree.awakening, percent: formatPercent(AWAKENING_DAMAGE_PER_LEVEL * planet.tree.awakening) })]);
                 }
                 rows.push(["Orbite", ORBITS[planet.orbit].name]);
                 rows.push(["Lien d'orbite", getLinkSummary(planet)]);
@@ -13269,18 +13446,6 @@
             playSound("click");
         });
 
-        //BALLES À TÊTE CHERCHEUSE : décoché, les tirs normaux partent tout droit vers l'ennemi visé et ne le suivent plus
-        const homingBulletsCheckbox = document.getElementById("homingBulletsCheckbox");
-        homingBulletsCheckbox.checked = homingBullets;
-        homingBulletsCheckbox.addEventListener("change", function () {
-            homingBullets = homingBulletsCheckbox.checked;
-            try {
-                localStorage.setItem("homingBullets", homingBullets ? "1" : "0");
-            } catch (error) {
-            }
-            playSound("click");
-        });
-
         //GRAPHISMES NETS : dessiner avec les vrais pixels des écrans fins (voir applyCanvasSize)
         const sharpGraphicsCheckbox = document.getElementById("sharpGraphicsCheckbox");
         sharpGraphicsCheckbox.checked = isSharpGraphics;
@@ -13387,6 +13552,7 @@
             time: { title: "Le temps", target: "#timeMenuButton", text: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.", textTouch: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant." },
             links: { title: "Les liens d'orbite", target: "#orbitLinkArea", text: "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici." },
             orbits: { title: "Les orbites", target: "planet2", text: "Tu as plusieurs planètes ! Fais glisser une planète pour changer sa place, ou pour la mettre sur une autre orbite, plus près ou plus loin. Une planète ne se lie qu'à celles de son orbite." },
+            awakening: { title: "L'Éveil", target: "#awakeningButton", text: "Tu as pris toutes les compétences possibles de ce dieu ! Ton XP sert maintenant à l'éveiller : chaque niveau d'Éveil donne plus de dégâts à sa planète, sans fin, et coûte un peu plus cher." },
             boss: { title: "Un super ennemi !", text: "Toutes les 5 minutes, un monstre de la mythologie arrive pour un duel : le chrono s'arrête et le jeu repasse en vitesse x1. Il a beaucoup de vie, et certains ont un pouvoir : abats-le avant qu'il te touche !" }
         };
         translateFields(TUTORIAL_STEPS, ["title", "text", "textTouch", "textSmall"]);

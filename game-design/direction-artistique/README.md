@@ -58,6 +58,10 @@ Les 3 orbites des planètes (130, 200 et 270 px) sont de fins cercles très disc
 
 Le reste de l'écran s'assombrit (un voile bleu nuit à 60 %), sauf un **projecteur** : un trou au bord arrondi, de la couleur d'accent du thème, autour de ce qu'on montre (rond autour d'une planète). En graphismes élevés, son bord palpite doucement entre la couleur d'accent et le blanc ; en graphismes simples, il reste fixe. Quand on passe à la bulle suivante, le projecteur glisse vers sa nouvelle cible. La bulle reprend le style des fenêtres du jeu (fond du thème, bord de la couleur d'accent, titre en Nunito épais), avec « Compris » comme bouton principal et « Passer le tutoriel » en simple lien souligné, discret, pour qu'on ne le touche pas sans le vouloir.
 
+## L'Éveil
+
+Le bouton « Éveil » se tient en bas à gauche de l'arbre, face aux boutons de zoom. Tant que l'arbre n'est pas complet, il est discret (gris, avec un cadenas). Ensuite il prend un or doux (`#ffd76a`) avec une étoile ✨, et devient plein, doré, avec une lueur, quand on a assez d'XP ; en graphismes élevés, cette lueur palpite lentement. Sa carte reprend celle des compétences (même place, même bouton orange), et l'achat fait monter « ✨ +5% Dégâts » au milieu de l'arbre, comme le gain d'une compétence.
+
 ## Les thèmes drapeaux
 
 Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.

@@ -17,7 +17,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
 | **Voie des talonnières** | Tirer plus vite. | **Autolycos** (+10% d'or gagné) ; **Talaria** (+30% de vitesse d'attaque) ; **Myrtilos** (+20% de vitesse des balles) ; **Angelos** (+15% de vitesse d'attaque) | 7 | 11129 |
-| **Voie du pétase** | Esquiver plus souvent. | **Daphnis** (+10% de vitesse d'attaque) ; **Pétase** (+10% de chance d'esquiver un coup) ; **Eudoros** (+5% de chance d'esquiver un coup) ; **Dolios** (+5% de chance d'esquiver un coup) | 7 | 16550 |
+| **Voie du pétase** | Esquiver plus souvent. | **Daphnis** (+10% de vitesse d'attaque) ; **Pétase** (+10 points d'esquive) ; **Eudoros** (+5 points d'esquive) ; **Dolios** (+5 points d'esquive) | 7 | 16550 |
 | **Voie du caducée** | Une balle de plus par tir. | **Abdère** (+15% de vitesse des balles) ; **Caducée** (+1 balle par tir) ; **Kriophoros** (+20% de vitesse des balles) | 7 | 20990 |
 
 ## ⭐ Grande keystone
@@ -31,7 +31,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Nom | Effet | Coût |
 |---|---|---|
 | **Talaria** (TALARIA) | +30% de vitesse d'attaque | 3806 XP |
-| **Pétase** (PÉTASE) | +10% de chance d'esquiver un coup | 4152 XP |
+| **Pétase** (PÉTASE) | +10 points d'esquive | 4152 XP |
 | **Caducée** (CADUCÉE) | +1 balle par tir | 4498 XP |
 
 ## 🔹 Notables
@@ -40,14 +40,14 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Psychopompe** (VEL) | +20% de vitesse des balles | 1153 XP |
 | **Argos** (VIT) | +10% de vitesse d'attaque | 1845 XP |
-| **Chioné** (ESQ) | +5% de chance d'esquiver un coup | 2537 XP |
+| **Chioné** (ESQ) | +5 points d'esquive | 2537 XP |
 | **Autolycos** (OR) | +10% d'or gagné | 807 XP |
 | **Myrtilos** (VEL) | +20% de vitesse des balles | 1845 XP |
 | **Daphnis** (VIT) | +10% de vitesse d'attaque | 1845 XP |
-| **Eudoros** (ESQ) | +5% de chance d'esquiver un coup | 2537 XP |
+| **Eudoros** (ESQ) | +5 points d'esquive | 2537 XP |
 | **Abdère** (VEL) | +15% de vitesse des balles | 3229 XP |
 | **Angelos** (VIT) | +15% de vitesse d'attaque | 2191 XP |
-| **Dolios** (ESQ) | +5% de chance d'esquiver un coup | 3229 XP |
+| **Dolios** (ESQ) | +5 points d'esquive | 3229 XP |
 | **Kriophoros** (VEL) | +20% de vitesse des balles | 4267 XP |
 
 ## Départ
@@ -64,7 +64,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Kéryx** (VEL) | +8% de vitesse des balles | ×5 | 519 à 2364 XP |
 | **Hodios** (VIT) | +4% de vitesse d'attaque | ×5 | 750 à 2595 XP |
-| **Agoraios** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 750 à 2134 XP |
+| **Agoraios** (ESQ) | +2 points d'esquive | ×4 | 750 à 2134 XP |
 
 ## ↔️ Lien « Opposé » vers Hermès
 

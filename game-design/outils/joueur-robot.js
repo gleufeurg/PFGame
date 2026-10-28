@@ -12,6 +12,7 @@
 // - à sa mort : la moitié de l'or gagné pendant la partie va dans une « cagnotte » pour le prochain dieu ; il achète ce dieu dès qu'il peut,
 //   et dépense le reste dans les améliorations les moins chères ;
 // - il prend les compétences les moins chères, tous dieux confondus, et le meilleur lien d'orbite acheté ;
+//   l'XP qui reste va dans l'Éveil le moins cher (dieux à l'arbre complet) ;
 // - il ne saute pas dans le temps, ne change pas les orbites, et compte 15 s par mort (le temps de faire ses achats).
 // Un vrai joueur fait d'autres choix : les résultats donnent un ordre d'idée, pas un chiffre exact.
 const { chromium } = require('playwright');
@@ -75,6 +76,18 @@ const RUN_CAP = 3600;   // une partie s'arrête au plus à 60 min de jeu (sinon 
                     found = true;
                 }
             }
+            // l'XP qui reste : l'Éveil le moins cher, parmi les dieux à l'arbre complet
+            let awakened = true;
+            while (awakened) {
+                awakened = false;
+                const ready = SKILL_TREES.filter((tree) => !tree.isLocked && isTreeComplete(tree));
+                ready.sort((a, b) => getAwakeningCost(a) - getAwakeningCost(b));
+                if (ready.length > 0 && getAwakeningCost(ready[0]) <= xp) {
+                    xp -= getAwakeningCost(ready[0]);
+                    ready[0].awakening++;
+                    awakened = true;
+                }
+            }
             for (const tree of SKILL_TREES) {
                 tree.linkMode = ['both', 'right', 'left'].find((mode) => isLinkModeUnlocked(mode)) || 'none';
             }
@@ -97,7 +110,7 @@ const RUN_CAP = 3600;   // une partie s'arrête au plus à 60 min de jeu (sinon 
     let real = 0;
     let run = 0;
     const godTimes = {};
-    console.log('partie | temps réel (min) | durée | or gagné | XP gagnée | dieux | niveaux du shop | compétences | vitesse');
+    console.log('partie | temps réel (min) | durée | or gagné | XP gagnée | dieux | niveaux du shop | compétences | niveaux d\'Éveil | vitesse');
     while (real < MAX_REAL_MINUTES * 60) {
         run++;
         let state;
@@ -109,9 +122,10 @@ const RUN_CAP = 3600;   // une partie s'arrête au plus à 60 min de jeu (sinon 
         const info = await page.evaluate(() => ({
             time: runTime, gold: runGold, xp: runXp, gods: planets.length, speed: robotSpeed(),
             shop: SHOP_ITEMS.reduce((sum, item) => sum + item.level, 0),
-            skills: SKILL_TREES.reduce((sum, tree) => sum + tree.nodes.filter((node) => node.unlocked).length, 0)
+            skills: SKILL_TREES.reduce((sum, tree) => sum + tree.nodes.filter((node) => node.unlocked).length, 0),
+            awakening: SKILL_TREES.reduce((sum, tree) => sum + tree.awakening, 0)
         }));
-        console.log(`${run} | ${(real / 60).toFixed(1)} | ${format(info.time)} | ${Math.round(info.gold)} | ${Math.round(info.xp)} | ${info.gods} | ${info.shop} | ${info.skills} | x${info.speed}`);
+        console.log(`${run} | ${(real / 60).toFixed(1)} | ${format(info.time)} | ${Math.round(info.gold)} | ${Math.round(info.xp)} | ${info.gods} | ${info.shop} | ${info.skills} | ${info.awakening} | x${info.speed}`);
         const gods = await page.evaluate(() => { robotGodFund += runGold * 0.5; robotShop(); restartGame(0); return planets.length; });
         for (let god = 1; god <= gods; god++) {
             if (godTimes[god] === undefined) godTimes[god] = Math.round(real / 60);

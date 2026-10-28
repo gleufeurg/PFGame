@@ -17,7 +17,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
 | **Voie du carnage** | Chaque ennemi tué rend Arès plus fort, pour toujours. | **Éris** (+1 dégât par balle) ; **Kydoimos** (+10% de vitesse d'attaque) ; **Kyknos** (Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours) ; **Penthésilée** (+0.2 PV regagné par ennemi tué) ; **Diomède** (+0.2 PV regagné par ennemi tué) | 12 | 14583 |
-| **Voie du cri** | Un cri de guerre deux fois plus fort, qui dure plus longtemps. | **Makhai** (Cri de guerre : +1 s) ; **Polémos** (+1 dégât par balle) ; **Otréra** (Le cri de guerre revient 15% plus souvent) ; **Œnomaos** (Cri de guerre 2 fois plus fort) ; **Ascalaphe** (Cri de guerre : +1 s) | 12 | 14583 |
+| **Voie du cri** | Un cri de guerre deux fois plus fort, qui dure plus longtemps. | **Makhai** (Cri de guerre : +1 s) ; **Polémos** (+1 dégât par balle) ; **Otréra** (Le cri de guerre : +15 de réduction de recharge) ; **Œnomaos** (Cri de guerre 2 fois plus fort) ; **Ascalaphe** (Cri de guerre : +1 s) | 12 | 14583 |
 
 ## ⭐ Grande keystone
 
@@ -31,7 +31,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Kyknos** (CYGNE) | Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours | 1897 XP |
 | **Œnomaos** (CHAR) | Cri de guerre 2 fois plus fort | 1897 XP |
-| **Phlégyas** (SANG) | Le cri de guerre revient 30% plus souvent et dure 1 s de plus | 1640 XP |
+| **Phlégyas** (SANG) | Le cri de guerre : +30 de réduction de recharge, et dure 1 s de plus | 1640 XP |
 
 ## 🔹 Notables
 
@@ -42,7 +42,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | **Makhai** (CRI) | Cri de guerre : +1 s | 1743 XP |
 | **Polémos** (DMG) | +1 dégât par balle | 1281 XP |
 | **Penthésilée** (VIE) | +0.2 PV regagné par ennemi tué | 1128 XP |
-| **Otréra** (CRI) | Le cri de guerre revient 15% plus souvent | 1128 XP |
+| **Otréra** (CRI) | Le cri de guerre : +15 de réduction de recharge | 1128 XP |
 | **Antiope** (VIT) | +10% de vitesse d'attaque | 359 XP |
 | **Androktasiai** (CRI) | Cri de guerre 50% plus fort | 359 XP |
 | **Diomède** (VIE) | +0.2 PV regagné par ennemi tué | 1589 XP |

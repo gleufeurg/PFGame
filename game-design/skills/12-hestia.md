@@ -16,8 +16,8 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
-| **Voie du foyer** | Régénérer ta vie. | **Philotès** (+0.2 PV regagné par ennemi tué) ; **Eucléia** (+5% de chance d'esquiver un coup) ; **Boulaia** (+0.15 PV régénérés par seconde) ; **Prytanée** (+0.1 PV régénérés par seconde) | 8 | 25948 |
-| **Voie du salut** | Esquiver les coups. | **Tabiti** (+0.05 PV régénérés par seconde) ; **Agathodaimon** (+2 PV max) ; **Sôtéria** (+10% de chance d'esquiver un coup) ; **Éléos** (+5% de chance d'esquiver un coup) | 8 | 25948 |
+| **Voie du foyer** | Régénérer ta vie. | **Philotès** (+0.2 PV regagné par ennemi tué) ; **Eucléia** (+5 points d'esquive) ; **Boulaia** (+0.15 PV régénérés par seconde) ; **Prytanée** (+0.1 PV régénérés par seconde) | 8 | 25948 |
+| **Voie du salut** | Esquiver les coups. | **Tabiti** (+0.05 PV régénérés par seconde) ; **Agathodaimon** (+2 PV max) ; **Sôtéria** (+10 points d'esquive) ; **Éléos** (+5 points d'esquive) | 8 | 25948 |
 
 ## ⭐ Grande keystone
 
@@ -31,7 +31,7 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Vesta** (VESTA) | +5 PV max | 6747 XP |
 | **Boulaia** (CONSEIL) | +0.15 PV régénérés par seconde | 6228 XP |
-| **Sôtéria** (SALUT) | +10% de chance d'esquiver un coup | 6228 XP |
+| **Sôtéria** (SALUT) | +10 points d'esquive | 6228 XP |
 
 ## 🔹 Notables
 
@@ -40,13 +40,13 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 | **Tabiti** (REG) | +0.05 PV régénérés par seconde | 3287 XP |
 | **Agathodaimon** (PV) | +2 PV max | 2249 XP |
 | **Philotès** (VIE) | +0.2 PV regagné par ennemi tué | 2249 XP |
-| **Eucléia** (ESQ) | +5% de chance d'esquiver un coup | 3287 XP |
+| **Eucléia** (ESQ) | +5 points d'esquive | 3287 XP |
 | **Homonoia** (REG) | +0.05 PV régénérés par seconde | 5363 XP |
 | **Euthénia** (PV) | +3 PV max | 6401 XP |
 | **Elpis** (REG) | +0.1 PV régénérés par seconde | 5363 XP |
-| **Hestiade** (ESQ) | +5% de chance d'esquiver un coup | 6401 XP |
+| **Hestiade** (ESQ) | +5 points d'esquive | 6401 XP |
 | **Prytanée** (REG) | +0.1 PV régénérés par seconde | 4844 XP |
-| **Éléos** (ESQ) | +5% de chance d'esquiver un coup | 4844 XP |
+| **Éléos** (ESQ) | +5 points d'esquive | 4844 XP |
 
 ## Départ
 
@@ -62,7 +62,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Vestale** (REG) | +0.02 PV régénérés par seconde | ×6 | 1816 à 3892 XP |
 | **Lare** (PV) | +1 PV max | ×5 | 778 à 3892 XP |
-| **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×5 | 1124 à 2854 XP |
+| **Pénate** (ESQ) | +2 points d'esquive | ×5 | 1124 à 2854 XP |
 
 ## ↔️ Lien « Opposé » vers Hestia
 

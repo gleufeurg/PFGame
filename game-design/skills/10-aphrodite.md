@@ -16,14 +16,14 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 
 | Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
 |---|---|---|---|---|
-| **Voie de la foule** | Charmer beaucoup plus d'ennemis à la fois. | **Peitho** (Charme : +0.5 s) ; **Pandémos** (Foule : +50 de rayon de charme) ; **Antéros** (+5% de chance d'esquiver un coup) ; **Harmonie** (+20 de rayon de charme) | 14 | 18531 |
-| **Voie du ciel** | Des ennemis charmés plus longtemps, qui blessent bien plus leurs alliés. | **Psyché** (Le rayon de charme revient 15% plus souvent) ; **Ourania** (Les ennemis charmés blessent 2 fois plus leurs alliés) ; **Hymen** (+0.2 PV regagné par ennemi tué) ; **Énée** (Charme : +0.5 s) | 14 | 18531 |
+| **Voie de la foule** | Charmer beaucoup plus d'ennemis à la fois. | **Peitho** (Charme : +0.5 s) ; **Pandémos** (Foule : +50 de rayon de charme) ; **Antéros** (+5 points d'esquive) ; **Harmonie** (+20 de rayon de charme) | 14 | 18531 |
+| **Voie du ciel** | Des ennemis charmés plus longtemps, qui blessent bien plus leurs alliés. | **Psyché** (Le rayon de charme : +15 de réduction de recharge) ; **Ourania** (Les ennemis charmés blessent 2 fois plus leurs alliés) ; **Hymen** (+0.2 PV regagné par ennemi tué) ; **Énée** (Charme : +0.5 s) | 14 | 18531 |
 
 ## ⭐ Grande keystone
 
 | Nom | Effet | Coût |
 |---|---|---|
-| **Phanès** (PHANÈS) | charme +1.5 s, et le rayon de charme revient 2 fois plus souvent | 5767 XP |
+| **Phanès** (PHANÈS) | charme +1.5 s, et +100 de réduction de recharge du rayon de charme (2 fois plus souvent) | 5767 XP |
 
 ## 🔷 Keystones
 
@@ -31,20 +31,20 @@ Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pou
 |---|---|---|
 | **Pandémos** (FOULE) | Foule : +50 de rayon de charme | 2922 XP |
 | **Ourania** (CIEL) | Les ennemis charmés blessent 2 fois plus leurs alliés | 2922 XP |
-| **Cythérée** (CYTHÈRE) | Le rayon de charme revient 40% plus souvent | 2383 XP |
+| **Cythérée** (CYTHÈRE) | Le rayon de charme : +40 de réduction de recharge | 2383 XP |
 
 ## 🔹 Notables
 
 | Nom | Effet | Coût |
 |---|---|---|
 | **Peitho** (CHARME) | Charme : +0.5 s | 1230 XP |
-| **Antéros** (ESQ) | +5% de chance d'esquiver un coup | 1692 XP |
+| **Antéros** (ESQ) | +5 points d'esquive | 1692 XP |
 | **Adonis** (CHARME) | +20 de rayon de charme | 1230 XP |
-| **Psyché** (CHARME) | Le rayon de charme revient 15% plus souvent | 1692 XP |
+| **Psyché** (CHARME) | Le rayon de charme : +15 de réduction de recharge | 1692 XP |
 | **Hymen** (VIE) | +0.2 PV regagné par ennemi tué | 1230 XP |
 | **Euphrosyne** (PV) | +3 PV max | 1230 XP |
 | **Hermaphrodite** (CHARME) | Charme : +0.5 s | 1000 XP |
-| **Rhodos** (CHARME) | Le rayon de charme revient 15% plus souvent | 1230 XP |
+| **Rhodos** (CHARME) | Le rayon de charme : +15 de réduction de recharge | 1230 XP |
 | **Harmonie** (CHARME) | +20 de rayon de charme | 2614 XP |
 | **Énée** (CHARME) | Charme : +0.5 s | 2614 XP |
 
@@ -62,7 +62,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 |---|---|---|---|
 | **Charis** (PV) | +1 PV max | ×10 | 346 à 1576 XP |
 | **Himéros** (CHARME) | +6 de rayon de charme | ×9 | 500 à 1269 XP |
-| **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×9 | 346 à 1576 XP |
+| **Pothos** (ESQ) | +2 points d'esquive | ×9 | 346 à 1576 XP |
 
 ## ↔️ Lien « Opposé » vers Aphrodite
 

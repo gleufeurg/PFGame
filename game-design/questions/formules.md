@@ -23,7 +23,7 @@ D_tir            = dégâts du tireur × max(0,1 ; multiplicateur de dégâts)
 | Tireur | Dégâts de base | Bonus | Multiplicateur |
 | --- | --- | --- | --- |
 | Joueur | 1 | + 1 par niveau du shop « Dégâts » + lien « Opposé » (Forge : +1) | toujours 1 |
-| Planète | 1 | + compétences de tir de son skill tree + lien « Opposé » + **Arès** : ennemis tués × `damagePerKill` | 1 + bonus du skill tree (`damageMultiplier`) : Héphaïstos le monte, Éole le baisse |
+| Planète | 1 | + compétences de tir de son skill tree + lien « Opposé » + **Arès** : ennemis tués × `damagePerKill` | 1 + bonus du skill tree (`damageMultiplier`) : Héphaïstos le monte, Éole le baisse ; + 0,05 par niveau d'**Éveil** du dieu |
 
 ### Étape 2 : quand la balle touche (`hitEnemy`)
 
@@ -100,8 +100,11 @@ perte = 174,9 × 1,5                          = 262,4
 ## 3. Les pouvoirs des dieux
 
 ```
-temps entre deux pouvoirs = temps de base ÷ (1 + abilityHaste)
+réduction de recharge = x ÷ (100 + x)        (x = points de réduction de recharge, cooldownReduction)
+temps entre deux pouvoirs = temps de base × (1 − réduction de recharge)
 ```
+
+Ex : 25 points → recharge 20 % plus courte, 100 points → 50 % (2 fois plus souvent), 300 points → 75 %. Elle n'atteint jamais 100 %. (C'est le même calcul qu'avant, quand on écrivait « temps de base ÷ (1 + bonus) » avec bonus = points ÷ 100.)
 
 | Pouvoir | Temps de base | Formules |
 | --- | --- | --- |
@@ -183,10 +186,10 @@ Un ennemi sur 10 a un mouvement spécial, choisi parmi ceux déjà débloqués. 
 **Sauter dans le temps** fait arriver d'un coup tous les ennemis de la durée sautée, puis il faut attendre :
 
 ```
-recharge du saut = entre 8 et 120 : 0,6 × secondes sautées      (SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_PER_SECOND, SKIP_COOLDOWN_MAX)
+recharge du saut = entre 4 et 60 : 0,3 × secondes sautées      (SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_PER_SECOND, SKIP_COOLDOWN_MAX)
 ```
 
-Ex : +10 s → 8 s de recharge, +30 s → 18 s, +100 s → 60 s (en temps de jeu).
+Ex : +10 s → 4 s de recharge, +30 s → 9 s, +100 s → 30 s (en temps de jeu). Avant, c'était 2 fois plus long (entre 8 et 120 s, 0,6 × secondes sautées).
 
 ### Leurs dégâts sur le joueur
 
@@ -215,7 +218,7 @@ Il regagne des PV de plusieurs façons, sans jamais dépasser ses PV max :
 
 1. Code de triche « achille » : aucun dégât.
 2. Bouclier des marées actif (Poséidon) : aucun dégât.
-3. Esquive : il a min(chance d'esquive ; 75 %) de chances de ne rien prendre (`DODGE_MAX`). Sans ce plafond, toutes les compétences d'esquive réunies donnaient 126 % : le joueur n'était plus jamais touché.
+3. Esquive : il a x ÷ (x + 1) de chances de ne rien prendre, avec x = ses points d'esquive ÷ 100 (`getDodgeChance`). 25 points → 20 %, 100 points → 50 %, 300 points → 75 %, 900 points → 90 % : la chance monte de moins en moins vite et n'atteint jamais 100 %, même avec l'amélioration infinie « Esquive » du shop (+5 points par niveau). Avant, c'était la somme des compétences, plafonnée à 75 % (`DODGE_MAX`, retiré).
 4. Bouclier prêt : il bloque le coup, puis se recharge en 10 ÷ recharge du bouclier secondes.
 5. Sinon : PV = PV − dégâts au contact. **Il meurt si PV < 1** : la vie affichée est arrondie en dessous, donc 0,9 PV s'affiche 0.
 
@@ -258,10 +261,10 @@ Les multiplicateurs commencent à 1 et augmentent avec les compétences, par exe
 
 ```
 prix du shop    = arrondi(prix de départ × multiplicateur ^ niveau déjà acheté)
-nouveau dieu    = arrondi(30 × 2,4 ^ dieux déjà achetés)        (avant : 50 × 1,8 ^ ...)
+nouveau dieu    = arrondi(20 × 2,5 ^ dieux déjà achetés)        (avant : 50 × 1,8 ^ ...)
 ```
 
-Les améliorations **infinies** (Dégâts, Cadence de tir, Vie max, Régénération, Dégâts critiques) suivent la même formule, sans niveau maximum : chaque niveau coûte 1,5 ou 1,6 fois plus que le précédent.
+Les améliorations **infinies** (Dégâts, Cadence de tir, Vie max, Régénération, Dégâts critiques, Portée, Esquive) suivent la même formule, sans niveau maximum : chaque niveau coûte 1,5 ou 1,6 fois plus que le précédent.
 
 Le prix d'un skill dépend de son type, de son nombre de **pas** (le nombre de liens entre l'étoile de départ et lui) et du **rang du dieu** dans l'ordre d'achat (le 1er dieu = rang 0) :
 
@@ -280,3 +283,12 @@ prix d'un skill = arrondi(prix de base × 1,5 ^ rang du dieu)      (SKILL_TIER_G
 Ex : une mineure à 3 pas coûte 17 XP chez Héphaïstos (rang 0), 26 chez Poséidon (rang 1) et 1 470 chez Hestia (rang 11).
 
 Le détail des prix, dieu par dieu, est dans [prix.md](../prix.md). Rembourser un skill rend tout son XP.
+
+L'**Éveil** d'un dieu (quand son arbre est complet) se paie aussi en XP, sans fin :
+
+```
+prix d'un niveau d'Éveil = arrondi(100 × 1,5 ^ rang du dieu × 1,25 ^ niveaux d'Éveil déjà pris)      (AWAKENING_BASE_COST, SKILL_TIER_GROWTH, AWAKENING_COST_GROWTH)
+dégâts de la planète     = + 0,05 × niveau d'Éveil au multiplicateur de dégâts                        (AWAKENING_DAMAGE_PER_LEVEL)
+```
+
+Ex : Héphaïstos (rang 0) : 100, 125, 156, 195… XP ; au niveau 10, +50 % de dégâts. Hestia (rang 11) : 8 650 XP pour le 1er niveau.
