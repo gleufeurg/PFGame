@@ -4133,15 +4133,69 @@
 
         const MAX_ENEMY_SHADOWS = IS_TOUCH_DEVICE ? 400 : 1500;        // au-delà de ce nombre d'ennemis, les ennemis ronds n'ont plus d'ombre (pour garder le jeu fluide)
 
+        //Ajoute une forme au chemin en cours, SANS la remplir (pour en remplir des centaines d'un coup)
+        function traceShape(targetCtx, points, dx, dy) {
+            targetCtx.moveTo(points[0].x + dx, points[0].y + dy);
+            for (let i = 1; i < points.length; i++) {
+                targetCtx.lineTo(points[i].x + dx, points[i].y + dy);
+            }
+            targetCtx.closePath();
+        }
+
+        //Comme fillStretchedShape, mais ajoutée au chemin en cours (pour en remplir des centaines d'un coup, d'une seule couleur).
+        //⚠️ Dans un même chemin, deux morceaux qui se chevauchent doivent "tourner" dans le même sens, sinon ils s'annulent
+        //(règle "nonzero" du remplissage) : chaque quadrilatère est donc tracé dans le sens de la forme.
+        function traceStretchedShape(targetCtx, points, dx, dy) {
+            const shapeTurn = getPolygonArea(points) > 0;
+            traceShape(targetCtx, points, dx, dy);
+            for (let i = 0; i < points.length; i++) {
+                const a = points[i];
+                const b = points[(i + 1) % points.length];
+                //sens du quadrilatère a -> b -> b+d -> a+d (le signe de son aire)
+                const quadTurn = (b.x - a.x) * dy - (b.y - a.y) * dx > 0;
+                targetCtx.moveTo(a.x, a.y);
+                if (quadTurn === shapeTurn) {
+                    targetCtx.lineTo(b.x, b.y);
+                    targetCtx.lineTo(b.x + dx, b.y + dy);
+                    targetCtx.lineTo(a.x + dx, a.y + dy);
+                } else {
+                    targetCtx.lineTo(a.x + dx, a.y + dy);
+                    targetCtx.lineTo(b.x + dx, b.y + dy);
+                    targetCtx.lineTo(b.x, b.y);
+                }
+                targetCtx.closePath();
+            }
+        }
+
+        //L'aire "signée" d'une forme : positive si ses points tournent dans un sens, négative dans l'autre
+        function getPolygonArea(points) {
+            let area = 0;
+            for (let i = 0; i < points.length; i++) {
+                const a = points[i];
+                const b = points[(i + 1) % points.length];
+                area += a.x * b.y - b.x * a.y;
+            }
+            return area / 2;
+        }
+
+        //Pour dessiner en VRAIS pixels (sans la transformation du monde) : un point du monde (x, y) se trouve au pixel
+        //(x * scale + x0, y * scale + y0). Les petites images recopiées à une position entière, sans être agrandies ni réduites,
+        //se dessinent 3 à 4 fois plus vite (et plus nettes).
+        function getWorldToDevice(offsetX, offsetY) {
+            const scale = cameraZoom * pixelRatio;
+            return { scale: scale, x0: (center.x * (1 - cameraZoom) + offsetX) * pixelRatio, y0: (center.y * (1 - cameraZoom) + offsetY) * pixelRatio };
+        }
+
         function drawShadows() {
             shadowCtx.setTransform(1, 0, 0, 1, 0, 0);
             shadowCtx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
-            applyWorldTransform(shadowCtx, 0, 0); //les ombres suivent aussi le zoom de la caméra
 
-            //Ennemis ronds : leur ombre est une petite image pré-dessinée (voir getShadowSprite), simplement recopiée.
+            //Ennemis ronds : leur ombre est une petite image pré-dessinée (voir getShadowSprite), recopiée en vrais pixels.
             //Quand il y a énormément d'ennemis, on ne dessine plus leurs ombres (on ne les remarque plus, et ça coûte cher).
             const view = getVisibleWorldRect(80);
             const drawRoundShadows = enemies.length <= MAX_ENEMY_SHADOWS;
+            const device = getWorldToDevice(0, 0);
+            const specialShadows = [];
             for (const enemy of enemies) {
                 if (!enemy.alive || enemy.x < view.left || enemy.x > view.right || enemy.y < view.top || enemy.y > view.bottom) {
                     continue; //hors de l'écran : inutile de dessiner son ombre
@@ -4150,23 +4204,34 @@
                     if (!drawRoundShadows) {
                         continue;
                     }
-                    const radius = getSpriteRadius(enemy.size);
+                    const radius = getDeviceRadius(enemy.size, device);
                     const shadowSprite = getShadowSprite(radius);
-                    shadowCtx.drawImage(shadowSprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, shadowSprite.cssWidth, shadowSprite.cssHeight);
+                    shadowCtx.drawImage(shadowSprite, Math.round(enemy.x * device.scale + device.x0) - radius - SPRITE_PADDING, Math.round(enemy.y * device.scale + device.y0) - radius - SPRITE_PADDING);
                 } else {
-                    //Les ennemis à forme spéciale (bien moins nombreux) : dessinés un par un
-                    const shadow = shadowVector(enemy.size * 2.2);
-                    fillStretchedShape(shadowCtx, getEnemyShapePoints(enemy, enemy.x, enemy.y + getEnemyDepth(enemy)), shadow.x, shadow.y, SHADOW_COLOR);
+                    specialShadows.push(enemy);
                 }
             }
-            for (const bullet of bullets) {
-                const shadow = shadowVector(8);
-                fillStretchedCircle(shadowCtx, bullet.x, bullet.y + 2, bullet.size, shadow.x, shadow.y, SHADOW_COLOR);
+            applyWorldTransform(shadowCtx, 0, 0); //les autres ombres suivent le zoom de la caméra
+            shadowCtx.fillStyle = SHADOW_COLOR;
+            //Les ennemis à forme spéciale (bien moins nombreux) : une par une (un énorme chemin serait plus lent à remplir).
+            //Avec énormément d'ennemis, eux non plus n'ont plus d'ombre.
+            if (drawRoundShadows) {
+                for (const enemy of specialShadows) {
+                    const shadow = shadowVector(enemy.size * 2.2);
+                    shadowCtx.beginPath();
+                    traceStretchedShape(shadowCtx, getEnemyShapePoints(enemy, enemy.x, enemy.y + getEnemyDepth(enemy)), shadow.x, shadow.y);
+                    shadowCtx.fill();
+                }
             }
+            const bulletShadow = shadowVector(8);
+            for (const bullet of bullets) {
+                fillStretchedCircle(shadowCtx, bullet.x, bullet.y + 2, bullet.size, bulletShadow.x, bulletShadow.y, SHADOW_COLOR);
+            }
+            const planetShadow = shadowVector(30);
             for (const planet of planets) {
-                const shadow = shadowVector(30);
-                const points = getShapePoints(planet.x, planet.y + PLANET_DEPTH, planet.size, 4, 0);
-                fillStretchedShape(shadowCtx, points, shadow.x, shadow.y, SHADOW_COLOR);
+                shadowCtx.beginPath();
+                traceStretchedShape(shadowCtx, getShapePoints(planet.x, planet.y + PLANET_DEPTH, planet.size, 4, 0), planetShadow.x, planetShadow.y);
+                shadowCtx.fill();
             }
             //Ombre du joueur : un rond à sa base, étiré loin
             const playerShadow = shadowVector(80);
@@ -6252,12 +6317,6 @@
             return Math.max(2, enemy.size * 0.35);
         }
 
-        //A-t-il un anneau de statut (charmé, affaibli, empoisonné, gelé, ralenti) à dessiner autour de lui ?
-        function hasStatusRing(enemy) {
-            return enemy.charmTimer > 0 || enemy.weakTimer > 0 || enemy.poisonTimer > 0 || enemy.freezeTimer > 0 || enemy.slowTimer > 0
-                || enemy.rootTimer > 0 || enemy.fragileTimer > 0 || enemy.conductTimer > 0;
-        }
-
         //Nom + barre de vie au-dessus d'un super ennemi
         const BOSS_BAR_HEIGHT = 7;
 
@@ -6289,35 +6348,33 @@
         const shadowSprites = new Map();     // "couleur d'ombre|rayon" -> image
         const SPRITE_PADDING = 2;            // marge autour du dessin dans l'image
 
-        //Le rayon arrondi au pixel : une image par pixel de rayon suffit
-        function getSpriteRadius(size) {
-            return Math.max(1, Math.round(size));
+        //Le rayon d'un ennemi en VRAIS pixels de l'écran (avec le zoom de la caméra), arrondi : une image par rayon suffit
+        function getDeviceRadius(size, device) {
+            return Math.max(1, Math.round(size * device.scale));
         }
 
-        //Crée une petite image de (width x height) pixels CSS, avec pixelRatio fois plus de vrais pixels pour rester nette.
-        //On dessine dedans en pixels CSS (le "scale" s'occupe du reste) ; cssWidth / cssHeight = la taille où la recopier.
-        function createSpriteCanvas(width, height) {
-            const sprite = document.createElement("canvas");
-            sprite.width = Math.ceil(width * pixelRatio);
-            sprite.height = Math.ceil(height * pixelRatio);
-            sprite.cssWidth = width;
-            sprite.cssHeight = height;
-            sprite.getContext("2d").scale(pixelRatio, pixelRatio);
-            return sprite;
-        }
-
-        //Vide les petites images déjà faites (quand la netteté change : il faut les refaire à la bonne résolution)
+        //Vide les petites images déjà faites (quand la netteté change : elles sont en vrais pixels)
         function clearSpriteCaches() {
             enemySprites.clear();
             shadowSprites.clear();
+            ringSprites.clear();
         }
 
+        //Une petite image en vrais pixels (dessinée 1 pour 1 : ni agrandie ni réduite au moment de la recopier)
+        function createDeviceSprite(width, height) {
+            const sprite = document.createElement("canvas");
+            sprite.width = Math.ceil(width);
+            sprite.height = Math.ceil(height);
+            return sprite;
+        }
+
+        //radius = rayon en vrais pixels (getDeviceRadius)
         function getRoundEnemySprite(color, sideColor, radius) {
             const key = color + "|" + sideColor + "|" + radius;
             let sprite = enemySprites.get(key);
             if (sprite === undefined) {
-                const depth = Math.max(2, radius * 0.35);
-                sprite = createSpriteCanvas(radius * 2 + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth) + SPRITE_PADDING * 2);
+                const depth = Math.max(1.5, radius * 0.35);
+                sprite = createDeviceSprite(radius * 2 + SPRITE_PADDING * 2, radius * 2 + depth + SPRITE_PADDING * 2);
                 const spriteCtx = sprite.getContext("2d");
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(spriteCtx, middle, middle, radius, 0, depth, sideColor); //l'épaisseur
@@ -6334,9 +6391,9 @@
             const key = SHADOW_COLOR + "|" + radius; //la couleur d'ombre change avec le thème
             let sprite = shadowSprites.get(key);
             if (sprite === undefined) {
-                const depth = Math.max(2, radius * 0.35);
+                const depth = Math.max(1.5, radius * 0.35);
                 const shadow = shadowVector(radius * 2.2);
-                sprite = createSpriteCanvas(Math.ceil(radius * 2 + shadow.x) + SPRITE_PADDING * 2, Math.ceil(radius * 2 + depth + shadow.y) + SPRITE_PADDING * 2);
+                sprite = createDeviceSprite(radius * 2 + shadow.x + SPRITE_PADDING * 2, radius * 2 + depth + shadow.y + SPRITE_PADDING * 2);
                 const middle = radius + SPRITE_PADDING;
                 fillStretchedCircle(sprite.getContext("2d"), middle, middle + depth, radius, shadow.x, shadow.y, SHADOW_COLOR);
                 shadowSprites.set(key, sprite);
@@ -6347,112 +6404,156 @@
         function drawEnemies() {
             const view = getVisibleWorldRect(60);
             const visible = [];
+
+            //1. LES ENNEMIS RONDS (les plus nombreux) : une petite image chacun, recopiée en vrais pixels à une position entière
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            const device = getWorldToDevice(shakeX, shakeY);
             for (const enemy of enemies) {
                 if (!enemy.alive || enemy.x < view.left || enemy.x > view.right || enemy.y < view.top || enemy.y > view.bottom) {
                     continue; //hors de l'écran : on ne le dessine pas
                 }
                 visible.push(enemy);
                 if (isRoundEnemy(enemy)) {
-                    const radius = getSpriteRadius(enemy.size);
+                    const radius = getDeviceRadius(enemy.size, device);
                     const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
                     const sprite = getRoundEnemySprite(topColor, enemy.sideColor, radius);
-                    ctx.drawImage(sprite, enemy.x - radius - SPRITE_PADDING, enemy.y - radius - SPRITE_PADDING, sprite.cssWidth, sprite.cssHeight);
+                    ctx.drawImage(sprite, Math.round(enemy.x * device.scale + device.x0) - radius - SPRITE_PADDING, Math.round(enemy.y * device.scale + device.y0) - radius - SPRITE_PADDING);
                 }
             }
+            ctx.restore(); //on revient au dessin du monde (avec le zoom)
 
+            //2. LES FORMES SPÉCIALES (zigzag, spirale, onde) : l'épaisseur en un seul remplissage (traceStretchedShape),
+            //puis le dessus. (Les ranger toutes dans un seul énorme chemin serait plus lent : on les remplit une par une.)
+            const bosses = [];
             for (const enemy of visible) {
-                if (isRoundEnemy(enemy) && !hasStatusRing(enemy)) {
-                    continue; //déjà dessiné, et rien à ajouter autour
-                }
-                const depth = getEnemyDepth(enemy);
-                const topColor = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
-
                 if (enemy.isBoss) {
-                    drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.2, 0.9);
+                    bosses.push(enemy);
+                    continue;
                 }
-                const shapePoints = isRoundEnemy(enemy) ? null : getEnemyShapePoints(enemy, enemy.x, enemy.y);
-                if (shapePoints === null) {
-                    //rond déjà dessiné avec son paquet de couleur
-                } else {
-                    //AUTRES FORMES : même principe avec des points
-                    fillStretchedShape(ctx, shapePoints, 0, depth, enemy.sideColor);
-                    fillShape(ctx, shapePoints, 0, 0, topColor);
+                if (isRoundEnemy(enemy)) {
+                    continue;
                 }
+                const points = getEnemyShapePoints(enemy, enemy.x, enemy.y);
+                ctx.beginPath();
+                traceStretchedShape(ctx, points, 0, getEnemyDepth(enemy));
+                ctx.fillStyle = enemy.sideColor;
+                ctx.fill();
+                ctx.beginPath();
+                traceShape(ctx, points, 0, 0);
+                ctx.fillStyle = enemy.hitTimer > 0 ? "#ffffff" : enemy.color; //flash blanc quand il est touché
+                ctx.fill();
+            }
 
-                if (enemy.isBoss && enemy.showBossInfo) {
+            //3. LES SUPER ENNEMIS (peu nombreux) : lueur et forme hérissée, un par un
+            for (const enemy of bosses) {
+                drawGlow(enemy.color, enemy.x, enemy.y, enemy.size * 2.2, 0.9);
+                const points = getEnemyShapePoints(enemy, enemy.x, enemy.y);
+                fillStretchedShape(ctx, points, 0, getEnemyDepth(enemy), enemy.sideColor);
+                fillShape(ctx, points, 0, 0, enemy.hitTimer > 0 ? "#ffffff" : enemy.color);
+            }
+
+            //4. LES ANNEAUX DE STATUT, rangés par style : tous les anneaux d'un même style dans un seul chemin
+            drawStatusRings(visible);
+
+            for (const enemy of bosses) {
+                if (enemy.showBossInfo) {
                     drawBossInfo(enemy); //pas sur les petites têtes de l'Hydre (trop de noms à l'écran)
                 }
+            }
+        }
 
-                //Charmé : un anneau rose
-                if (enemy.charmTimer > 0) {
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size + 4, 0, Math.PI * 2);
-                    ctx.strokeStyle = ATTRIBUTES.love.color;
-                    ctx.lineWidth = 2.5;
-                    ctx.stroke();
+        //Les styles d'anneau : qui en a un (has), et comment il est dessiné. Voir questions/couleurs-ennemis.md
+        const STATUS_RING_STYLES = [
+            { name: "charm", has: function (e) { return e.charmTimer > 0; }, gap: 4, color: function () { return ATTRIBUTES.love.color; }, width: 2.5, dash: [] },
+            { name: "weak", has: function (e) { return e.weakTimer > 0; }, gap: 6, color: function () { return "#c77dff"; }, width: 2, dash: [4, 4] },
+            { name: "poison", has: function (e) { return e.poisonTimer > 0 && !(e.weakTimer > 0); }, gap: 6, color: function () { return "#9be22d"; }, width: 2, dash: [4, 4] }, //affaibli ET empoisonné : seul le violet se voit
+            { name: "freeze", has: function (e) { return e.freezeTimer > 0; }, gap: 3, color: function () { return "#9be8ff"; }, width: 3, dash: [] },
+            { name: "slow", has: function (e) { return e.slowTimer > 0 && !(e.freezeTimer > 0); }, gap: 3, color: function () { return "rgba(200, 230, 255, 0.6)"; }, width: 1.5, dash: [] },
+            { name: "root", has: function (e) { return e.rootTimer > 0 && !isHighGraphics; }, gap: 4, color: function () { return ATTRIBUTES.plant.color; }, width: 3.5, dash: [] }, //graphismes élevés : des lianes (drawRootVines)
+            { name: "fragile", has: function (e) { return e.fragileTimer > 0; }, gap: 8, color: function () { return ATTRIBUTES.water.color; }, width: 2, dash: [2, 5] }
+        ];
+
+        //Un anneau de statut en petite image (en vrais pixels, comme les ennemis ronds) : tracer des milliers de cercles
+        //au pinceau à chaque image coûte cher, les recopier est bien plus rapide. radius = rayon en vrais pixels
+        const ringSprites = new Map();
+
+        function getRingSprite(style, radius, scale) {
+            const key = style.name + "|" + radius + "|" + Math.round(scale * 10);
+            let sprite = ringSprites.get(key);
+            if (sprite === undefined) {
+                const width = style.width * scale;
+                const size = Math.ceil(radius * 2 + width + 4);
+                sprite = createDeviceSprite(size, size);
+                const spriteCtx = sprite.getContext("2d");
+                spriteCtx.setLineDash(style.dash.map(function (dash) { return dash * scale; })); //[] = trait plein, [4, 4] = pointillés
+                spriteCtx.strokeStyle = style.color();
+                spriteCtx.lineWidth = width;
+                spriteCtx.beginPath();
+                spriteCtx.arc(size / 2, size / 2, radius, 0, Math.PI * 2);
+                spriteCtx.stroke();
+                if (ringSprites.size > 2000) {
+                    ringSprites.clear(); //garde-fou : pas des milliers d'images en mémoire (le zoom change souvent)
                 }
+                ringSprites.set(key, sprite);
+            }
+            return sprite;
+        }
 
-                //Affaibli : petit anneau violet en pointillés. Empoisonné : vert.
-                if (enemy.weakTimer > 0 || enemy.poisonTimer > 0) {
-                    ctx.setLineDash([4, 4]); //trait en pointillés : 4 pixels de trait, 4 de vide
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size + 6, 0, Math.PI * 2);
-                    ctx.strokeStyle = enemy.weakTimer > 0 ? "#c77dff" : "#9be22d";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-
-                //Statuts des combos : un anneau bleu glacé si gelé, bleu pâle si ralenti
-                if (enemy.freezeTimer > 0 || enemy.slowTimer > 0) {
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size + 3, 0, Math.PI * 2);
-                    ctx.strokeStyle = enemy.freezeTimer > 0 ? "#9be8ff" : "rgba(200, 230, 255, 0.6)";
-                    ctx.lineWidth = enemy.freezeTimer > 0 ? 3 : 1.5;
-                    ctx.stroke();
-                }
-
-                //Pouvoirs des dieux : liane (vert épais), frêle (bleu en pointillés), conducteur (petits éclairs bleus)
-                if (enemy.rootTimer > 0) {
-                    if (isHighGraphics) {
-                        drawRootVines(enemy); //des lianes enroulées autour de lui
-                    } else {
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, enemy.size + 4, 0, Math.PI * 2);
-                        ctx.strokeStyle = ATTRIBUTES.plant.color;
-                        ctx.lineWidth = 3.5;
-                        ctx.stroke();
+        function drawStatusRings(visible) {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0); //en vrais pixels
+            const device = getWorldToDevice(shakeX, shakeY);
+            for (const style of STATUS_RING_STYLES) {
+                for (const enemy of visible) {
+                    if (style.has(enemy)) {
+                        const radius = getDeviceRadius(enemy.size + style.gap, device);
+                        const sprite = getRingSprite(style, radius, device.scale);
+                        ctx.drawImage(sprite, Math.round(enemy.x * device.scale + device.x0 - sprite.width / 2), Math.round(enemy.y * device.scale + device.y0 - sprite.height / 2));
                     }
                 }
-                if (enemy.fragileTimer > 0) {
-                    ctx.setLineDash([2, 5]);
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.size + 8, 0, Math.PI * 2);
-                    ctx.strokeStyle = ATTRIBUTES.water.color;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    ctx.setLineDash([]);
+            }
+            ctx.restore();
+            //Conducteur (Zeus) : 4 petites étincelles qui tournent autour de lui
+            let hasSparks = false;
+            ctx.beginPath();
+            for (const enemy of visible) {
+                if (!(enemy.conductTimer > 0)) {
+                    continue;
                 }
-                if (enemy.conductTimer > 0) {
-                    ctx.beginPath();
-                    for (let k = 0; k < 4; k++) { //4 petites étincelles qui tournent autour de lui
-                        const angle = visualTime * 5 + k * Math.PI / 2;
-                        ctx.moveTo(enemy.x + Math.cos(angle) * (enemy.size + 3), enemy.y + Math.sin(angle) * (enemy.size + 3));
-                        ctx.lineTo(enemy.x + Math.cos(angle + 0.3) * (enemy.size + 9), enemy.y + Math.sin(angle + 0.3) * (enemy.size + 9));
+                hasSparks = true;
+                for (let k = 0; k < 4; k++) {
+                    const angle = visualTime * 5 + k * Math.PI / 2;
+                    ctx.moveTo(enemy.x + Math.cos(angle) * (enemy.size + 3), enemy.y + Math.sin(angle) * (enemy.size + 3));
+                    ctx.lineTo(enemy.x + Math.cos(angle + 0.3) * (enemy.size + 9), enemy.y + Math.sin(angle + 0.3) * (enemy.size + 9));
+                }
+            }
+            if (hasSparks) {
+                ctx.strokeStyle = ATTRIBUTES.thunder.color;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            //Liane de Déméter (graphismes élevés) : des lianes enroulées autour de lui
+            if (isHighGraphics) {
+                for (const enemy of visible) {
+                    if (enemy.rootTimer > 0) {
+                        drawRootVines(enemy);
                     }
-                    ctx.strokeStyle = ATTRIBUTES.thunder.color;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
                 }
-
-                //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
-                if (SHOW_SPECIAL_RING && enemy.movement !== "straight") {
-                    ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y + depth / 2, enemy.size + 4, 0, Math.PI * 2);
-                    ctx.strokeStyle = SPECIAL_OUTLINE_COLOR;
-                    ctx.lineWidth = 2.5;
-                    ctx.stroke();
+            }
+            //Mouvement spécial : un anneau jaune autour de lui (désactivé par défaut, la forme suffit)
+            if (SHOW_SPECIAL_RING) {
+                ctx.beginPath();
+                for (const enemy of visible) {
+                    if (enemy.movement !== "straight") {
+                        const depth = getEnemyDepth(enemy);
+                        ctx.moveTo(enemy.x + enemy.size + 4, enemy.y + depth / 2);
+                        ctx.arc(enemy.x, enemy.y + depth / 2, enemy.size + 4, 0, Math.PI * 2);
+                    }
                 }
+                ctx.strokeStyle = SPECIAL_OUTLINE_COLOR;
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
             }
         }
 
@@ -7861,6 +7962,7 @@
         const BOLT_SPLASH_DAMAGE = 0.5;      // dégâts des ennemis électrocutés autour (x les dégâts de la balle)
         const BOLT_COOLDOWN = 1;             // un même ennemi ne reçoit pas la foudre 2 fois en moins de X secondes
         const MAX_BOLTS_PER_STEP = 6;        // la foudre en chaîne est étalée sur plusieurs images (sinon le jeu ralentit)
+        const MAX_BOLT_HITS_PER_STEP = 150;  // ...et au plus X ennemis électrocutés par pas de jeu (dans une foule très dense, la suite attend)
         const MAX_PENDING_BOLTS = 400;
         let tideShieldTimer = 0;             // > 0 : le joueur est invincible (vague de Poséidon)
         const pendingBolts = [];             // la foudre qui va tomber (une file d'attente)
@@ -8293,7 +8395,8 @@
         //La foudre tombe, quelques-unes par pas de jeu (une réaction en chaîne énorme est étalée sur plusieurs images)
         function updatePendingBolts() {
             const previousSource = damageSource;
-            for (let i = 0; i < MAX_BOLTS_PER_STEP && pendingBolts.length > 0; i++) {
+            let hits = 0;
+            for (let i = 0; i < MAX_BOLTS_PER_STEP && pendingBolts.length > 0 && hits < MAX_BOLT_HITS_PER_STEP; i++) {
                 const bolt = pendingBolts.shift(); //shift = prend le premier de la file
                 const enemy = bolt.enemy;
                 if (!enemy.alive) {
@@ -8308,6 +8411,7 @@
                     if (other !== enemy) {
                         addLightningArc(enemy.x, enemy.y, other.x, other.y);
                         electrify(other, bolt.stats, bolt.baseDamage * BOLT_SPLASH_DAMAGE, bolt.baseDamage);
+                        hits++;
                     }
                 }
             }
