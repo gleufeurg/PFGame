@@ -51,15 +51,15 @@ Réglage **« Décor »** des paramètres, sous le thème (clé `scene` du `loca
 
 | Décor | Ce qu'on voit | Ce qui bouge |
 | --- | --- | --- |
-| Aucun | le fond uni du thème (par défaut) | — |
-| Mer étoilée | une mer calme et sombre qui reflète le ciel de nuit : voie lactée, lune floue | les étoiles reflétées scintillent et ondulent ; le chemin de lune danse ; de longues rides glissent lentement ; **le joueur et les planètes se reflètent dans l'eau** (à l'envers, en transparence, en bandes qui ondulent) |
+| Aucun | le fond uni du thème | — |
+| Mer étoilée (**par défaut**, `DEFAULT_SCENE`) | une mer calme et sombre qui reflète le ciel de nuit : voie lactée, lune floue | les étoiles reflétées scintillent et ondulent ; le chemin de lune danse ; de longues rides glissent lentement ; **le joueur et les planètes se reflètent dans l'eau** (à l'envers, en transparence, en bandes qui ondulent) |
 | Mer en plein jour | de l'eau turquoise, des zones plus profondes et des hauts-fonds, la lumière du soleil | des rangées de vaguelettes qui avancent doucement ; des éclats de soleil ; un reflet plus léger du joueur et des planètes |
 | Neige | un sol enneigé un peu bleuté, avec des congères (claires au soleil, bleutées dans le creux) et des paillettes de glace | des flocons qui tombent en se balançant |
-| Prairie | de l'herbe (brins en 3 teintes), des zones plus sèches ou plus foncées, des fleurs blanches, jaunes, roses et lilas | l'ombre de 3 nuages qui passe ; du pollen et des pétales portés par le vent |
+| Prairie (au crépuscule) | une herbe sombre et peu contrastée (brins discrets en 3 teintes), quelques fleurs fermées, minuscules et pâles | l'ombre de 3 nuages qui passe ; quelques lucioles très pâles qui flottent |
 
 **Lisibilité :**
 - la neige n'est pas toute blanche, pour que les ennemis d'air (blancs) et les textes restent lisibles ;
-- la prairie est assez sombre, pour que les ennemis de plante (vert vif) ressortent ;
+- la prairie est sombre et sans couleurs vives : la 1re version (vert vif, beaucoup de fleurs colorées) était **illisible** d'après les testeurs, les fleurs ressemblaient à des ennemis. Maintenant les ennemis de plante (vert vif) ressortent bien ;
 - le chrono a une ombre portée, pour se lire sur les décors clairs.
 
 **Technique :**
