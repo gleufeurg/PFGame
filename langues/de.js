@@ -1430,5 +1430,12 @@ window.TRADUCTIONS.de = {
     "La partie continue quand le jeu n'est pas affiché": "Die Runde läuft weiter, wenn das Spiel nicht angezeigt wird",
     "(autre onglet, fenêtre réduite)": "(anderer Tab, minimiertes Fenster)",
     "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 Während du weg warst ({time}): +{gold} Gold, +{xp} XP",
-    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ Das Spiel holt die verpasste Zeit nach: noch {time}"
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ Das Spiel holt die verpasste Zeit nach: noch {time}",
+    "Intérieure": "Innen",
+    "Milieu": "Mitte",
+    "Extérieure": "Außen",
+    "seule ici": "allein hier",
+    "vide": "leer",
+    "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "Ein Planet verbindet sich nur mit Planeten seiner Umlaufbahn. Du kannst ihn auch im Spiel ziehen.",
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Allein auf seiner Umlaufbahn: kein Nachbar zum Verbinden. Setze einen anderen Planeten auf diese Umlaufbahn."
 };

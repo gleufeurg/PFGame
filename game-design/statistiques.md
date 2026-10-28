@@ -56,7 +56,7 @@ Les balles en plus partent côte à côte, à 10 px d'écart (`BULLET_WALL_SPACI
 
 ## Le lien « Opposé »
 
-Il ne fait pas de combo. La planète qui choisit le lien (dans sa propre fenêtre de skills) reçoit une stat typique du dieu d'en face (`OPPOSITE_BONUSES`). Comme le lien traverse le milieu, le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur (vie, bouclier, régénération) ne vont qu'à lui.
+Il ne fait pas de combo. La planète qui choisit le lien (dans sa propre fenêtre de skills) reçoit une stat typique du dieu d'en face, **sur la même orbite** (`OPPOSITE_BONUSES`). Comme le lien traverse le milieu, le joueur la reçoit aussi. Les stats qui ne servent qu'au joueur (vie, bouclier, régénération) ne vont qu'à lui.
 
 Exemple : Éole est en face d'Aphrodite. Si Éole choisit « Opposé », Éole et le joueur reçoivent le bonus d'Aphrodite. Aphrodite, elle, ne reçoit rien, puisque ce n'est pas elle qui a choisi.
 

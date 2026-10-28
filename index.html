@@ -546,6 +546,39 @@
             grid-column: 1 / -1; /*"Aucun" prend toute la largeur*/
         }
 
+        .orbitOptions { /*les 3 orbites, l'une sous l'autre : son nom à gauche, ses planètes à droite*/
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+
+        .orbitOptions .linkOption {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .orbitOptions .linkOption small {
+            display: flex;
+            flex-wrap: wrap; /*beaucoup de planètes : les losanges passent à la ligne*/
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .orbitDot { /*une planète : un petit losange de sa couleur*/
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--dot-color);
+            transform: rotate(45deg);
+        }
+
+        .orbitHint {
+            margin: 6px 0 14px;
+            font-size: 12px;
+            color: var(--ui-muted);
+        }
+
         .linkOption:disabled { /*lien pas encore acheté dans le shop : gris*/
             opacity: 0.4;
             cursor: not-allowed;
@@ -2842,10 +2875,16 @@
         let shakeX = 0;                          // décalage de la secousse de l'écran (en pixels d'écran)
         let shakeY = 0;
 
-        //Le zoom visé pour la portée actuelle
+        const CAMERA_ORBIT_MARGIN = 16;          // pixels d'écran entre l'orbite extérieure (avec ses planètes) et le bord de l'écran
+
+        //Le zoom visé pour la portée actuelle. Les 3 orbites restent aussi toujours à l'écran (en largeur ET en hauteur),
+        //pour voir toutes les planètes et pouvoir les déplacer (ça ne change quelque chose que sur un écran bas, en paysage)
         function getTargetCameraZoom() {
             const range = Math.min(playerStats.range, CAMERA_MAX_RANGE);
-            return Math.min(1, (screenSize.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range);
+            const rangeZoom = (screenSize.width / 2) * CAMERA_RANGE_SCREEN_RATIO / range;
+            const orbitsReach = ORBITS[ORBITS.length - 1].radius + PLANET_SIZE + PLANET_DEPTH;
+            const orbitZoom = (Math.min(screenSize.width, screenSize.height) / 2 - CAMERA_ORBIT_MARGIN) / orbitsReach;
+            return Math.min(1, rangeZoom, orbitZoom);
         }
 
         function updateCamera(deltaTime) {
@@ -4419,8 +4458,16 @@
         ///////////////////////
         const PLAYER_ROTATION_SPEED = 2;
         let playerRotation = 0;
-        let planetOrbitalRotation = 0;
-        const PLANETS_ORBITAL_ROTATION_SPEED = .25;
+        //LES 3 ORBITES : chaque planète tourne sur l'une d'elles (planet.orbit = 0, 1 ou 2), et ne se lie qu'aux planètes de SON orbite.
+        //On change l'orbite d'une planète en la faisant glisser dans le jeu, ou avec les boutons « Orbite » de la fenêtre des skills.
+        //radius = rayon en pixels ; speed = vitesse de rotation en radians par seconde (négative = dans l'autre sens).
+        const ORBITS = [
+            { name: "Intérieure", radius: 130, speed: 0.25 },
+            { name: "Milieu", radius: 200, speed: -0.17 },     // l'orbite du milieu tourne à l'envers des deux autres
+            { name: "Extérieure", radius: 270, speed: 0.12 }
+        ];
+        translateFields(ORBITS, ["name"]);
+        const orbitRotations = ORBITS.map(function () { return 0; }); // l'angle actuel de chaque orbite (map = un 0 par orbite)
         const planets = [];
 
         function drawStarShape(color = "#ffe680", branches = 10, innerRadius = 10, outerRadius = 25, rotationSpeed = .5, rotationalDirection = - 1) {
@@ -4714,14 +4761,12 @@
             }
         }
 
-        // RÉGLAGES DES PLANÈTES
-        let PLANET_ORBIT_RADIUS = 100;              // grandit quand il y a beaucoup de planètes (voir addPlanet)
-        const PLANET_SPACING = 10;                  // rayon de l'orbite par planète (12 planètes = 120)
+        // RÉGLAGES DES PLANÈTES (les rayons des orbites sont dans ORBITS)
         const PLANET_SIZE = 20;
         const PLANET_CLICK_MARGIN = IS_TOUCH_DEVICE ? 20 : 8;            // pixels en plus autour de la planète pour cliquer plus facilement (plus au doigt)
 
         // CRÉATION (une seule fois, au démarrage) : une planète par skill tree déjà débloqué (aucun au début : elles s'achètent dans le shop)
-        //Les planètes sont remises dans l'ordre de la sauvegarde (savedPlanetOrder, voir SAUVEGARDE)
+        //Les planètes sont remises dans l'ordre et sur l'orbite de la sauvegarde (savedPlanetOrder, savedPlanetOrbits, voir SAUVEGARDE)
         function createPlanets() {
             const owned = SKILL_TREES.filter(function (tree) { return !tree.isLocked; });
             owned.sort(function (a, b) { return getSavedPlanetIndex(a.id) - getSavedPlanetIndex(b.id); }); //sort = trie la liste
@@ -4731,10 +4776,9 @@
         }
 
         function addPlanet(tree) {
-            PLANET_ORBIT_RADIUS = Math.max(100, (planets.length + 1) * PLANET_SPACING); //plus de planètes = orbite plus grande, pour qu'elles ne se touchent pas
             planets.push({
                 //Mettre ici toutes les infos qui seront nécessaires pour les planètes, (skillTree, projets, liens...)
-                id: tree.id,         // nom français : sert à la sauvegarde (ordre des planètes)
+                id: tree.id,         // nom français : sert à la sauvegarde (ordre et orbite des planètes)
                 name: tree.name,     // nom affiché, dans la langue du joueur
                 color: tree.color,
                 sideColor: darkenColor(tree.color, SIDE_DARKNESS),   // couleur de son épaisseur
@@ -4742,6 +4786,7 @@
                 tree: tree,
                 stats: createShooterStats(PLANET_BASE_STATS), // ses stats de tir (recalculées par computeStats)
                 fireTimer: Math.random() * PLANET_FIRE_INTERVAL, //décalé au hasard : les planètes ne tirent pas toutes en même temps
+                orbit: getSavedPlanetOrbit(tree.id), // son orbite : 0 = intérieure, 1 = milieu, 2 = extérieure (une nouvelle planète va à l'intérieure)
                 x: 0,
                 y: 0
             });
@@ -4774,11 +4819,14 @@
         const PLANET_DEPTH = 6;     // épaisseur des planètes, en pixels
         const PLANET_HOVER_LIFT = 4;
 
-        //ORDRE DES PLANÈTES : on peut faire glisser une planète le long de l'orbite pour changer sa place.
-        //Chaque planète a un "orbitOffset" : son angle sur l'orbite, par rapport à la rotation de l'orbite.
-        //Il glisse en douceur vers sa place (sa case), ce qui anime les changements d'ordre.
+        //PLACE DES PLANÈTES : on peut faire glisser une planète le long de son orbite pour changer sa place,
+        //ou vers une autre orbite (plus près ou plus loin du centre).
+        //Chaque planète a un "orbitOffset" : son angle sur l'orbite, par rapport à la rotation de son orbite,
+        //et un "radius" : sa distance au centre. Les deux glissent en douceur vers sa place (sa case), ce qui anime les changements.
         const PLANET_SLIDE_SMOOTHING = 0.15;   // vitesse à laquelle une planète glisse vers sa nouvelle place (0 à 1)
         const PLANET_DRAG_THRESHOLD = 6;       // pixels à parcourir avant que ce soit un "glisser" et plus un clic
+        const ORBIT_SWITCH_MARGIN = 12;        // pixels : la souris doit être nettement plus près d'une autre orbite pour y passer (sinon la planète hésiterait)
+        const PLANET_DRAG_REACH = 50;          // pixels : pendant le glisser, la planète peut dépasser un peu l'orbite intérieure et l'extérieure
         let draggedPlanet = null;              // la planète qu'on fait glisser (ou null)
         let pressedPlanet = null;              // la planète sur laquelle on a appuyé (pas encore un glisser)
         let pressStart = { x: 0, y: 0 };
@@ -4789,46 +4837,109 @@
             return Math.atan2(Math.sin(angle), Math.cos(angle));
         }
 
+        //Les planètes d'une orbite, dans leur ordre (celui de la liste "planets")
+        function getOrbitPlanets(orbit) {
+            return planets.filter(function (planet) { return planet.orbit === orbit; }); //filter = garde ceux qui répondent true
+        }
+
+        //Le rayon de la plus grande orbite où il y a une planète (pour les effets qui entourent toutes les planètes)
+        function getOuterPlanetOrbitRadius() {
+            let radius = ORBITS[0].radius;
+            for (const planet of planets) {
+                radius = Math.max(radius, ORBITS[planet.orbit].radius);
+            }
+            return radius;
+        }
+
+        //Range une planète sur une orbite, à la case "slot" (0 = la 1re de cette orbite) : les autres planètes de l'orbite se poussent
+        function placePlanet(planet, orbit, slot) {
+            if (planet.orbit !== orbit && planet.orbitOffset !== undefined) {
+                //Les orbites ne tournent pas au même rythme : on garde son angle à l'écran, puis elle glisse vers sa case
+                planet.orbitOffset += orbitRotations[planet.orbit] - orbitRotations[orbit];
+            }
+            planets.splice(planets.indexOf(planet), 1); //on la retire de la liste...
+            planet.orbit = orbit;
+            const next = getOrbitPlanets(orbit)[slot]; //...la planète qui sera juste après elle sur son orbite (undefined = elle sera la dernière)
+            planets.splice(next === undefined ? planets.length : planets.indexOf(next), 0, planet); //...et on l'insère juste avant (splice(i, 0, x) = insérer x à la place i)
+        }
+
+        //Bouton « Orbite » de la fenêtre des skills : la planète part à la fin de cette orbite
+        function movePlanetToOrbit(planet, orbit) {
+            if (planet.orbit === orbit) {
+                return;
+            }
+            placePlanet(planet, orbit, getOrbitPlanets(orbit).length);
+            playSound("buy");
+            refreshStats(); //ses voisines ont changé : ses liens et ses combos aussi
+        }
+
         function updatePlanetPositions() {
-            const step = Math.PI * 2 / planets.length; //écart entre deux planètes
-            for (let i = 0; i < planets.length; i++) {
-                const planet = planets[i];
-                const targetOffset = step * i;
+            const counts = ORBITS.map(function () { return 0; }); //combien de planètes sur chaque orbite
+            for (const planet of planets) {
+                counts[planet.orbit]++;
+            }
+            const placed = ORBITS.map(function () { return 0; }); //combien de planètes déjà placées sur chaque orbite
+            for (const planet of planets) {
+                const orbit = ORBITS[planet.orbit];
+                const targetOffset = Math.PI * 2 / counts[planet.orbit] * placed[planet.orbit]; //les planètes d'une orbite sont espacées régulièrement
+                placed[planet.orbit]++;
                 if (planet.orbitOffset === undefined) {
                     planet.orbitOffset = targetOffset; //nouvelle planète : elle commence directement à sa place
+                    planet.radius = orbit.radius;
                 }
-                if (planet !== draggedPlanet) { //celle qu'on tient suit la souris, les autres glissent vers leur case
+                if (planet !== draggedPlanet) { //celle qu'on tient suit la souris, les autres glissent vers leur case et leur orbite
                     planet.orbitOffset += wrapAngle(targetOffset - planet.orbitOffset) * PLANET_SLIDE_SMOOTHING;
+                    planet.radius += (orbit.radius - planet.radius) * PLANET_SLIDE_SMOOTHING;
                 }
-                const angle = planetOrbitalRotation + planet.orbitOffset;
+                const angle = orbitRotations[planet.orbit] + planet.orbitOffset;
 
-                planet.x = center.x + Math.cos(angle) * PLANET_ORBIT_RADIUS;
-                planet.y = center.y + Math.sin(angle) * PLANET_ORBIT_RADIUS;
+                planet.x = center.x + Math.cos(angle) * planet.radius;
+                planet.y = center.y + Math.sin(angle) * planet.radius;
             }
         }
 
-        //Pendant le glisser : la planète suit la souris, mais RESTE sur l'orbite (on ne garde que l'angle de la souris)
+        //Pendant le glisser : la planète suit la souris. Elle passe sur l'orbite la plus proche de la souris,
+        //et prend la case la plus proche de l'angle de la souris (les autres planètes de cette orbite se poussent).
         function dragPlanetTo(x, y) {
+            const planet = draggedPlanet;
             const mouseAngle = Math.atan2(y - center.y, x - center.x);
-            draggedPlanet.orbitOffset = mouseAngle - planetOrbitalRotation;
-            //Sa nouvelle case = la plus proche de cet angle. Si elle change, on la déplace dans la liste : les autres se poussent.
-            const step = Math.PI * 2 / planets.length;
-            const relativeAngle = (draggedPlanet.orbitOffset % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); //entre 0 et 2π
-            const newIndex = Math.round(relativeAngle / step) % planets.length;
-            const oldIndex = planets.indexOf(draggedPlanet);
-            if (newIndex !== oldIndex) {
-                planets.splice(oldIndex, 1);               //on la retire de sa place...
-                planets.splice(newIndex, 0, draggedPlanet); //...et on l'insère à la nouvelle (splice(i, 0, x) = insérer x à la place i)
+            const mouseDistance = Math.hypot(x - center.x, y - center.y);
+            let nearest = 0;
+            for (let i = 1; i < ORBITS.length; i++) {
+                if (Math.abs(mouseDistance - ORBITS[i].radius) < Math.abs(mouseDistance - ORBITS[nearest].radius)) {
+                    nearest = i;
+                }
             }
+            //On ne change d'orbite que si la souris est nettement plus près de l'autre (? : = "si... alors... sinon...")
+            const orbit = Math.abs(mouseDistance - ORBITS[nearest].radius) + ORBIT_SWITCH_MARGIN < Math.abs(mouseDistance - ORBITS[planet.orbit].radius) ? nearest : planet.orbit;
+            const count = getOrbitPlanets(orbit).filter(function (other) { return other !== planet; }).length + 1; //les planètes de cette orbite, elle comprise
+            const relativeAngle = ((mouseAngle - orbitRotations[orbit]) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); //entre 0 et 2π
+            const slot = Math.round(relativeAngle / (Math.PI * 2 / count)) % count;
+            const currentSlot = planet.orbit === orbit ? getOrbitPlanets(orbit).indexOf(planet) : -1;
+            if (slot !== currentSlot) {
+                placePlanet(planet, orbit, slot);
+            }
+            planet.orbitOffset = mouseAngle - orbitRotations[orbit];
+            planet.radius = clamp(mouseDistance, ORBITS[0].radius - PLANET_DRAG_REACH, ORBITS[ORBITS.length - 1].radius + PLANET_DRAG_REACH);
         }
 
-        //L'orbite : un cercle très discret
+        //Les orbites : des cercles très discrets, en pointillés quand l'orbite est vide.
+        //Pendant qu'on fait glisser une planète, elles sont toutes pleines, et celle où la planète va s'éclaire de sa couleur.
         function drawOrbit() {
-            ctx.beginPath();
-            ctx.arc(center.x, center.y, PLANET_ORBIT_RADIUS, 0, Math.PI * 2);
-            ctx.strokeStyle = ORBIT_COLOR;
+            const used = ORBITS.map(function () { return draggedPlanet !== null; });
+            for (const planet of planets) {
+                used[planet.orbit] = true;
+            }
             ctx.lineWidth = 2;
-            ctx.stroke();
+            for (let i = 0; i < ORBITS.length; i++) {
+                const isTarget = draggedPlanet !== null && draggedPlanet.orbit === i;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, ORBITS[i].radius, 0, Math.PI * 2);
+                ctx.strokeStyle = isTarget ? hexToRgba(draggedPlanet.color, 0.45) : ORBIT_COLOR;
+                ctx.setLineDash(used[i] ? [] : [6, 10]);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
         }
 
         //LIENS VISIBLES : un fin trait en pointillés, de la couleur de la planète qui choisit le lien.
@@ -4903,14 +5014,18 @@
             ctx.stroke();
         }
 
-        //Renvoie la planète sous la souris, ou null
+        //Renvoie la planète sous la souris, ou null (la plus proche, si deux planètes de deux orbites sont presque l'une sur l'autre)
         function findPlanetAt(x, y) {
+            let found = null;
+            let foundDistance = Infinity;
             for (const planet of planets) {
-                if (Math.hypot(planet.x - x, planet.y - y) <= planet.size + PLANET_CLICK_MARGIN) {
-                    return planet;
+                const distance = Math.hypot(planet.x - x, planet.y - y);
+                if (distance <= planet.size + PLANET_CLICK_MARGIN && distance < foundDistance) {
+                    found = planet;
+                    foundDistance = distance;
                 }
             }
-            return null;
+            return found;
         }
 
         canvas.addEventListener("click", function (event) {
@@ -4963,7 +5078,7 @@
                 planetWasDragged = true; //le "click" qui suit le lâcher ne doit pas ouvrir l'arbre
                 playSound("buy");
                 draggedPlanet = null;
-                refreshStats(); //les voisines ont changé : les liens "opposé" aussi
+                refreshStats(); //les voisines ont changé (et peut-être l'orbite) : les liens et les combos aussi
             }
             pressedPlanet = null;
         }
@@ -7432,16 +7547,17 @@
             return attributes.sort().join("+"); //sort = range dans l'ordre alphabétique, join = colle avec "+"
         }
 
-        //Les planètes auxquelles cette planète est liée, selon son option (gauche, droite...)
+        //Les planètes auxquelles cette planète est liée, selon son option (gauche, droite...) : seulement sur SON orbite
         function getLinkedPlanets(planet) {
-            const count = planets.length;
-            const index = planets.indexOf(planet);
+            const ring = getOrbitPlanets(planet.orbit);
+            const count = ring.length;
+            const index = ring.indexOf(planet);
             if (count < 2 || index === -1 || isPetrified(planet)) {
-                return []; //pétrifiée par Méduse : son lien d'orbite est annulé
+                return []; //seule sur son orbite : personne à qui se lier ; pétrifiée par Méduse : son lien d'orbite est annulé
             }
-            const left = planets[(index - 1 + count) % count];   // % = reste de la division : après la dernière, on revient à la 1re
-            const right = planets[(index + 1) % count];
-            const opposite = planets[(index + Math.floor(count / 2)) % count];
+            const left = ring[(index - 1 + count) % count];   // % = reste de la division : après la dernière, on revient à la 1re
+            const right = ring[(index + 1) % count];
+            const opposite = ring[(index + Math.floor(count / 2)) % count];
             const mode = planet.tree.linkMode;
             let linked = [];
             if (mode === "left") linked = [left];
@@ -8034,7 +8150,7 @@
             warCryLevel = Math.max(warCryTimer > 0 ? warCryLevel : 0, stats.warCry);
             warCryTimer = WAR_CRY_BASE_DURATION + stats.warCryDuration;
             spawnShockwave(planet.x, planet.y, ATTRIBUTES.war.color, 120);
-            spawnShockwave(center.x, center.y, ATTRIBUTES.war.color, PLANET_ORBIT_RADIUS + 60);
+            spawnShockwave(center.x, center.y, ATTRIBUTES.war.color, getOuterPlanetOrbitRadius() + 60);
             spawnFloatingLabel(planet.x, planet.y - planet.size - 16, t("⚔️ Cri de guerre !"), ATTRIBUTES.war.color);
             playSound("bossArrive");
         }
@@ -9803,6 +9919,34 @@
             }
         }
 
+        //ORBITE : les 3 boutons pour changer la planète d'orbite. À droite de chaque orbite : les autres planètes qui y sont
+        //(ses voisines possibles), en petits losanges de leur couleur, comme dans le jeu
+        function renderOrbitChoice(planet, tree) {
+            orbitLinkArea.appendChild(createElementWithText("h3", "", t("Orbite")));
+            const options = createElementWithText("div", "linkOptions orbitOptions", "");
+            for (let orbit = 0; orbit < ORBITS.length; orbit++) {
+                const button = createElementWithText("button", "linkOption" + (orbit === planet.orbit ? " selected" : ""), ORBITS[orbit].name);
+                const others = getOrbitPlanets(orbit).filter(function (other) { return other !== planet; });
+                const empty = orbit === planet.orbit ? t("seule ici") : t("vide");
+                const neighbours = createElementWithText("small", "", others.length > 0 ? "" : empty);
+                for (const other of others) {
+                    const dot = createElementWithText("i", "orbitDot", "");
+                    dot.style.setProperty("--dot-color", other.color);
+                    neighbours.appendChild(dot);
+                }
+                button.appendChild(neighbours);
+                button.title = others.length > 0 ? others.map(function (other) { return other.name; }).join(", ") : empty; //au survol : leurs noms
+                button.addEventListener("click", function () {
+                    movePlanetToOrbit(planet, orbit);
+                    renderOrbitLinks(tree);
+                    renderStatsPanel(true);
+                });
+                options.appendChild(button);
+            }
+            orbitLinkArea.appendChild(options);
+            orbitLinkArea.appendChild(createElementWithText("p", "orbitHint", t("Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.")));
+        }
+
         //LIENS D'ORBITE : choisir à quelle(s) voisine(s) la planète emprunte son attribut, et voir les combos obtenus
         function renderOrbitLinks(tree) {
             const planet = planets.find(function (other) { return other.tree === tree; });
@@ -9812,6 +9956,7 @@
                 orbitLinkArea.appendChild(createElementWithText("div", "comboNone", t("{name} n'est pas encore en orbite : achète-le dans le shop (« Nouvelle divinité ») pour créer des liens.", { name: tree.name })));
                 return;
             }
+            renderOrbitChoice(planet, tree);
             orbitLinkArea.appendChild(createElementWithText("h3", "", t("Liens d'orbite")));
             const own = ATTRIBUTES[tree.element];
             const element = createElementWithText("div", "linkElement", t("Attribut de {name} : ", { name: tree.name }));
@@ -9866,7 +10011,12 @@
             //...ou les combos actifs
             const combos = getPlanetCombos(planet);
             if (combos.length === 0) {
-                const reason = tree.linkMode === "none" ? t("Choisis un lien pour créer un combo.") : t("Même attribut : pas de combo.");
+                let reason = t("Même attribut : pas de combo.");
+                if (tree.linkMode === "none") {
+                    reason = t("Choisis un lien pour créer un combo.");
+                } else if (getOrbitPlanets(planet.orbit).length < 2) {
+                    reason = t("Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.");
+                }
                 orbitLinkArea.appendChild(createElementWithText("div", "comboNone", reason));
             }
             for (const item of combos) {
@@ -10709,7 +10859,7 @@
 
 
         /////////////////////
-        ////SAUVEGARDE///////  Or, XP, shop, compétences, dieux, liens et ordre des planètes
+        ////SAUVEGARDE///////  Or, XP, shop, compétences, dieux, liens, ordre et orbite des planètes
         /////////////////////
         //Tout est rangé dans le navigateur (localStorage), comme le volume. Dans l'application mobile, c'est pareil :
         //l'appli garde son propre localStorage sur le téléphone (il disparaît seulement si on désinstalle le jeu).
@@ -10719,7 +10869,8 @@
         const AUTO_SAVE_INTERVAL = 5000;    // millisecondes : sauvegarde régulière (l'or et l'XP changent sans arrêt pendant une partie)
         let isProgressLoaded = false;       // on ne sauvegarde rien tant que la sauvegarde n'est pas chargée (sinon on l'écraserait)
         let isProgressErased = false;       // après "Effacer ma progression" : on ne sauvegarde plus jusqu'au rechargement
-        let savedPlanetOrder = [];          // les noms des planètes, dans l'ordre de l'orbite
+        let savedPlanetOrder = [];          // les noms des planètes, dans l'ordre (sur chaque orbite)
+        let savedPlanetOrbits = {};         // nom de la planète -> son orbite (0 = intérieure, 1 = milieu, 2 = extérieure)
 
         function saveProgress() {
             if (!isProgressLoaded || isProgressErased) {
@@ -10732,10 +10883,14 @@
                 shop: {},   // nom de l'amélioration -> niveau
                 trees: {},  // nom du dieu -> { en orbite ?, lien, compétences prises }
                 planetOrder: planets.map(function (planet) { return planet.id; }), //map = transforme chaque élément
+                planetOrbits: {},   // nom de la planète -> son orbite
                 killStacks: killStacks   // ennemis tués par chaque dieu (Arès gagne des dégâts pour toujours)
             };
             for (const item of SHOP_ITEMS) {
                 data.shop[item.id] = item.level;
+            }
+            for (const planet of planets) {
+                data.planetOrbits[planet.id] = planet.orbit;
             }
             for (const tree of SKILL_TREES) {
                 data.trees[tree.id] = {
@@ -10784,6 +10939,7 @@
                     }
                 }
                 savedPlanetOrder = Array.isArray(data.planetOrder) ? data.planetOrder : [];
+                savedPlanetOrbits = data.planetOrbits || {}; //sauvegarde d'avant les 3 orbites : rien, toutes les planètes iront sur l'orbite intérieure
                 //Sauvegarde d'avant l'achat des liens : on débloque ceux que le joueur utilisait déjà (il ne perd rien)
                 const linkItem = SHOP_ITEMS.find(function (item) { return item.linkUpgrade; });
                 if (typeof shop[linkItem.id] !== "number") {
@@ -10804,6 +10960,12 @@
         function getSavedPlanetIndex(name) {
             const index = savedPlanetOrder.indexOf(name);
             return index === -1 ? savedPlanetOrder.length : index;
+        }
+
+        //L'orbite d'une planète dans la sauvegarde (une planète inconnue, ou une vieille sauvegarde : l'orbite intérieure)
+        function getSavedPlanetOrbit(name) {
+            const orbit = savedPlanetOrbits[name];
+            return Number.isInteger(orbit) && orbit >= 0 && orbit < ORBITS.length ? orbit : 0; //isInteger = un nombre entier
         }
 
         //Effacer : on vide la sauvegarde et on recharge la page. Le Pack Premium (un achat) et les réglages sont gardés.
@@ -11529,6 +11691,7 @@
                 if (stats.damagePerKill > 0) {
                     rows.push(["Ennemis tués (soif de gloire)", killStacks[planet.id] || 0]);
                 }
+                rows.push(["Orbite", ORBITS[planet.orbit].name]);
                 rows.push(["Lien d'orbite", getLinkSummary(planet)]);
                 if (isPetrified(planet)) {
                     rows.unshift(["État", "🗿 " + t("Pétrifiée par Méduse")]); //unshift = ajoute au début
@@ -12669,6 +12832,7 @@
             while (timeToSimulate > 0 && !isGameOver) {
                 const step = Math.min(MAX_STEP, timeToSimulate);
                 updateGame(step);
+                updatePlanetPositions(); //d'habitude, c'est le dessin qui place les planètes : sans dessin, elles ne tourneraient plus
                 timeToSimulate -= step;
             }
         }
@@ -12757,7 +12921,9 @@
             const playerDelta = deltaTime * getPlayerTimeFactor();
             timeDistortionTimer = Math.max(0, timeDistortionTimer - deltaTime);
             playerRotation += PLAYER_ROTATION_SPEED * playerDelta;
-            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * playerDelta;
+            for (let i = 0; i < ORBITS.length; i++) {
+                orbitRotations[i] = (orbitRotations[i] + ORBITS[i].speed * playerDelta) % (Math.PI * 2); //% 2π : un tour complet = on revient à 0
+            }
 
             updateEnemies(deltaTime);
             updateBullets(playerDelta);

@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Zeus
 
-Quand une autre planète, en face de Zeus, choisit le lien « Opposé », elle reçoit **Colère de Zeus** : +50% de dégâts critiques. Pour le joueur ET la planète qui a choisi le lien.
+Quand une autre planète, en face de Zeus sur la même orbite, choisit le lien « Opposé », elle reçoit **Colère de Zeus** : +50% de dégâts critiques. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

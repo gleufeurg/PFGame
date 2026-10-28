@@ -31,7 +31,7 @@ Il y a 4 ennemis normaux, un par élément, et chacun a 25 % de chances d'appara
 
 Le premier ennemi apparaît après 0,3 s, puis les ennemis arrivent de plus en plus vite, jusqu'à un plafond d'un toutes les 0,35 s atteint vers 8 min. Chacun naît juste hors de l'écran, dans une direction au hasard, et marche droit vers le joueur (sauf les mouvements spéciaux).
 
-**Avec la caméra :** quand la portée du joueur dépasse l'écran, la caméra dézoome pour que la portée occupe environ 95 % de la demi-largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`). Les ennemis naissent toujours hors de l'écran visible. Au-delà de 1000 px de portée (`CAMERA_MAX_RANGE`), la caméra ne dézoome plus, et les ennemis naissent n'importe où entre le bord de l'écran et 1000 px du centre.
+**Avec la caméra :** quand la portée du joueur dépasse l'écran, la caméra dézoome pour que la portée occupe environ 95 % de la demi-largeur de l'écran (`CAMERA_RANGE_SCREEN_RATIO`), et pour que les 3 orbites des planètes restent à l'écran (voir [interface.md](interface.md)). Les ennemis naissent toujours hors de l'écran visible. Au-delà de 1000 px de portée (`CAMERA_MAX_RANGE`), la caméra ne dézoome plus, et les ennemis naissent n'importe où entre le bord de l'écran et 1000 px du centre.
 
 | Temps de jeu | Écart entre deux ennemis | Ennemis par minute |
 | --- | --- | --- |

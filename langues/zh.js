@@ -1430,5 +1430,12 @@ window.TRADUCTIONS.zh = {
     "La partie continue quand le jeu n'est pas affiché": "游戏不在屏幕上时继续运行",
     "(autre onglet, fenêtre réduite)": "（其他标签页、窗口最小化）",
     "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 你离开期间（{time}）：+{gold} 金币，+{xp} XP",
-    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 游戏正在追赶错过的时间：还剩 {time}"
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 游戏正在追赶错过的时间：还剩 {time}",
+    "Intérieure": "内圈",
+    "Milieu": "中圈",
+    "Extérieure": "外圈",
+    "seule ici": "只有它",
+    "vide": "空",
+    "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "行星只能与同一轨道上的行星连接。你也可以在游戏中拖动它。",
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "它独自在这条轨道上：没有可以连接的邻居。把另一颗行星放到这条轨道上吧。"
 };

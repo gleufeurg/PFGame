@@ -58,7 +58,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Héphaïstos
 
-Quand une autre planète, en face de Héphaïstos, choisit le lien « Opposé », elle reçoit **Forge** : +1 dégât par balle. Pour le joueur ET la planète qui a choisi le lien.
+Quand une autre planète, en face de Héphaïstos sur la même orbite, choisit le lien « Opposé », elle reçoit **Forge** : +1 dégât par balle. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

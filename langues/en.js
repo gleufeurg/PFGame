@@ -1430,5 +1430,12 @@ window.TRADUCTIONS.en = {
     "La partie continue quand le jeu n'est pas affiché": "The run keeps going when the game isn't on screen",
     "(autre onglet, fenêtre réduite)": "(another tab, minimized window)",
     "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 While you were away ({time}): +{gold} gold, +{xp} XP",
-    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ The game is catching up on lost time: {time} left"
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ The game is catching up on lost time: {time} left",
+    "Intérieure": "Inner",
+    "Milieu": "Middle",
+    "Extérieure": "Outer",
+    "seule ici": "alone here",
+    "vide": "empty",
+    "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "A planet only links with planets on its own orbit. You can also drag it in the game.",
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "Alone on its orbit: no neighbour to link with. Put another planet on this orbit."
 };

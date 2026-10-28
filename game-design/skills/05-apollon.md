@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Apollon
 
-Quand une autre planète, en face de Apollon, choisit le lien « Opposé », elle reçoit **Clarté** : +10% de chance de coup critique. Pour le joueur ET la planète qui a choisi le lien.
+Quand une autre planète, en face de Apollon sur la même orbite, choisit le lien « Opposé », elle reçoit **Clarté** : +10% de chance de coup critique. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

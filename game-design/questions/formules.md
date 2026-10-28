@@ -229,7 +229,19 @@ balles par tir      = arrondi(balles par tir), côte à côte, à 10 px d'écart
 ```
 
 - Chacun vise l'ennemi le plus proche de lui, dans sa portée : 300 px pour le joueur, 250 px pour une planète (depuis la planète).
-- **La caméra** : `zoom = min(1 ; (largeur de l'écran ÷ 2 × 0,95) ÷ min(portée du joueur ; 1000))`.
+- **La caméra** : `zoom = min(1 ; (largeur de l'écran ÷ 2 × 0,95) ÷ min(portée du joueur ; 1000) ; (min(largeur ; hauteur) ÷ 2 − 16) ÷ 296)`. Le dernier terme garde les 3 orbites à l'écran : 296 = rayon de l'orbite extérieure (270) + taille d'une planète (20) + son épaisseur (6).
+
+### Les orbites des planètes
+
+```
+rayon des orbites : 130 px (intérieure), 200 px (milieu), 270 px (extérieure)
+rotation (radians par seconde) : +0,25, −0,17 (dans l'autre sens), +0,12
+angle de la k-ième planète d'une orbite (k = 0, 1, 2...) = rotation de son orbite + 2π × k ÷ (nombre de planètes sur cette orbite)
+position = centre + rayon × (cos(angle), sin(angle))
+```
+
+- Les liens (Gauche, Droite, Les deux côtés, Opposé) se comptent sur l'orbite de la planète : « opposé » = la planète k + arrondi en dessous(n ÷ 2), sur une orbite de n planètes.
+- Cronos ralentit aussi la rotation des orbites (elle avance avec le temps du joueur).
 
 ### Les récompenses
 

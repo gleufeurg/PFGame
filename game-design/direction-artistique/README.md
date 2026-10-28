@@ -49,6 +49,10 @@ Réglage « Graphismes » des paramètres (`isHighGraphics`). En graphismes simp
 | Traînée de feu d'Héphaïstos | des flammes douces (dégradé jaune → orange → rouge, dessiné une fois puis recopié) qui s'additionnent en lumière (`lighter`), vacillent, rapetissent et montent un peu en s'éteignant (`drawFireTrails`) | une bande orange unie, faite de ronds qui rapetissent (un seul tracé) | — |
 | Rayon de vie de Déméter | une floraison : un halo d'herbe lumineuse qui grandit, 22 pétales et feuilles qui s'envolent en tournant, un rayon de lumière verte jusqu'au joueur, des petites croix de soin qui montent autour de lui (`drawBloomEffects`) ; les ennemis immobilisés sont entourés de lianes enroulées avec des feuilles (`drawRootVines`) | une onde verte autour de Déméter et une autour du joueur ; un anneau vert autour des ennemis immobilisés | un petit carillon qui monte (do, mi, sol, do) et un léger bruissement de feuilles (`playBloomSound`) |
 
+## Les orbites
+
+Les 3 orbites des planètes (130, 200 et 270 px) sont de fins cercles très discrets, de la couleur `ORBIT_COLOR` (le thème ou le décor la choisit). Une orbite vide est en pointillés, pour montrer qu'on peut y mettre une planète. Celle du milieu tourne dans l'autre sens : les planètes se croisent, comme dans une maquette du système solaire. Pendant qu'on fait glisser une planète, les 3 cercles sont pleins et l'orbite où elle va prend sa couleur. Dans la fenêtre des skills, les planètes de chaque orbite sont de petits losanges de leur couleur, comme dans le jeu.
+
 ## Les thèmes drapeaux
 
 Les thèmes drapeaux (arc-en-ciel, trans, gay, lesbien, non binaire, asexuel) ont des bandes de couleur en fond, assombries pour que le jeu reste lisible. **Le drapeau flotte** : les bords des bandes ondulent comme un tissu dans le vent (deux vagues mélangées, de gauche à droite), et des plis plus clairs ou plus sombres suivent la pente du tissu (`drawWavyFlag`). Il n'y a pas de lumière en haut ni d'ombre en bas de l'écran sur ces thèmes : elles salissaient les couleurs.

@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Arès
 
-Quand une autre planète, en face de Arès, choisit le lien « Opposé », elle reçoit **Soif de sang** : +0.5 PV pour toi à chaque ennemi tué. Seulement pour le joueur (le triangle du milieu).
+Quand une autre planète, en face de Arès sur la même orbite, choisit le lien « Opposé », elle reçoit **Soif de sang** : +0.5 PV pour toi à chaque ennemi tué. Seulement pour le joueur (le triangle du milieu).
 
 ## 🔗 Combos d'orbite
 

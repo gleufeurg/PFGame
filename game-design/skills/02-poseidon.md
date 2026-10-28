@@ -58,7 +58,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Poséidon
 
-Quand une autre planète, en face de Poséidon, choisit le lien « Opposé », elle reçoit **Marée protectrice** : un bouclier qui bloque un coup, et se recharge 50% plus vite. Seulement pour le joueur (le triangle du milieu).
+Quand une autre planète, en face de Poséidon sur la même orbite, choisit le lien « Opposé », elle reçoit **Marée protectrice** : un bouclier qui bloque un coup, et se recharge 50% plus vite. Seulement pour le joueur (le triangle du milieu).
 
 ## 🔗 Combos d'orbite
 

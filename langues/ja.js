@@ -1430,5 +1430,12 @@ window.TRADUCTIONS.ja = {
     "La partie continue quand le jeu n'est pas affiché": "ゲームが表示されていなくてもプレイが続く",
     "(autre onglet, fenêtre réduite)": "（別のタブ、最小化したウィンドウ）",
     "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 不在の間（{time}）：+{gold}ゴールド、+{xp} XP",
-    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 経過した時間を取り戻し中：あと{time}"
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 経過した時間を取り戻し中：あと{time}",
+    "Intérieure": "内側",
+    "Milieu": "中間",
+    "Extérieure": "外側",
+    "seule ici": "ここだけ",
+    "vide": "空き",
+    "Une planète ne se lie qu'à celles de son orbite. Tu peux aussi la faire glisser dans le jeu.": "惑星は同じ軌道の惑星としかつながれません。ゲーム中にドラッグして動かすこともできます。",
+    "Seule sur son orbite : pas de voisine à qui se lier. Mets une autre planète sur cette orbite.": "この軌道にひとりきり：つなげる隣の惑星がありません。この軌道に別の惑星を置きましょう。"
 };

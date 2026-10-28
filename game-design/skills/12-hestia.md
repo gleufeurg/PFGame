@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Hestia
 
-Quand une autre planète, en face de Hestia, choisit le lien « Opposé », elle reçoit **Foyer** : +0.15 PV régénérés par seconde pour toi. Seulement pour le joueur (le triangle du milieu).
+Quand une autre planète, en face de Hestia sur la même orbite, choisit le lien « Opposé », elle reçoit **Foyer** : +0.15 PV régénérés par seconde pour toi. Seulement pour le joueur (le triangle du milieu).
 
 ## 🔗 Combos d'orbite
 
