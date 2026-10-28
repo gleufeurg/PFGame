@@ -4753,6 +4753,7 @@
         //au moins SKIP_COOLDOWN_MIN. Elle compte en temps de JEU : elle s'arrête quand le jeu est en pause.
         const SKIP_COOLDOWN_MIN = 8;             // secondes
         const SKIP_COOLDOWN_PER_SECOND = 0.6;    // ex : saut de +100 s -> 60 s de recharge
+        const SKIP_COOLDOWN_MAX = 120;           // jamais plus de 2 minutes d'attente (même pour un très grand saut)
         let skipCooldown = 0;                    // secondes qui restent avant le prochain saut (0 = prêt)
         let skipCooldownMax = 0;                 // durée totale de la recharge en cours (pour l'animation)
         let shownCooldownSeconds = -1;           // le nombre affiché sur les boutons (on ne le réécrit que s'il change)
@@ -4841,7 +4842,7 @@
 
             playSound("skip");
             showToast(t("⏩ +{seconds} s : {count} ennemis arrivent !", { seconds: formatNumber(Math.round(skipped - Math.max(0, remaining))), count: spawnedCount }));
-            skipCooldownMax = Math.max(SKIP_COOLDOWN_MIN, skipped * SKIP_COOLDOWN_PER_SECOND);
+            skipCooldownMax = clamp(skipped * SKIP_COOLDOWN_PER_SECOND, SKIP_COOLDOWN_MIN, SKIP_COOLDOWN_MAX);
             skipCooldown = skipCooldownMax;
             shownCooldownSeconds = -1;
         }
