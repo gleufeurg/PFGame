@@ -128,7 +128,19 @@ temps entre deux pouvoirs = temps de base ÷ (1 + abilityHaste)
 vie de départ     = un nombre au hasard entre min et max du type × échelle de vie(t)
 ```
 
-Exemples : 1:00 → ×1,44 ; 5:00 → ×4 ; 10:00 → ×9 ; 20:00 → ×25.
+Exemples : 1:00 → ×1,44 ; 5:00 → ×4 ; 10:00 → ×9 ; 20:00 → ×25 ; 40:00 → ×81.
+
+Pendant un **duel** contre un super ennemi, t ne bouge pas (le chrono est arrêté) : la vie des ennemis n'augmente pas.
+
+**Les super ennemis :**
+
+```
+vie d'un super ennemi = sa vie du tableau × échelle de vie(t)      (t = son heure d'arrivée)
+heure d'arrivée       = 5:00, 10:00, 15:00... (un toutes les 5 minutes)
+```
+
+L'Hydre de Lerne : chaque tête a 0,55 × la vie de sa mère (vie de départ), 0,78 × sa taille, 1,15 × sa vitesse, 0,4 × son or et son XP ; une tête de la dernière vague a 0,08 × la vie de la 1re hydre, 1,3 × sa vitesse et 0,06 × son or et son XP.
+Cronos : pendant 4 s toutes les 10 s, ton temps (toi, tes planètes, tes balles, tes pouvoirs) avance à 0,35 × sa vitesse.
 
 | Type | Vie (min – max) | Vitesse | Or | XP |
 | --- | --- | --- | --- | --- |

@@ -1685,6 +1685,16 @@
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); /*reste lisible sur un décor clair (neige, mer en plein jour)*/
         }
 
+        #runTimeDisplay.duel { /*duel contre un super ennemi : le chrono est arrêté, il passe en rouge et palpite*/
+            color: #ff8a8a;
+            animation: duelPulse 0.9s ease-in-out infinite alternate;
+        }
+
+        @keyframes duelPulse {
+            from { opacity: 1; }
+            to { opacity: 0.55; }
+        }
+
         .skipButton { /*bouton "en relief" : une ombre pleine en dessous donne l'épaisseur*/
             border-radius: 10px;
             box-shadow: 0 4px 0 var(--ui-accent-dark);
@@ -2730,9 +2740,11 @@
             drawLightningArcs();     //les éclairs de Zeus entre les ennemis
             drawPlanetLinks();
             drawPlanets(); //après les ennemis : les planètes passent devant eux
+            drawBossEffects();       //le regard de Méduse, l'horloge de Cronos
             drawPowerAuras();        //cri de guerre d'Arès, bouclier des marées de Poséidon
             drawPlayer();
             drawDamageNumbers();     //tout en haut : les nombres passent devant tout le reste
+            drawTimeDistortion();    //Cronos : l'écran se teinte de violet quand il ralentit ton temps
 
             ctx.restore(); //on annule la secousse pour la prochaine image
         }
@@ -3237,7 +3249,7 @@
             for (const planet of planets) {
                 const wobble = Math.sin(visualTime * 2 + planet.x * 0.05) * 2;
                 const points = getShapePoints(planet.x + wobble, planet.y + planet.size * 1.9 + PLANET_DEPTH, planet.size * 0.95, 4, 0);
-                fillShape(ctx, points, 0, 0, planet.sideColor);
+                fillShape(ctx, points, 0, 0, isPetrified(planet) ? PETRIFIED_SIDE_COLOR : planet.sideColor);
             }
             ctx.globalAlpha = 1;
         }
@@ -3518,10 +3530,23 @@
                 enemy.hitTimer -= deltaTime; //flash blanc quand un ennemi est touché
                 //Rétrécit en douceur vers la taille qui correspond à sa vie actuelle
                 //Super ennemi : il rétrécit jusqu'à 60% de sa taille quand sa vie baisse
-                const targetSize = enemy.isBoss ? enemy.boss.size * (0.6 + 0.4 * Math.max(0, enemy.health) / enemy.maxHealth) : getEnemyTargetSize(enemy.health / enemy.healthScale);
+                const targetSize = enemy.isBoss ? enemy.baseSize * (0.6 + 0.4 * Math.max(0, enemy.health) / enemy.maxHealth) : getEnemyTargetSize(enemy.health / enemy.healthScale);
                 enemy.size += (targetSize - enemy.size) * Math.min(1, deltaTime * ENEMY_SHRINK_SPEED);
             }
             screenShakeTimer -= deltaTime;
+            for (const planet of planets) {
+                if (planet.petrifyShake > 0) {
+                    planet.petrifyShake -= deltaTime; //la planète touchée par Méduse arrête de trembler
+                }
+            }
+            for (const effects of [gazeEffects, clockEffects]) {
+                for (let i = effects.length - 1; i >= 0; i--) {
+                    effects[i].life -= deltaTime;
+                    if (effects[i].life <= 0) {
+                        effects.splice(i, 1);
+                    }
+                }
+            }
         }
 
         function drawEffects() {
@@ -4532,9 +4557,14 @@
                 if (isHovered) {
                     drawGlow(planet.color, planet.x, planet.y, planet.size * 2.4, 0.8);
                 }
-                const points = getShapePoints(planet.x, planet.y - lift, planet.size, 4, 0);
-                fillStretchedShape(ctx, points, 0, PLANET_DEPTH + lift, planet.sideColor); //l'épaisseur (le côté foncé)
-                fillShape(ctx, points, 0, 0, planet.color);                                //le dessus
+                const isStone = isPetrified(planet);   //pétrifiée par Méduse : grise, avec des fissures
+                const shake = planet.petrifyShake > 0 ? Math.sin(visualTime * 70) * 3.5 * planet.petrifyShake / PETRIFY_SHAKE_DURATION : 0; //elle tremble quand elle est touchée
+                const points = getShapePoints(planet.x + shake, planet.y - lift, planet.size, 4, 0);
+                fillStretchedShape(ctx, points, 0, PLANET_DEPTH + lift, isStone ? PETRIFIED_SIDE_COLOR : planet.sideColor); //l'épaisseur (le côté foncé)
+                fillShape(ctx, points, 0, 0, isStone ? PETRIFIED_COLOR : planet.color);                                    //le dessus
+                if (isStone) {
+                    drawPlanetCracks(planet, planet.x + shake, planet.y - lift);
+                }
 
                 //Son nom au-dessus d'elle quand on la survole
                 if (isHovered) {
@@ -4546,6 +4576,23 @@
                     ctx.fillText(planet.name, planet.x, labelY);
                 }
             }
+        }
+
+        //Les fissures d'une planète en pierre : 3 traits qui partent du milieu (toujours les mêmes pour une planète)
+        function drawPlanetCracks(planet, x, y) {
+            ctx.strokeStyle = "#3d3d3d";
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            for (let k = 0; k < 3; k++) {
+                const angle = hashToUnit(planet.id + k) * Math.PI * 2;
+                const length = planet.size * (0.55 + 0.3 * hashToUnit(planet.id + k + "l"));
+                const bend = angle + 0.5;
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + Math.cos(bend) * length * 0.45, y + Math.sin(bend) * length * 0.45);
+                ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+            }
+            ctx.stroke();
         }
 
         //Renvoie la planète sous la souris, ou null
@@ -4727,6 +4774,10 @@
             return Math.max(ENEMY_SPAWN_INTERVAL_MIN, ENEMY_SPAWN_INTERVAL_START / (1 + runTime * ENEMY_SPAWN_RAMP));
         }
 
+        //DUEL CONTRE UN SUPER ENNEMI (voir startBossDuel, partie SUPER ENNEMIS) : { boss, speedBefore } pendant un duel, sinon null.
+        //Déclaré ici car les boutons de vitesse en ont besoin dès le démarrage.
+        let bossDuel = null;
+
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
         const TIME_SKIP_OPTIONS = [10, 30, 100];   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
@@ -4810,6 +4861,11 @@
                 playSound("denied");
                 return;
             }
+            if (bossDuel !== null) {
+                showToast(t("⚔️ Impossible de sauter le temps pendant un duel"));
+                playSound("denied");
+                return;
+            }
             //Pas de saut pendant l'arrivée d'un super ennemi ou d'un nouvel ennemi, et on s'arrête juste avant la prochaine
             const allowed = getTimeUntilNextSpawnEvent();
             if (spawnEvent !== null || soloTimer > 0 || allowed <= 0) {
@@ -4882,9 +4938,11 @@
                 if (speed === gameSpeed) {
                     button.classList.add("active");
                 }
-                button.disabled = !isUnlocked;
+                const isDuelLocked = bossDuel !== null && speed !== 1; //pendant un duel, le jeu reste en x1
+                button.disabled = !isUnlocked || isDuelLocked;
                 button.textContent = "x" + speed;
-                button.title = isUnlocked ? t("Vitesse du jeu x{speed}", { speed: speed }) : t("À débloquer dans le shop : « Accélérer le temps »");
+                button.title = isDuelLocked ? t("Pendant un duel, le jeu reste en vitesse x1")
+                    : isUnlocked ? t("Vitesse du jeu x{speed}", { speed: speed }) : t("À débloquer dans le shop : « Accélérer le temps »");
                 button.addEventListener("click", function () { setGameSpeed(speed); });
                 speedButtons.appendChild(button);
             }
@@ -4892,6 +4950,11 @@
 
         function setGameSpeed(speed) {
             if (!getUnlockedSpeeds().includes(speed)) {
+                return;
+            }
+            if (bossDuel !== null && speed !== 1) {
+                showToast(t("Pendant un duel, le jeu reste en vitesse x1"));
+                playSound("denied");
                 return;
             }
             gameSpeed = speed;
@@ -5249,20 +5312,23 @@
         }
 
         /////////////////////
-        ////SUPER ENNEMIS////  Des monstres de la mythologie grecque, un par minute
+        ////SUPER ENNEMIS////  Des monstres de la mythologie grecque, un toutes les 5 minutes
         /////////////////////
         //time = moment de leur 1ère apparition (en secondes). Tant qu'un super ennemi n'a jamais été vaincu, il revient à ce moment-là
         //à chaque partie. Une fois vaincu, il ne revient plus à heure fixe, mais peut apparaître au hasard parmi les ennemis normaux.
-        //element = son élément (pour les bonus de dégâts des skill trees), sides = nombre de pointes de sa forme
+        //element = son élément (pour les bonus de dégâts des skill trees), sides = nombre de pointes de sa forme.
+        //health = sa vie au tout début de la partie : elle est multipliée par la "vie qui monte" à son arrivée (getEnemyHealthScale).
+        //speed : 5 fois plus rapides qu'avant (les testeurs les trouvaient trop lents).
+        //ability = son pouvoir unique : "split" (l'Hydre se dédouble), "petrify" (Méduse pétrifie les planètes), "slowTime" (Cronos ralentit ton temps)
         const BOSSES = [
-            { id: "cerbere", name: "Cerbère", time: 60, element: "fire", color: "#ff3b2f", health: 40, size: 34, speed: 12, sides: 3, gold: 15, xp: 15 },
-            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 120, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 11, sides: 9, gold: 25, xp: 25 },
-            { id: "meduse", feminine: true, name: "Méduse", time: 180, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 10, sides: 6, gold: 40, xp: 40 },
-            { id: "typhon", name: "Typhon", time: 240, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 10, sides: 4, gold: 60, xp: 60 },
-            { id: "chimere", feminine: true, name: "Chimère", time: 300, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 9, sides: 5, gold: 90, xp: 90 },
-            { id: "charybde", feminine: true, name: "Charybde", time: 360, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 9, sides: 8, gold: 130, xp: 130 },
-            { id: "python", name: "Python", time: 420, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 8, sides: 7, gold: 180, xp: 180 },
-            { id: "cronos", name: "Cronos", time: 480, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 8, sides: 12, gold: 260, xp: 260 }
+            { id: "cerbere", name: "Cerbère", time: 300, element: "fire", color: "#ff3b2f", health: 40, size: 34, speed: 60, sides: 3, gold: 15, xp: 15 },
+            { id: "hydre", feminine: true, name: "Hydre de Lerne", time: 600, element: "water", color: "#2f8bff", health: 90, size: 38, speed: 55, sides: 9, gold: 25, xp: 25, ability: "split" },
+            { id: "meduse", feminine: true, name: "Méduse", time: 900, element: "plant", color: "#3fd46a", health: 160, size: 42, speed: 50, sides: 6, gold: 40, xp: 40, ability: "petrify" },
+            { id: "typhon", name: "Typhon", time: 1200, element: "air", color: "#d8f3ff", health: 260, size: 46, speed: 50, sides: 4, gold: 60, xp: 60 },
+            { id: "chimere", feminine: true, name: "Chimère", time: 1500, element: "fire", color: "#ff8a1a", health: 400, size: 50, speed: 45, sides: 5, gold: 90, xp: 90 },
+            { id: "charybde", feminine: true, name: "Charybde", time: 1800, element: "water", color: "#1fd1c1", health: 600, size: 54, speed: 45, sides: 8, gold: 130, xp: 130 },
+            { id: "python", name: "Python", time: 2100, element: "plant", color: "#9be22d", health: 850, size: 58, speed: 40, sides: 7, gold: 180, xp: 180 },
+            { id: "cronos", name: "Cronos", time: 2400, element: "air", color: "#c9a8ff", health: 1200, size: 64, speed: 40, sides: 12, gold: 260, xp: 260, ability: "slowTime" }
         ];
         translateFields(BOSSES, ["name"]);
         //Chance qu'un ennemi normal soit remplacé par un super ennemi déjà vaincu : augmente avec le temps de la partie.
@@ -5292,32 +5358,388 @@
             }
         }
 
-        function spawnBoss(boss, forcedAngle) {
+        //UN SUPER ENNEMI = un GROUPE : un seul ennemi en général, mais toutes les têtes de l'Hydre de Lerne sont dans le même groupe.
+        //Le super ennemi est vaincu quand tout son groupe est mort. isDuel = c'est sa 1re rencontre (le duel, voir startBossDuel).
+        function spawnBoss(boss, forcedAngle, isDuel = false) {
+            const group = { boss: boss, alive: 0, isDuel: isDuel, waveDone: false, firstHealth: boss.health * getEnemyHealthScale() };
             const angle = forcedAngle !== undefined ? forcedAngle : Math.random() * Math.PI * 2;
-            const startDistance = getSpawnDistance(angle, boss.size + ENEMY_WAVE_AMPLITUDE);
-            enemies.push({
+            return addBossEnemy(group, {
+                angle: angle,
+                distance: getSpawnDistance(angle, boss.size + ENEMY_WAVE_AMPLITUDE),
+                health: group.firstHealth,
+                size: boss.size,
+                speed: boss.speed,
+                gold: boss.gold,
+                xp: boss.xp,
+                generation: 0
+            });
+        }
+
+        //Ajoute un ennemi d'un groupe de super ennemi : le super ennemi lui-même, ou une tête de l'Hydre
+        function addBossEnemy(group, options) {
+            const boss = group.boss;
+            const enemy = {
                 alive: true,
                 healthScale: 1,
                 isBoss: true,
                 boss: boss,
+                bossGroup: group,
+                generation: options.generation,      // Hydre : 0 = la 1re, puis 1, 2, 3 pour ses têtes ; -1 = la dernière vague
+                showBossInfo: options.generation === 0 || options.generation === 1, // nom + barre de vie (pas sur les petites têtes)
+                baseSize: options.size,              // sa taille pleine vie (elle rétrécit jusqu'à 60% quand sa vie baisse)
+                abilityTimer: 0,                     // Méduse et Cronos : le temps depuis leur dernier pouvoir
+                hasUsedAbility: false,
                 type: boss.element,
                 movement: "straight",
                 color: boss.color,
                 sideColor: darkenColor(boss.color, SIDE_DARKNESS),
-                speed: boss.speed,
-                size: boss.size,
-                health: boss.health,
-                maxHealth: boss.health,
-                gold: boss.gold,
-                xp: boss.xp,
-                angle: angle,
-                distance: startDistance,
-                startDistance: startDistance,
+                speed: options.speed,
+                size: options.size,
+                health: options.health,
+                maxHealth: options.health,
+                gold: options.gold,
+                xp: options.xp,
+                angle: options.angle,
+                distance: options.distance,
+                startDistance: options.distance,
                 time: 0,
                 hitTimer: 0,
-                x: 0,
-                y: 0
-            });
+                x: center.x + Math.cos(options.angle) * options.distance, //sa vraie place tout de suite (pas en (0, 0) jusqu'à la prochaine image)
+                y: center.y + Math.sin(options.angle) * options.distance
+            };
+            enemies.push(enemy);
+            group.alive++;
+            return enemy;
+        }
+
+        //LES POUVOIRS DES SUPER ENNEMIS (ils ne s'en servent que quand ils sont à l'écran)
+        //MÉDUSE : son regard pétrifie une planète au hasard : elle devient grise, ne tire plus, n'a plus de pouvoir,
+        //et son lien d'orbite est annulé... jusqu'à la mort de Méduse.
+        const MEDUSA_GAZE_INTERVAL = 6;       // secondes entre deux regards
+        const MEDUSA_FIRST_GAZE = 2.5;        // le 1er regard, X secondes après son arrivée à l'écran
+        const MEDUSA_COLOR = "#ff5fa2";       // le rose de son regard
+        const PETRIFIED_COLOR = "#9a9a9a";    // une planète en pierre
+        const PETRIFIED_SIDE_COLOR = "#5c5c5c";
+        const PETRIFY_SHAKE_DURATION = 0.6;   // la planète touchée tremble
+        //CRONOS : il ralentit TON temps : toi, tes planètes, tes balles et tes pouvoirs vont à CRONOS_SLOW_FACTOR de leur vitesse
+        //(les ennemis, eux, non) pendant CRONOS_SLOW_DURATION secondes.
+        const CRONOS_SLOW_INTERVAL = 10;
+        const CRONOS_FIRST_SLOW = 3;
+        const CRONOS_SLOW_DURATION = 4;
+        const CRONOS_SLOW_FACTOR = 0.35;
+        const CRONOS_COLOR = "#b18cff";
+        //HYDRE DE LERNE : à sa mort, elle se dédouble (2 têtes), puis chaque tête en donne 2 (4 têtes), puis 2 encore (8 têtes).
+        //Quand les 8 dernières têtes sont tuées, une dernière VAGUE de petites hydres arrive de partout, comme une vague de zombies.
+        const HYDRA_MAX_GENERATION = 3;       // 1 -> 2 -> 4 -> 8 têtes
+        const HYDRA_HEALTH_SHARE = 0.55;      // chaque nouvelle tête a 55% de la vie de sa mère...
+        const HYDRA_SIZE_SHARE = 0.78;        // ...78% de sa taille...
+        const HYDRA_SPEED_BONUS = 0.15;       // ...15% de vitesse en plus...
+        const HYDRA_REWARD_SHARE = 0.4;       // ...et 40% de son or et de son XP
+        const HYDRA_WAVE_COUNT = 30;          // têtes de la dernière vague (pendant le duel)
+        const HYDRA_WAVE_COUNT_REPEAT = 14;   // ...quand l'Hydre revient comme ennemi rare
+        const HYDRA_WAVE_HEALTH = 0.08;       // vie d'une tête de la vague (x la vie de la 1re hydre)
+        const HYDRA_WAVE_SIZE = 12;
+        const HYDRA_WAVE_REWARD = 0.06;       // or et XP d'une tête de la vague (x ceux de la 1re hydre)
+        let timeDistortionTimer = 0;          // > 0 : Cronos a ralenti ton temps
+        const gazeEffects = [];               // les regards de Méduse (animation)
+        const clockEffects = [];              // les horloges de Cronos (animation)
+
+        //Appelé pour chaque super ennemi vivant, à chaque pas de jeu
+        function updateBossAbility(enemy, deltaTime) {
+            const ability = enemy.boss.ability;
+            if ((ability !== "petrify" && ability !== "slowTime") || !isEnemyOnScreen(enemy)) {
+                return;
+            }
+            enemy.abilityTimer += deltaTime;
+            const wait = ability === "petrify"
+                ? (enemy.hasUsedAbility ? MEDUSA_GAZE_INTERVAL : MEDUSA_FIRST_GAZE)
+                : (enemy.hasUsedAbility ? CRONOS_SLOW_INTERVAL : CRONOS_FIRST_SLOW);
+            if (enemy.abilityTimer < wait) {
+                return;
+            }
+            const isUsed = ability === "petrify" ? petrifyPlanet(enemy) : slowPlayerTime(enemy);
+            if (isUsed) {
+                enemy.abilityTimer = 0;
+                enemy.hasUsedAbility = true;
+            }
+        }
+
+        function isEnemyOnScreen(enemy) {
+            const view = getVisibleWorldRect(-enemy.size); //marge négative : il doit être bien entré dans l'écran
+            return enemy.x > view.left && enemy.x < view.right && enemy.y > view.top && enemy.y < view.bottom;
+        }
+
+        function isPetrified(planet) {
+            return planet.petrifiedBy !== undefined && planet.petrifiedBy !== null;
+        }
+
+        //MÉDUSE : pétrifie une planète (renvoie false s'il n'y en a plus à pétrifier)
+        function petrifyPlanet(medusa) {
+            const candidates = planets.filter(function (planet) { return !isPetrified(planet); });
+            if (candidates.length === 0) {
+                return false;
+            }
+            const planet = pickRandom(candidates);
+            planet.petrifiedBy = medusa;
+            planet.petrifyShake = PETRIFY_SHAKE_DURATION;
+            gazeEffects.push({ medusa: medusa, planet: planet, x: medusa.x, y: medusa.y, life: 1.2, maxLife: 1.2 });
+            spawnShockwave(planet.x, planet.y, MEDUSA_COLOR, planet.size * 4);
+            spawnShockwave(medusa.x, medusa.y, MEDUSA_COLOR, medusa.size * 2.5);
+            spawnParticles(planet.x, planet.y, PETRIFIED_COLOR, 14, 160);
+            playSound("petrify");
+            showToast(t("🗿 Méduse a pétrifié {name} !", { name: planet.name }));
+            refreshStats(); //son lien d'orbite est annulé : les bonus des liens changent
+            return true;
+        }
+
+        //Méduse est morte (ou partie) : ses planètes redeviennent normales, la pierre éclate
+        function releasePetrifiedPlanets(medusa) {
+            let hasChanged = false;
+            for (const planet of planets) {
+                if (planet.petrifiedBy !== medusa) {
+                    continue;
+                }
+                planet.petrifiedBy = null;
+                planet.petrifyShake = PETRIFY_SHAKE_DURATION * 0.5;
+                spawnParticles(planet.x, planet.y, PETRIFIED_COLOR, 18, 220);
+                spawnShockwave(planet.x, planet.y, planet.color, planet.size * 3);
+                hasChanged = true;
+            }
+            if (hasChanged) {
+                playSound("unpetrify");
+                refreshStats();
+            }
+        }
+
+        //CRONOS : ralentit ton temps
+        function slowPlayerTime(cronos) {
+            timeDistortionTimer = CRONOS_SLOW_DURATION;
+            clockEffects.push({ x: cronos.x, y: cronos.y, life: 1.3, maxLife: 1.3 });
+            spawnShockwave(cronos.x, cronos.y, CRONOS_COLOR, cronos.size * 3, 0.8);
+            playSound("timeSlow");
+            showToast(t("⌛ Cronos ralentit ton temps !"));
+            return true;
+        }
+
+        //La vitesse de TON temps : 1 = normal, moins quand Cronos le ralentit
+        function getPlayerTimeFactor() {
+            return timeDistortionTimer > 0 ? CRONOS_SLOW_FACTOR : 1;
+        }
+
+        //HYDRE : une tête tuée donne 2 nouvelles têtes, un peu plus loin du joueur (le temps de souffler), de part et d'autre
+        function splitHydra(parent) {
+            const group = parent.bossGroup;
+            const dx = parent.x - center.x;
+            const dy = parent.y - center.y;
+            const distance = Math.max(PLAYER_RADIUS + 70, Math.hypot(dx, dy) + 25);
+            const angle = Math.atan2(dy, dx);
+            const spread = Math.min(0.6, 45 / distance); //l'écart entre les 2 têtes (en angle, autour du joueur)
+            for (const side of [-1, 1]) {
+                const head = addBossEnemy(group, {
+                    angle: angle + side * spread,
+                    distance: distance,
+                    health: parent.maxHealth * HYDRA_HEALTH_SHARE,
+                    size: parent.baseSize * HYDRA_SIZE_SHARE,
+                    speed: parent.speed * (1 + HYDRA_SPEED_BONUS),
+                    gold: parent.gold * HYDRA_REWARD_SHARE,
+                    xp: parent.xp * HYDRA_REWARD_SHARE,
+                    generation: parent.generation + 1
+                });
+                spawnShockwave(head.x, head.y, group.boss.color, head.size * 2.5);
+            }
+            playSound("hydraSplit");
+        }
+
+        //HYDRE : la dernière vague, de petites hydres qui arrivent de tous les côtés (pas toutes en même temps)
+        function spawnHydraWave(group) {
+            group.waveDone = true;
+            const count = group.isDuel ? HYDRA_WAVE_COUNT : HYDRA_WAVE_COUNT_REPEAT;
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                addBossEnemy(group, {
+                    angle: angle,
+                    distance: getSpawnDistance(angle, HYDRA_WAVE_SIZE + ENEMY_WAVE_AMPLITUDE) + randomBetween(0, 260),
+                    health: group.firstHealth * HYDRA_WAVE_HEALTH,
+                    size: HYDRA_WAVE_SIZE,
+                    speed: group.boss.speed * (1 + HYDRA_SPEED_BONUS * 2),
+                    gold: group.boss.gold * HYDRA_WAVE_REWARD,
+                    xp: group.boss.xp * HYDRA_WAVE_REWARD,
+                    generation: -1
+                });
+            }
+            showToast(t("🐍 La dernière vague de l'Hydre arrive de partout !"));
+            playSound("bossArrive");
+            screenShakeTimer = SCREEN_SHAKE_DURATION;
+        }
+
+        //UN CERCLE "INDENTÉ" (crénelé, comme le haut d'un château) : le regard de Méduse
+        function traceNotchedRing(x, y, radius, notches, rotation) {
+            const step = Math.PI * 2 / notches;
+            const inner = radius * 0.82;
+            ctx.moveTo(x + Math.cos(rotation) * radius, y + Math.sin(rotation) * radius);
+            for (let k = 0; k < notches; k++) {
+                const a0 = rotation + k * step;
+                const a1 = a0 + step * 0.55;
+                const a2 = a0 + step;
+                ctx.arc(x, y, radius, a0, a1);                                          //la dent
+                ctx.lineTo(x + Math.cos(a1) * inner, y + Math.sin(a1) * inner);
+                ctx.arc(x, y, inner, a1, a2);                                           //le creux
+                ctx.lineTo(x + Math.cos(a2) * radius, y + Math.sin(a2) * radius);
+            }
+        }
+
+        //Les horloges de Cronos : un cadran avec 12 traits et 2 aiguilles
+        function traceClock(x, y, radius, handAngle) {
+            ctx.moveTo(x + radius, y);
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            for (let k = 0; k < 12; k++) {
+                const angle = k * Math.PI / 6;
+                const inner = radius * (k % 3 === 0 ? 0.78 : 0.88);
+                ctx.moveTo(x + Math.cos(angle) * inner, y + Math.sin(angle) * inner);
+                ctx.lineTo(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+            }
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(handAngle) * radius * 0.7, y + Math.sin(handAngle) * radius * 0.7);
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(handAngle * 12) * radius * 0.5, y + Math.sin(handAngle * 12) * radius * 0.5);
+        }
+
+        function drawBossEffects() {
+            //LE REGARD DE MÉDUSE : un cercle rose crénelé autour d'elle et autour de la planète, qui tournent, et un rayon entre les deux
+            ctx.lineCap = "round";
+            for (const gaze of gazeEffects) {
+                const progress = 1 - gaze.life / gaze.maxLife;     //0 -> 1
+                const alpha = Math.min(1, gaze.life / gaze.maxLife * 2);
+                const medusaX = gaze.medusa.alive ? gaze.medusa.x : gaze.x;
+                const medusaY = gaze.medusa.alive ? gaze.medusa.y : gaze.y;
+                ctx.globalAlpha = alpha;
+                ctx.strokeStyle = MEDUSA_COLOR;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                if (isHighGraphics) {
+                    traceNotchedRing(medusaX, medusaY, gaze.medusa.size + 16 + progress * 10, 10, visualTime * 2);
+                    traceNotchedRing(gaze.planet.x, gaze.planet.y, gaze.planet.size + 12 + progress * 16, 8, -visualTime * 2.5);
+                } else {
+                    ctx.moveTo(medusaX + gaze.medusa.size + 16, medusaY);
+                    ctx.arc(medusaX, medusaY, gaze.medusa.size + 16, 0, Math.PI * 2);
+                    ctx.moveTo(gaze.planet.x + gaze.planet.size + 12, gaze.planet.y);
+                    ctx.arc(gaze.planet.x, gaze.planet.y, gaze.planet.size + 12, 0, Math.PI * 2);
+                }
+                ctx.stroke();
+                if (isHighGraphics) {
+                    //le rayon du regard, en pointillés qui filent vers la planète
+                    ctx.globalAlpha = alpha * 0.7;
+                    ctx.setLineDash([8, 10]);
+                    ctx.lineDashOffset = -visualTime * 60;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(medusaX, medusaY);
+                    ctx.lineTo(gaze.planet.x, gaze.planet.y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.lineDashOffset = 0;
+                }
+            }
+            //L'HORLOGE DE CRONOS : un grand cadran violet qui grandit autour de lui quand il ralentit ton temps
+            for (const clock of clockEffects) {
+                const progress = 1 - clock.life / clock.maxLife;
+                ctx.globalAlpha = Math.min(1, clock.life / clock.maxLife * 1.5);
+                ctx.strokeStyle = CRONOS_COLOR;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                traceClock(clock.x, clock.y, 40 + progress * 160, -progress * 4);
+                ctx.stroke();
+            }
+            //Pendant le ralenti : un cadran autour du joueur, dont les aiguilles tournent lentement
+            if (timeDistortionTimer > 0) {
+                ctx.globalAlpha = Math.min(1, timeDistortionTimer / 0.5) * 0.8;
+                ctx.strokeStyle = CRONOS_COLOR;
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                traceClock(center.x, center.y, PLAYER_RADIUS * 2.3, visualTime * 0.8);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        //CRONOS : tout l'écran se teinte de violet pendant que ton temps est ralenti (bords plus sombres en graphismes élevés)
+        function drawTimeDistortion() {
+            if (timeDistortionTimer <= 0) {
+                return;
+            }
+            const fade = Math.min(1, timeDistortionTimer / 0.5, (CRONOS_SLOW_DURATION - timeDistortionTimer) / 0.3 + 0.2);
+            applyScreenTransform(ctx, 0, 0);
+            ctx.globalAlpha = fade;
+            ctx.fillStyle = "rgba(110, 70, 200, 0.12)";
+            ctx.fillRect(0, 0, screenSize.width, screenSize.height);
+            if (isHighGraphics) {
+                const diagonal = Math.hypot(screenSize.width, screenSize.height);
+                const vignette = ctx.createRadialGradient(center.x, center.y, diagonal * 0.2, center.x, center.y, diagonal * 0.6);
+                vignette.addColorStop(0, "rgba(60, 30, 120, 0)");
+                vignette.addColorStop(1, "rgba(60, 30, 120, 0.45)");
+                ctx.fillStyle = vignette;
+                ctx.fillRect(0, 0, screenSize.width, screenSize.height);
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        //Un ennemi d'un super ennemi vient d'être TUÉ
+        function onBossMemberKilled(enemy) {
+            const isBig = enemy.generation === 0;
+            spawnParticles(enemy.x, enemy.y, enemy.color, isBig ? 60 : 16, isBig ? 380 : 220);
+            spawnShockwave(enemy.x, enemy.y, enemy.color, enemy.size * (isBig ? 4 : 2.5));
+            if (isBig) {
+                screenShakeTimer = SCREEN_SHAKE_DURATION;
+            }
+            if (enemy.boss.ability === "split" && enemy.generation >= 0 && enemy.generation < HYDRA_MAX_GENERATION) {
+                splitHydra(enemy);
+            }
+            onBossMemberGone(enemy);
+        }
+
+        //Un ennemi d'un super ennemi n'est plus là (tué, ou il a touché le joueur) : le groupe est-il fini ?
+        function onBossMemberGone(enemy) {
+            const group = enemy.bossGroup;
+            group.alive--;
+            if (enemy.boss.ability === "petrify") {
+                releasePetrifiedPlanets(enemy);
+            }
+            if (group.alive > 0) {
+                return;
+            }
+            if (group.boss.ability === "split" && !group.waveDone) {
+                spawnHydraWave(group); //les 8 dernières têtes sont tombées : la dernière vague arrive
+                return;
+            }
+            registerBossDefeat(group.boss);
+            if (group.isDuel && bossDuel !== null) {
+                endBossDuel();
+            }
+        }
+
+        //LE DUEL : la 1re rencontre avec un super ennemi. Le chrono s'arrête pendant tout le combat (la vie des ennemis
+        //n'augmente pas), aucun autre ennemi n'arrive, et le jeu repasse en vitesse x1 jusqu'à la fin (la vitesse revient après).
+        //(bossDuel est déclaré plus haut, avant les boutons de temps qui en ont besoin dès le démarrage)
+
+        function startBossDuel(boss) {
+            bossDuel = { boss: boss, speedBefore: gameSpeed };
+            const wasFaster = gameSpeed !== 1;
+            gameSpeed = 1;
+            renderSpeedButtons();
+            updateTimeMenuButton();
+            runTimeDisplay.classList.add("duel");
+            showToast(wasFaster ? t("⚔️ Duel contre {name} : le chrono s'arrête, vitesse x1 !", { name: boss.name }) : t("⚔️ Duel contre {name} : le chrono s'arrête !", { name: boss.name }));
+        }
+
+        function endBossDuel() {
+            const speed = bossDuel.speedBefore;
+            bossDuel = null;
+            runTimeDisplay.classList.remove("duel");
+            if (getUnlockedSpeeds().includes(speed)) {
+                gameSpeed = speed; //la vitesse choisie par le joueur avant le duel
+            }
+            renderSpeedButtons();
+            updateTimeMenuButton();
         }
 
         //ARRIVÉES SPÉCIALES : un super ennemi jamais vaincu, ou le 1er ennemi d'un nouveau mouvement, arrive SEUL pour qu'on le voie bien.
@@ -5333,7 +5755,7 @@
         const spawnAlert = document.getElementById("spawnAlert");
 
         function canSpawnNormalEnemies() {
-            return spawnEvent === null && soloTimer <= 0;
+            return spawnEvent === null && soloTimer <= 0 && bossDuel === null;
         }
 
         //Secondes avant la prochaine alerte prévue (super ennemi jamais vaincu ou nouveau mouvement) : le saut dans le temps s'arrête avant
@@ -5365,7 +5787,7 @@
         //Les arrivées prévues : super ennemis jamais vaincus (à leur heure) et 1er ennemi de chaque mouvement
         //Une seule à la fois : si deux arrivent en même temps (ex : Cerbère et la spirale à 1:00), la 2e attend que la 1re soit finie.
         function checkSpawnEvents() {
-            if (spawnEvent !== null || soloTimer > 0) {
+            if (spawnEvent !== null || soloTimer > 0 || bossDuel !== null) {
                 return;
             }
             for (const boss of BOSSES) {
@@ -5404,16 +5826,15 @@
             spawnEvent = null;
             hideSpawnAlert();
             if (event.boss !== undefined) {
-                spawnBoss(event.boss, event.angle);
-                //1re rencontre (jamais vaincu) : il reste SEUL jusqu'à sa mort, pour que le joueur se concentre sur le combat
-                soloTimer = Infinity;
-                showToast(t("⚠️ {name} arrive !", { name: event.boss.name }));
+                //1re rencontre (jamais vaincu) : un DUEL, il reste seul jusqu'à sa mort (et celle de toutes ses têtes, pour l'Hydre)
+                spawnBoss(event.boss, event.angle, true);
+                startBossDuel(event.boss);
             } else {
                 spawnEnemy(event.unlock.movement, event.angle);
                 soloTimer = MOVEMENT_SOLO_TIME;
+                soloEnemy = enemies[enemies.length - 1]; //celui qu'on vient d'ajouter
                 showToast(t("🌀 Nouveau mouvement : {name}", { name: event.unlock.name }));
             }
-            soloEnemy = enemies[enemies.length - 1]; //celui qu'on vient d'ajouter
             enemySpawnTimer = 0;
         }
 
@@ -5432,6 +5853,9 @@
             spawnEvent = null;
             soloTimer = 0;
             soloEnemy = null;
+            if (bossDuel !== null) {
+                endBossDuel();
+            }
             hideSpawnAlert();
         }
 
@@ -5465,20 +5889,18 @@
             const chance = BOSS_RANDOM_CHANCE_START + runTime * BOSS_RANDOM_CHANCE_PER_SECOND;
             if (defeatedBossIds.size > 0 && Math.random() < chance) {
                 const defeatedBosses = BOSSES.filter(function (boss) { return defeatedBossIds.has(boss.id); });
-                spawnBoss(pickRandom(defeatedBosses));
+                spawnBoss(pickRandom(defeatedBosses)); //pas un duel : un ennemi rare au milieu des autres (avec son pouvoir)
             } else {
                 spawnEnemy();
             }
         }
 
-        function onBossDefeated(enemy) {
-            spawnParticles(enemy.x, enemy.y, enemy.color, 60, 380);
-            spawnShockwave(enemy.x, enemy.y, enemy.color, enemy.size * 4);
-            screenShakeTimer = SCREEN_SHAKE_DURATION;
-            if (!defeatedBossIds.has(enemy.boss.id)) {
-                defeatedBossIds.add(enemy.boss.id);
+        //Tout le groupe d'un super ennemi est mort : la 1re fois, il est vaincu pour toujours (paliers, et il devient un ennemi rare)
+        function registerBossDefeat(boss) {
+            if (!defeatedBossIds.has(boss.id)) {
+                defeatedBossIds.add(boss.id);
                 saveDefeatedBosses();
-                showToast(t(enemy.boss.feminine ? "🏆 {name} est vaincue !" : "🏆 {name} est vaincu !", { name: enemy.boss.name }));
+                showToast(t(boss.feminine ? "🏆 {name} est vaincue !" : "🏆 {name} est vaincu !", { name: boss.name }));
                 playSound("bossDefeated");
             }
         }
@@ -5492,7 +5914,9 @@
 
         function updateEnemies(deltaTime) {
             //SPAWN (pas pendant l'arrivée d'un ennemi spécial : il arrive seul)
-            runTime += deltaTime;
+            if (bossDuel === null) {
+                runTime += deltaTime; //pendant un duel, le chrono s'arrête
+            }
             updateSpawnEvent(deltaTime);
             if (canSpawnNormalEnemies()) {
                 enemySpawnTimer += deltaTime;
@@ -5525,6 +5949,9 @@
                     if (isGameOver) {
                         return; //la partie est finie, on arrête de bouger les ennemis
                     }
+                    if (enemy.isBoss) {
+                        onBossMemberGone(enemy); //le joueur a survécu (bouclier...) : le super ennemi est parti
+                    }
                     continue;
                 }
 
@@ -5541,6 +5968,9 @@
                 updateEnemyHeading(enemy, newX - enemy.x, newY - enemy.y);
                 enemy.x = newX;
                 enemy.y = newY;
+                if (enemy.isBoss && enemy.boss.ability !== undefined) {
+                    updateBossAbility(enemy, deltaTime); //Méduse pétrifie, Cronos ralentit le temps
+                }
             }
             rebuildEnemyGrid(); //les ennemis ont bougé : on les range dans leur nouvelle case
         }
@@ -5565,7 +5995,7 @@
         const BOSS_BAR_HEIGHT = 7;
 
         function drawBossInfo(enemy) {
-            const width = enemy.boss.size * 2;
+            const width = enemy.baseSize * 2;
             const x = enemy.x - width / 2;
             const y = enemy.y - enemy.size - 20;
             const healthPercent = Math.max(0, enemy.health) / enemy.maxHealth;
@@ -5682,8 +6112,8 @@
                     fillShape(ctx, shapePoints, 0, 0, topColor);
                 }
 
-                if (enemy.isBoss) {
-                    drawBossInfo(enemy);
+                if (enemy.isBoss && enemy.showBossInfo) {
+                    drawBossInfo(enemy); //pas sur les petites têtes de l'Hydre (trop de noms à l'écran)
                 }
 
                 //Charmé : un anneau rose
@@ -5950,7 +6380,7 @@
                 spawnParticles(enemy.x, enemy.y, enemy.color, 12, 220); //explosion de petits éclats de sa couleur
                 enemy.alive = false; //retiré de la liste au prochain ménage (removeDeadEnemies)
                 if (enemy.isBoss) {
-                    onBossDefeated(enemy);
+                    onBossMemberKilled(enemy);
                 }
                 killsThisRun++;
                 if (damageSource !== null) {
@@ -6068,6 +6498,9 @@
 
         function updatePlanetShooting(deltaTime) {
             for (const planet of planets) {
+                if (isPetrified(planet)) {
+                    continue; //pétrifiée par Méduse : elle ne tire plus
+                }
                 planet.fireTimer += deltaTime;
                 if (planet.fireTimer < PLANET_FIRE_INTERVAL / Math.max(MIN_SHOOTER_SPEED, planet.stats.attackSpeed)) {
                     continue;
@@ -6635,8 +7068,8 @@
         function getLinkedPlanets(planet) {
             const count = planets.length;
             const index = planets.indexOf(planet);
-            if (count < 2 || index === -1) {
-                return [];
+            if (count < 2 || index === -1 || isPetrified(planet)) {
+                return []; //pétrifiée par Méduse : son lien d'orbite est annulé
             }
             const left = planets[(index - 1 + count) % count];   // % = reste de la division : après la dernière, on revient à la 1re
             const right = planets[(index + 1) % count];
@@ -6647,7 +7080,7 @@
             if (mode === "right") linked = [right];
             if (mode === "both") linked = [left, right];
             if (mode === "opposite") linked = [opposite];
-            return linked.filter(function (other, i) { return other !== planet && linked.indexOf(other) === i; }); //sans doublon
+            return linked.filter(function (other, i) { return other !== planet && linked.indexOf(other) === i && !isPetrified(other); }); //sans doublon, et pas une planète en pierre
         }
 
         //Les combos actifs d'une planète : [{ attribute, partner, combo, strength, fusion }]
@@ -7192,6 +7625,9 @@
             tideShieldTimer = Math.max(0, tideShieldTimer - deltaTime);
             for (const planet of planets) {
                 planet.powerTimers = planet.powerTimers || {};
+                if (isPetrified(planet)) {
+                    continue; //pétrifiée par Méduse : plus de pouvoir
+                }
                 for (const power of PLANET_POWERS) {
                     if (!power.isActive(planet.stats)) {
                         continue;
@@ -9834,6 +10270,13 @@
             }
             warCryTimer = 0;
             tideShieldTimer = 0;
+            timeDistortionTimer = 0;
+            gazeEffects.length = 0;
+            clockEffects.length = 0;
+            for (const planet of planets) {
+                planet.petrifiedBy = null; //plus de pierre
+                planet.petrifyShake = 0;
+            }
             tideWaves.length = 0;
             bloomEffects.length = 0;
             pendingBolts.length = 0;
@@ -10308,6 +10751,9 @@
                     rows.push(["Ennemis tués (soif de gloire)", killStacks[planet.id] || 0]);
                 }
                 rows.push(["Lien d'orbite", getLinkSummary(planet)]);
+                if (isPetrified(planet)) {
+                    rows.unshift(["État", "🗿 " + t("Pétrifiée par Méduse")]); //unshift = ajoute au début
+                }
                 return { title: ATTRIBUTES[planet.tree.element].icon + " " + planet.name, rows: rows };
             });
         }
@@ -10539,6 +10985,24 @@
             source.stop(startTime + 0.9);
         }
 
+        //UN BRUIT DE PIERRE (Méduse) : un craquement, du bruit filtré très court. frequency = plus grand = plus aigu
+        function playStoneSound(output, frequency, duration) {
+            const startTime = audioContext.currentTime;
+            const source = audioContext.createBufferSource();
+            source.buffer = getNoiseBuffer();
+            const filter = audioContext.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.value = frequency;
+            const gain = audioContext.createGain();
+            gain.gain.setValueAtTime(0.35, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(output);
+            source.start(startTime, Math.random() * 2);
+            source.stop(startTime + duration);
+        }
+
         //La liste des sons : category = "ui" (menus) ou "sfx" (jeu). Modifie les nombres pour changer les sons.
         //play(out) reçoit la sortie de sa catégorie et la donne à playTone
         const SOUNDS = {
@@ -10556,6 +11020,13 @@
             buy: { category: "ui", play: function (out) { playTone(660, 660, 0.08, "square", 0.12, 0, out); playTone(990, 990, 0.12, "square", 0.12, 0.08, out); } },
             denied: { category: "ui", play: function (out) { playTone(160, 120, 0.15, "sawtooth", 0.15, 0, out); } },
             click: { category: "ui", play: function (out) { playTone(1000, 1000, 0.03, "square", 0.06, 0, out); } },
+            petrify: { category: "sfx", play: function (out) { playTone(260, 70, 0.5, "sawtooth", 0.14, 0, out); playStoneSound(out, 900, 0.35); } },        //Méduse pétrifie une planète
+            unpetrify: { category: "sfx", play: function (out) { playTone(520, 1040, 0.25, "triangle", 0.12, 0, out); playStoneSound(out, 2600, 0.25); } }, //la pierre éclate
+            timeSlow: { category: "sfx", play: function (out) {           //Cronos : un son qui descend, et un tic-tac qui ralentit
+                playTone(900, 110, 1.1, "sine", 0.16, 0, out);
+                [0, 0.22, 0.5, 0.86, 1.3].forEach(function (delay) { playTone(2200, 2200, 0.03, "square", 0.05, delay, out); });
+            } },
+            hydraSplit: { category: "sfx", play: function (out) { playTone(300, 600, 0.15, "square", 0.1, 0, out); playTone(450, 900, 0.15, "square", 0.1, 0.06, out); } },
             skipReady: { category: "ui", play: function (out) { playTone(1320, 1320, 0.08, "sine", 0.1, 0, out); playTone(1760, 1760, 0.16, "sine", 0.1, 0.07, out); } }, //le saut est de nouveau prêt
             tideWave: { category: "sfx", play: function (out) { playWaveSound(out); } },
             bloom: { category: "sfx", play: function (out) { playBloomSound(out); } }
@@ -11330,7 +11801,7 @@
                 timeToSimulate -= step;
             }
 
-            runTimeDisplay.textContent = formatTime(runTime);
+            runTimeDisplay.textContent = (bossDuel !== null ? "⚔️ " : "") + formatTime(runTime); //⚔️ = duel : le chrono est arrêté
             updateSkipCooldownDisplay();
             badgeTimer -= deltaTime;
             if (badgeTimer <= 0) {
@@ -11348,14 +11819,17 @@
             if (isGameOver || isPaused) {
                 return;
             }
-            playerRotation += PLAYER_ROTATION_SPEED * deltaTime;
-            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * deltaTime;
+            //CRONOS peut ralentir TON temps : toi, tes planètes, tes balles et tes pouvoirs (pas les ennemis)
+            const playerDelta = deltaTime * getPlayerTimeFactor();
+            timeDistortionTimer = Math.max(0, timeDistortionTimer - deltaTime);
+            playerRotation += PLAYER_ROTATION_SPEED * playerDelta;
+            planetOrbitalRotation += PLANETS_ORBITAL_ROTATION_SPEED * playerDelta;
 
             updateEnemies(deltaTime);
-            updateBullets(deltaTime);
+            updateBullets(playerDelta);
             updateHazards(deltaTime);
             updateFireTrails(deltaTime);
-            updatePlanetPowers(deltaTime);
+            updatePlanetPowers(playerDelta);
             updateSkipCooldown(deltaTime);
             healPlayer(playerStats.regen * deltaTime);
             playerHitTimer -= deltaTime;
