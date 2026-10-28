@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Déméter
 
-Quand une autre planète, en face de Déméter, choisit le lien « Opposé », elle reçoit **Sève** : +0.03 PV pour toi à chaque balle qui touche. Pour le joueur ET la planète qui a choisi le lien.
+Quand une autre planète, en face de Déméter sur la même orbite, choisit le lien « Opposé », elle reçoit **Sève** : +0.03 PV pour toi à chaque balle qui touche. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

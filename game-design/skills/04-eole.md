@@ -54,7 +54,7 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 ## ↔️ Lien « Opposé » vers Éole
 
-Quand une autre planète, en face de Éole, choisit le lien « Opposé », elle reçoit **Vent arrière** : +25% de vitesse d'attaque. Pour le joueur ET la planète qui a choisi le lien.
+Quand une autre planète, en face de Éole sur la même orbite, choisit le lien « Opposé », elle reçoit **Vent arrière** : +25% de vitesse d'attaque. Pour le joueur ET la planète qui a choisi le lien.
 
 ## 🔗 Combos d'orbite
 

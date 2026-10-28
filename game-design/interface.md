@@ -18,7 +18,7 @@ Le jeu repère un écran tactile avec `IS_TOUCH_DEVICE` (la question CSS `pointe
 | Geste | Effet |
 | --- | --- |
 | Toucher une planète | ouvre son arbre de compétences |
-| Glisser une planète | change sa place dans l'orbite |
+| Glisser une planète | change sa place sur son orbite, ou la fait passer sur une autre orbite (voir « Les 3 orbites ») |
 | Bouton « ✦ Skills » (en bas à droite) | remplace la touche S (point turquoise : une compétence peut être prise) |
 | Bouton du temps (à côté du chrono) | vitesses et sauts de temps, comme à l'ordinateur |
 | Roue crantée | paramètres (remplace Échap) |
@@ -47,7 +47,7 @@ Option **« Graphismes nets »** dans les paramètres (cochée par défaut, rete
 
 ## La sauvegarde
 
-La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite et ordre des planètes. Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).
+La progression est gardée dans le navigateur (`localStorage`, clé `progress`) : or, XP, niveaux du shop, dieux en orbite, compétences prises, liens d'orbite, ordre des planètes et orbite de chaque planète (`planetOrbits`). Dans l'application mobile, c'est pareil (elle a son propre stockage, effacé seulement si on désinstalle le jeu).
 
 - **Quand :** à chaque changement de progression (achat, compétence, lien, planète déplacée), à chaque mort, toutes les 5 secondes, et quand on quitte ou cache le jeu (passer à une autre appli sur téléphone).
 - **Ce qui n'est pas gardé :** la partie en cours (ennemis, chrono, vie) : en revenant, on recommence une partie, avec toute sa progression.
@@ -101,7 +101,7 @@ Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thè
 C'est un jeu « idle » : **la partie continue quand le jeu n'est pas affiché** (autre onglet, fenêtre réduite, autre appli). Option **« La partie continue quand le jeu n'est pas affiché »** dans les paramètres (cochée par défaut, clé `backgroundPlay`) : décochée, la partie s'arrête dès que le jeu est caché.
 
 Comment ça marche (partie `START & UPDATE`, « ARRIÈRE-PLAN ») :
-- quand la page est cachée, le navigateur n'appelle plus `gameUpdate` (la boucle d'images). Un petit **Web Worker** (un programme qui tourne à côté de la page, que le navigateur ne ralentit pas) réveille le jeu toutes les 250 ms (`BACKGROUND_TICK_MS`), et le jeu avance du temps écoulé, **sans rien dessiner** (`simulateTime`), en tenant compte de la vitesse du jeu ;
+- quand la page est cachée, le navigateur n'appelle plus `gameUpdate` (la boucle d'images). Un petit **Web Worker** (un programme qui tourne à côté de la page, que le navigateur ne ralentit pas) réveille le jeu toutes les 250 ms (`BACKGROUND_TICK_MS`), et le jeu avance du temps écoulé, **sans rien dessiner** (`simulateTime`), en tenant compte de la vitesse du jeu. Les planètes continuent de tourner sur leurs orbites (`updatePlanetPositions` à chaque pas : d'habitude, c'est le dessin qui les place) ;
 - si le navigateur a quand même **gelé** la page (téléphone, économie d'énergie), le temps perdu est **rattrapé au retour**, petit à petit (30 ms de calcul par image, pour que le jeu ne se bloque pas), au plus 10 minutes (`MAX_CATCH_UP`). Un message dit « ⏩ Le jeu rattrape le temps passé : encore 1:23 » ;
 - au retour (après au moins 5 s), un message résume : « 🌙 Pendant ton absence (3:12) : +154 or, +98 XP » ;
 - pas de son pendant ce temps (`playSound` ne joue rien quand la page est cachée : sinon tous les sons partiraient d'un coup au retour) ;
@@ -154,11 +154,34 @@ Avant un super ennemi ou le premier ennemi d'un nouveau mouvement : un bandeau s
 - **La carte d'une compétence** s'affiche **en grand, par-dessus l'arbre** : en haut, ou en bas si la compétence est dans le haut de la fenêtre (pour ne pas la cacher). Elle montre le nom et le rôle, puis **ce que la compétence donne, en gros** (une ligne par stat, ex : « +0.5 Dégâts par balle », en rouge si c'est une baisse ; `describeEffect`), la description, le coût et le bouton d'achat. À la souris, survoler une étoile montre un aperçu de sa carte.
 - **Acheter (sans achat par erreur) :** le 1er clic (ou toucher) **choisit** la compétence : sa carte reste affichée, avec le bouton **« Débloquer · 25 XP »**. On l'achète avec ce bouton, ou en cliquant une 2e fois sur la même étoile. Le × de la carte, ou un clic sur le fond de l'arbre, enlève le choix. À l'achat, le lien depuis la compétence voisine se remplit, l'étoile éclot, et **les gains apparaissent en grand au milieu de l'arbre**, puis montent et s'effacent (`showGainPopup`).
 - **Rembourser :** clic droit sur une compétence prise (au doigt : appui long), ou bouton « Rembourser » dans sa fiche. Tout l'XP est rendu. C'est impossible si d'autres compétences prises ne seraient plus reliées au départ.
-- **Liens d'orbite :** en bas à gauche, pour choisir à quelle planète voisine le dieu se lie. Au début, seul « Aucun » est disponible : l'amélioration **« Liens d'orbite »** du shop (4 niveaux : 30, 75, 188 puis 469 or) débloque Droite, puis Gauche, puis Les deux côtés, puis Opposé (`LINK_UNLOCK_ORDER`). Les liens pas encore achetés sont gris, avec « Dans le shop ». Une ancienne sauvegarde garde les liens que le joueur utilisait déjà (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
+- **Orbite :** en bas à gauche, au-dessus des liens : un bouton par orbite (Intérieure, Milieu, Extérieure) pour y envoyer la planète (elle arrive à la fin de cette orbite). À droite de chaque orbite, les autres planètes qui y tournent, en **petits losanges de leur couleur** (leurs noms au survol), ou « seule ici » / « vide ». Voir « Les 3 orbites ».
+- **Liens d'orbite :** juste en dessous, pour choisir à quelle planète voisine **de son orbite** le dieu se lie. Seule sur son orbite, la planète n'a personne à qui se lier (« Seule sur son orbite : pas de voisine à qui se lier »). Au début, seul « Aucun » est disponible : l'amélioration **« Liens d'orbite »** du shop (4 niveaux : 30, 75, 188 puis 469 or) débloque Droite, puis Gauche, puis Les deux côtés, puis Opposé (`LINK_UNLOCK_ORDER`). Les liens pas encore achetés sont gris, avec « Dans le shop ». Une ancienne sauvegarde garde les liens que le joueur utilisait déjà (voir [skills/0-combos.md](skills/0-combos.md) et [statistiques.md](statistiques.md)).
+
+## Les 3 orbites
+
+Les planètes tournent sur **3 orbites** autour du joueur (`ORBITS`, partie `PLAYER & PLANETS` de `index.html`). Avant, il n'y avait qu'une orbite de 100 px, qui grandissait jusqu'à 130 px avec 12 planètes.
+
+| Orbite | Rayon | Rotation |
+| --- | --- | --- |
+| Intérieure | 130 px | 0,25 radian par seconde (un tour en 25 s) |
+| Milieu | 200 px | 0,17 rad/s, **dans l'autre sens** (un tour en 37 s) |
+| Extérieure | 270 px | 0,12 rad/s (un tour en 52 s) |
+
+- **Les liens se font sur la même orbite :** Gauche, Droite, Les deux côtés et Opposé se comptent parmi les planètes de **son** orbite (`getLinkedPlanets`). Seule sur son orbite, une planète n'a pas de lien. Ranger les planètes sur les orbites, c'est donc choisir ses combos.
+- **Ce que ça change au combat :** une planète tire depuis sa place (250 px de portée, depuis la planète). Sur l'orbite extérieure, elle touche les ennemis plus tôt de son côté, mais protège moins le joueur du côté opposé ; sur l'orbite intérieure, elle couvre mieux tout autour du joueur.
+- **Place sur l'orbite :** les planètes d'une orbite sont espacées régulièrement. Une nouvelle planète (achetée dans le shop) arrive sur l'orbite **intérieure**, à la fin.
+- **Changer une planète d'orbite :**
+  - dans le jeu, **la faire glisser** (souris ou doigt) : elle suit le pointeur, passe sur l'orbite la plus proche de lui (il faut en être nettement plus près, de 12 px, pour qu'elle n'hésite pas entre deux : `ORBIT_SWITCH_MARGIN`), et prend la case la plus proche de l'angle du pointeur ; les autres planètes se poussent. Pendant le glisser, les 3 orbites sont tracées en entier et celle où la planète va **s'éclaire de sa couleur**. Au lâcher, elle glisse en douceur jusqu'à son orbite ;
+  - dans la fenêtre des skills, les boutons « Orbite » (voir plus haut).
+- **Dessin :** 3 cercles très discrets (couleur `ORBIT_COLOR` du thème ou du décor) ; une orbite vide est en pointillés.
+- **Toucher la bonne planète :** si deux planètes de deux orbites sont presque l'une sur l'autre (au doigt, leurs zones de toucher sont plus grandes), c'est la plus proche du doigt qui est prise (`findPlanetAt`).
+- **Ancienne sauvegarde :** sans orbites enregistrées, toutes les planètes vont sur l'orbite intérieure, dans le même ordre : les liens restent les mêmes.
 
 ## La caméra
 
 Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jusqu'à ce que la portée occupe environ 95 % de la demi-largeur de l'écran. Au-delà de 1000 px de portée, elle ne dézoome plus.
+
+Les 3 orbites restent aussi toujours à l'écran, en largeur **et** en hauteur, à 16 px du bord (`CAMERA_ORBIT_MARGIN`). Sur ordinateur et en portrait, ça ne change presque rien (la portée demande déjà ce zoom) ; sur un écran bas (téléphone en paysage, dans la version web), la caméra dézoome pour montrer toutes les planètes.
 
 ## La portée des dieux
 

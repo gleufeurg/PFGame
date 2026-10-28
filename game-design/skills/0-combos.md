@@ -2,13 +2,15 @@
 
 Chaque dieu a un **attribut**. Dans la fenêtre de son skill tree (en bas à gauche, « Liens d'orbite »), on choisit à quelle(s) planète(s) voisine(s) il se lie. Ses **tirs** gagnent alors un effet spécial.
 
+Les planètes tournent sur **3 orbites** (intérieure, milieu, extérieure) : une planète ne se lie qu'aux planètes de **son** orbite. Gauche, Droite, Les deux côtés et Opposé se comptent sur cette orbite ; seule sur son orbite, une planète n'a pas de lien. On change une planète d'orbite en la faisant glisser dans le jeu, ou avec les boutons « Orbite » de sa fenêtre de skills (voir [interface.md](../interface.md)).
+
 | Option | Ce qu'elle fait | Force |
 |---|---|---|
 | **Aucun** | pas de combo | — |
-| **Gauche** | combo avec la planète d'avant dans l'orbite | ×1 |
-| **Droite** | combo avec la planète d'après | ×1 |
+| **Gauche** | combo avec la planète d'avant sur son orbite | ×1 |
+| **Droite** | combo avec la planète d'après sur son orbite | ×1 |
 | **Les deux côtés** | le dieu et ses 2 voisines **fusionnent** en un attribut unique, qui donne un effet spécial (voir Fusions) | ×1 |
-| **Opposé** | pas de combo : la planète reçoit une **stat** typique du dieu d'en face, et le joueur aussi (voir [statistiques.md](../statistiques.md)) | — |
+| **Opposé** | pas de combo : la planète reçoit une **stat** typique du dieu d'en face sur son orbite, et le joueur aussi (voir [statistiques.md](../statistiques.md)) | — |
 
 ## Les attributs
 
