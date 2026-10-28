@@ -2605,6 +2605,10 @@
                 <label for="muteCheckbox">Couper le son</label>
             </div>
             <div class="settingRow">
+                <input type="checkbox" id="backgroundPlayCheckbox">
+                <label for="backgroundPlayCheckbox">La partie continue quand le jeu n'est pas affiché <span class="smallText">(autre onglet, fenêtre réduite)</span></label>
+            </div>
+            <div class="settingRow">
                 <input type="checkbox" id="pauseInMenusCheckbox">
                 <label for="pauseInMenusCheckbox">Mettre le jeu en pause dans les menus <span class="smallText">(paramètres et skills)</span></label>
             </div>
@@ -11704,8 +11708,8 @@
         };
 
         function playSound(name) {
-            if (audioContext === null || soundSettings.isMuted) {
-                return;
+            if (audioContext === null || soundSettings.isMuted || document.hidden) {
+                return; //document.hidden : le jeu tourne en arrière-plan (le son est coupé, il reprendrait tout d'un coup au retour)
             }
             const now = audioContext.currentTime;
             if (lastSoundTimes[name] !== undefined && now - lastSoundTimes[name] < SOUND_MIN_GAP) {
@@ -12331,6 +12335,23 @@
             playSound("click");
         });
 
+        //JEU EN ARRIÈRE-PLAN : décoché, la partie s'arrête quand le jeu n'est pas affiché (voir ARRIÈRE-PLAN, partie START & UPDATE)
+        let backgroundPlay = true;             // cochée par défaut, retenue par le navigateur
+        try {
+            backgroundPlay = localStorage.getItem("backgroundPlay") !== "0";
+        } catch (error) {
+        }
+        const backgroundPlayCheckbox = document.getElementById("backgroundPlayCheckbox");
+        backgroundPlayCheckbox.checked = backgroundPlay;
+        backgroundPlayCheckbox.addEventListener("change", function () {
+            backgroundPlay = backgroundPlayCheckbox.checked;
+            try {
+                localStorage.setItem("backgroundPlay", backgroundPlay ? "1" : "0");
+            } catch (error) {
+            }
+            playSound("click");
+        });
+
         //GRAPHISMES SIMPLES / ÉLEVÉS
         const graphicsSelect = document.getElementById("graphicsSelect");
         graphicsSelect.value = isHighGraphics ? "high" : "simple";
@@ -12497,6 +12518,7 @@
                 timeToSimulate -= step;
             }
 
+            updateCatchUp(); //le temps passé en arrière-plan, si le navigateur avait gelé la page
             runTimeDisplay.textContent = (bossDuel !== null ? "⚔️ " : "") + formatTime(runTime); //⚔️ = duel : le chrono est arrêté
             updateSkipCooldownDisplay();
             badgeTimer -= deltaTime;
@@ -12508,6 +12530,118 @@
             drawCanvas();
             requestAnimationFrame(gameUpdate);
         }
+
+        //ARRIÈRE-PLAN : quand le jeu n'est pas affiché (autre onglet, fenêtre réduite), le navigateur n'appelle plus gameUpdate
+        //(requestAnimationFrame s'arrête). Pour que la partie continue (c'est un jeu "idle"), un petit WEB WORKER (un programme
+        //qui tourne à côté de la page, que le navigateur ne ralentit pas) nous réveille toutes les BACKGROUND_TICK_MS
+        //millisecondes, et on fait avancer le jeu du temps écoulé, sans rien dessiner.
+        //Si le navigateur a quand même gelé la page (téléphone, économie d'énergie), on RATTRAPE le temps perdu au retour,
+        //petit à petit (CATCH_UP_BUDGET_MS par image, pour que le jeu ne se bloque pas), au plus MAX_CATCH_UP secondes.
+        const BACKGROUND_TICK_MS = 250;
+        const MAX_CATCH_UP = 600;              // au retour, on rattrape au plus 10 minutes
+        const CATCH_UP_BUDGET_MS = 30;         // millisecondes de calcul par image pour le rattrapage
+        const AWAY_SUMMARY_MIN = 5;            // secondes d'absence avant d'afficher "Pendant ton absence : +X or"
+        //(l'option "La partie continue quand le jeu n'est pas affiché" = backgroundPlay, déclarée avec les Paramètres)
+        let lastBackgroundTime = 0;            // la dernière fois que le jeu a avancé en arrière-plan (performance.now)
+        let catchUpTime = 0;                   // secondes (réelles) qui restent à rattraper
+        let awayStart = null;                  // { time, gold, xp } au moment où le jeu a été caché
+        const backgroundTicker = createBackgroundTicker();
+
+        //Le Web Worker : son code est écrit ici (dans un "Blob", un fichier créé en mémoire), il envoie un message à intervalles réguliers
+        function createBackgroundTicker() {
+            try {
+                const code = "let id = null; onmessage = function (event) { clearInterval(id); if (event.data > 0) { id = setInterval(function () { postMessage(0); }, event.data); } };";
+                const worker = new Worker(URL.createObjectURL(new Blob([code], { type: "text/javascript" })));
+                worker.onmessage = onBackgroundTick;
+                return worker;
+            } catch (error) {
+                return null; //pas de Web Worker possible : on rattrapera le temps au retour
+            }
+        }
+
+        //Avance le jeu de "seconds" secondes RÉELLES (x la vitesse du jeu), par petits pas, sans dessiner
+        function simulateTime(seconds) {
+            let timeToSimulate = seconds * gameSpeed;
+            while (timeToSimulate > 0 && !isGameOver) {
+                const step = Math.min(MAX_STEP, timeToSimulate);
+                updateGame(step);
+                timeToSimulate -= step;
+            }
+        }
+
+        function onBackgroundTick() {
+            if (!document.hidden) {
+                return;
+            }
+            const now = performance.now();
+            const elapsed = Math.min(1, (now - lastBackgroundTime) / 1000); //au plus 1 s d'un coup (le reste, si le navigateur a gelé, sera rattrapé)
+            lastBackgroundTime = now;
+            if (backgroundPlay) {
+                simulateTime(elapsed);
+            }
+        }
+
+        function onVisibilityChange() {
+            const now = performance.now();
+            if (document.hidden) {
+                lastBackgroundTime = now;
+                awayStart = { time: now, gold: gold, xp: xp };
+                if (backgroundTicker !== null) {
+                    backgroundTicker.postMessage(BACKGROUND_TICK_MS); //"réveille-moi toutes les 250 ms"
+                }
+                return;
+            }
+            if (backgroundTicker !== null) {
+                backgroundTicker.postMessage(0); //"arrête"
+            }
+            if (awayStart === null) {
+                return;
+            }
+            //Le temps que les réveils n'ont pas couvert (page gelée par le navigateur) : on le rattrape petit à petit
+            const missed = (now - lastBackgroundTime) / 1000;
+            if (backgroundPlay && missed > 1 && !isGameOver) {
+                catchUpTime = Math.min(MAX_CATCH_UP, missed);
+            }
+            if (catchUpTime <= 0) {
+                showAwaySummary();
+            }
+        }
+
+        //"🌙 Pendant ton absence (3:12) : +154 or, +98 XP"
+        function showAwaySummary() {
+            if (awayStart === null) {
+                return;
+            }
+            const seconds = (performance.now() - awayStart.time) / 1000;
+            const goldGained = Math.floor(gold - awayStart.gold);
+            const xpGained = Math.floor(xp - awayStart.xp);
+            awayStart = null;
+            if (seconds >= AWAY_SUMMARY_MIN && backgroundPlay && (goldGained > 0 || xpGained > 0)) {
+                showToast(t("🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP", { time: formatTime(seconds), gold: goldGained, xp: xpGained }));
+            }
+        }
+
+        //Le rattrapage, un peu à chaque image (appelé par gameUpdate)
+        function updateCatchUp() {
+            if (catchUpTime <= 0) {
+                return;
+            }
+            const deadline = performance.now() + CATCH_UP_BUDGET_MS;
+            while (catchUpTime > 0 && performance.now() < deadline && !isGameOver) {
+                const chunk = Math.min(catchUpTime, 0.25);
+                simulateTime(chunk);
+                catchUpTime -= chunk;
+            }
+            if (catchUpTime <= 0 || isGameOver) {
+                catchUpTime = 0;
+                showAwaySummary();
+            } else {
+                toast.textContent = t("⏩ Le jeu rattrape le temps passé : encore {time}", { time: formatTime(catchUpTime) });
+                toast.classList.remove("hiddenToast");
+            }
+        }
+
+        document.addEventListener("visibilitychange", onVisibilityChange);
 
         //Tout ce qui bouge pendant "deltaTime" secondes de jeu
         function updateGame(deltaTime) {

@@ -1426,5 +1426,9 @@ window.TRADUCTIONS.ja = {
     "⌛ Cronos ralentit ton temps !": "⌛ クロノスがあなたの時間を遅くする！",
     "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 ヒュドラの最後の波が四方から来る！",
     "État": "状態",
-    "Pétrifiée par Méduse": "メドゥーサに石化された"
+    "Pétrifiée par Méduse": "メドゥーサに石化された",
+    "La partie continue quand le jeu n'est pas affiché": "ゲームが表示されていなくてもプレイが続く",
+    "(autre onglet, fenêtre réduite)": "（別のタブ、最小化したウィンドウ）",
+    "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 不在の間（{time}）：+{gold}ゴールド、+{xp} XP",
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ 経過した時間を取り戻し中：あと{time}"
 };

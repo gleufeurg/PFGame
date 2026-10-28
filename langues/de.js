@@ -1426,5 +1426,9 @@ window.TRADUCTIONS.de = {
     "⌛ Cronos ralentit ton temps !": "⌛ Kronos verlangsamt deine Zeit!",
     "🐍 La dernière vague de l'Hydre arrive de partout !": "🐍 Die letzte Welle der Hydra kommt von überall!",
     "État": "Zustand",
-    "Pétrifiée par Méduse": "Von Medusa versteinert"
+    "Pétrifiée par Méduse": "Von Medusa versteinert",
+    "La partie continue quand le jeu n'est pas affiché": "Die Runde läuft weiter, wenn das Spiel nicht angezeigt wird",
+    "(autre onglet, fenêtre réduite)": "(anderer Tab, minimiertes Fenster)",
+    "🌙 Pendant ton absence ({time}) : +{gold} or, +{xp} XP": "🌙 Während du weg warst ({time}): +{gold} Gold, +{xp} XP",
+    "⏩ Le jeu rattrape le temps passé : encore {time}": "⏩ Das Spiel holt die verpasste Zeit nach: noch {time}"
 };

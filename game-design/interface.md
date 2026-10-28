@@ -37,7 +37,7 @@ Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 
 - **Encoche et barre du téléphone** : les boutons du bord de l'écran s'en écartent (`env(safe-area-inset-...)` en CSS).
 - Quand on tourne l'écran ou qu'on change la taille de la fenêtre, le jeu se redimensionne (`resizeCanvas`).
 - **Barre du haut sur téléphone :** le chrono et le bouton du temps restent tout en haut, entre l'or/XP et la roue crantée. Le menu du temps s'ouvre en dessous, sur toute la largeur de l'écran, et ses boutons passent à la ligne si besoin.
-- **En arrière-plan** (autre appli, écran éteint, onglet caché) : tout le son s'arrête (`setAudioPausedInBackground`) et la progression est sauvegardée ; le son reprend au retour.
+- **En arrière-plan** (autre appli, écran éteint, onglet caché) : tout le son s'arrête (`setAudioPausedInBackground`) et la progression est sauvegardée ; le son reprend au retour. La partie, elle, continue (voir « La partie continue en arrière-plan »).
 
 ## La netteté (écrans fins)
 
@@ -95,6 +95,17 @@ Liste « Morceau » dans les paramètres : « Tous, à la suite » (par défaut 
 ## Décor
 
 Liste « Décor » dans les paramètres, sous le thème : aucun (le fond du thème), mer étoilée, mer en plein jour, neige ou prairie. **La mer étoilée est le décor de départ** (`DEFAULT_SCENE`), car c'est celui que les joueurs préfèrent. Retenue par le navigateur (clé `scene`). Détails dans [direction-artistique/README.md](direction-artistique/README.md).
+
+## La partie continue en arrière-plan
+
+C'est un jeu « idle » : **la partie continue quand le jeu n'est pas affiché** (autre onglet, fenêtre réduite, autre appli). Option **« La partie continue quand le jeu n'est pas affiché »** dans les paramètres (cochée par défaut, clé `backgroundPlay`) : décochée, la partie s'arrête dès que le jeu est caché.
+
+Comment ça marche (partie `START & UPDATE`, « ARRIÈRE-PLAN ») :
+- quand la page est cachée, le navigateur n'appelle plus `gameUpdate` (la boucle d'images). Un petit **Web Worker** (un programme qui tourne à côté de la page, que le navigateur ne ralentit pas) réveille le jeu toutes les 250 ms (`BACKGROUND_TICK_MS`), et le jeu avance du temps écoulé, **sans rien dessiner** (`simulateTime`), en tenant compte de la vitesse du jeu ;
+- si le navigateur a quand même **gelé** la page (téléphone, économie d'énergie), le temps perdu est **rattrapé au retour**, petit à petit (30 ms de calcul par image, pour que le jeu ne se bloque pas), au plus 10 minutes (`MAX_CATCH_UP`). Un message dit « ⏩ Le jeu rattrape le temps passé : encore 1:23 » ;
+- au retour (après au moins 5 s), un message résume : « 🌙 Pendant ton absence (3:12) : +154 or, +98 XP » ;
+- pas de son pendant ce temps (`playSound` ne joue rien quand la page est cachée : sinon tous les sons partiraient d'un coup au retour) ;
+- si le joueur meurt pendant son absence, il retrouve le menu de mort ; si un menu est ouvert avec « pause dans les menus », la partie reste en pause.
 
 ## Pause dans les menus
 
