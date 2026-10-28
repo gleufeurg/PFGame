@@ -5,9 +5,19 @@
 | Attribut | 🛡️ Égide |
 | Couleur | `#e8b07a` |
 | Forme de l'arbre | couronne de laurier (`laurel`) |
-| Compétences | 51 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 19102 |
+| Compétences | 55 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 14047 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°7) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie de l'égide** | Esquiver les coups, et gagner beaucoup plus d'XP. | **Pandrosos** (+2 PV max) ; **Égide** (+8% de chance d'esquiver un coup) ; **Arachné** (+10% de vitesse d'attaque) ; **Tritonis** (+5% de chance d'esquiver un coup) ; **Parthénos** (GRANDE KEYSTONE : +100% d'XP gagnée) ; **Pallas** (+8% de chance d'esquiver un coup) | 15 | 8782 |
+| **Voie de la lance** | Plus de dégâts et plus de portée. | **Promachos** (+2 dégâts par balle) ; **Hygie** (+0.05 PV régénérés par seconde) ; **Aidôs** (+10% d'XP gagnée) ; **Glaucopis** (+60 de portée (les yeux de la chouette)) ; **Bellérophon** (+2 dégâts par balle) | 15 | 7767 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Zélos** (VIT) | +10% de vitesse d'attaque | 433 XP |
 | **Hygie** (REG) | +0.05 PV régénérés par seconde | 570 XP |
 | **Aidôs** (XP) | +10% d'XP gagnée | 706 XP |
+| **Pallas** (ESQ) | +8% de chance d'esquiver un coup | 843 XP |
+| **Bellérophon** (DMG) | +2 dégâts par balle | 843 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Nikè** (PV) | +1 PV max | ×13 | 103 à 467 XP |
+| **Nikè** (PV) | +1 PV max | ×14 | 103 à 513 XP |
 | **Aglaure** (ESQ) | +2% de chance d'esquiver un coup | ×13 | 103 à 467 XP |
-| **Hersé** (XP) | +4% d'XP gagnée | ×12 | 148 à 421 XP |
+| **Hersé** (XP) | +4% d'XP gagnée | ×13 | 148 à 513 XP |
 
 ## ↔️ Lien « Opposé » vers Athéna
 

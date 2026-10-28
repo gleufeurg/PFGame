@@ -13,7 +13,8 @@ await p.goto('file://' + path.join(ROOT, 'index.html')); await p.waitForTimeout(
 const data = await p.evaluate(()=>({
   trees: SKILL_TREES.map(t=>({ name:t.name, color:t.color, element:t.element, locked:t.isLocked,
     shape: SKILL_TREES_DATA.find(d=>d.name===t.name).shape,
-    nodes: t.nodes.map(n=>({id:n.id, role:n.role, label:n.label, name:n.name, description:n.description, cost:n.cost})) })),
+    paths: t.paths.map(p=>({name:p.name, description:p.description})),
+    nodes: t.nodes.map(n=>({id:n.id, role:n.role, label:n.label, name:n.name, description:n.description, cost:n.cost, path:n.path})) })),
   attributes: ATTRIBUTES, combos: COMBOS, fusions: FUSIONS, modes: LINK_MODES, opposite: OPPOSITE_BONUSES,
   shop: SHOP_ITEMS.map(i=>({name:i.name, description:i.description, baseCost:i.baseCost, costGrowth:i.costGrowth, maxLevel: Number.isFinite(i.maxLevel) ? i.maxLevel : null})), // null = amélioration infinie (Infinity ne passe pas en JSON)
   costs: { SKILL_COST_BASE, SKILL_COST_PER_STEP, NOTABLE_COST_MULTIPLIER, KEYSTONE_COST, GRAND_COST, SKILL_TIER_GROWTH }
@@ -31,9 +32,15 @@ const index = [];
 data.trees.forEach((t, i)=>{
   const by = r => t.nodes.filter(n=>n.role===r);
   const minors = {}; by('minor').forEach(n=>{ const base=n.name.replace(/ [IVXL]+$/,''); minors[base]=minors[base]||{label:n.label, description:n.description, count:0, costs:[]}; minors[base].count++; minors[base].costs.push(n.cost); });
-  const total = t.nodes.reduce((s,n)=>s+n.cost,0);
+  // les voies : on ne peut en prendre qu'une, donc "tout prendre" = les compétences communes + la voie la plus chère
+  const pathCost = k => t.nodes.filter(n=>n.path===k).reduce((s,n)=>s+n.cost,0);
+  const commonCost = t.nodes.filter(n=>n.path===undefined||n.path===null).reduce((s,n)=>s+n.cost,0);
+  const total = commonCost + Math.max(0, ...t.paths.map((p,k)=>pathCost(k)));
   let md = `# ${t.name} — ${att(t.element)}\n\n`;
-  md += `| | |\n|---|---|\n| Attribut | ${att(t.element)} |\n| Couleur | \`${t.color}\` |\n| Forme de l'arbre | ${shapeNames[t.shape]||t.shape} (\`${t.shape}\`) |\n| Compétences | ${t.nodes.length} (${by('notable').length} notables, ${by('keystone').length} keystones, 1 grande keystone) |\n| XP pour tout débloquer | ${total} |\n| Disponible | à acheter dans le shop (« Nouvelle divinité » n°${data.trees.indexOf(t)+1}) |\n\n`;
+  md += `| | |\n|---|---|\n| Attribut | ${att(t.element)} |\n| Couleur | \`${t.color}\` |\n| Forme de l'arbre | ${shapeNames[t.shape]||t.shape} (\`${t.shape}\`) |\n| Compétences | ${t.nodes.length} (${by('notable').length} notables, ${by('keystone').length} keystones, 1 grande keystone) |\n| Voies | ${t.paths.length} (on n'en prend qu'une) |\n| XP pour tout prendre (avec la voie la plus chère) | ${total} |\n| Disponible | à acheter dans le shop (« Nouvelle divinité » n°${data.trees.indexOf(t)+1}) |\n\n`;
+  if (t.paths.length > 0) {
+    md += `## ⑂ Les voies\n\nPrendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).\n\n| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |\n|---|---|---|---|---|\n` + t.paths.map((p,k)=>{ const nodes = t.nodes.filter(n=>n.path===k); const big = nodes.filter(n=>n.role!=='minor').map(n=>`**${n.name}** (${n.description})`).join(' ; '); return `| **${p.name}** | ${p.description} | ${big} | ${nodes.length} | ${pathCost(k)} |`; }).join('\n') + '\n\n';
+  }
   md += `## ⭐ Grande keystone\n\n| Nom | Effet | Coût |\n|---|---|---|\n` + by('grand').map(n=>`| **${n.name}** (${n.label}) | ${n.description.replace('GRANDE KEYSTONE : ','')} | ${n.cost} XP |`).join('\n') + '\n\n';
   md += `## 🔷 Keystones\n\n| Nom | Effet | Coût |\n|---|---|---|\n` + by('keystone').map(n=>`| **${n.name}** (${n.label}) | ${n.description} | ${n.cost} XP |`).join('\n') + '\n\n';
   md += `## 🔹 Notables\n\n| Nom | Effet | Coût |\n|---|---|---|\n` + by('notable').map(n=>`| **${n.name}** (${n.label}) | ${n.description} | ${n.cost} XP |`).join('\n') + '\n\n';
@@ -55,8 +62,8 @@ cm += `## Combos (Gauche, Droite) : attribut du dieu + attribut emprunté\n\n| C
 cm += `## Fusions (Les deux côtés) : attribut du dieu + attributs de ses 2 voisines\n\nL'ordre ne compte pas : 🔥 entre 🌪️ et 💧 donne la même fusion que 💧 entre 🔥 et 🌪️. Aucune fusion ne donne de statistique, seulement des effets.\n\n| Fusion | Nom | Effet |\n|---|---|---|\n` + comboRows(data.fusions, ()=>true).join('\n') + '\n';
 fs.writeFileSync(path.join(OUT, '0-combos.md'), cm);
 // README
-let rd = `# Skills et combos — vue d'ensemble\n\nCe dossier est généré à partir des données du jeu (\`index.html\`) par \`game-design/outils/generer-docs.js\`. Il récapitule tous les skill trees, le shop et les combos d'orbite.\n\n## Les dieux\n\n| Dieu | Attribut | Forme | Compétences | XP pour tout | Grande keystone | Fichier |\n|---|---|---|---|---|---|---|\n`;
-rd += index.map(({t,file,total,by})=>`| **${t.name}** | ${att(t.element)} | ${shapeNames[t.shape]||t.shape} | ${t.nodes.length} | ${total} | ${by('grand')[0].name} : ${by('grand')[0].description.replace('GRANDE KEYSTONE : ','')} | [${file}](${file}) |`).join('\n') + '\n\n';
+let rd = `# Skills et combos — vue d'ensemble\n\nCe dossier est généré à partir des données du jeu (\`index.html\`) par \`game-design/outils/generer-docs.js\`. Il récapitule tous les skill trees, le shop et les combos d'orbite.\n\n## Les dieux\n\n| Dieu | Attribut | Forme | Compétences | Voies | XP pour tout (avec la voie la plus chère) | Grande keystone | Fichier |\n|---|---|---|---|---|---|---|---|\n`;
+rd += index.map(({t,file,total,by})=>`| **${t.name}** | ${att(t.element)} | ${shapeNames[t.shape]||t.shape} | ${t.nodes.length} | ${t.paths.map(p=>p.name).join(', ')} | ${total} | ${by('grand')[0].name} : ${by('grand')[0].description.replace('GRANDE KEYSTONE : ','')} | [${file}](${file}) |`).join('\n') + '\n\n';
 rd += `## Les combos\n\nVoir [0-combos.md](0-combos.md) : ${Object.keys(data.combos).length} combos et ${Object.keys(data.fusions).length} fusions.\n\n## Le shop (améliorations permanentes)\n\n| Amélioration | Effet | Prix de départ | Niveau max |\n|---|---|---|---|\n` + data.shop.map(s=>`| **${s.name}** | ${s.description} | ${s.baseCost} or | ${s.maxLevel === null ? '∞ (infinie)' : s.maxLevel} |`).join('\n') + '\n';
 fs.writeFileSync(path.join(OUT, 'README.md'), rd);
 
@@ -73,11 +80,11 @@ const C = data.costs;
 let px = `# Prix des améliorations et des skills\n\nGénéré à partir du code du jeu par \`game-design/outils/generer-docs.js\`.\n\nLe shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.\n\n`;
 const xpAll = index.reduce((a, x) => a + x.total, 0);
 const gods = shopRows.find(r => r.s.name === 'Nouvelle divinité');
-px += `- Tout le shop au maximum (sans les améliorations infinies) coûte **${fr(shopTotal)} or**${gods ? `, dont ${fr(gods.total)} or pour les ${gods.s.maxLevel} dieux` : ''}.\n- Les améliorations **infinies** (∞) n'ont pas de dernier niveau : ${shopRows.filter(r => r.total === null).map(r => r.s.name).join(', ')}.\n- Tous les skills des ${index.length} dieux coûtent **${fr(xpAll)} XP**.\n\n`;
+px += `- Tout le shop au maximum (sans les améliorations infinies) coûte **${fr(shopTotal)} or**${gods ? `, dont ${fr(gods.total)} or pour les ${gods.s.maxLevel} dieux` : ''}.\n- Les améliorations **infinies** (∞) n'ont pas de dernier niveau : ${shopRows.filter(r => r.total === null).map(r => r.s.name).join(', ')}.\n- Tous les skills des ${index.length} dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **${fr(xpAll)} XP**.\n\n`;
 px += `## Le shop\n\nChaque niveau coûte plus cher que le précédent : prix = prix de départ × multiplicateur ^ niveau déjà acheté, arrondi. Les dieux arrivent dans l'ordre : ${data.trees.map(t => t.name).join(', ')}.\n\n| Amélioration | Effet par niveau | Multiplicateur | Prix par niveau (or) | Total (or) |\n| --- | --- | --- | --- | --- |\n`;
 px += shopRows.map(({s, c, total}) => `| ${s.name} (${s.maxLevel === null ? '∞' : s.maxLevel + ' niv.'}) | ${s.description} | ×${dec(s.costGrowth)} | ${c.map(fr).join(', ')}${total === null ? '…' : ''} | ${total === null ? '∞' : fr(total)} |`).join('\n') + '\n\n';
 px += `## Les skills\n\nUn skill coûte plus cher quand il est loin du départ : chaque lien à parcourir depuis l'étoile de départ est un « pas ». Ensuite, **chaque dieu a des skills ${dec(C.SKILL_TIER_GROWTH)} fois plus chers que le dieu d'avant** (dans l'ordre d'achat du shop) : le 1er ×1, le 2e ×${dec(C.SKILL_TIER_GROWTH)}, le 3e ×${dec(Math.round(C.SKILL_TIER_GROWTH ** 2 * 100) / 100)}… (\`SKILL_TIER_GROWTH\`). Les derniers dieux arrivent quand on gagne beaucoup d'XP : sans ça, tout leur arbre se remplissait d'un coup.\n\n| Type de skill | Coût de base (XP), à multiplier par celui du dieu |\n| --- | --- |\n| Départ | ${C.SKILL_COST_BASE} |\n| Mineure | ${C.SKILL_COST_BASE} + ${C.SKILL_COST_PER_STEP} × pas |\n| Notable | (${C.SKILL_COST_BASE} + ${C.SKILL_COST_PER_STEP} × pas) × ${dec(C.NOTABLE_COST_MULTIPLIER)}, arrondi |\n| Keystone | ${C.KEYSTONE_COST} + 2 × pas |\n| Grande keystone | ${C.GRAND_COST} |\n\n| Dieu (ordre d'achat) | Multiplicateur |\n| --- | --- |\n` + data.trees.map((t, k) => `| ${k + 1}. ${t.name} | ×${dec(Math.round(C.SKILL_TIER_GROWTH ** k * 100) / 100)} |`).join('\n') + '\n\n';
-px += `| Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre |\n| --- | --- | --- | --- | --- | --- |\n`;
+px += `| Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre (avec la voie la plus chère) |\n| --- | --- | --- | --- | --- | --- |\n`;
 px += [...index].sort((a, b) => b.total - a.total).map(({t, total, by}) => `| ${t.name} | ${t.nodes.length} | ${by('minor').length} | ${by('notable').length} | ${by('keystone').length} + ${by('grand').length} | ${fr(total)} |`).join('\n') + '\n\n';
 px += `## Le détail par dieu\n\nChaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur ordre d'achat dans le shop.\n\n`;
 for (const {t, total} of index) {

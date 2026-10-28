@@ -5,9 +5,19 @@
 | Attribut | 🌙 Lune |
 | Couleur | `#c7b8ff` |
 | Forme de l'arbre | arc et flèche (`bow`) |
-| Compétences | 22 (7 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 5640 |
+| Compétences | 26 (9 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 4858 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°6) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie de la chasseresse** | Des balles qui rebondissent d'ennemi en ennemi. | **Callisto** (+10% de vitesse d'attaque) ; **Orion** (Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches) ; **Aréthuse** (Flèche de lune : +1 fois les dégâts d'une balle) ; **Méléagre** (Les balles rebondissent sur 1 ennemi de plus) | 7 | 1526 |
+| **Voie de la lune** | Une flèche de lune plus forte et plus fréquente. | **Britomartis** (+1 dégât par balle) ; **Opis** (+20% de vitesse des balles) ; **Hippolyte** (Flèche de lune : +3 fois les dégâts d'une balle, et elle revient 30% plus souvent) ; **Endymion** (Flèche de lune : +1 fois les dégâts d'une balle) | 7 | 1526 |
 
 ## ⭐ Grande keystone
 
@@ -34,6 +44,8 @@
 | **Cyrène** (LUNE) | La flèche de lune revient 15% plus souvent | 152 XP |
 | **Atalante** (VIT) | +15% de vitesse d'attaque | 289 XP |
 | **Procris** (DMG) | +1 dégât par balle | 425 XP |
+| **Méléagre** (REBOND) | Les balles rebondissent sur 1 ennemi de plus | 243 XP |
+| **Endymion** (LUNE) | Flèche de lune : +1 fois les dégâts d'une balle | 243 XP |
 
 ## Départ
 
@@ -48,8 +60,8 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
 | **Nymphe** (POR) | +10 de portée | ×4 | 68 à 190 XP |
-| **Oréade** (DMG) | +0.5 dégât par balle | ×3 | 129 à 220 XP |
-| **Pléione** (VEL) | +8% de vitesse des balles | ×3 | 68 à 159 XP |
+| **Oréade** (DMG) | +0.5 dégât par balle | ×4 | 129 à 220 XP |
+| **Pléione** (VEL) | +8% de vitesse des balles | ×4 | 68 à 159 XP |
 
 ## ↔️ Lien « Opposé » vers Artémis
 

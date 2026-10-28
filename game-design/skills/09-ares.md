@@ -5,9 +5,19 @@
 | Attribut | ⚔️ Guerre |
 | Couleur | `#d93a3a` |
 | Forme de l'arbre | épée (`sword`) |
-| Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 31396 |
+| Compétences | 31 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 21887 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°9) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie du carnage** | Chaque ennemi tué rend Arès plus fort, pour toujours. | **Éris** (+1 dégât par balle) ; **Kydoimos** (+10% de vitesse d'attaque) ; **Kyknos** (Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours) ; **Penthésilée** (+0.2 PV regagné par ennemi tué) ; **Diomède** (+0.2 PV regagné par ennemi tué) | 12 | 14583 |
+| **Voie du cri** | Un cri de guerre deux fois plus fort, qui dure plus longtemps. | **Makhai** (Cri de guerre : +1 s) ; **Polémos** (+1 dégât par balle) ; **Otréra** (Le cri de guerre revient 15% plus souvent) ; **Œnomaos** (Cri de guerre 2 fois plus fort) ; **Ascalaphe** (Cri de guerre : +1 s) | 12 | 14583 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Otréra** (CRI) | Le cri de guerre revient 15% plus souvent | 1128 XP |
 | **Antiope** (VIT) | +10% de vitesse d'attaque | 359 XP |
 | **Androktasiai** (CRI) | Cri de guerre 50% plus fort | 359 XP |
+| **Diomède** (VIE) | +0.2 PV regagné par ennemi tué | 1589 XP |
+| **Ascalaphe** (CRI) | Cri de guerre : +1 s | 1589 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Phobos** (DMG) | +0.5 dégât par balle | ×5 | 641 à 1358 XP |
+| **Phobos** (DMG) | +0.5 dégât par balle | ×6 | 641 à 1358 XP |
 | **Deimos** (CRI) | Cri de guerre : +0.3 s | ×5 | 436 à 1256 XP |
-| **Alala** (VIE) | +0.05 PV regagné par ennemi tué | ×4 | 538 à 1358 XP |
+| **Alala** (VIE) | +0.05 PV regagné par ennemi tué | ×5 | 538 à 1358 XP |
 
 ## ↔️ Lien « Opposé » vers Arès
 

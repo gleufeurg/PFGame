@@ -5,9 +5,19 @@
 | Attribut | 🕯️ Foyer |
 | Couleur | `#c4734a` |
 | Forme de l'arbre | brasero (`hearth`) |
-| Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 101976 |
+| Compétences | 31 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 91424 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°12) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie du foyer** | Régénérer ta vie. | **Philotès** (+0.2 PV regagné par ennemi tué) ; **Eucléia** (+5% de chance d'esquiver un coup) ; **Boulaia** (+0.15 PV régénérés par seconde) ; **Prytanée** (+0.1 PV régénérés par seconde) | 8 | 25948 |
+| **Voie du salut** | Esquiver les coups. | **Tabiti** (+0.05 PV régénérés par seconde) ; **Agathodaimon** (+2 PV max) ; **Sôtéria** (+10% de chance d'esquiver un coup) ; **Éléos** (+5% de chance d'esquiver un coup) | 8 | 25948 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Euthénia** (PV) | +3 PV max | 6401 XP |
 | **Elpis** (REG) | +0.1 PV régénérés par seconde | 5363 XP |
 | **Hestiade** (ESQ) | +5% de chance d'esquiver un coup | 6401 XP |
+| **Prytanée** (REG) | +0.1 PV régénérés par seconde | 4844 XP |
+| **Éléos** (ESQ) | +5% de chance d'esquiver un coup | 4844 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Vestale** (REG) | +0.02 PV régénérés par seconde | ×5 | 1816 à 3892 XP |
+| **Vestale** (REG) | +0.02 PV régénérés par seconde | ×6 | 1816 à 3892 XP |
 | **Lare** (PV) | +1 PV max | ×5 | 778 à 3892 XP |
-| **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×4 | 1124 à 2854 XP |
+| **Pénate** (ESQ) | +2% de chance d'esquiver un coup | ×5 | 1124 à 2854 XP |
 
 ## ↔️ Lien « Opposé » vers Hestia
 

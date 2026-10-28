@@ -8,7 +8,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 | --- | --- | --- |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
 | [rythme.md](rythme.md) | le rythme de progression (quand on obtient chaque dieu), mesuré avec le joueur robot, avant et après le rééquilibrage | écrit à la main (chiffres de `outils/joueur-robot.js`) |
-| [skills/](skills/README.md) | les 12 skill trees, les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
+| [skills/](skills/README.md) | les 12 skill trees et leurs voies (choix exclusifs), les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
 | [questions/](questions/README.md) | les réponses aux questions posées sur le jeu : toutes les formules ([formules.md](questions/formules.md)), les couleurs autour des ennemis… | écrit à la main |
 | [statistiques.md](statistiques.md) | qui profite de quoi (joueur ou planète), stats de départ, balles en mur, lien « Opposé » | écrit à la main |
 | [ennemis.md](ennemis.md) | ennemis normaux, vie qui monte, apparition, mouvements spéciaux, super ennemis, effets subis, performances | écrit à la main |

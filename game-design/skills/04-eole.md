@@ -5,9 +5,19 @@
 | Attribut | 🌪️ Vent |
 | Couleur | `#e0f7ff` |
 | Forme de l'arbre | souffles de vent (`wind`) |
-| Compétences | 45 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 7143 |
+| Compétences | 49 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 5368 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°4) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie de la rafale** | Tirer beaucoup plus vite, et une balle de plus. | **Séléné** (Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins) ; **Borée** (+15% de vitesse d'attaque) ; **Notos** (+1 dégât contre les plantes) ; **Phaéton** (+1 balle par tir) ; **Kaikias** (+15% de vitesse d'attaque) | 17 | 2807 |
+| **Voie de l'ouragan** | Une pluie de petites balles très rapides. | **Euros** (+2 dégâts contre les plantes) ; **Phosphoros** (+30% de vitesse des balles) ; **Hespéros** (+10% de vitesse d'attaque) ; **Astraïos** (Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites) ; **Skiron** (+20% de vitesse des balles) | 15 | 2342 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Euros** (AIR) | +2 dégâts contre les plantes | 108 XP |
 | **Phosphoros** (VEL) | +30% de vitesse des balles | 149 XP |
 | **Hespéros** (VIT) | +10% de vitesse d'attaque | 230 XP |
+| **Kaikias** (VIT) | +15% de vitesse d'attaque | 189 XP |
+| **Skiron** (VEL) | +20% de vitesse des balles | 169 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Aura** (POR) | +15 de portée | ×11 | 30 à 206 XP |
+| **Aura** (POR) | +15 de portée | ×12 | 30 à 206 XP |
 | **Héliade** (VEL) | +10% de vitesse des balles | ×11 | 44 à 219 XP |
-| **Anémoï** (VIT) | +6% de vitesse d'attaque | ×10 | 71 à 219 XP |
+| **Anémoï** (VIT) | +6% de vitesse d'attaque | ×11 | 71 à 219 XP |
 
 ## ↔️ Lien « Opposé » vers Éole
 

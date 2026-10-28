@@ -1972,6 +1972,70 @@
             stroke-width: 4 !important;
         }
 
+        /*LES VOIES : 3 couleurs, une par voie (la 1re, la 2e, la 3e de chaque arbre)*/
+        .voie0 { --voie-color: #ffcf5c; }
+        .voie1 { --voie-color: #b98cff; }
+        .voie2 { --voie-color: #4fd1a5; }
+
+        #treeLinks line.pathGlow { /*une large lueur sous les liens d'une voie*/
+            stroke: var(--voie-color);
+            stroke-width: 22px !important;
+            stroke-linecap: round;
+            opacity: 0.22;
+        }
+
+        #treeLinks line.pathGlow.blocked {
+            stroke: var(--ui-muted);
+            opacity: 0.08;
+        }
+
+        #treeLinks line.blocked { /*un lien vers une compétence bloquée : en pointillés*/
+            stroke-dasharray: 6 8;
+            opacity: 0.45;
+        }
+
+        #treeLinks text.pathName { /*le nom de la voie, écrit à côté d'elle*/
+            fill: var(--voie-color);
+            font-family: Nunito, sans-serif;
+            font-weight: 900;
+            font-size: 34px;
+            text-anchor: middle;
+            letter-spacing: 0.04em;
+            paint-order: stroke;
+            stroke: var(--bg);
+            stroke-width: 6px;
+        }
+
+        #treeLinks text.pathName.blocked {
+            fill: var(--ui-muted);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .skillNode.blocked { --node-edge: var(--ui-muted); --node-fill: var(--ui-relief); }
+        .skillNode.blocked .star { opacity: 0.3; }
+        .skillNode.blocked .nodeLabel { text-decoration: line-through; opacity: 0.6; }
+
+        .cardPath { /*dans la carte d'une compétence : sa voie*/
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--voie-color);
+            background: var(--ui-relief);
+            font-size: 13px;
+            color: var(--ui-text);
+        }
+
+        .cardPath strong {
+            display: block;
+            color: var(--voie-color);
+            font-size: 14px;
+        }
+
+        .cardPath.blocked {
+            border-left-color: #ff6b6b;
+        }
+
         /*BOUTON "Effacer ma progression" (Paramètres)*/
         .dangerButton {
             padding: 8px 14px;
@@ -8385,6 +8449,15 @@
         //x et y sont en % de l'arbre. links = les compétences reliées (les liens marchent dans les deux sens).
         //Le coût est calculé tout seul : plus une compétence est loin du départ, plus elle est chère.
 
+        //Une suite de noms de compétences : idRange("left", 1, 3) = ["left1", "left2", "left3"] (pour écrire les voies plus vite)
+        function idRange(prefix, from, to) {
+            const ids = [];
+            for (let i = from; i <= to; i++) {
+                ids.push(prefix + i);
+            }
+            return ids;
+        }
+
         //Petit outil pour construire une forme : add() pose une compétence, chain() en pose plusieurs reliées à la suite
         function createLayoutBuilder() {
             const layout = {};
@@ -8469,6 +8542,11 @@
                 b.layout["rightIn3"].links.push("midR5");
                 //La traînée : une étincelle qui s'échappe de la langue de droite et s'envole vers le haut (compétences de la traînée de feu, voir extraSkills)
                 b.chain("right6", "trail", [[84, 36, "notable"], [89, 29], [91, 20, "notable"], [89, 11, "keystone"]]);
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("hammer1", 26, 22, ["left9"], "minor");
+                b.add("hammer2", 19, 14, ["hammer1"], "notable");
+                b.add("lava1", 70, 26, ["right7"], "minor");
+                b.add("lava2", 68, 17, ["lava1"], "notable");
                 return b.layout;
             },
 
@@ -8497,6 +8575,13 @@
                 //Les deux rangées se touchent, comme sur le dessin
                 b.layout["top7"].links.push("low5");
                 b.layout["top15"].links.push("low14");
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("shore1", 44, 30, ["top1"], "minor");
+                b.add("shore2", 50, 23, ["shore1"], "notable");
+                b.add("abyss1", 48, 84, ["low11"], "minor");
+                b.add("abyss2", 40, 90, ["abyss1"], "notable");
+                b.add("storm1", 86, 83, ["low21"], "minor");
+                b.add("storm2", 92, 90, ["storm1"], "notable");
                 return b.layout;
             },
 
@@ -8521,6 +8606,13 @@
                     b.layout[last].links.push(base);
                 }
                 b.layout["ring0"].links.push("ring7"); //le cœur se referme
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("root1", 96, 38, ["petal2out3"], "minor");
+                b.add("root2", 95, 28, ["root1"], "notable");
+                b.add("harvest1", 64, 96, ["petal4out3"], "minor");
+                b.add("harvest2", 75, 95, ["harvest1"], "notable");
+                b.add("forest1", 4, 64, ["petal6out3"], "minor");
+                b.add("forest2", 8, 74, ["forest1"], "notable");
                 return b.layout;
             },
 
@@ -8544,6 +8636,11 @@
                 gust("low", null, [22, 31, 40, 48], 60, 70, 9, { 1: "notable", 3: "notable", 7: "notable", 12: "keystone" });
                 b.layout["top3"].links.push("mid3");   //les souffles se rejoignent : on peut passer de l'un à l'autre
                 b.layout["low2"].links.push("mid3");
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("gust1", 10, 21, ["top1"], "minor");
+                b.add("gust2", 8, 11, ["gust1"], "notable");
+                b.add("gale1", 16, 88, ["low1"], "minor");
+                b.add("gale2", 10, 95, ["gale1"], "notable");
                 return b.layout;
             },
 
@@ -8573,6 +8670,13 @@
                     b.chain("crown" + j, "ray" + j + "_", ray);
                 }
                 b.layout["crown0"].links.push("crown11");
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("fortune1", 84, 80, ["ray4_3"], "minor");
+                b.add("fortune2", 90, 88, ["fortune1"], "notable");
+                b.add("light1", 38, 94, ["ray6_3"], "minor");
+                b.add("light2", 30, 97, ["light1"], "notable");
+                b.add("dark1", 9, 72, ["ray8_3"], "minor");
+                b.add("dark2", 5, 81, ["dark1"], "notable");
                 return b.layout;
             },
 
@@ -8596,6 +8700,11 @@
                 }
                 branch("L", -1, { out1: "notable", out4: "notable", in6: "notable", out7: "notable", stem5: "keystone", tip: "grand" });
                 branch("R", 1, { out2: "notable", out5: "notable", in3: "notable", out7: "notable", stem5: "keystone", tip: "keystone" });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("aegis1", 38, 6, ["Ltip"], "minor");
+                b.add("aegis2", 46, 4, ["aegis1"], "notable");
+                b.add("spear1", 62, 6, ["Rtip"], "minor");
+                b.add("spear2", 54, 4, ["spear1"], "notable");
                 return b.layout;
             },
 
@@ -8604,6 +8713,11 @@
                 const b = createLayoutBuilder();
                 const ids = addOutline(b, "bolt", [[40, 4], [66, 4], [52, 34], [68, 34], [34, 96], [44, 54], [30, 54]], [3, 4, 2, 8, 5, 2, 6]);
                 setRoles(b, ids, { start: 17, grand: 3, keystones: [0, 9, 24], notables: [1, 5, 7, 13, 15, 20, 22, 27] });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("arc1", 20, 54, ["bolt25"], "minor");
+                b.add("arc2", 11, 54, ["arc1"], "notable");
+                b.add("ram1", 77, 34, ["bolt10"], "minor");
+                b.add("ram2", 87, 34, ["ram1"], "notable");
                 return b.layout;
             },
 
@@ -8624,6 +8738,11 @@
                 b.add("pommelR", 56, 88, ["grip2"]);
                 b.add("start", 50, 95, ["pommelL", "pommelR"], "start");
                 setRoles(b, null, { keystones: ["guard1", "guard7", "grip2"], notables: ["left3", "right3", "left6", "right6", "guard2", "guard6", "pommelL", "pommelR"] });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("carnage1", 24, 74, ["guard1"], "minor");
+                b.add("carnage2", 24, 84, ["carnage1"], "notable");
+                b.add("cry1", 76, 74, ["guard7"], "minor");
+                b.add("cry2", 76, 84, ["cry1"], "notable");
                 return b.layout;
             },
 
@@ -8652,6 +8771,11 @@
                 b.layout["inner7"].links.push("outer14");  //...et en haut, au creux du cœur
                 b.add("center", 50, 54, ["inner1", "inner7"], "grand");
                 setRoles(b, null, { start: "outer1", keystones: ["outer9", "outer19", "inner1"], notables: ["outer5", "outer12", "outer14", "outer16", "outer23", "inner4", "inner7", "inner10"] });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("crowd1", 7, 11, ["outer9"], "minor");
+                b.add("crowd2", 4, 3, ["crowd1"], "notable");
+                b.add("sky1", 93, 11, ["outer19"], "minor");
+                b.add("sky2", 96, 3, ["sky1"], "notable");
                 return b.layout;
             },
 
@@ -8673,6 +8797,10 @@
                 }
                 setRoles(b, null, { start: "bone1", grand: "bone9", keystones: ["feather1_2", "feather4_2", "feather7_2"],
                     notables: ["bone3", "bone5", "bone7", "feather0_1", "feather3_1", "feather5_1", "feather2_2", "feather6_2"] });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("feather2_3", 45.3, 83.4, ["feather2_2"], "notable");
+                b.add("feather5_3", 67.7, 54, ["feather5_2"], "notable");
+                b.add("feather8_3", 90.3, 38, ["feather8_2"], "notable");
                 return b.layout;
             },
 
@@ -8698,6 +8826,11 @@
                 b.chain("bowl5", "legM", [[50, 86], [50, 95]]);
                 setRoles(b, null, { start: "legM2", keystones: ["legL2", "legR2", "rim3"],
                     notables: ["bowl2", "bowl4", "bowl6", "bowl8", "flameL1", "flameR1", "flameL3", "flameR3"] });
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("hearth1", 12, 88, ["legL2"], "minor");
+                b.add("hearth2", 7, 78, ["hearth1"], "notable");
+                b.add("safety1", 88, 88, ["legR2"], "minor");
+                b.add("safety2", 93, 78, ["safety1"], "notable");
                 return b.layout;
             },
 
@@ -8745,6 +8878,11 @@
                 b.add("barbBottom", 85, 56, ["arrowFront3"], "notable");
                 b.add("fletchTop", 20, 45, ["start"]);
                 b.add("fletchBottom", 20, 55, ["start"]);
+                //Au bout de chaque voie (voir paths dans SKILL_TREES_DATA) : de nouvelles compétences, pour des arbres plus grands
+                b.add("hunt1", 30, 6, ["tipTop"], "minor");
+                b.add("hunt2", 20, 6, ["hunt1"], "notable");
+                b.add("moon1", 30, 94, ["tipBottom"], "minor");
+                b.add("moon2", 20, 94, ["moon1"], "notable");
                 return b.layout;
             },
 
@@ -8815,11 +8953,19 @@
                 //Les compétences de la branche "traînée" (ids trail1 à trail4 dans la forme "fire") :
                 //une étincelle qui s'échappe de la langue de droite, comme la traînée laissée par une balle
                 extraSkills: {
+                    //Au bout des voies
+                    hammer2: { label: "DMG", name: "Lemnos", description: "+15% de dégâts", effect: { stat: "damageMultiplier", value: 0.15 } },
+                    lava2: { label: "BRÛLE", name: "Cacus", description: "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: 0.4 } },
                     trail1: { label: "TRAÎNÉE", name: "Phlégéthon", description: "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)", effect: { stat: "fireTrail", value: 0.4 } },
                     trail2: { label: "DURÉE", name: "Pyrois", description: "La traînée de feu dure 0.6 s de plus", effect: { stat: "fireTrailDuration", value: 0.6 } },
                     trail3: { label: "BRÛLE", name: "Aethon", description: "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: 0.4 } },
                     trail4: { label: "BRASIER", name: "Pyriphlégéthon", description: "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus", effects: [{ stat: "fireTrailWidth", value: 1 }, { stat: "fireTrailDuration", value: 1 }] }
                 },
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie du marteau", description: "Des coups lourds et lents : le Marteau (+100% de dégâts) et l'Enclume (balles 2 fois plus grosses).", label: [30, 52], nodes: ["left1", "left2", "left3", "left4", "left5", "left6", "left7", "left8", "left9", "hammer1", "hammer2"] },
+                    { name: "Voie de la lave", description: "Tout brûler et tout traverser : la Coulée de lave et la Traînée de feu.", label: [88, 75], nodes: ["right1", "right2", "right3", "right4", "right5", "right6", "right7", "rightIn1", "rightIn2", "rightIn3", "trail1", "trail2", "trail3", "trail4", "lava1", "lava2"] }
+                ],
                 shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
@@ -8857,11 +9003,21 @@
                 //Les compétences de la branche "écume" (ids spray1 à spray4 dans la forme "waves") : de la portée,
                 //donc une vague qui va plus loin (elle va jusqu'à la portée de Poséidon)
                 extraSkills: {
+                    //Au bout des voies
+                    shore2: { label: "POR", name: "Amymone", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
+                    abyss2: { label: "FRÊLE", name: "Pontos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
+                    storm2: { label: "VAGUE", name: "Eurybia", description: "La vague revient 15% plus souvent", effect: { stat: "abilityHaste", value: 0.15 } },
                     spray1: { label: "POR", name: "Cymo", description: "+20 de portée", effect: { stat: "range", value: 20 } },
                     spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : +60 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 60 } },
                     spray3: { label: "POR", name: "Rhodé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
                     spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : +80 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 80 } }
                 },
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie du rivage", description: "Te protéger : le Bouclier des marées, et une vague qui va plus loin.", label: [24, 33], nodes: ["top1", "top2", "top3", "top4", "top5", "top6", "spray1", "spray2", "spray3", "spray4", "shore1", "shore2"] },
+                    { name: "Voie des abysses", description: "Affaiblir : les ennemis frêles prennent beaucoup plus de dégâts.", label: [62, 84], nodes: ["low6", "low7", "low8", "low9", "low10", "low11", "low12", "low13", "abyss1", "abyss2"] },
+                    { name: "Voie de la tempête", description: "Des vagues plus fréquentes, qui vont plus loin.", label: [88, 50], nodes: ["low14", "low15", "low16", "low17", "low18", "low19", "low20", "low21", "storm1", "storm2"] }
+                ],
                 shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "fragility", value: 0.35 }] },
@@ -8896,6 +9052,18 @@
                     { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "FLEUR", name: "Mélie", description: "+8 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 8 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie des racines", description: "Immobiliser les ennemis avec des lianes.", label: [90, 64], nodes: ["petal2out1", "petal2out2", "petal2out3", "petal2back1", "petal2back2", "root1", "root2"] },
+                    { name: "Voie des moissons", description: "Te soigner plus fort et plus souvent.", label: [75, 88], nodes: ["petal4out1", "petal4out2", "petal4out3", "petal4back1", "petal4back2", "harvest1", "harvest2"] },
+                    { name: "Voie de la forêt", description: "Un rayon de vie plus grand, qui fait aussi pousser des lianes.", label: [10, 84], nodes: ["petal6out1", "petal6out2", "petal6out3", "petal6back1", "petal6back2", "forest1", "forest2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    root2: { label: "LIANE", name: "Despina", description: "+1 liane à chaque rayon de vie", effect: { stat: "vineCount", value: 1 } },
+                    harvest2: { label: "SOIN", name: "Métanire", description: "Le rayon de vie soigne 0.5 PV de plus", effect: { stat: "bloomHeal", value: 0.5 } },
+                    forest2: { label: "FLEUR", name: "Dryope", description: "+25 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 25 } }
+                },
                 shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIE", name: "Perséphone", description: "Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s)", effects: [{ stat: "bloomHeal", value: 1 }, { stat: "bloomRadius", value: 120 }] },
@@ -8930,6 +9098,16 @@
                     { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
                     { label: "VIT", name: "Anémoï", description: "+6% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.06 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie de la rafale", description: "Tirer beaucoup plus vite, et une balle de plus.", label: [22, 24], nodes: ["top1", "top2", "top3", "top4", "top5", "top6", "top7", "top8", "top9", "top10", "top11", "top12", "top13", "top14", "top15", "gust1", "gust2"] },
+                    { name: "Voie de l'ouragan", description: "Une pluie de petites balles très rapides.", label: [35, 92], nodes: ["low1", "low2", "low3", "low4", "low5", "low6", "low7", "low8", "low9", "low10", "low11", "low12", "low13", "gale1", "gale2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    gust2: { label: "VIT", name: "Kaikias", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    gale2: { label: "VEL", name: "Skiron", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
+                },
                 shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
@@ -8964,6 +9142,18 @@
                     { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
                     { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie de la fortune", description: "Gagner beaucoup plus d'or.", label: [90, 64], nodes: ["ray4_1", "ray4_2", "ray4_3", "fortune1", "fortune2"] },
+                    { name: "Voie de la lumière", description: "Une balle de plus par tir.", label: [58, 94], nodes: ["ray6_1", "ray6_2", "ray6_3", "light1", "light2"] },
+                    { name: "Voie des ténèbres", description: "Beaucoup plus de dégâts.", label: [12, 90], nodes: ["ray8_1", "ray8_2", "ray8_3", "dark1", "dark2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    fortune2: { label: "OR", name: "Amalthée", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
+                    light2: { label: "VIT", name: "Phébé", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    dark2: { label: "DMG", name: "Nyx", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                },
                 shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
@@ -8999,6 +9189,16 @@
                     { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
                     { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie de la chasseresse", description: "Des balles qui rebondissent d'ennemi en ennemi.", label: [55, 6], nodes: ["stringTop", "tipTop", "limb1", "limb2", "limb3", "hunt1", "hunt2"] },
+                    { name: "Voie de la lune", description: "Une flèche de lune plus forte et plus fréquente.", label: [55, 94], nodes: ["stringBottom", "tipBottom", "limb5", "limb6", "limb7", "moon1", "moon2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    hunt2: { label: "REBOND", name: "Méléagre", description: "Les balles rebondissent sur 1 ennemi de plus", effect: { stat: "bounce", value: 1 } },
+                    moon2: { label: "LUNE", name: "Endymion", description: "Flèche de lune : +1 fois les dégâts d'une balle", effect: { stat: "moonArrow", value: 1 } }
+                },
                 shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic (la forme à 3 branches gardée de côté)
                 skills: {
                     start: { label: "LUNE", name: "Léto", description: "Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle)", effect: { stat: "moonArrow", value: 3 } },
@@ -9034,6 +9234,16 @@
                     { label: "ESQ", name: "Aglaure", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } },
                     { label: "XP", name: "Hersé", description: "+4% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.04 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie de l'égide", description: "Esquiver les coups, et gagner beaucoup plus d'XP.", label: [34, 40], nodes: ["Lstem4", "Lstem5", "Lstem6", "Lstem7", "Lout4", "Lout5", "Lout6", "Lout7", "Lin4", "Lin5", "Lin6", "Lin7", "Ltip", "aegis1", "aegis2"] },
+                    { name: "Voie de la lance", description: "Plus de dégâts et plus de portée.", label: [66, 40], nodes: ["Rstem4", "Rstem5", "Rstem6", "Rstem7", "Rout4", "Rout5", "Rout6", "Rout7", "Rin4", "Rin5", "Rin6", "Rin7", "Rtip", "spear1", "spear2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    aegis2: { label: "ESQ", name: "Pallas", description: "+8% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.08 } },
+                    spear2: { label: "DMG", name: "Bellérophon", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                },
                 shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "SAG", name: "Métis", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
@@ -9069,6 +9279,16 @@
                     { label: "VIT", name: "Brontè", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
                     { label: "ÉCLAIR", name: "Kéraunos", description: "Éclairs : +5% de dégâts", effect: { stat: "arcDamage", value: 0.05 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie des éclairs", description: "Plus d'éclairs, qui vont plus loin.", label: [12, 46], nodes: ["bolt19", "bolt20", "bolt21", "bolt22", "bolt23", "bolt24", "bolt25", "bolt26", "bolt27", "bolt28", "bolt29", "bolt30", "arc1", "arc2"] },
+                    { name: "Voie du bélier", description: "Une balle de plus par tir, et des tirs plus rapides.", label: [85, 26], nodes: ["bolt5", "bolt6", "bolt7", "bolt8", "bolt9", "bolt10", "bolt11", "bolt12", "bolt13", "bolt14", "bolt15", "bolt16", "bolt17", "ram1", "ram2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    arc2: { label: "ÉCLAIR", name: "Salmonée", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
+                    ram2: { label: "VIT", name: "Dodone", description: "+20% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.2 } }
+                },
                 shape: "bolt",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "ÉCLAIR", name: "Thémis", description: "Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur", effects: [{ stat: "chainArcs", value: 1 }, { stat: "arcDamage", value: 0.4 }] },
@@ -9104,6 +9324,16 @@
                     { label: "CRI", name: "Deimos", description: "Cri de guerre : +0.3 s", effect: { stat: "warCryDuration", value: 0.3 } },
                     { label: "VIE", name: "Alala", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie du carnage", description: "Chaque ennemi tué rend Arès plus fort, pour toujours.", label: [12, 50], nodes: ["guard1", "guard2", "guard3", "left1", "left2", "left3", "left4", "left5", "left6", "left7", "carnage1", "carnage2"] },
+                    { name: "Voie du cri", description: "Un cri de guerre deux fois plus fort, qui dure plus longtemps.", label: [88, 50], nodes: ["guard5", "guard6", "guard7", "right1", "right2", "right3", "right4", "right5", "right6", "right7", "cry1", "cry2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    carnage2: { label: "VIE", name: "Diomède", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
+                    cry2: { label: "CRI", name: "Ascalaphe", description: "Cri de guerre : +1 s", effect: { stat: "warCryDuration", value: 1 } }
+                },
                 shape: "sword",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "CRI", name: "Ényo", description: "Cri de guerre : toutes les 12 s, toi et toutes les planètes faites +15% de dégâts, +4% de chance de critique et +20% de dégâts critiques pendant 4 s", effect: { stat: "warCry", value: 1 } },
@@ -9139,6 +9369,16 @@
                     { label: "CHARME", name: "Himéros", description: "+6 de rayon de charme", effect: { stat: "charmRadius", value: 6 } },
                     { label: "ESQ", name: "Pothos", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie de la foule", description: "Charmer beaucoup plus d'ennemis à la fois.", label: [10, 70], nodes: ["outer2", "outer3", "outer4", "outer5", "outer6", "outer7", "outer8", "outer9", "outer10", "outer11", "outer12", "outer13", "crowd1", "crowd2"] },
+                    { name: "Voie du ciel", description: "Des ennemis charmés plus longtemps, qui blessent bien plus leurs alliés.", label: [90, 70], nodes: ["outer15", "outer16", "outer17", "outer18", "outer19", "outer20", "outer21", "outer22", "outer23", "outer24", "outer25", "outer26", "sky1", "sky2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    crowd2: { label: "CHARME", name: "Harmonie", description: "+20 de rayon de charme", effect: { stat: "charmRadius", value: 20 } },
+                    sky2: { label: "CHARME", name: "Énée", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } }
+                },
                 shape: "heart",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "CHARME", name: "Éros", description: "Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis)", effects: [{ stat: "charmRadius", value: 80 }, { stat: "charmDuration", value: 2 }] },
@@ -9174,6 +9414,18 @@
                     { label: "VIT", name: "Hodios", description: "+4% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.04 } },
                     { label: "ESQ", name: "Agoraios", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie des talonnières", description: "Tirer plus vite.", label: [12, 50], nodes: ["feather0_1", "feather0_2", "feather1_1", "feather1_2", "feather2_1", "feather2_2", "feather2_3"] },
+                    { name: "Voie du pétase", description: "Esquiver plus souvent.", label: [68, 64], nodes: ["feather3_1", "feather3_2", "feather4_1", "feather4_2", "feather5_1", "feather5_2", "feather5_3"] },
+                    { name: "Voie du caducée", description: "Une balle de plus par tir.", label: [88, 46], nodes: ["feather6_1", "feather6_2", "feather7_1", "feather7_2", "feather8_1", "feather8_2", "feather8_3"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    feather2_3: { label: "VIT", name: "Angelos", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
+                    feather5_3: { label: "ESQ", name: "Dolios", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } },
+                    feather8_3: { label: "VEL", name: "Kriophoros", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
+                },
                 shape: "wing",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "VIT", name: "Maïa", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
@@ -9209,6 +9461,16 @@
                     { label: "PV", name: "Lare", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
                     { label: "ESQ", name: "Pénate", description: "+2% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.02 } }
                 ],
+                //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
+                paths: [
+                    { name: "Voie du foyer", description: "Régénérer ta vie.", label: [14, 66], nodes: ["legL1", "legL2", "bowl6", "bowl7", "bowl8", "bowl9", "hearth1", "hearth2"] },
+                    { name: "Voie du salut", description: "Esquiver les coups.", label: [86, 66], nodes: ["legR1", "legR2", "bowl1", "bowl2", "bowl3", "bowl4", "safety1", "safety2"] }
+                ],
+                //Les compétences au bout des voies (ids dans la forme de l'arbre)
+                extraSkills: {
+                    hearth2: { label: "REG", name: "Prytanée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
+                    safety2: { label: "ESQ", name: "Éléos", description: "+5% de chance d'esquiver un coup", effect: { stat: "dodgeChance", value: 0.05 } }
+                },
                 shape: "hearth",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
                     start: { label: "PV", name: "Rhéa", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
@@ -9367,9 +9629,22 @@
                 }
             }
 
+            //VOIES : chaque compétence d'une voie retient le numéro de sa voie (node.path : 0, 1 ou 2)
+            const paths = (treeData.paths || []).map(function (path, index) {
+                for (const id of path.nodes) {
+                    const node = nodes.find(function (other) { return other.id === id; });
+                    if (node === undefined) {
+                        console.warn(treeData.name + " : la voie « " + path.name + " » cite une compétence qui n'existe pas : " + id);
+                        continue;
+                    }
+                    node.path = index;
+                }
+                return { name: t(path.name), description: t(path.description), label: path.label };
+            });
+
             warnCrossingLinks(treeData.name, nodes);
             //id = le nom français (ne change jamais : sauvegarde, codes de triche) ; name = le nom affiché, dans la langue du joueur
-            return { id: treeData.name, name: t(treeData.name), color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes };
+            return { id: treeData.name, name: t(treeData.name), color: treeData.color, element: treeData.element, linkMode: "none", project: treeData.project, isLocked: true, nodes: nodes, paths: paths };
         }
 
         //VÉRIFICATION : prévient dans la console (F12) si deux liens d'un arbre se croisent, pour corriger la forme
@@ -9411,10 +9686,28 @@
             return null;
         }
 
-        // "unlocked" = déjà pris, "available" = on peut le prendre, "locked" = pas encore relié
+        //LES VOIES : dans chaque arbre, 2 ou 3 branches rivales, chacune avec sa façon de jouer (paths dans SKILL_TREES_DATA).
+        //Prendre une compétence d'une voie BLOQUE les autres voies de cet arbre. Pour changer de voie, il faut rembourser
+        //toutes les compétences de la sienne. Renvoie le numéro de la voie choisie dans cet arbre, ou null s'il n'y en a pas encore.
+        function getChosenPath(tree) {
+            for (const node of tree.nodes) {
+                if (node.unlocked && node.path !== undefined) {
+                    return node.path;
+                }
+            }
+            return null;
+        }
+
+        // "unlocked" = déjà pris, "available" = on peut le prendre, "locked" = pas encore relié, "blocked" = dans une voie rivale de celle choisie
         function getNodeState(tree, node) {
             if (node.unlocked) {
                 return "unlocked";
+            }
+            if (node.path !== undefined) {
+                const chosen = getChosenPath(tree);
+                if (chosen !== null && chosen !== node.path) {
+                    return "blocked";
+                }
             }
             if (node.isStart) {
                 return "available";
@@ -9798,6 +10091,26 @@
             treeLinks.innerHTML = "";
             treeNodes.innerHTML = "";
 
+            //LES VOIES : une large lueur de couleur sous les liens de chaque voie (grise quand la voie est bloquée), et son nom
+            const chosenPath = getChosenPath(tree);
+            for (const node of tree.nodes) {
+                for (const linkedId of node.links) {
+                    const other = findNode(tree, linkedId);
+                    if (node.path !== undefined && node.path === other.path) {
+                        const isBlocked = chosenPath !== null && chosenPath !== node.path;
+                        treeLinks.appendChild(createTreeLine(node, other, "pathGlow voie" + node.path + (isBlocked ? " blocked" : "")));
+                    }
+                }
+            }
+            tree.paths.forEach(function (path, index) {
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", path.label[0] + "%");
+                text.setAttribute("y", path.label[1] + "%");
+                text.setAttribute("class", "pathName voie" + index + (chosenPath !== null && chosenPath !== index ? " blocked" : ""));
+                text.textContent = (chosenPath === index ? "✔ " : "") + path.name;
+                treeLinks.appendChild(text);
+            });
+
             //LIENS entre les compétences (lignes SVG)
             for (const node of tree.nodes) {
                 for (const linkedId of node.links) {
@@ -9805,7 +10118,8 @@
                     const isActive = parent.unlocked && node.unlocked;
                     const isFilling = isActive && (node === justUnlockedNode || parent === justUnlockedNode);
                     //Un lien qui vient de s'activer : d'abord le trait gris, puis le trait coloré qui se remplit par-dessus
-                    treeLinks.appendChild(createTreeLine(parent, node, isActive && !isFilling ? "active" : ""));
+                    const isBlocked = getNodeState(tree, parent) === "blocked" || getNodeState(tree, node) === "blocked";
+                    treeLinks.appendChild(createTreeLine(parent, node, isActive && !isFilling ? "active" : (isBlocked ? "blocked" : "")));
                     if (isFilling) {
                         //Il se remplit depuis la voisine déjà prise, vers la nouvelle compétence
                         const from = node === justUnlockedNode ? parent : node;
@@ -9967,6 +10281,9 @@
                 : IS_TOUCH_DEVICE
                     ? t("Touche une compétence pour la choisir, puis « Débloquer ». Appui long pour la rembourser, deux doigts pour zoomer.")
                     : t("Clique sur une compétence pour la choisir, puis « Débloquer ». Clic droit pour la rembourser.");
+            if (currentTree.paths.length > 0 && getChosenPath(currentTree) === null) {
+                treeHint.textContent += " " + t("Les branches colorées sont des voies : en prendre une bloque les autres.");
+            }
         }
 
         const ROLE_NAMES = { start: "Départ", minor: "Compétence", notable: "Notable", keystone: "Keystone", grand: "Grande keystone" };
@@ -10017,6 +10334,22 @@
             nodeCard.appendChild(gains);
             //La description, sans le "GRANDE KEYSTONE : " du début (l'étiquette le dit déjà)
             nodeCard.appendChild(createElementWithText("div", "cardDescription", node.description.replace(t(GRAND_KEYSTONE_PREFIX), "")));
+            //Une compétence d'une VOIE : le nom de la voie, sa façon de jouer, et ce que son choix bloque
+            if (node.path !== undefined) {
+                const path = currentTree.paths[node.path];
+                const chosen = getChosenPath(currentTree);
+                const box = createElementWithText("div", "cardPath voie" + node.path + (state === "blocked" ? " blocked" : ""), "");
+                box.appendChild(createElementWithText("strong", "", "⑂ " + path.name));
+                let text = path.description;
+                if (state === "blocked") {
+                    text = t("Bloquée : tu as choisi la {name}. Pour changer, rembourse les compétences de cette voie.", { name: currentTree.paths[chosen].name });
+                } else if (chosen === null) {
+                    const others = currentTree.paths.filter(function (other, index) { return index !== node.path; }).map(function (other) { return other.name; });
+                    text += " " + t("La prendre bloque : {names}.", { names: others.join(", ") });
+                }
+                box.appendChild(createElementWithText("span", "", text));
+                nodeCard.appendChild(box);
+            }
 
             const footer = createElementWithText("div", "cardFooter", "");
             if (currentTree.isLocked) {
@@ -10034,6 +10367,9 @@
                 } else if (!isPreview) {
                     footer.appendChild(createElementWithText("span", "infoChip blocked", t("D'autres compétences en dépendent")));
                 }
+            } else if (state === "blocked") {
+                footer.appendChild(createElementWithText("span", "infoChip cost", node.cost + " XP"));
+                footer.appendChild(createElementWithText("span", "infoChip blocked", t("🔒 Voie bloquée")));
             } else if (state === "locked") {
                 footer.appendChild(createElementWithText("span", "infoChip cost" + (xp < node.cost ? " tooExpensive" : ""), node.cost + " XP"));
                 footer.appendChild(createElementWithText("span", "infoChip blocked", t("Débloque une voisine d'abord")));
@@ -10702,8 +11038,55 @@
                 }
                 const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
                 godItem.level = SKILL_TREES.filter(function (tree) { return !tree.isLocked; }).length;
+                resolvePathConflicts();
             }
             isProgressLoaded = true;
+        }
+
+        //Une sauvegarde d'avant les VOIES peut avoir des compétences dans plusieurs voies du même arbre :
+        //on garde la voie où le joueur a mis le plus d'XP, et on lui rend l'XP des autres
+        //(et des compétences qui n'étaient plus reliées au départ qu'à travers elles)
+        function resolvePathConflicts() {
+            for (const tree of SKILL_TREES) {
+                const spent = tree.paths.map(function () { return 0; }); //l'XP mise dans chaque voie
+                for (const node of tree.nodes) {
+                    if (node.unlocked && node.path !== undefined) {
+                        spent[node.path] += node.cost;
+                    }
+                }
+                if (spent.filter(function (value) { return value > 0; }).length < 2) {
+                    continue; //une seule voie (ou aucune) : rien à faire
+                }
+                const kept = spent.indexOf(Math.max(...spent)); //...spent = les nombres un par un (Math.max ne prend pas de tableau)
+                for (const node of tree.nodes) {
+                    if (node.unlocked && node.path !== undefined && node.path !== kept) {
+                        node.unlocked = false;
+                        xp += node.cost;
+                    }
+                }
+                //On part du départ et on avance de voisine prise en voisine prise : celles qu'on n'atteint plus sont rendues aussi
+                const start = tree.nodes.find(function (node) { return node.isStart; });
+                const reached = new Set();
+                const toVisit = start.unlocked ? [start] : [];
+                while (toVisit.length > 0) {
+                    const current = toVisit.pop();
+                    if (reached.has(current)) {
+                        continue;
+                    }
+                    reached.add(current);
+                    for (const neighbor of current.neighbors) {
+                        if (neighbor.unlocked && !reached.has(neighbor)) {
+                            toVisit.push(neighbor);
+                        }
+                    }
+                }
+                for (const node of tree.nodes) {
+                    if (node.unlocked && !reached.has(node)) {
+                        node.unlocked = false;
+                        xp += node.cost;
+                    }
+                }
+            }
         }
 
         //La place d'une planète dans la sauvegarde (une planète inconnue va à la fin)
@@ -11348,10 +11731,11 @@
         const CHEAT_TYPING_PAUSE = 1500; // millisecondes : après cette pause, on recommence un nouveau mot
 
         //Un dieu rejoint l'orbite (si besoin) et TOUT son skill tree est débloqué
+        //Tout l'arbre d'un dieu, avec sa 1re voie seulement (les voies sont exclusives : rembourser pour essayer les autres)
         function completeTree(tree) {
             unlockGod(tree);
             for (const node of tree.nodes) {
-                node.unlocked = true;
+                node.unlocked = node.path === undefined || node.path === 0;
             }
             refreshStats();
             if (currentTree === tree) {

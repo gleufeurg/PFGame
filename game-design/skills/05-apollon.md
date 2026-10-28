@@ -5,9 +5,20 @@
 | Attribut | ☀️ Lumière |
 | Couleur | `#ffd84d` |
 | Forme de l'arbre | soleil (`sun`) |
-| Compétences | 49 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 7368 |
+| Compétences | 55 (11 notables, 3 keystones, 1 grande keystone) |
+| Voies | 3 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 6724 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°5) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie de la fortune** | Gagner beaucoup plus d'or. | **Ploutos** (+50% d'or gagné) ; **Amalthée** (+25% d'or gagné) | 5 | 1049 |
+| **Voie de la lumière** | Une balle de plus par tir. | **Astéria** (+1 balle par tir) ; **Phébé** (+15% de vitesse d'attaque) | 5 | 1251 |
+| **Voie des ténèbres** | Beaucoup plus de dégâts. | **Érébos** (+3 dégâts par balle) ; **Nyx** (+2 dégâts par balle) | 5 | 1049 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +46,9 @@
 | **Astrée** (AIR) | +1 dégât contre les ennemis d'air | 223 XP |
 | **Agathodaïmon** (OR) | +10% d'or gagné | 253 XP |
 | **Théia** (DMG) | +1 dégât par balle | 192 XP |
+| **Amalthée** (OR) | +25% d'or gagné | 284 XP |
+| **Phébé** (VIT) | +15% de vitesse d'attaque | 344 XP |
+| **Nyx** (DMG) | +2 dégâts par balle | 284 XP |
 
 ## Départ
 
@@ -48,9 +62,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Pléiade** (OR) | +5% d'or gagné | ×12 | 46 à 147 XP |
-| **Hyade** (XP) | +5% d'XP gagnée | ×12 | 66 à 167 XP |
-| **Titanide** (DMG) | +0.5 dégât par balle | ×12 | 46 à 147 XP |
+| **Pléiade** (OR) | +5% d'or gagné | ×13 | 46 à 167 XP |
+| **Hyade** (XP) | +5% d'XP gagnée | ×13 | 66 à 208 XP |
+| **Titanide** (DMG) | +0.5 dégât par balle | ×13 | 46 à 167 XP |
 
 ## ↔️ Lien « Opposé » vers Apollon
 

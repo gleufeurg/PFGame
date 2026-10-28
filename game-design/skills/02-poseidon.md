@@ -5,9 +5,20 @@
 | Attribut | 💧 Eau |
 | Couleur | `#4da6ff` |
 | Forme de l'arbre | vagues (`waves`) |
-| Compétences | 40 (10 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 3316 |
+| Compétences | 46 (13 notables, 3 keystones, 1 grande keystone) |
+| Voies | 3 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 2222 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°2) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie du rivage** | Te protéger : le Bouclier des marées, et une vague qui va plus loin. | **Amphitrite** (Bouclier des marées : chaque vague te rend invincible pendant 2 s) ; **Doris** (+0.05 PV régénérés par seconde) ; **Cymopolée** (Ressac : +60 de portée (la vague va aussi plus loin)) ; **Benthésicymé** (Houle : +80 de portée (la vague va aussi plus loin)) ; **Amymone** (+40 de portée (la vague va aussi plus loin)) | 12 | 1061 |
+| **Voie des abysses** | Affaiblir : les ennemis frêles prennent beaucoup plus de dégâts. | **Glaucos** (Ennemis frêles : +5% de dégâts subis) ; **Céto** (Ennemis frêles : +15% de dégâts subis) ; **Leucothée** (La vague revient 15% plus souvent) ; **Pontos** (Ennemis frêles : +5% de dégâts subis) | 10 | 780 |
+| **Voie de la tempête** | Des vagues plus fréquentes, qui vont plus loin. | **Palémon** (+30 de recul de la vague) ; **Nérée** (+3 PV max) ; **Triton** (La vague revient 40% plus souvent, et +80 de portée) ; **Eurybia** (La vague revient 15% plus souvent) | 10 | 1326 |
 
 ## ⭐ Grande keystone
 
@@ -37,6 +48,9 @@
 | **Nérée** (PV) | +3 PV max | 147 XP |
 | **Cymopolée** (RESSAC) | Ressac : +60 de portée (la vague va aussi plus loin) | 120 XP |
 | **Benthésicymé** (HOULE) | Houle : +80 de portée (la vague va aussi plus loin) | 138 XP |
+| **Amymone** (POR) | +40 de portée (la vague va aussi plus loin) | 129 XP |
+| **Pontos** (FRÊLE) | Ennemis frêles : +5% de dégâts subis | 120 XP |
+| **Eurybia** (VAGUE) | La vague revient 15% plus souvent | 210 XP |
 
 ## Départ
 
@@ -50,9 +64,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Néréide** (PV) | +1 PV max | ×8 | 32 à 122 XP |
-| **Océanide** (REG) | +0.02 PV régénérés par seconde | ×8 | 14 à 128 XP |
-| **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×7 | 20 à 116 XP |
+| **Néréide** (PV) | +1 PV max | ×9 | 32 à 122 XP |
+| **Océanide** (REG) | +0.02 PV régénérés par seconde | ×9 | 14 à 134 XP |
+| **Naïade** (FRÊLE) | Ennemis frêles : +2% de dégâts subis | ×8 | 20 à 116 XP |
 | **Cymo** (POR) | +20 de portée | ×1 | 74 à 74 XP |
 | **Rhodé** (POR) | +30 de portée | ×1 | 86 à 86 XP |
 

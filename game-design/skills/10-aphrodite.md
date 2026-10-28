@@ -5,9 +5,19 @@
 | Attribut | 💗 Amour |
 | Couleur | `#ff8fc7` |
 | Forme de l'arbre | cœur (`heart`) |
-| Compétences | 39 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 47558 |
+| Compétences | 43 (10 notables, 3 keystones, 1 grande keystone) |
+| Voies | 2 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 37407 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°10) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie de la foule** | Charmer beaucoup plus d'ennemis à la fois. | **Peitho** (Charme : +0.5 s) ; **Pandémos** (Foule : +50 de rayon de charme) ; **Antéros** (+5% de chance d'esquiver un coup) ; **Harmonie** (+20 de rayon de charme) | 14 | 18531 |
+| **Voie du ciel** | Des ennemis charmés plus longtemps, qui blessent bien plus leurs alliés. | **Psyché** (Le rayon de charme revient 15% plus souvent) ; **Ourania** (Les ennemis charmés blessent 2 fois plus leurs alliés) ; **Hymen** (+0.2 PV regagné par ennemi tué) ; **Énée** (Charme : +0.5 s) | 14 | 18531 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +45,8 @@
 | **Euphrosyne** (PV) | +3 PV max | 1230 XP |
 | **Hermaphrodite** (CHARME) | Charme : +0.5 s | 1000 XP |
 | **Rhodos** (CHARME) | Le rayon de charme revient 15% plus souvent | 1230 XP |
+| **Harmonie** (CHARME) | +20 de rayon de charme | 2614 XP |
+| **Énée** (CHARME) | Charme : +0.5 s | 2614 XP |
 
 ## Départ
 
@@ -48,9 +60,9 @@ Elles reviennent plusieurs fois dans l'arbre, numérotées I, II, III…
 
 | Nom | Effet | Nombre | Coût |
 |---|---|---|---|
-| **Charis** (PV) | +1 PV max | ×9 | 346 à 1422 XP |
+| **Charis** (PV) | +1 PV max | ×10 | 346 à 1576 XP |
 | **Himéros** (CHARME) | +6 de rayon de charme | ×9 | 500 à 1269 XP |
-| **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×8 | 346 à 1422 XP |
+| **Pothos** (ESQ) | +2% de chance d'esquiver un coup | ×9 | 346 à 1576 XP |
 
 ## ↔️ Lien « Opposé » vers Aphrodite
 

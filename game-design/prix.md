@@ -6,7 +6,7 @@ Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meu
 
 - Tout le shop au maximum (sans les améliorations infinies) coûte **800 615 or**, dont 794 716 or pour les 12 dieux.
 - Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Vie max, Dégâts, Régénération, Dégâts critiques.
-- Tous les skills des 12 dieux coûtent **309 538 XP**.
+- Tous les skills des 12 dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **245 381 XP**.
 
 ## Le shop
 
@@ -55,26 +55,26 @@ Un skill coûte plus cher quand il est loin du départ : chaque lien à parcouri
 | 11. Hermès | ×57,67 |
 | 12. Hestia | ×86,5 |
 
-| Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre |
+| Dieu | Skills | Mineures | Notables | Keystones (+ grande) | XP pour tout prendre (avec la voie la plus chère) |
 | --- | --- | --- | --- | --- | --- |
-| Hestia | 27 | 14 | 8 | 3 + 1 | 101 976 |
-| Hermès | 27 | 14 | 8 | 3 + 1 | 58 299 |
-| Aphrodite | 39 | 26 | 8 | 3 + 1 | 47 558 |
-| Arès | 27 | 14 | 8 | 3 + 1 | 31 396 |
-| Zeus | 30 | 17 | 8 | 3 + 1 | 23 784 |
-| Athéna | 51 | 38 | 8 | 3 + 1 | 19 102 |
-| Apollon | 49 | 36 | 8 | 3 + 1 | 7 368 |
-| Éole | 45 | 32 | 8 | 3 + 1 | 7 143 |
-| Artémis | 22 | 10 | 7 | 3 + 1 | 5 640 |
-| Poséidon | 40 | 25 | 10 | 3 + 1 | 3 316 |
-| Déméter | 49 | 36 | 8 | 3 + 1 | 2 628 |
-| Héphaïstos | 39 | 23 | 10 | 4 + 1 | 1 328 |
+| Hestia | 31 | 16 | 10 | 3 + 1 | 91 424 |
+| Hermès | 30 | 14 | 11 | 3 + 1 | 40 307 |
+| Aphrodite | 43 | 28 | 10 | 3 + 1 | 37 407 |
+| Arès | 31 | 16 | 10 | 3 + 1 | 21 887 |
+| Zeus | 34 | 19 | 10 | 3 + 1 | 17 822 |
+| Athéna | 55 | 40 | 10 | 3 + 1 | 14 047 |
+| Apollon | 55 | 39 | 11 | 3 + 1 | 6 724 |
+| Éole | 49 | 34 | 10 | 3 + 1 | 5 368 |
+| Artémis | 26 | 12 | 9 | 3 + 1 | 4 858 |
+| Poséidon | 46 | 28 | 13 | 3 + 1 | 2 222 |
+| Déméter | 55 | 39 | 11 | 3 + 1 | 2 209 |
+| Héphaïstos | 43 | 25 | 12 | 4 + 1 | 1 106 |
 
 ## Le détail par dieu
 
 Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur ordre d'achat dans le shop.
 
-### Héphaïstos (39 skills · 1 328 XP)
+### Héphaïstos (43 skills · 1 106 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -96,21 +96,24 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 29 | Cyclope II | Mineure | +10% de dégâts critiques |
 | 29 | Dactyle II, VII | Mineure | +0.5 dégât par balle, chacun |
 | 29 | Telchine VII | Mineure | Balles 8% plus grosses |
-| 33 | Telchine II, V | Mineure | Balles 8% plus grosses, chacun |
+| 33 | Telchine II, V, VIII | Mineure | Balles 8% plus grosses, chacun |
+| 37 | Cyclope VIII | Mineure | +10% de dégâts critiques |
 | 37 | Pyrois | Mineure | La traînée de feu dure 0.6 s de plus |
 | 38 | Argès | Notable | +2 dégâts par balle |
 | 38 | Kédalion | Notable | +25% de dégâts critiques |
 | 50 | Kratos | Notable | +1 dégât par balle |
 | 50 | Phlégéthon | Notable | Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde) |
 | 50 | Stéropès | Notable | Balles 20% plus grosses |
+| 56 | Lemnos | Notable | +15% de dégâts |
 | 62 | Aethon | Notable | La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde |
+| 62 | Cacus | Notable | La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde |
 | 72 | Brontès | Keystone | Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins |
 | 72 | Cabires | Keystone | Enclume : balles 2 fois plus grosses, mais 30% plus lentes |
 | 74 | Hécate | Keystone | Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran |
 | 80 | Pyriphlégéthon | Keystone | Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus |
 | 150 | Etna | Grande keystone | GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins |
 
-### Poséidon (40 skills · 3 316 XP)
+### Poséidon (46 skills · 2 222 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -132,8 +135,9 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 68 | Océanide III | Mineure | +0.02 PV régénérés par seconde |
 | 74 | Cymo | Mineure | +20 de portée |
 | 74 | Naïade III | Mineure | Ennemis frêles : +2% de dégâts subis |
+| 74 | Néréide IX | Mineure | +1 PV max |
 | 74 | Océanide VI | Mineure | +0.02 PV régénérés par seconde |
-| 80 | Naïade VI | Mineure | Ennemis frêles : +2% de dégâts subis |
+| 80 | Naïade VI, VIII | Mineure | Ennemis frêles : +2% de dégâts subis, chacun |
 | 86 | Néréide IV | Mineure | +1 PV max |
 | 86 | Rhodé | Mineure | +30 de portée |
 | 92 | Néréide VII | Mineure | +1 PV max |
@@ -143,17 +147,21 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 110 | Océanide VII | Mineure | +0.02 PV régénérés par seconde |
 | 116 | Naïade VII | Mineure | Ennemis frêles : +2% de dégâts subis |
 | 120 | Cymopolée | Notable | Ressac : +60 de portée (la vague va aussi plus loin) |
+| 120 | Pontos | Notable | Ennemis frêles : +5% de dégâts subis |
 | 120 | Protée | Notable | +10% de chance d'esquiver un coup |
 | 122 | Néréide VIII | Mineure | +1 PV max |
 | 123 | Amphitrite | Keystone | Bouclier des marées : chaque vague te rend invincible pendant 2 s |
 | 128 | Océanide VIII | Mineure | +0.02 PV régénérés par seconde |
+| 129 | Amymone | Notable | +40 de portée (la vague va aussi plus loin) |
 | 129 | Palémon | Notable | +30 de recul de la vague |
+| 134 | Océanide IX | Mineure | +0.02 PV régénérés par seconde |
 | 138 | Benthésicymé | Notable | Houle : +80 de portée (la vague va aussi plus loin) |
 | 138 | Triton | Keystone | La vague revient 40% plus souvent, et +80 de portée |
 | 147 | Nérée | Notable | +3 PV max |
+| 210 | Eurybia | Notable | La vague revient 15% plus souvent |
 | 225 | Océanos | Grande keystone | GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s |
 
-### Déméter (49 skills · 2 628 XP)
+### Déméter (55 skills · 2 209 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -168,16 +176,22 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 45 | Thallo | Notable | +10% d'XP gagnée |
 | 47 | Dryade III, VI, IX, XII | Mineure | +0.05 PV regagné par ennemi tué, chacun |
 | 47 | Hamadryade III, VI, IX, XII | Mineure | +5% d'XP gagnée, chacun |
+| 56 | Dryade XIII | Mineure | +0.05 PV regagné par ennemi tué |
+| 56 | Hamadryade XIII | Mineure | +5% d'XP gagnée |
+| 56 | Mélie XIII | Mineure | +8 de rayon du rayon de vie |
 | 86 | Anthée | Notable | Les lianes immobilisent 1 s de plus |
 | 86 | Aristée | Notable | +0.2 PV regagnés par ennemi tué |
 | 86 | Auxo | Notable | Le rayon de vie soigne 0.5 PV de plus |
 | 86 | Eubouleus | Notable | +1 liane à chaque rayon de vie |
+| 99 | Despina | Notable | +1 liane à chaque rayon de vie |
+| 99 | Dryope | Notable | +25 de rayon du rayon de vie |
+| 99 | Métanire | Notable | Le rayon de vie soigne 0.5 PV de plus |
 | 153 | Karpos | Keystone | Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis) |
 | 153 | Pan | Keystone | +60 de rayon du rayon de vie et +2 lianes |
 | 153 | Triptolème | Keystone | Le rayon de vie soigne 2 PV de plus et revient 30% plus souvent |
 | 338 | Gaïa | Grande keystone | GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et le rayon de vie revient 2 fois plus souvent |
 
-### Éole (45 skills · 7 143 XP)
+### Éole (49 skills · 5 368 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -190,7 +204,9 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 84 | Aura II, V, IX | Mineure | +15 de portée, chacun |
 | 88 | Éos | Notable | +30 de portée |
 | 98 | Anémoï V | Mineure | +6% de vitesse d'attaque |
+| 98 | Aura XII | Mineure | +15 de portée |
 | 108 | Euros | Notable | +2 dégâts contre les plantes |
+| 111 | Anémoï XI | Mineure | +6% de vitesse d'attaque |
 | 111 | Aura VI | Mineure | +15 de portée |
 | 111 | Héliade II, IX | Mineure | +10% de vitesse des balles, chacun |
 | 125 | Anémoï II, IX | Mineure | +6% de vitesse d'attaque, chacun |
@@ -203,8 +219,10 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 152 | Aura VII | Mineure | +15 de portée |
 | 152 | Héliade III | Mineure | +10% de vitesse des balles |
 | 165 | Héliade X | Mineure | +10% de vitesse des balles |
+| 169 | Skiron | Notable | +20% de vitesse des balles |
 | 179 | Anémoï III, X | Mineure | +6% de vitesse d'attaque, chacun |
 | 179 | Héliade VII | Mineure | +10% de vitesse des balles |
+| 189 | Kaikias | Notable | +15% de vitesse d'attaque |
 | 192 | Anémoï VII | Mineure | +6% de vitesse d'attaque |
 | 192 | Aura IV, XI | Mineure | +15 de portée, chacun |
 | 206 | Aura VIII | Mineure | +15 de portée |
@@ -219,7 +237,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 311 | Phaéton | Keystone | +1 balle par tir |
 | 506 | Thyella | Grande keystone | GRANDE KEYSTONE : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins |
 
-### Apollon (49 skills · 7 368 XP)
+### Apollon (55 skills · 6 724 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -242,18 +260,24 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 147 | Pléiade VIII, XI, XII | Mineure | +5% d'or gagné, chacun |
 | 147 | Titanide IV, V | Mineure | +0.5 dégât par balle, chacun |
 | 167 | Hyade VIII | Mineure | +5% d'XP gagnée |
+| 167 | Pléiade XIII | Mineure | +5% d'or gagné |
+| 167 | Titanide XIII | Mineure | +0.5 dégât par balle |
 | 192 | Coéos | Notable | +10% d'XP gagnée |
 | 192 | Théia | Notable | +1 dégât par balle |
+| 208 | Hyade XIII | Mineure | +5% d'XP gagnée |
 | 223 | Astrée | Notable | +1 dégât contre les ennemis d'air |
 | 223 | Hypérion | Notable | +1 dégât par balle |
 | 253 | Agathodaïmon | Notable | +10% d'or gagné |
 | 253 | Mnémosyne | Notable | +20% d'XP gagnée |
+| 284 | Amalthée | Notable | +25% d'or gagné |
+| 284 | Nyx | Notable | +2 dégâts par balle |
+| 344 | Phébé | Notable | +15% de vitesse d'attaque |
 | 365 | Ploutos | Keystone | +50% d'or gagné |
 | 365 | Érébos | Keystone | +3 dégâts par balle |
 | 385 | Astéria | Keystone | +1 balle par tir |
 | 759 | Chaos | Grande keystone | GRANDE KEYSTONE : +100% d'or gagné |
 
-### Artémis (22 skills · 5 640 XP)
+### Artémis (26 skills · 4 858 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -263,13 +287,16 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 106 | Britomartis | Notable | +1 dégât par balle |
 | 106 | Callisto | Notable | +10% de vitesse d'attaque |
 | 129 | Nymphe I, III | Mineure | +10 de portée, chacun |
-| 129 | Oréade II | Mineure | +0.5 dégât par balle |
+| 129 | Oréade II, IV | Mineure | +0.5 dégât par balle, chacun |
+| 129 | Pléione IV | Mineure | +8% de vitesse des balles |
 | 152 | Cyrène | Notable | La flèche de lune revient 15% plus souvent |
 | 159 | Pléione I | Mineure | +8% de vitesse des balles |
 | 190 | Nymphe II | Mineure | +10 de portée |
 | 190 | Oréade I | Mineure | +0.5 dégât par balle |
 | 220 | Oréade III | Mineure | +0.5 dégât par balle |
 | 243 | Aréthuse | Notable | Flèche de lune : +1 fois les dégâts d'une balle |
+| 243 | Endymion | Notable | Flèche de lune : +1 fois les dégâts d'une balle |
+| 243 | Méléagre | Notable | Les balles rebondissent sur 1 ennemi de plus |
 | 243 | Opis | Notable | +20% de vitesse des balles |
 | 289 | Atalante | Notable | +15% de vitesse d'attaque |
 | 425 | Procris | Notable | +1 dégât par balle |
@@ -278,7 +305,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 577 | Actéon | Keystone | +1 rebond et +25% de vitesse d'attaque |
 | 1139 | Agrotera | Grande keystone | GRANDE KEYSTONE : la flèche de lune revient 2 fois plus souvent et fait +4 fois les dégâts d'une balle |
 
-### Athéna (51 skills · 19 102 XP)
+### Athéna (55 skills · 14 047 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -311,16 +338,20 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 467 | Aglaure XIII | Mineure | +2% de chance d'esquiver un coup |
 | 467 | Nikè VII | Mineure | +1 PV max |
 | 501 | Pandrosos | Notable | +2 PV max |
+| 513 | Hersé XIII | Mineure | +4% d'XP gagnée |
+| 513 | Nikè XIV | Mineure | +1 PV max |
 | 570 | Hygie | Notable | +0.05 PV régénérés par seconde |
 | 638 | Arachné | Notable | +10% de vitesse d'attaque |
 | 706 | Aidôs | Notable | +10% d'XP gagnée |
 | 706 | Tritonis | Notable | +5% de chance d'esquiver un coup |
 | 820 | Promachos | Keystone | +2 dégâts par balle |
 | 820 | Égide | Keystone | +8% de chance d'esquiver un coup |
+| 843 | Bellérophon | Notable | +2 dégâts par balle |
+| 843 | Pallas | Notable | +8% de chance d'esquiver un coup |
 | 888 | Glaucopis | Keystone | +60 de portée (les yeux de la chouette) |
 | 1709 | Parthénos | Grande keystone | GRANDE KEYSTONE : +100% d'XP gagnée |
 
-### Zeus (30 skills · 23 784 XP)
+### Zeus (34 skills · 17 822 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -338,14 +369,17 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 547 | Horkos | Notable | Éclairs : +10% de dégâts |
 | 564 | Brontè II | Mineure | +5% de vitesse d'attaque |
 | 632 | Brontè V | Mineure | +5% de vitesse d'attaque |
+| 632 | Kéraunos VI | Mineure | Éclairs : +5% de dégâts |
 | 649 | Némésis | Notable | +1 dégât par balle |
-| 701 | Astrapé II | Mineure | +0.5 dégât par balle |
+| 701 | Astrapé II, VII | Mineure | +0.5 dégât par balle, chacun |
 | 701 | Kéraunos V | Mineure | Éclairs : +5% de dégâts |
 | 837 | Astrapé VI | Mineure | +0.5 dégât par balle |
 | 837 | Kéraunos I | Mineure | Éclairs : +5% de dégâts |
 | 906 | Brontè VI | Mineure | +5% de vitesse d'attaque |
 | 974 | Brontè I | Mineure | +5% de vitesse d'attaque |
+| 1059 | Salmonée | Notable | +1 éclair par balle |
 | 1111 | Astrapé I | Mineure | +0.5 dégât par balle |
+| 1162 | Dodone | Notable | +20% de vitesse d'attaque |
 | 1162 | Eunomia | Notable | +40 de portée des éclairs |
 | 1162 | Io | Notable | Éclairs : +15% de dégâts |
 | 1264 | Olympios | Keystone | +2 éclairs par balle et +40 de portée des éclairs |
@@ -355,7 +389,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1572 | Dikè | Notable | +1 dégât par balle |
 | 2563 | Aithér | Grande keystone | GRANDE KEYSTONE : la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin |
 
-### Arès (27 skills · 31 396 XP)
+### Arès (31 skills · 21 887 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -368,8 +402,8 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 641 | Phobos V | Mineure | +0.5 dégât par balle |
 | 743 | Deimos II | Mineure | Cri de guerre : +0.3 s |
 | 743 | Phobos IV | Mineure | +0.5 dégât par balle |
-| 948 | Alala III | Mineure | +0.05 PV regagné par ennemi tué |
-| 948 | Phobos II | Mineure | +0.5 dégât par balle |
+| 948 | Alala III, V | Mineure | +0.05 PV regagné par ennemi tué, chacun |
+| 948 | Phobos II, VI | Mineure | +0.5 dégât par balle, chacun |
 | 1051 | Alala I | Mineure | +0.05 PV regagné par ennemi tué |
 | 1051 | Deimos III | Mineure | Cri de guerre : +0.3 s |
 | 1128 | Otréra | Notable | Le cri de guerre revient 15% plus souvent |
@@ -380,6 +414,8 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1281 | Polémos | Notable | +1 dégât par balle |
 | 1358 | Alala II | Mineure | +0.05 PV regagné par ennemi tué |
 | 1358 | Phobos I | Mineure | +0.5 dégât par balle |
+| 1589 | Ascalaphe | Notable | Cri de guerre : +1 s |
+| 1589 | Diomède | Notable | +0.2 PV regagné par ennemi tué |
 | 1640 | Phlégyas | Keystone | Le cri de guerre revient 30% plus souvent et dure 1 s de plus |
 | 1743 | Makhai | Notable | Cri de guerre : +1 s |
 | 1743 | Éris | Notable | +1 dégât par balle |
@@ -387,7 +423,7 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1897 | Œnomaos | Keystone | Cri de guerre 2 fois plus fort |
 | 3844 | Kères | Grande keystone | GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort |
 
-### Aphrodite (39 skills · 47 558 XP)
+### Aphrodite (43 skills · 37 407 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -415,14 +451,18 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1269 | Pothos II | Mineure | +2% de chance d'esquiver un coup |
 | 1422 | Charis III | Mineure | +1 PV max |
 | 1422 | Pothos IV | Mineure | +2% de chance d'esquiver un coup |
+| 1576 | Charis X | Mineure | +1 PV max |
+| 1576 | Pothos IX | Mineure | +2% de chance d'esquiver un coup |
 | 1692 | Antéros | Notable | +5% de chance d'esquiver un coup |
 | 1692 | Psyché | Notable | Le rayon de charme revient 15% plus souvent |
 | 2383 | Cythérée | Keystone | Le rayon de charme revient 40% plus souvent |
+| 2614 | Harmonie | Notable | +20 de rayon de charme |
+| 2614 | Énée | Notable | Charme : +0.5 s |
 | 2922 | Ourania | Keystone | Les ennemis charmés blessent 2 fois plus leurs alliés |
 | 2922 | Pandémos | Keystone | Foule : +50 de rayon de charme |
 | 5767 | Phanès | Grande keystone | GRANDE KEYSTONE : charme +1.5 s, et le rayon de charme revient 2 fois plus souvent |
 
-### Hermès (27 skills · 58 299 XP)
+### Hermès (30 skills · 40 307 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -442,17 +482,20 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 1903 | Hodios IV | Mineure | +4% de vitesse d'attaque |
 | 1903 | Kéryx II, IV | Mineure | +8% de vitesse des balles, chacun |
 | 2134 | Agoraios IV | Mineure | +2% de chance d'esquiver un coup |
+| 2191 | Angelos | Notable | +15% de vitesse d'attaque |
 | 2364 | Kéryx V | Mineure | +8% de vitesse des balles |
 | 2537 | Chioné | Notable | +5% de chance d'esquiver un coup |
 | 2537 | Eudoros | Notable | +5% de chance d'esquiver un coup |
 | 2595 | Hodios V | Mineure | +4% de vitesse d'attaque |
 | 3229 | Abdère | Notable | +15% de vitesse des balles |
+| 3229 | Dolios | Notable | +5% de chance d'esquiver un coup |
 | 3806 | Talaria | Keystone | +30% de vitesse d'attaque |
 | 4152 | Pétase | Keystone | +10% de chance d'esquiver un coup |
+| 4267 | Kriophoros | Notable | +20% de vitesse des balles |
 | 4498 | Caducée | Keystone | +1 balle par tir |
 | 8650 | Aion | Grande keystone | GRANDE KEYSTONE : +50% de vitesse d'attaque |
 
-### Hestia (27 skills · 101 976 XP)
+### Hestia (31 skills · 91 424 XP)
 
 | Coût (XP) | Skill | Type | Effet |
 | --- | --- | --- | --- |
@@ -468,13 +511,16 @@ Chaque tableau va du skill le moins cher au plus cher. Les dieux sont dans leur 
 | 2249 | Philotès | Notable | +0.2 PV regagné par ennemi tué |
 | 2508 | Lare II | Mineure | +1 PV max |
 | 2508 | Vestale I | Mineure | +0.02 PV régénérés par seconde |
-| 2854 | Pénate II, III | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 2854 | Pénate II, III, V | Mineure | +2% de chance d'esquiver un coup, chacun |
+| 2854 | Vestale VI | Mineure | +0.02 PV régénérés par seconde |
 | 3200 | Lare III | Mineure | +1 PV max |
 | 3200 | Vestale III | Mineure | +0.02 PV régénérés par seconde |
 | 3287 | Eucléia | Notable | +5% de chance d'esquiver un coup |
 | 3287 | Tabiti | Notable | +0.05 PV régénérés par seconde |
 | 3892 | Lare IV | Mineure | +1 PV max |
 | 3892 | Vestale IV | Mineure | +0.02 PV régénérés par seconde |
+| 4844 | Prytanée | Notable | +0.1 PV régénérés par seconde |
+| 4844 | Éléos | Notable | +5% de chance d'esquiver un coup |
 | 5363 | Elpis | Notable | +0.1 PV régénérés par seconde |
 | 5363 | Homonoia | Notable | +0.05 PV régénérés par seconde |
 | 6228 | Boulaia | Keystone | +0.15 PV régénérés par seconde |

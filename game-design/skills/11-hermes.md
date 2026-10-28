@@ -5,9 +5,20 @@
 | Attribut | 🪶 Plume |
 | Couleur | `#6a7dff` |
 | Forme de l'arbre | aile (`wing`) |
-| Compétences | 27 (8 notables, 3 keystones, 1 grande keystone) |
-| XP pour tout débloquer | 58299 |
+| Compétences | 30 (11 notables, 3 keystones, 1 grande keystone) |
+| Voies | 3 (on n'en prend qu'une) |
+| XP pour tout prendre (avec la voie la plus chère) | 40307 |
 | Disponible | à acheter dans le shop (« Nouvelle divinité » n°11) |
+
+## ⑂ Les voies
+
+Prendre une compétence d'une voie **bloque les autres voies** de cet arbre. Pour changer de voie, il faut rembourser toutes les compétences de la sienne (l'XP est rendue).
+
+| Voie | Façon de jouer | Ses keystones et notables | Compétences | XP |
+|---|---|---|---|---|
+| **Voie des talonnières** | Tirer plus vite. | **Autolycos** (+10% d'or gagné) ; **Talaria** (+30% de vitesse d'attaque) ; **Myrtilos** (+20% de vitesse des balles) ; **Angelos** (+15% de vitesse d'attaque) | 7 | 11129 |
+| **Voie du pétase** | Esquiver plus souvent. | **Daphnis** (+10% de vitesse d'attaque) ; **Pétase** (+10% de chance d'esquiver un coup) ; **Eudoros** (+5% de chance d'esquiver un coup) ; **Dolios** (+5% de chance d'esquiver un coup) | 7 | 16550 |
+| **Voie du caducée** | Une balle de plus par tir. | **Abdère** (+15% de vitesse des balles) ; **Caducée** (+1 balle par tir) ; **Kriophoros** (+20% de vitesse des balles) | 7 | 20990 |
 
 ## ⭐ Grande keystone
 
@@ -35,6 +46,9 @@
 | **Daphnis** (VIT) | +10% de vitesse d'attaque | 1845 XP |
 | **Eudoros** (ESQ) | +5% de chance d'esquiver un coup | 2537 XP |
 | **Abdère** (VEL) | +15% de vitesse des balles | 3229 XP |
+| **Angelos** (VIT) | +15% de vitesse d'attaque | 2191 XP |
+| **Dolios** (ESQ) | +5% de chance d'esquiver un coup | 3229 XP |
+| **Kriophoros** (VEL) | +20% de vitesse des balles | 4267 XP |
 
 ## Départ
 
