@@ -191,8 +191,18 @@ Le jeu est prévu pour tenir environ 10 000 ennemis :
 
 - **Grille :** le terrain est découpé en cases de 64 px (`ENEMY_GRID_CELL`). Une balle ou une explosion ne regarde que les ennemis des cases autour d'elle, pas les 10 000.
 - **Ménage groupé :** un ennemi mort passe à `alive = false` et n'est retiré de la liste qu'une fois par pas de jeu (`removeDeadEnemies`).
-- **Images pré-dessinées :** chaque ennemi rond est une petite image dessinée une seule fois par couleur et par taille, puis recopiée (`getRoundEnemySprite`).
-- **Moins de détails quand il y en a trop :** au-delà de 1 500 ennemis (`MAX_ENEMY_SHADOWS`), les ennemis ronds n'ont plus d'ombre. Au-delà de 150 nombres de dégâts à l'écran (`MAX_DAMAGE_NUMBERS`), on n'en ajoute plus, sauf les critiques. Les ennemis hors de l'écran ne sont pas dessinés.
+- **Images pré-dessinées, recopiées en vrais pixels :** chaque ennemi rond est une petite image dessinée une seule fois par couleur et par taille (`getRoundEnemySprite`), puis recopiée. Depuis l'optimisation demandée par les testeurs, ces images sont faites **à la taille exacte où elles s'affichent** (en vrais pixels de l'écran, avec le zoom de la caméra : `getDeviceRadius`, `getWorldToDevice`) et recopiées à une **position entière**, sans être agrandies ni réduites : c'est 3 à 4 fois plus rapide, et plus net. Pareil pour les ombres des ennemis ronds (`getShadowSprite`) et pour les **anneaux de statut** (charmé, affaibli, gelé...), qui sont maintenant aussi des petites images (`getRingSprite`, `STATUS_RING_STYLES`) au lieu d'être tracés au pinceau à chaque image.
+- **Formes spéciales :** l'épaisseur d'un zigzag, d'une spirale ou d'une onde est remplie en une fois (`traceStretchedShape`) au lieu d'un remplissage par côté. (Mettre toutes les formes dans un seul énorme chemin a été essayé : c'est plus lent.)
+- **Moins de détails quand il y en a trop :** au-delà de 1 500 ennemis (`MAX_ENEMY_SHADOWS`), les ennemis n'ont plus d'ombre (ni les ronds, ni les formes spéciales). Au-delà de 150 nombres de dégâts à l'écran (`MAX_DAMAGE_NUMBERS`), on n'en ajoute plus, sauf les critiques. Les ennemis hors de l'écran ne sont pas dessinés.
+- **La foudre de Zeus en chaîne** est étalée sur plusieurs pas de jeu : au plus 6 coups de foudre (`MAX_BOLTS_PER_STEP`) et 150 ennemis électrocutés (`MAX_BOLT_HITS_PER_STEP`) par pas ; la suite attend le pas suivant.
 - **Sur téléphone et tablette** (écran tactile, `IS_TOUCH_DEVICE`), les limites sont plus basses : plus d'ombre au-delà de 400 ennemis, 60 nombres de dégâts au maximum, 200 particules au lieu de 500 (`MAX_PARTICLES`).
 
-Mesure faite sans carte graphique (le cas le plus lent) : 10 000 ennemis prennent environ 60 ms par image, contre 870 ms avant. Avec une carte graphique, c'est nettement plus rapide.
+Mesures faites sans carte graphique (le cas le plus lent), écran 1280 × 800 :
+
+| Ennemis à l'écran | Avant | Après |
+| --- | --- | --- |
+| ~900 | 37 ms par image | 23 ms |
+| ~2 400 | 47 ms | 28 ms |
+| ~7 000 | 118 ms | 46 ms |
+
+Avec une carte graphique, c'est nettement plus rapide.
