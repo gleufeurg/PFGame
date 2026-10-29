@@ -1576,5 +1576,6 @@ window.TRADUCTIONS.zh = {
     "Débloque la vitesse x4": "解锁 x4 速度",
     "Débloque le saut de +30 s, puis +100 s": "解锁 +30 秒跳跃，然后是 +100 秒",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "礼物：现在你可以加速游戏（x2），还能跳过 10 秒时间（T 键）！被跳过的时间里的敌人会一次性全部出现，把它们打倒吧。跳跃之后要稍等一会儿才能再跳。商店可以解锁 x4 和更长的跳跃。",
-    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "礼物：现在你可以加速游戏（x2），还能跳过 10 秒时间！被跳过的时间里的敌人会一次性全部出现，把它们打倒吧。跳跃之后要稍等一会儿才能再跳。商店可以解锁 x4 和更长的跳跃。"
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "礼物：现在你可以加速游戏（x2），还能跳过 10 秒时间！被跳过的时间里的敌人会一次性全部出现，把它们打倒吧。跳跃之后要稍等一会儿才能再跳。商店可以解锁 x4 和更长的跳跃。",
+    "🌊 Une énorme vague d'ennemis arrive !": "🌊 一大波敌人来袭！"
 };

@@ -4,17 +4,17 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum (sans les améliorations infinies) coûte **800 086 or**, dont 794 716 or pour les 12 dieux.
+- Tout le shop au maximum (sans les améliorations infinies) coûte **15 899 296 or**, dont 15 893 926 or pour les 12 dieux.
 - Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Portée, Vie max, Dégâts, Régénération, Esquive, Dégâts critiques.
 - Tous les skills des 12 dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **245 381 XP**.
 
 ## Le shop
 
-Chaque niveau coûte plus cher que le précédent : prix = prix de départ × multiplicateur ^ niveau déjà acheté, arrondi. Les dieux arrivent dans l'ordre : Héphaïstos, Poséidon, Déméter, Éole, Apollon, Artémis, Athéna, Zeus, Arès, Aphrodite, Hermès, Hestia.
+Chaque niveau coûte plus cher que le précédent : prix = prix de départ × multiplicateur ^ niveau déjà acheté, arrondi. Exception : le 1er dieu a son propre prix, petit, pour le tutoriel ; le prix de départ est celui du 2e dieu. Les dieux arrivent dans l'ordre : Héphaïstos, Poséidon, Déméter, Éole, Apollon, Artémis, Athéna, Zeus, Arès, Aphrodite, Hermès, Hestia.
 
 | Amélioration | Effet par niveau | Multiplicateur | Prix par niveau (or) | Total (or) |
 | --- | --- | --- | --- | --- |
-| Nouvelle divinité (12 niv.) | Une nouvelle planète et son skill tree rejoignent l'orbite | ×2,5 | 20, 50, 125, 313, 781, 1 953, 4 883, 12 207, 30 518, 76 294, 190 735, 476 837 | 794 716 |
+| Nouvelle divinité (12 niv.) | Une nouvelle planète et son skill tree rejoignent l'orbite | ×2,5 | 20, 1 000, 2 500, 6 250, 15 625, 39 063, 97 656, 244 141, 610 352, 1 525 879, 3 814 697, 9 536 743 | 15 893 926 |
 | Chance de critique (10 niv.) | +2% de chance de coup critique | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
 | Liens d'orbite (4 niv.) | Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé | ×2,5 | 30, 75, 188, 469 | 762 |
 | Balle supplémentaire (3 niv.) | +1 balle par tir | ×2,5 | 60, 150, 375 | 585 |
