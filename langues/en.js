@@ -1576,5 +1576,6 @@ window.TRADUCTIONS.en = {
     "✨ Arbre complet : l'Éveil de {name} est disponible !": "✨ Tree complete: you can now awaken {name}!",
     "niv. {level}": "lvl {level}",
     "Total : +{percent} de dégâts": "Total: +{percent} damage",
-    "niveau {level} : +{percent} de dégâts": "level {level}: +{percent} damage"
+    "niveau {level} : +{percent} de dégâts": "level {level}: +{percent} damage",
+    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ No time jumps during the tutorial"
 };

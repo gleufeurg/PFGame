@@ -1576,5 +1576,6 @@ window.TRADUCTIONS.zh = {
     "✨ Arbre complet : l'Éveil de {name} est disponible !": "✨ 技能树已完成：现在可以让{name}觉醒了！",
     "niv. {level}": "{level} 级",
     "Total : +{percent} de dégâts": "总计：伤害 +{percent}",
-    "niveau {level} : +{percent} de dégâts": "等级 {level}：伤害 +{percent}"
+    "niveau {level} : +{percent} de dégâts": "等级 {level}：伤害 +{percent}",
+    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ 教程期间不能跳过时间"
 };
