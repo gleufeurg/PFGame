@@ -321,8 +321,6 @@ window.TRADUCTIONS.zh = {
     "Droite": "右侧",
     "Dryade": "德律阿得斯",
     "Débloque la vitesse du jeu x{speed}": "解锁 x{speed} 游戏速度",
-    "Débloque la vitesse x2, puis x4": "解锁 x2 速度，之后是 x4",
-    "Débloque le saut de +10 s, puis +30 s, puis +100 s": "解锁 +10 秒跳跃，之后是 +30 秒，再之后是 +100 秒",
     "Débloque le saut de +{seconds} s (touche T)": "解锁 +{seconds} 秒跳跃（T 键）",
     "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés": "解锁专属主题「黄金奥林匹斯」：金色、光芒和飘动的金粉动画",
     "Déclaration": "告白",
@@ -1526,8 +1524,6 @@ window.TRADUCTIONS.zh = {
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).": "这个面板显示你的所有数据：你的生命、你的伤害，以及每颗行星的数据。数值变化时会闪烁（上升时为绿色）。",
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier.": "这个面板显示你的所有数据：你的生命、你的伤害，以及每颗行星的数据。数值变化时会闪烁（上升时为绿色）。点它的标题可以展开或收起。",
     "Le temps": "时间",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "这个按钮可以加速游戏（x2、x4），也可以跳过时间（T 键）：被跳过的时间里的所有敌人会一次性出现，要靠你把它们击倒。跳跃之后，要等一会儿才能再跳。",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "这个按钮可以加速游戏（x2、x4），也可以跳过时间：被跳过的时间里的所有敌人会一次性出现，要靠你把它们击倒。跳跃之后，要等一会儿才能再跳。",
     "Les liens d'orbite": "轨道连结",
     "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici.": "一颗行星可以和同一轨道上的邻居连结，借用它的属性：它的射击就会获得特殊效果（爆炸、冰冻、灼烧……）。在这里选择连结。",
     "Les orbites": "轨道",
@@ -1577,5 +1573,8 @@ window.TRADUCTIONS.zh = {
     "niv. {level}": "{level} 级",
     "Total : +{percent} de dégâts": "总计：伤害 +{percent}",
     "niveau {level} : +{percent} de dégâts": "等级 {level}：伤害 +{percent}",
-    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ 教程期间不能跳过时间"
+    "Débloque la vitesse x4": "解锁 x4 速度",
+    "Débloque le saut de +30 s, puis +100 s": "解锁 +30 秒跳跃，然后是 +100 秒",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "礼物：现在你可以加速游戏（x2），还能跳过 10 秒时间（T 键）！被跳过的时间里的敌人会一次性全部出现，把它们打倒吧。跳跃之后要稍等一会儿才能再跳。商店可以解锁 x4 和更长的跳跃。",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "礼物：现在你可以加速游戏（x2），还能跳过 10 秒时间！被跳过的时间里的敌人会一次性全部出现，把它们打倒吧。跳跃之后要稍等一会儿才能再跳。商店可以解锁 x4 和更长的跳跃。"
 };

@@ -321,8 +321,6 @@ window.TRADUCTIONS.it = {
     "Droite": "Destra",
     "Dryade": "Driade",
     "Débloque la vitesse du jeu x{speed}": "Sblocca la velocità di gioco x{speed}",
-    "Débloque la vitesse x2, puis x4": "Sblocca la velocità x2, poi x4",
-    "Débloque le saut de +10 s, puis +30 s, puis +100 s": "Sblocca il salto di +10 s, poi +30 s, poi +100 s",
     "Débloque le saut de +{seconds} s (touche T)": "Sblocca il salto di +{seconds} s (tasto T)",
     "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés": "Sblocca il tema esclusivo «Olimpo dorato»: oro, raggi di luce e polvere d'oro animati",
     "Déclaration": "Dichiarazione",
@@ -1526,8 +1524,6 @@ window.TRADUCTIONS.it = {
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).": "Questo pannello mostra tutte le tue statistiche: la tua vita, i tuoi danni e quelle di ogni pianeta. Una statistica che cambia lampeggia (in verde se sale).",
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier.": "Questo pannello mostra tutte le tue statistiche: la tua vita, i tuoi danni e quelle di ogni pianeta. Una statistica che cambia lampeggia (in verde se sale). Premi il suo titolo per aprirlo o chiuderlo.",
     "Le temps": "Il tempo",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "Questo pulsante accelera il gioco (x2, x4) e fa saltare nel tempo (tasto T): tutti i nemici del tempo saltato arrivano insieme, sta a te abbatterli. Dopo un salto, bisogna aspettare un po' prima del successivo.",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "Questo pulsante accelera il gioco (x2, x4) e fa saltare nel tempo: tutti i nemici del tempo saltato arrivano insieme, sta a te abbatterli. Dopo un salto, bisogna aspettare un po' prima del successivo.",
     "Les liens d'orbite": "I legami d'orbita",
     "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici.": "Un pianeta può legarsi a un vicino della sua orbita per prenderne in prestito l'attributo: i suoi colpi ottengono così un effetto speciale (esplosione, gelo, bruciatura...). Scegli il legame qui.",
     "Les orbites": "Le orbite",
@@ -1577,5 +1573,8 @@ window.TRADUCTIONS.it = {
     "niv. {level}": "liv. {level}",
     "Total : +{percent} de dégâts": "Totale: +{percent} danni",
     "niveau {level} : +{percent} de dégâts": "livello {level}: +{percent} danni",
-    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ Niente salti nel tempo durante il tutorial"
+    "Débloque la vitesse x4": "Sblocca la velocità x4",
+    "Débloque le saut de +30 s, puis +100 s": "Sblocca il salto di +30 s, poi +100 s",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Un regalo: ora puoi accelerare il gioco (x2) e saltare 10 secondi nel tempo (tasto T)! Tutti i nemici del tempo saltato arrivano in un colpo solo, tocca a te abbatterli. Dopo un salto bisogna aspettare un po' prima del successivo. Il negozio sblocca x4 e salti più lunghi.",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Un regalo: ora puoi accelerare il gioco (x2) e saltare 10 secondi nel tempo! Tutti i nemici del tempo saltato arrivano in un colpo solo, tocca a te abbatterli. Dopo un salto bisogna aspettare un po' prima del successivo. Il negozio sblocca x4 e salti più lunghi."
 };

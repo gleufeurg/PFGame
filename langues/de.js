@@ -321,8 +321,6 @@ window.TRADUCTIONS.de = {
     "Droite": "Rechts",
     "Dryade": "Dryade",
     "Débloque la vitesse du jeu x{speed}": "Schaltet Spieltempo x{speed} frei",
-    "Débloque la vitesse x2, puis x4": "Schaltet Tempo x2, dann x4 frei",
-    "Débloque le saut de +10 s, puis +30 s, puis +100 s": "Schaltet Zeitsprünge von +10 s, dann +30 s, dann +100 s frei",
     "Débloque le saut de +{seconds} s (touche T)": "Schaltet den Zeitsprung von +{seconds} s frei (Taste T)",
     "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés": "Schaltet das exklusive Thema „Goldener Olymp“ frei: Gold, Lichtstrahlen und animierter Goldstaub",
     "Déclaration": "Liebeserklärung",
@@ -1526,8 +1524,6 @@ window.TRADUCTIONS.de = {
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).": "Dieses Fenster zeigt alle deine Werte: dein Leben, deinen Schaden und die Werte jedes Planeten. Ein Wert, der sich ändert, blinkt (grün, wenn er steigt).",
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier.": "Dieses Fenster zeigt alle deine Werte: dein Leben, deinen Schaden und die Werte jedes Planeten. Ein Wert, der sich ändert, blinkt (grün, wenn er steigt). Drück auf den Titel, um es auf- oder zuzuklappen.",
     "Le temps": "Die Zeit",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "Dieser Knopf beschleunigt das Spiel (x2, x4) und springt durch die Zeit (Taste T): Alle Gegner der übersprungenen Zeit kommen auf einmal, und du musst sie erledigen. Nach einem Sprung musst du kurz warten, bevor der nächste geht.",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "Dieser Knopf beschleunigt das Spiel (x2, x4) und springt durch die Zeit: Alle Gegner der übersprungenen Zeit kommen auf einmal, und du musst sie erledigen. Nach einem Sprung musst du kurz warten, bevor der nächste geht.",
     "Les liens d'orbite": "Die Orbit-Verbindungen",
     "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici.": "Ein Planet kann sich mit einem Nachbarn auf seiner Umlaufbahn verbinden, um dessen Attribut zu leihen: Seine Schüsse bekommen dann einen Spezialeffekt (Explosion, Frost, Verbrennung ...). Wähl die Verbindung hier.",
     "Les orbites": "Die Umlaufbahnen",
@@ -1577,5 +1573,8 @@ window.TRADUCTIONS.de = {
     "niv. {level}": "St. {level}",
     "Total : +{percent} de dégâts": "Gesamt: +{percent} Schaden",
     "niveau {level} : +{percent} de dégâts": "Stufe {level}: +{percent} Schaden",
-    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ Keine Zeitsprünge während des Tutorials"
+    "Débloque la vitesse x4": "Schaltet Tempo x4 frei",
+    "Débloque le saut de +30 s, puis +100 s": "Schaltet den Sprung um +30 s frei, dann +100 s",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Ein Geschenk: Du kannst das Spiel jetzt beschleunigen (x2) und 10 Sekunden durch die Zeit springen (Taste T)! Alle Gegner der übersprungenen Zeit kommen auf einmal, schieß sie ab. Nach einem Sprung musst du kurz warten, bevor der nächste geht. Der Shop schaltet x4 und längere Sprünge frei.",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Ein Geschenk: Du kannst das Spiel jetzt beschleunigen (x2) und 10 Sekunden durch die Zeit springen! Alle Gegner der übersprungenen Zeit kommen auf einmal, schieß sie ab. Nach einem Sprung musst du kurz warten, bevor der nächste geht. Der Shop schaltet x4 und längere Sprünge frei."
 };

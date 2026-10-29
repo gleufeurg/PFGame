@@ -162,14 +162,6 @@
             transform: rotate(180deg);
         }
 
-        @media (max-width: 900px) { /*pas assez de place à droite : le menu s'ouvre en dessous, vers la gauche*/
-            #timeMenu {
-                top: calc(100% + 8px);
-                left: auto;
-                right: 0;
-            }
-        }
-
         #timeMenu { /*le menu déroulant, à droite du bouton*/
             position: absolute;
             top: 0;
@@ -182,6 +174,14 @@
             border-radius: 12px;
             background-color: #0b0b2ef2;
             text-align: left;
+        }
+
+        @media (max-width: 900px) { /*pas assez de place à droite : le menu s'ouvre en dessous, vers la gauche (après la règle du dessus, sinon elle l'écrase)*/
+            #timeMenu {
+                top: calc(100% + 8px);
+                left: auto;
+                right: 0;
+            }
         }
 
         .timeMenuLabel {
@@ -4557,6 +4557,9 @@
         let isGameOver = false;
         let isPaused = false;                     // true quand un menu (skill tree ou paramètres) est ouvert
         let isTutorialOpen = false;               // une bulle du tutoriel est affichée (voir TUTORIEL)
+        let tutorialDone = new Set();             // les étapes du tutoriel déjà vues
+        let tutorialSkipped = false;              // « Passer le tutoriel » : plus aucune bulle
+        let tutorialStep = null;                  // le nom de l'étape affichée (ou null)
         let isSettingsOpen = false;
 
         //Le jeu est en pause tant qu'un des menus est ouvert
@@ -5252,15 +5255,26 @@
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
         const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS");   // un bouton par valeur (en secondes). La touche T fait le plus grand saut débloqué.
 
-        //AMÉLIORATIONS DU TEMPS (achetées dans le shop) : au début, on ne peut ni passer le temps, ni accélérer
+        //AMÉLIORATIONS DU TEMPS : la vitesse x2 et le 1er saut (+10 s) sont offerts par le tutoriel, le reste s'achète au shop
         const timeUpgrades = { speed: 0, skip: 0 };   // niveaux de "Accélérer le temps" et "Sauter dans le temps"
 
+        //TUTORIEL : les boutons de temps restent cachés tant que la bulle « Le temps » ne les a pas présentés
+        function isTimeHiddenByTutorial() {
+            return !tutorialSkipped && !tutorialDone.has("time") && tutorialStep !== "time";
+        }
+
         function getUnlockedSkipOptions() {
-            return TIME_SKIP_OPTIONS.slice(0, timeUpgrades.skip); //slice(0, n) = les n premiers (aucun au début : tout s'achète au shop)
+            if (isTimeHiddenByTutorial()) {
+                return [];
+            }
+            return TIME_SKIP_OPTIONS.slice(0, 1 + timeUpgrades.skip); //slice(0, n) = les n premiers : le 1er est offert, les autres s'achètent
         }
 
         function getUnlockedSpeeds() {
-            return GAME_SPEED_OPTIONS.slice(0, 1 + timeUpgrades.speed);
+            if (isTimeHiddenByTutorial()) {
+                return [1];
+            }
+            return GAME_SPEED_OPTIONS.slice(0, 2 + timeUpgrades.speed); //x1 et x2 (offerte), puis celles achetées
         }
 
         //Le plus grand saut débloqué (pour la touche T), ou 0 si aucun n'est débloqué
@@ -5328,11 +5342,6 @@
             }
             if (skipCooldown > 0) {
                 showToast(t("⏳ Saut dans le temps en recharge : encore {seconds} s", { seconds: Math.ceil(skipCooldown) }));
-                playSound("denied");
-                return;
-            }
-            if (isTutorialBlockingSkip()) {
-                showToast(t("⏳ Pas de saut dans le temps pendant le tutoriel"));
                 playSound("denied");
                 return;
             }
@@ -11097,9 +11106,10 @@
             { key: "critChance", name: "Chance de critique", description: "+{value}% de chance de coup critique", baseCost: reglage("SHOP_ITEMS.critChance.baseCost"), costGrowth: reglage("SHOP_ITEMS.critChance.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critChance.maxLevel"), level: 0, effect: { stat: "critChance", value: reglage("SHOP_ITEMS.critChance.value") } },
             { key: "critDamage", name: "Dégâts critiques", description: "+{value}% de dégâts critiques", baseCost: reglage("SHOP_ITEMS.critDamage.baseCost"), costGrowth: reglage("SHOP_ITEMS.critDamage.costGrowth"), maxLevel: reglage("SHOP_ITEMS.critDamage.maxLevel"), level: 0, effect: { stat: "critDamage", value: reglage("SHOP_ITEMS.critDamage.value") } },
             { key: "bulletSpeed", name: "Vitesse des balles", description: "+{value}% de vitesse des balles", baseCost: reglage("SHOP_ITEMS.bulletSpeed.baseCost"), costGrowth: reglage("SHOP_ITEMS.bulletSpeed.costGrowth"), maxLevel: reglage("SHOP_ITEMS.bulletSpeed.maxLevel"), level: 0, effect: { stat: "bulletSpeed", value: reglage("SHOP_ITEMS.bulletSpeed.value") } },
-            //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades). Un niveau par vitesse ou par saut de reglages.js (Temps).
-            { key: "speed", name: "Accélérer le temps", description: "Débloque la vitesse x2, puis x4", baseCost: reglage("SHOP_ITEMS.speed.baseCost"), costGrowth: reglage("SHOP_ITEMS.speed.costGrowth"), maxLevel: reglage("GAME_SPEED_OPTIONS").length - 1, level: 0, effect: null, timeUpgrade: "speed" },
-            { key: "skip", name: "Sauter dans le temps", description: "Débloque le saut de +10 s, puis +30 s, puis +100 s", baseCost: reglage("SHOP_ITEMS.skip.baseCost"), costGrowth: reglage("SHOP_ITEMS.skip.costGrowth"), maxLevel: reglage("TIME_SKIP_OPTIONS").length, level: 0, effect: null, timeUpgrade: "skip" },
+            //Pas d'effet de stat : débloquent les boutons de temps (timeUpgrades). Un niveau par vitesse ou par saut de reglages.js (Temps),
+            //sauf x2 et le 1er saut, offerts par le tutoriel.
+            { key: "speed", name: "Accélérer le temps", description: "Débloque la vitesse x4", baseCost: reglage("SHOP_ITEMS.speed.baseCost"), costGrowth: reglage("SHOP_ITEMS.speed.costGrowth"), maxLevel: reglage("GAME_SPEED_OPTIONS").length - 2, level: 0, effect: null, timeUpgrade: "speed" },
+            { key: "skip", name: "Sauter dans le temps", description: "Débloque le saut de +30 s, puis +100 s", baseCost: reglage("SHOP_ITEMS.skip.baseCost"), costGrowth: reglage("SHOP_ITEMS.skip.costGrowth"), maxLevel: reglage("TIME_SKIP_OPTIONS").length - 1, level: 0, effect: null, timeUpgrade: "skip" },
             //Pas d'effet de stat : débloque les liens d'orbite, un par niveau (voir LINK_UNLOCK_ORDER)
             { key: "links", name: "Liens d'orbite", description: "Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé", baseCost: reglage("SHOP_ITEMS.links.baseCost"), costGrowth: reglage("SHOP_ITEMS.links.costGrowth"), maxLevel: 4, level: 0, effect: null, linkUpgrade: true },
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite.
@@ -11197,13 +11207,13 @@
                     description = t("{name} et son skill tree rejoignent l'orbite", { name: nextGod.name });
                 }
                 if (item.timeUpgrade === "speed" && !isMaxed) {
-                    description = t("Débloque la vitesse du jeu x{speed}", { speed: GAME_SPEED_OPTIONS[item.level + 1] });
+                    description = t("Débloque la vitesse du jeu x{speed}", { speed: GAME_SPEED_OPTIONS[item.level + 2] });
                 }
                 if (item.linkUpgrade && !isMaxed) {
                     description = t("Débloque le lien d'orbite « {name} »", { name: LINK_MODES[LINK_UNLOCK_ORDER[item.level]].name });
                 }
                 if (item.timeUpgrade === "skip" && !isMaxed) {
-                    description = t("Débloque le saut de +{seconds} s (touche T)", { seconds: TIME_SKIP_OPTIONS[item.level] });
+                    description = t("Débloque le saut de +{seconds} s (touche T)", { seconds: TIME_SKIP_OPTIONS[item.level + 1] });
                 }
 
                 const button = document.createElement("button");
@@ -11230,6 +11240,10 @@
             }
             if (!getUnlockedSpeeds().includes(gameSpeed)) {
                 gameSpeed = 1;
+            }
+            timeControls.classList.toggle("hidden", isTimeHiddenByTutorial()); //TUTORIEL : caché jusqu'à la bulle « Le temps »
+            if (isTimeHiddenByTutorial()) {
+                timeMenu.classList.add("hidden");
             }
             renderSkipButtons();
             renderSpeedButtons();
@@ -11320,9 +11334,6 @@
             if (planets.length >= 2) {
                 triggerTutorial("orbits");
             }
-            if (SHOP_ITEMS.some(function (item) { return item.timeUpgrade && item.level > 0; })) {
-                triggerTutorial("time");
-            }
         }
 
         document.getElementById("restartButton").addEventListener("click", function () { restartGame(0); });
@@ -11353,7 +11364,7 @@
         //l'appli garde son propre localStorage sur le téléphone (il disparaît seulement si on désinstalle le jeu).
         //JSON.stringify = transforme un objet en texte (localStorage ne garde que du texte), JSON.parse = l'inverse.
         const SAVE_KEY = "progress";
-        const SAVE_VERSION = 1;             // à augmenter si un jour le format change (pour convertir les vieilles sauvegardes)
+        const SAVE_VERSION = 2;             // à augmenter si le format change (pour convertir les vieilles sauvegardes). 2 = x2 et +10 s offerts
         const AUTO_SAVE_INTERVAL = 5000;    // millisecondes : sauvegarde régulière (l'or et l'XP changent sans arrêt pendant une partie)
         let isProgressLoaded = false;       // on ne sauvegarde rien tant que la sauvegarde n'est pas chargée (sinon on l'écraserait)
         let isProgressErased = false;       // après "Effacer ma progression" : on ne sauvegarde plus jusqu'au rechargement
@@ -11408,7 +11419,11 @@
                 const shop = data.shop || {};
                 for (const item of SHOP_ITEMS) {
                     if (typeof shop[item.id] === "number" && !item.unlocksGod) { //le niveau "Nouvelle divinité" est recalculé plus bas
-                        item.level = clamp(Math.floor(shop[item.id]), 0, item.maxLevel);
+                        let level = Math.floor(shop[item.id]);
+                        if (item.timeUpgrade && !(data.version >= 2)) {
+                            level -= 1; //version 1 : x2 et +10 s s'achetaient (niveau 1), ils sont offerts maintenant
+                        }
+                        item.level = clamp(level, 0, item.maxLevel);
                     }
                 }
                 const trees = data.trees || {};
@@ -12858,7 +12873,7 @@
             planet: { title: "Ta première planète", target: "planet", mustClick: true, text: "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.", textTouch: "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences." },
             skillTree: { title: "Les compétences", target: "#treeCanvas", text: "Chaque dieu a son arbre de compétences. Clique sur une étoile pour voir ce qu'elle donne, puis sur « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres.", textTouch: "Chaque dieu a son arbre de compétences. Touche une étoile pour voir ce qu'elle donne, puis « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres." },
             stats: { title: "Tes statistiques", target: "#statsPanel", text: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).", textSmall: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier." },
-            time: { title: "Le temps", target: "#timeMenuButton", text: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.", textTouch: "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant." },
+            time: { title: "Le temps", target: "#timeMenu", text: "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.", textTouch: "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs." },
             links: { title: "Les liens d'orbite", target: "#orbitLinkArea", text: "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici." },
             orbits: { title: "Les orbites", target: "planet2", text: "Tu as plusieurs planètes ! Fais glisser une planète pour changer sa place, ou pour la mettre sur une autre orbite, plus près ou plus loin. Une planète ne se lie qu'à celles de son orbite." },
             awakening: { title: "L'Éveil", target: "#awakeningButton", text: "Tu as pris toutes les compétences possibles de ce dieu ! Ton XP sert maintenant à l'éveiller : chaque niveau d'Éveil donne plus de dégâts à sa planète, sans fin, et coûte un peu plus cher." },
@@ -12866,9 +12881,7 @@
         };
         translateFields(TUTORIAL_STEPS, ["title", "text", "textTouch", "textSmall"]);
 
-        let tutorialDone = new Set();      // les étapes déjà vues
-        let tutorialSkipped = false;       // « Passer le tutoriel » : plus aucune bulle
-        let tutorialStep = null;           // le nom de l'étape affichée (ou null) ; isTutorialOpen est déclaré avec isPaused
+        //tutorialDone, tutorialSkipped, tutorialStep et isTutorialOpen sont déclarés avec isPaused (les boutons de temps s'en servent)
         const tutorialQueue = [];          // les étapes qui attendent leur tour
         const tutorialLayer = document.getElementById("tutorialLayer");
         const tutorialSpotlight = document.getElementById("tutorialSpotlight");
@@ -12898,6 +12911,11 @@
             document.getElementById("tutorialText").textContent = text;
             if (tutorialStep === "stats") {
                 document.body.classList.remove("statsCollapsed"); //petit écran : le panneau est replié au départ, on le montre en entier
+            }
+            if (tutorialStep === "time") {
+                syncTimeUpgrades(); //les boutons de temps apparaissent...
+                timeMenu.classList.remove("hidden"); //...menu ouvert, pour montrer x2 et +10 s
+                updateTimeMenuButton();
             }
             document.getElementById("tutorialNextButton").classList.toggle("hidden", step.mustClick === true);
             tutorialLayer.classList.toggle("highGraphics", isHighGraphics);
@@ -12940,17 +12958,11 @@
             isTutorialOpen = false;
             tutorialCheckbox.checked = false;
             updatePause();
+            syncTimeUpgrades(); //les boutons de temps reviennent
             saveProgress();
             if (wasOpen) {
                 showToast(t("Tutoriel passé : tu peux le recommencer dans les paramètres."));
             }
-        }
-
-        //PAS DE SAUT DANS LE TEMPS pendant le début du tutoriel : tous les ennemis arriveraient d'un coup, et le joueur
-        //passerait à côté des explications. Le saut revient quand ces bulles sont vues (ou avec « Passer le tutoriel »).
-        const TUTORIAL_NO_SKIP_STEPS = ["welcome", "rewards", "enemies", "shop", "time"];
-        function isTutorialBlockingSkip() {
-            return !tutorialSkipped && TUTORIAL_NO_SKIP_STEPS.some(function (id) { return !tutorialDone.has(id); }); //some = "au moins une"
         }
 
         //Paramètres : « Recommencer » le tutoriel depuis le début
@@ -12958,6 +12970,7 @@
             tutorialSkipped = false;
             tutorialDone.clear(); //clear = vide le Set
             tutorialCheckbox.checked = true;
+            syncTimeUpgrades(); //les boutons de temps se cachent jusqu'à la bulle « Le temps »
             saveProgress();
             closeSettings();
             triggerTutorial("welcome");
@@ -12998,11 +13011,12 @@
             const target = getTutorialTargetRect(TUTORIAL_STEPS[tutorialStep]);
             tutorialLayer.classList.toggle("noTarget", target === null);
             tutorialSpotlight.classList.toggle("hidden", target === null);
-            const width = tutorialBubble.offsetWidth;
-            const height = tutorialBubble.offsetHeight;
+            tutorialBubble.style.width = ""; //"" = la largeur du CSS (elle a pu être rétrécie la fois d'avant)
+            let width = tutorialBubble.offsetWidth;
+            let height = tutorialBubble.offsetHeight;
             const margin = 12;
-            const maxLeft = window.innerWidth - width - margin;
-            const maxTop = window.innerHeight - height - margin;
+            let maxLeft = window.innerWidth - width - margin;
+            let maxTop = window.innerHeight - height - margin;
             let left = (window.innerWidth - width) / 2; //sans cible : au milieu
             let top = (window.innerHeight - height) / 2;
             if (target !== null) {
@@ -13030,6 +13044,27 @@
                         smallestOverlap = overlapWidth * overlapHeight;
                         left = x;
                         top = y;
+                    }
+                }
+                //La bulle cache encore la cible (écran bas, téléphone en paysage) : on essaie une bulle plus étroite, à côté
+                const MIN_SIDE_WIDTH = 220;
+                if (smallestOverlap > 0) {
+                    const rightSpace = window.innerWidth - (target.x + target.width) - margin * 2;
+                    const leftSpace = target.x - margin * 2;
+                    const sideWidth = Math.min(width, Math.max(rightSpace, leftSpace));
+                    if (sideWidth >= MIN_SIDE_WIDTH) {
+                        tutorialBubble.style.width = sideWidth + "px";
+                        const sideHeight = tutorialBubble.offsetHeight;
+                        if (sideHeight <= window.innerHeight - margin * 2) {
+                            width = sideWidth;
+                            height = sideHeight;
+                            maxLeft = window.innerWidth - width - margin;
+                            maxTop = window.innerHeight - height - margin;
+                            left = rightSpace >= leftSpace ? target.x + target.width + margin : target.x - margin - width;
+                            top = target.y + target.height / 2 - height / 2;
+                        } else {
+                            tutorialBubble.style.width = ""; //trop haute : on garde la grande bulle
+                        }
                     }
                 }
             }
@@ -13076,6 +13111,7 @@
         tutorialCheckbox.addEventListener("change", function () {
             if (tutorialCheckbox.checked) {
                 tutorialSkipped = false;
+                syncTimeUpgrades();
                 saveProgress();
             } else {
                 skipTutorial();
@@ -13281,6 +13317,7 @@
             //TUTORIEL : les types d'ennemis, une fois la partie bien lancée
             if (runTime > 10 && !tutorialSkipped && tutorialDone.has("welcome")) {
                 triggerTutorial("enemies");
+                triggerTutorial("time"); //juste après : x2 et le saut de +10 s sont offerts
             }
             //CRONOS peut ralentir TON temps : toi, tes planètes, tes balles et tes pouvoirs (pas les ennemis)
             const playerDelta = deltaTime * getPlayerTimeFactor();

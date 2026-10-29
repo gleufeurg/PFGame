@@ -36,7 +36,7 @@ const RUN_CAP = 3600;   // une partie s'arrête au plus à 60 min de jeu (sinon 
         window.robotGodFund = 0; // l'or mis de côté pour le prochain dieu
         window.robotSpeed = function () {
             const level = SHOP_ITEMS.find((item) => item.timeUpgrade === 'speed').level;
-            return [1, 2, 4][Math.min(2, level)];
+            return [2, 4][Math.min(1, level)]; // x2 est offerte, x4 s'achète
         };
         window.robotShop = function () {
             const godItem = SHOP_ITEMS.find((item) => item.unlocksGod);

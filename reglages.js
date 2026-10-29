@@ -331,11 +331,11 @@ const REGLAGES = {
             "SHOP_ITEMS.bulletSpeed.maxLevel": { valeur: 6, unite: "", texte: "Niveau maximum", infini: true }
         },
         "Accélérer le temps": {
-            "SHOP_ITEMS.speed.baseCost": { valeur: 20, unite: "or", texte: "Prix du 1er niveau (vitesse x2)" },
+            "SHOP_ITEMS.speed.baseCost": { valeur: 80, unite: "or", texte: "Prix du 1er niveau (vitesse x4 ; x2 est offerte par le tutoriel)" },
             "SHOP_ITEMS.speed.costGrowth": { valeur: 4, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" }
         },
         "Sauter dans le temps": {
-            "SHOP_ITEMS.skip.baseCost": { valeur: 15, unite: "or", texte: "Prix du 1er niveau (le 1er saut)" },
+            "SHOP_ITEMS.skip.baseCost": { valeur: 45, unite: "or", texte: "Prix du 1er niveau (le 2e saut ; le 1er est offert par le tutoriel)" },
             "SHOP_ITEMS.skip.costGrowth": { valeur: 3, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" }
         },
         "Liens d'orbite": {
@@ -364,8 +364,8 @@ const REGLAGES = {
     },
     "Temps": {
         "Vitesses et sauts": {
-            "GAME_SPEED_OPTIONS": { valeur: [1, 2, 4], unite: "×", texte: "Vitesses du jeu (la 1re est la normale, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« x2, puis x4 ») et le tutoriel (« x2, x4 »)" },
-            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut, achetés dans le shop ; la touche T fait le plus grand)", texteDuJeu: "le shop (« +10 s, puis +30 s, puis +100 s »)" }
+            "GAME_SPEED_OPTIONS": { valeur: [1, 2, 4], unite: "×", texte: "Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« x4 ») et le tutoriel (« x2 », « x4 »)" },
+            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop ; la touche T fait le plus grand)", texteDuJeu: "le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)" }
         },
         "Recharge du saut": {
             "SKIP_COOLDOWN_MIN": { valeur: 4, unite: "s", texte: "Temps de recharge minimum après un saut" },

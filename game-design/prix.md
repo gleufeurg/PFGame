@@ -4,7 +4,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum (sans les améliorations infinies) coûte **800 121 or**, dont 794 716 or pour les 12 dieux.
+- Tout le shop au maximum (sans les améliorations infinies) coûte **800 086 or**, dont 794 716 or pour les 12 dieux.
 - Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Portée, Vie max, Dégâts, Régénération, Esquive, Dégâts critiques.
 - Tous les skills des 12 dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **245 381 XP**.
 
@@ -18,9 +18,9 @@ Chaque niveau coûte plus cher que le précédent : prix = prix de départ × mu
 | Chance de critique (10 niv.) | +2% de chance de coup critique | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
 | Liens d'orbite (4 niv.) | Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé | ×2,5 | 30, 75, 188, 469 | 762 |
 | Balle supplémentaire (3 niv.) | +1 balle par tir | ×2,5 | 60, 150, 375 | 585 |
-| Sauter dans le temps (3 niv.) | Débloque le saut de +10 s, puis +30 s, puis +100 s | ×3 | 15, 45, 135 | 195 |
+| Sauter dans le temps (2 niv.) | Débloque le saut de +30 s, puis +100 s | ×3 | 45, 135 | 180 |
 | Vitesse des balles (6 niv.) | +15% de vitesse des balles | ×1,4 | 8, 11, 16, 22, 31, 43 | 131 |
-| Accélérer le temps (2 niv.) | Débloque la vitesse x2, puis x4 | ×4 | 20, 80 | 100 |
+| Accélérer le temps (1 niv.) | Débloque la vitesse x4 | ×4 | 80 | 80 |
 | Cadence de tir (∞) | +10% de vitesse d'attaque | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171, 256, 384, 577, 865… | ∞ |
 | Portée (∞) | +25 de portée | ×1,5 | 10, 15, 23, 34, 51, 76, 114, 171, 256, 384, 577, 865… | ∞ |
 | Vie max (∞) | +2 PV max | ×1,5 | 8, 12, 18, 27, 41, 61, 91, 137, 205, 308, 461, 692… | ∞ |

@@ -321,8 +321,6 @@ window.TRADUCTIONS.en = {
     "Droite": "Right",
     "Dryade": "Dryad",
     "Débloque la vitesse du jeu x{speed}": "Unlocks game speed x{speed}",
-    "Débloque la vitesse x2, puis x4": "Unlocks speed x2, then x4",
-    "Débloque le saut de +10 s, puis +30 s, puis +100 s": "Unlocks the +10 s skip, then +30 s, then +100 s",
     "Débloque le saut de +{seconds} s (touche T)": "Unlocks the +{seconds} s skip (T key)",
     "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés": "Unlocks the exclusive \"Golden Olympus\" theme: gold, animated light rays and gold dust",
     "Déclaration": "Declaration",
@@ -1526,8 +1524,6 @@ window.TRADUCTIONS.en = {
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).": "This panel shows all your stats: your health, your damage, and those of each planet. A stat that changes flashes (green if it goes up).",
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier.": "This panel shows all your stats: your health, your damage, and those of each planet. A stat that changes flashes (green if it goes up). Press its title to open or fold it.",
     "Le temps": "Time",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "This button speeds up the game (x2, x4) and jumps through time (T key): all the enemies of the skipped time arrive at once, and it's up to you to take them down. After a jump, you have to wait a little before the next one.",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "This button speeds up the game (x2, x4) and jumps through time: all the enemies of the skipped time arrive at once, and it's up to you to take them down. After a jump, you have to wait a little before the next one.",
     "Les liens d'orbite": "Orbit links",
     "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici.": "A planet can link to a neighbor on its orbit to borrow its attribute: its shots then gain a special effect (explosion, freeze, burn...). Choose the link here.",
     "Les orbites": "Orbits",
@@ -1577,5 +1573,8 @@ window.TRADUCTIONS.en = {
     "niv. {level}": "lvl {level}",
     "Total : +{percent} de dégâts": "Total: +{percent} damage",
     "niveau {level} : +{percent} de dégâts": "level {level}: +{percent} damage",
-    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ No time jumps during the tutorial"
+    "Débloque la vitesse x4": "Unlocks speed x4",
+    "Débloque le saut de +30 s, puis +100 s": "Unlocks the +30 s skip, then +100 s",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "A gift: you can now speed up the game (x2) and jump 10 seconds through time (T key)! All the enemies of the skipped time arrive at once, so shoot them down. After a jump, you have to wait a little before the next one. The shop unlocks x4 and longer jumps.",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "A gift: you can now speed up the game (x2) and jump 10 seconds through time! All the enemies of the skipped time arrive at once, so shoot them down. After a jump, you have to wait a little before the next one. The shop unlocks x4 and longer jumps."
 };

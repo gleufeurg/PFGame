@@ -38,7 +38,7 @@ Les zones de toucher autour des planètes sont plus grandes qu'à la souris (20 
 - **Statistiques repliables** : sur petit écran, le panneau des stats est replié au départ (juste son titre en bas) ; on touche « Statistiques ▴ » pour l'ouvrir ou le fermer.
 - **Encoche et barre du téléphone** : les boutons du bord de l'écran s'en écartent (`env(safe-area-inset-...)` en CSS).
 - Quand on tourne l'écran ou qu'on change la taille de la fenêtre, le jeu se redimensionne (`resizeCanvas`).
-- **Barre du haut sur téléphone :** le chrono et le bouton du temps restent tout en haut, entre l'or/XP et la roue crantée. Le menu du temps s'ouvre en dessous, sur toute la largeur de l'écran, et ses boutons passent à la ligne si besoin.
+- **Barre du haut sur téléphone :** le chrono et le bouton du temps restent tout en haut, entre l'or/XP et la roue crantée. Le menu du temps s'ouvre en dessous, sur toute la largeur de l'écran, et ses boutons passent à la ligne si besoin. Sur un écran moyen (900 px de large ou moins, ex : téléphone en paysage), il s'ouvre sous son bouton, aligné à droite (avant, la règle CSS était écrasée et le menu était tout écrasé en paysage).
 - **En arrière-plan** (autre appli, écran éteint, onglet caché) : tout le son s'arrête (`setAudioPausedInBackground`) et la progression est sauvegardée ; le son reprend au retour. La partie, elle, continue (voir « La partie continue en arrière-plan »).
 
 ## La netteté (écrans fins)
@@ -112,26 +112,26 @@ Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (coc
 
 ## Le tutoriel
 
-Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL` du code, liste `TUTORIAL_STEPS`). Pendant une bulle, le jeu est en pause et l'écran est assombri, sauf un **projecteur** autour de ce qu'elle montre (son bord palpite en graphismes élevés). La bulle se met à côté de ce qu'elle montre : dessous, au-dessus, à droite ou à gauche, à la place qui le cache le moins, sans sortir de l'écran. Sur un écran bas (téléphone en paysage), elle est plus large et moins haute.
+Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL` du code, liste `TUTORIAL_STEPS`). Pendant une bulle, le jeu est en pause et l'écran est assombri, sauf un **projecteur** autour de ce qu'elle montre (son bord palpite en graphismes élevés). La bulle se met à côté de ce qu'elle montre : dessous, au-dessus, à droite ou à gauche, à la place qui le cache le moins, sans sortir de l'écran. Sur un écran bas (téléphone en paysage), elle est plus large et moins haute ; si elle cache encore ce qu'elle montre, elle se met à côté en plus étroit (au moins 220 px de large).
 
 | Bulle | Quand elle arrive | Ce qu'elle montre et explique |
 | --- | --- | --- |
 | Bienvenue ! | au lancement du jeu (après 0,7 s) | au milieu : le triangle tire tout seul ; un ennemi qui touche fait perdre autant de vie qu'il lui en reste |
 | Or et XP | après 5 ennemis tués | l'or et l'XP (en haut à gauche) : l'or pour le shop, l'XP pour les compétences |
 | Les ennemis | après 10 s de partie | au milieu : les 4 éléments (couleur, vitesse, solidité), la vie qui monte avec le temps, le contour jaune des mouvements spéciaux |
+| Le temps | juste après « Les ennemis » | le menu du temps, ouvert : **cadeau**, la vitesse x2 et le saut de +10 s (touche T à l'ordinateur), le temps de recharge ; le shop débloque x4 et des sauts plus longs |
 | Le shop | à la 1re mort | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort |
 | Ta première planète | au début de la partie qui suit l'achat du 1er dieu | la planète. **Il faut cliquer (ou toucher) la planète** pour continuer (pas de bouton « Compris », Entrée ne fait rien) : ça ouvre son arbre |
 | Les compétences | à la 1re ouverture de l'arbre d'un dieu en orbite | l'arbre : choisir une étoile, « Débloquer », commencer par l'étoile qui brille, les voies |
 | Tes statistiques | juste après | le panneau des stats, qui clignote quand une stat change. Sur petit écran, le panneau s'ouvre en entier et la bulle dit qu'on appuie sur son titre pour le replier |
 | Les liens d'orbite | à la 1re ouverture d'un arbre quand le 1er lien est acheté | la zone « Liens d'orbite » : emprunter l'attribut d'une voisine de son orbite |
 | Les orbites | au début de la partie qui suit l'achat du 2e dieu | la 2e planète : la faire glisser pour changer sa place ou son orbite |
-| Le temps | au début de la partie qui suit le 1er achat de temps (vitesse ou saut) | le bouton du temps : x2, x4, le saut (touche T à l'ordinateur) et son temps de recharge |
 | Un super ennemi ! | au 1er duel (5:00) | au milieu : le chrono s'arrête, vitesse x1, beaucoup de vie, certains ont un pouvoir |
 | L'Éveil | quand on prend la dernière compétence possible d'un arbre | le bouton « Éveil » : l'XP éveille le dieu, plus de dégâts pour sa planète à chaque niveau, sans fin |
 
-- **« Compris »** passe à la bulle suivante. Si plusieurs bulles arrivent en même temps (ex : « Les orbites » et « Le temps »), elles s'affichent l'une après l'autre.
+- **« Compris »** passe à la bulle suivante. Si plusieurs bulles arrivent en même temps (ex : « Les ennemis » et « Le temps »), elles s'affichent l'une après l'autre.
 - **« Passer le tutoriel »** (lien discret en bas de chaque bulle) : plus aucune bulle. Un message rappelle qu'on peut le recommencer dans les paramètres.
-- **Pas de saut dans le temps** tant que les bulles du début (« Bienvenue ! », les récompenses, les ennemis, le shop et « Le temps ») n'ont pas été vues : sinon tous les ennemis arriveraient d'un coup et le joueur raterait les explications. Un saut tenté affiche « ⏳ Pas de saut dans le temps pendant le tutoriel ». « Passer le tutoriel » enlève ce blocage (fonction `isTutorialBlockingSkip`).
+- **Le temps caché jusqu'à sa bulle** : tant que la bulle « Le temps » n'a pas été montrée, le bouton du temps est caché, la touche T ne fait rien et le jeu reste en x1 (fonction `isTimeHiddenByTutorial`). « Passer le tutoriel » le fait apparaître ; « Recommencer » le cache à nouveau jusqu'à la bulle.
 - **Paramètres** : la case « Tutoriel » (décochée = passé, la recocher le remet en marche) et le bouton **« Recommencer »**, qui ferme les paramètres et repart de « Bienvenue ! ».
 - **Souris ou doigt** : à la souris les bulles disent « Clique », au doigt « Touche » (`textTouch`, ex : la planète, l'arbre) ; la touche T n'est citée qu'à l'ordinateur. Sur petit écran, `textSmall` ajoute des précisions (le panneau des stats).
 - **Sauvegarde** : les bulles déjà vues et « Passer » sont gardés (`tutorial` dans la sauvegarde). Une sauvegarde d'avant le tutoriel compte comme « tout vu » : le joueur connaît déjà le jeu (il peut le revoir avec « Recommencer »). « Effacer ma progression » le fait recommencer.
@@ -141,12 +141,14 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 
 Pendant un **duel** contre un super ennemi (sa 1re rencontre), le chrono s'arrête et s'affiche « ⚔️ 5:00 » en rouge, qui palpite ; le jeu repasse en vitesse x1 (x2 et x4 grisés) et le saut dans le temps est impossible. La vitesse d'avant revient toute seule à la fin du duel (voir [ennemis.md](ennemis.md)).
 
-Au début, on ne peut ni passer le temps ni accélérer. Le shop débloque tout :
+La vitesse x2 et le saut de +10 s sont **offerts** par le tutoriel (bulle « Le temps », juste après « Les ennemis ») ; avant cette bulle, le bouton du temps est caché. Le shop débloque la suite :
 
-| Amélioration | Niveau 1 | Niveau 2 | Niveau 3 |
+| Amélioration | Offert | Niveau 1 | Niveau 2 |
 | --- | --- | --- | --- |
 | Accélérer le temps | vitesse x2 | vitesse x4 | — |
 | Sauter dans le temps | saut de +10 s | saut de +30 s | saut de +100 s |
+
+Une sauvegarde d'avant ce changement (version 1) perd 1 niveau de chaque amélioration du temps, puisque le 1er est offert : le joueur garde les mêmes boutons (`SAVE_VERSION` 2 dans `loadProgress`).
 
 Les boutons pas encore achetés restent visibles, en gris et sans icône. De même, un dieu pas encore en orbite a son titre en gris dans la fenêtre des skills.
 
