@@ -261,8 +261,11 @@ Les multiplicateurs commencent à 1 et augmentent avec les compétences, par exe
 
 ```
 prix du shop    = arrondi(prix de départ × multiplicateur ^ niveau déjà acheté)
-nouveau dieu    = arrondi(20 × 2,5 ^ dieux déjà achetés)        (avant : 50 × 1,8 ^ ...)
+1er dieu        = 20                                               (SHOP_ITEMS.god.firstCost : acheté dans le tutoriel)
+dieu suivant    = arrondi(1 000 × 2,5 ^ (dieux déjà achetés - 1)) (le 2e coûte 1 000 ; avant : 20 × 2,5 ^ dieux déjà achetés)
 ```
+
+Ex : 20, puis 1 000, 2 500, 6 250… le 12ᵉ coûte 9 536 743 or (fonction `getShopItemCost`).
 
 Les améliorations **infinies** (Dégâts, Cadence de tir, Vie max, Régénération, Dégâts critiques, Portée, Esquive) suivent la même formule, sans niveau maximum : chaque niveau coûte 1,5 ou 1,6 fois plus que le précédent.
 

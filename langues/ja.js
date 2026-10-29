@@ -1576,5 +1576,6 @@ window.TRADUCTIONS.ja = {
     "Débloque la vitesse x4": "速度 x4 を解放",
     "Débloque le saut de +30 s, puis +100 s": "+30 秒のスキップを解放、次に +100 秒",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる（T キー）！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。",
-    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。"
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。",
+    "🌊 Une énorme vague d'ennemis arrive !": "🌊 敵の大群が押し寄せてくる！"
 };

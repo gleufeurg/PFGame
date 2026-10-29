@@ -11115,7 +11115,7 @@
             //Pas d'effet de stat : à l'achat, une nouvelle divinité (planète + skill tree) rejoint l'orbite.
             //Le 1er dieu coûte peu (20 or : on l'a dès la 1re mort), puis chaque dieu coûte 2.5 fois plus cher (avant : 50 or, x1.8) :
             //les premiers dieux arrivent plus vite, et les derniers prennent des heures au lieu d'arriver tous dans la même heure.
-            { key: "god", name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", baseCost: reglage("SHOP_ITEMS.god.baseCost"), costGrowth: reglage("SHOP_ITEMS.god.costGrowth"), maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
+            { key: "god", name: "Nouvelle divinité", description: "Une nouvelle planète et son skill tree rejoignent l'orbite", firstCost: reglage("SHOP_ITEMS.god.firstCost"), baseCost: reglage("SHOP_ITEMS.god.baseCost"), costGrowth: reglage("SHOP_ITEMS.god.costGrowth"), maxLevel: SKILL_TREES.filter(function (tree) { return tree.isLocked; }).length, level: 0, effect: null, unlocksGod: true }
         ];
 
         for (const item of SHOP_ITEMS) {
@@ -11128,6 +11128,10 @@
         const shopItems = document.getElementById("shopItems");
 
         function getShopItemCost(item) {
+            if (item.firstCost !== undefined) {
+                //Les dieux : le 1er a son propre prix (petit, pour le tutoriel), puis baseCost pour le 2e, x costGrowth à chaque suivant
+                return item.level === 0 ? item.firstCost : Math.round(item.baseCost * Math.pow(item.costGrowth, item.level - 1));
+            }
             return Math.round(item.baseCost * Math.pow(item.costGrowth, item.level)); //Math.pow(a, b) = a puissance b
         }
 
@@ -11146,6 +11150,7 @@
                 closeSkillTree(); //le jeu tournait pendant qu'on regardait les skills (option "pause dans les menus" décochée)
             }
             updateRecords();
+            giveTutorialGodGold(); //TUTORIEL : de quoi acheter le 1er dieu
             saveProgress();
             hideSpawnAlert();
             renderShop();
@@ -11309,6 +11314,7 @@
             isShieldReady = false;
             shieldTimer = SHIELD_COOLDOWN;
             killsThisRun = 0;
+            isTutorialWaveSent = false;
             bossesSpawnedThisRun.clear(); //clear = vide le Set
             movementsIntroducedThisRun.clear();
             resetSpawnEvents();
@@ -12965,6 +12971,40 @@
             }
         }
 
+        //LA VAGUE DU TUTORIEL : la 1re partie finit vite (une énorme vague tout autour du joueur),
+        //pour qu'il découvre le shop tôt, avec juste assez d'or pour son 1er dieu (le 2e coûte beaucoup plus cher)
+        const TUTORIAL_WAVE_TIME = reglage("TUTORIAL_WAVE_TIME");         // secondes de partie
+        const TUTORIAL_WAVE_ENEMIES = reglage("TUTORIAL_WAVE_ENEMIES");
+        const TUTORIAL_WAVE_HEALTH = reglage("TUTORIAL_WAVE_HEALTH");     // x la vie d'un ennemi normal
+        let isTutorialWaveSent = false;    // une seule vague par partie
+
+        //La partie qui précède la bulle du shop (la 1re partie d'un nouveau joueur)
+        function isTutorialFirstRun() {
+            return !tutorialSkipped && !tutorialDone.has("shop");
+        }
+
+        function sendTutorialWave() {
+            isTutorialWaveSent = true;
+            for (let i = 0; i < TUTORIAL_WAVE_ENEMIES; i++) {
+                spawnEnemy(undefined, (i / TUTORIAL_WAVE_ENEMIES) * Math.PI * 2); //régulièrement tout autour
+                const enemy = enemies[enemies.length - 1]; //celui qui vient d'être ajouté
+                enemy.health *= TUTORIAL_WAVE_HEALTH;
+                enemy.maxHealth *= TUTORIAL_WAVE_HEALTH;
+            }
+            playSound("skip");
+            showToast(t("🌊 Une énorme vague d'ennemis arrive !"));
+        }
+
+        //À la mort de la 1re partie : assez d'or pour le 1er dieu, même si le joueur a peu tué
+        function giveTutorialGodGold() {
+            const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
+            const missing = getShopItemCost(godItem) - gold;
+            if (isTutorialFirstRun() && godItem.level === 0 && missing > 0) {
+                gold += missing;
+                runGold += missing; //affiché dans le résumé de la partie
+            }
+        }
+
         //Paramètres : « Recommencer » le tutoriel depuis le début
         function restartTutorial() {
             tutorialSkipped = false;
@@ -13318,6 +13358,9 @@
             if (runTime > 10 && !tutorialSkipped && tutorialDone.has("welcome")) {
                 triggerTutorial("enemies");
                 triggerTutorial("time"); //juste après : x2 et le saut de +10 s sont offerts
+            }
+            if (!isTutorialWaveSent && runTime >= TUTORIAL_WAVE_TIME && isTutorialFirstRun() && tutorialDone.has("time") && bossDuel === null) {
+                sendTutorialWave();
             }
             //CRONOS peut ralentir TON temps : toi, tes planètes, tes balles et tes pouvoirs (pas les ennemis)
             const playerDelta = deltaTime * getPlayerTimeFactor();

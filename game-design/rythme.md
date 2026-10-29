@@ -33,7 +33,7 @@ Un vrai joueur fait d'autres choix (il achète des dégâts plutôt que la moins
 | Vie qui monte (`getEnemyHealthScale`) | 1 + 0,4 m + 0,04 m² | (1 + 0,3 m + 0,03 m²) × 1,05^m | pareil au début ; plus dur à la fin (×160 à 30:00 au lieu de ×49), pour qu'une partie finisse toujours |
 | Esquive maximum (`DODGE_MAX`) | aucun | 75 % | le bug ci-dessus |
 | Vie de Cerbère / de l'Hydre (`BOSSES`) | 40 / 90 | 15 / 60 | ils bloquaient le début du jeu plusieurs parties de suite |
-| Prix des dieux | 50 or, puis ×1,8 | 20 or, puis ×2,5 | les 4 premiers dieux arrivent plus vite ; le 12ᵉ coûte 477 000 or au lieu de 32 000 |
+| Prix des dieux | 50 or, puis ×1,8 | 20 or, puis ×2,5 (depuis : 20 or pour le 1er, acheté dans le tutoriel, puis **1 000 or** pour le 2e et ×2,5) | les 4 premiers dieux arrivent plus vite ; le 12ᵉ coûte 477 000 or au lieu de 32 000 (9,5 millions depuis le 2e à 1 000 or) |
 | Accélérer le temps | 40 puis 120 or | 20 puis 80 or (depuis, x2 est offerte par le tutoriel : seul x4 s'achète, 80 or) | jouer en x2 dès les premières parties |
 | Améliorations du joueur | toutes avec un maximum | Dégâts, Cadence de tir, Vie max, Régénération et Dégâts critiques **infinies** | il reste toujours quelque chose à acheter |
 | Prix des compétences (`SKILL_TIER_GROWTH`) | pareil pour tous les dieux | ×1,5 à chaque dieu (×86 pour Hestia, la 12ᵉ) | les derniers dieux arrivent quand on gagne beaucoup d'XP : leur arbre se remplissait d'un coup |
@@ -83,6 +83,16 @@ Après la 2e série de retours : l'esquive se calcule en points (chance = x / (x
 | Minutes réelles | 2 | 2 | 6 | 10 | 20 | 33 | 39 | 52 | 67 | 99 | 178 |
 
 Le rythme des dieux ne change presque pas. Le 1er niveau d'Éveil arrive vers 50 minutes ; à 3 heures, le robot en a 127 au total (répartis sur ses dieux complets). L'XP de fin de partie (20 000 à 35 000 par partie) a maintenant toujours quelque chose à acheter.
+
+## Depuis : le tutoriel et le 2e dieu à 1 000 or
+
+La 1re partie finit vers 37 s (la vague du tutoriel) avec juste de quoi acheter le 1er dieu (20 or) ; le 2e coûte **1 000 or** au lieu de 50, et chaque dieu suivant toujours x2,5. x2 et le saut de +10 s sont offerts. Le robot (3 heures, `joueur-robot.js 180`) :
+
+| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ | 5ᵉ | 6ᵉ | 7ᵉ |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Minutes réelles | 1 | 15 | 32 | 52 | 97 | 123 | 180 |
+
+**Beaucoup plus lent** : 7 dieux en 3 heures au lieu de 11 (le 2e arrive à 15 min au lieu de 2, le 7e à 3 h au lieu de 39 min), car tous les dieux suivants coûtent 20 fois plus cher (le 12e : 9,5 millions d'or au lieu de 477 000). Pour garder le 2e à 1 000 or sans trop ralentir la suite, on peut baisser `SHOP_ITEMS.god.costGrowth` (avec 1,8, le 12e coûte 357 000 or, comme avant).
 
 ## Ce qui reste à surveiller
 

@@ -343,8 +343,9 @@ const REGLAGES = {
             "SHOP_ITEMS.links.costGrowth": { valeur: 2.5, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau" }
         },
         "Nouvelle divinité": {
-            "SHOP_ITEMS.god.baseCost": { valeur: 20, unite: "or", texte: "Prix du 1er dieu" },
-            "SHOP_ITEMS.god.costGrowth": { valeur: 2.5, unite: "×", texte: "Chaque dieu coûte X fois plus cher que le précédent" }
+            "SHOP_ITEMS.god.firstCost": { valeur: 20, unite: "or", texte: "Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel)" },
+            "SHOP_ITEMS.god.baseCost": { valeur: 1000, unite: "or", texte: "Prix du 2e dieu" },
+            "SHOP_ITEMS.god.costGrowth": { valeur: 2.5, unite: "×", texte: "À partir du 2e, chaque dieu coûte X fois plus cher que le précédent" }
         }
     },
     "Compétences": {
@@ -360,6 +361,13 @@ const REGLAGES = {
             "AWAKENING_DAMAGE_PER_LEVEL": { valeur: 0.05, unite: "%", texte: "Dégâts en plus pour la planète, par niveau d'Éveil" },
             "AWAKENING_BASE_COST": { valeur: 100, unite: "XP", texte: "Prix du 1er niveau d'Éveil du 1er dieu (× la hausse des compétences pour chaque dieu suivant)" },
             "AWAKENING_COST_GROWTH": { valeur: 1.25, unite: "×", texte: "Le prix est multiplié par ce nombre à chaque niveau d'Éveil" }
+        }
+    },
+    "Tutoriel": {
+        "La vague de la 1re partie": {
+            "TUTORIAL_WAVE_TIME": { valeur: 30, unite: "s", texte: "Pendant la 1re partie du tutoriel, une énorme vague arrive à ce moment de la partie (le joueur meurt vite et découvre le shop)" },
+            "TUTORIAL_WAVE_ENEMIES": { valeur: 40, unite: "ennemis", texte: "Nombre d'ennemis de la vague, tout autour du joueur" },
+            "TUTORIAL_WAVE_HEALTH": { valeur: 3, unite: "×", texte: "Vie des ennemis de la vague, comparée à un ennemi normal" }
         }
     },
     "Temps": {

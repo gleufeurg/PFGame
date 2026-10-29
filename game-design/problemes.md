@@ -81,6 +81,11 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Pourquoi :** c'est le rythme voulu pour le jeu (voir [rythme.md](rythme.md)), mais un recruteur n'a pas forcément le temps de jouer.
 - **Que faire (choix à faire) :** sur `portfolio`, montrer tous les projets dans la liste des dieux (même ceux pas encore achetés, en aperçu), ou ajouter un bouton « Voir tous les projets ».
 
+### Les dieux arrivent beaucoup plus lentement depuis le 2e à 1 000 or (les deux branches)
+
+- **Ce qu'on voit :** le 2e dieu coûte 1 000 or (il coûtait 50) et chaque suivant x2,5 : le joueur robot n'a que 7 dieux après 3 heures (11 avant). Voir [rythme.md](rythme.md).
+- **Que faire :** baisser `SHOP_ITEMS.god.costGrowth` dans l'éditeur de réglages (1,8 redonne à peu près les anciens prix des derniers dieux), puis relancer `node game-design/outils/joueur-robot.js 180`.
+
 ### Certains textes du jeu citent des réglages (les deux branches)
 
 - **Ce qu'on voit :** dans l'éditeur de réglages, quelques nombres ont un ⚠️ : ils sont aussi écrits dans un texte du jeu. Si on les change, le texte ne suit pas. Exemples : « les ennemis touchés brûlent pendant 3 s » (combo Feu de forêt, `COMBO_BURN_DURATION`), les bonus du lien « Opposé » (`OPPOSITE_BONUSES`), « Toutes les 5 minutes » dans le tutoriel (l'heure des super ennemis), « x2 » et « 10 secondes » dans le tutoriel (`GAME_SPEED_OPTIONS`, `TIME_SKIP_OPTIONS`).

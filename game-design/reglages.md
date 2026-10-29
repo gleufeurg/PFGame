@@ -2,7 +2,7 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (305 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (309 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
@@ -19,6 +19,7 @@ Toutes les statistiques du jeu (305 réglages) sont dans le fichier `reglages.js
 - [Super ennemis](#super-ennemis) : Tous les super ennemis, Cerbère, Hydre de Lerne, Méduse, Typhon, Chimère, Charybde, Python, Cronos
 - [Shop](#shop) : Cadence de tir, Portée, Balle supplémentaire, Vie max, Dégâts, Régénération, Esquive, Chance de critique, Dégâts critiques, Vitesse des balles, Accélérer le temps, Sauter dans le temps, Liens d'orbite, Nouvelle divinité
 - [Compétences](#compétences) : Prix en XP, Éveil des dieux
+- [Tutoriel](#tutoriel) : La vague de la 1re partie
 - [Temps](#temps) : Vitesses et sauts, Recharge du saut
 - [Combos d'orbite](#combos-dorbite) : Lien « Opposé », Explosions et zones, Brûlure, poison, saignement, Ralentir et bloquer, Rebonds, éclats et foudre, Critiques, soins et bouclier
 - [Caméra](#caméra) : Dézoom selon la portée
@@ -500,8 +501,9 @@ Toutes les statistiques du jeu (305 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Prix du 1er dieu | 20 or | `SHOP_ITEMS.god.baseCost` |
-| Chaque dieu coûte X fois plus cher que le précédent | 2,5 × | `SHOP_ITEMS.god.costGrowth` |
+| Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel) | 20 or | `SHOP_ITEMS.god.firstCost` |
+| Prix du 2e dieu | 1000 or | `SHOP_ITEMS.god.baseCost` |
+| À partir du 2e, chaque dieu coûte X fois plus cher que le précédent | 2,5 × | `SHOP_ITEMS.god.costGrowth` |
 
 ## Compétences
 
@@ -523,6 +525,16 @@ Toutes les statistiques du jeu (305 réglages) sont dans le fichier `reglages.js
 | Dégâts en plus pour la planète, par niveau d'Éveil | 5 % | `AWAKENING_DAMAGE_PER_LEVEL` |
 | Prix du 1er niveau d'Éveil du 1er dieu (× la hausse des compétences pour chaque dieu suivant) | 100 XP | `AWAKENING_BASE_COST` |
 | Le prix est multiplié par ce nombre à chaque niveau d'Éveil | 1,25 × | `AWAKENING_COST_GROWTH` |
+
+## Tutoriel
+
+### La vague de la 1re partie
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Pendant la 1re partie du tutoriel, une énorme vague arrive à ce moment de la partie (le joueur meurt vite et découvre le shop) | 30 s | `TUTORIAL_WAVE_TIME` |
+| Nombre d'ennemis de la vague, tout autour du joueur | 40 ennemis | `TUTORIAL_WAVE_ENEMIES` |
+| Vie des ennemis de la vague, comparée à un ennemi normal | 3 × | `TUTORIAL_WAVE_HEALTH` |
 
 ## Temps
 

@@ -120,7 +120,7 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 | Or et XP | après 5 ennemis tués | l'or et l'XP (en haut à gauche) : l'or pour le shop, l'XP pour les compétences |
 | Les ennemis | après 10 s de partie | au milieu : les 4 éléments (couleur, vitesse, solidité), la vie qui monte avec le temps, le contour jaune des mouvements spéciaux |
 | Le temps | juste après « Les ennemis » | le menu du temps, ouvert : **cadeau**, la vitesse x2 et le saut de +10 s (touche T à l'ordinateur), le temps de recharge ; le shop débloque x4 et des sauts plus longs |
-| Le shop | à la 1re mort | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort |
+| Le shop | à la 1re mort (vers 37 s, à cause de la vague du tutoriel) | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort |
 | Ta première planète | au début de la partie qui suit l'achat du 1er dieu | la planète. **Il faut cliquer (ou toucher) la planète** pour continuer (pas de bouton « Compris », Entrée ne fait rien) : ça ouvre son arbre |
 | Les compétences | à la 1re ouverture de l'arbre d'un dieu en orbite | l'arbre : choisir une étoile, « Débloquer », commencer par l'étoile qui brille, les voies |
 | Tes statistiques | juste après | le panneau des stats, qui clignote quand une stat change. Sur petit écran, le panneau s'ouvre en entier et la bulle dit qu'on appuie sur son titre pour le replier |
@@ -131,6 +131,7 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 
 - **« Compris »** passe à la bulle suivante. Si plusieurs bulles arrivent en même temps (ex : « Les ennemis » et « Le temps »), elles s'affichent l'une après l'autre.
 - **« Passer le tutoriel »** (lien discret en bas de chaque bulle) : plus aucune bulle. Un message rappelle qu'on peut le recommencer dans les paramètres.
+- **La vague de la 1re partie** : pour que le joueur découvre vite le shop, la 1re partie (avant la bulle du shop, si la bulle « Le temps » a été vue) envoie à 30 s une énorme vague : 40 ennemis tout autour, avec 3 fois plus de vie (« 🌊 Une énorme vague d'ennemis arrive ! », `sendTutorialWave`). Le joueur meurt vers 37 s, avec environ 25 or. S'il a moins de 20 or, le jeu complète à sa mort pour qu'il puisse acheter son 1er dieu (`giveTutorialGodGold`) ; le 2e coûte 1 000 or, il ne peut donc en acheter qu'un. Réglages dans `reglages.js` (Tutoriel > La vague de la 1re partie).
 - **Le temps caché jusqu'à sa bulle** : tant que la bulle « Le temps » n'a pas été montrée, le bouton du temps est caché, la touche T ne fait rien et le jeu reste en x1 (fonction `isTimeHiddenByTutorial`). « Passer le tutoriel » le fait apparaître ; « Recommencer » le cache à nouveau jusqu'à la bulle.
 - **Paramètres** : la case « Tutoriel » (décochée = passé, la recocher le remet en marche) et le bouton **« Recommencer »**, qui ferme les paramètres et repart de « Bienvenue ! ».
 - **Souris ou doigt** : à la souris les bulles disent « Clique », au doigt « Touche » (`textTouch`, ex : la planète, l'arbre) ; la touche T n'est citée qu'à l'ordinateur. Sur petit écran, `textSmall` ajoute des précisions (le panneau des stats).
