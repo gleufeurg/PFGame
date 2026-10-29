@@ -480,14 +480,14 @@ Toutes les statistiques du jeu (307 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Prix du 1er niveau (vitesse x2) | 20 or | `SHOP_ITEMS.speed.baseCost` |
+| Prix du 1er niveau (vitesse x4 ; x2 est offerte par le tutoriel) | 80 or | `SHOP_ITEMS.speed.baseCost` |
 | Le prix est multiplié par ce nombre à chaque niveau | 4 × | `SHOP_ITEMS.speed.costGrowth` |
 
 ### Sauter dans le temps
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Prix du 1er niveau (le 1er saut) | 15 or | `SHOP_ITEMS.skip.baseCost` |
+| Prix du 1er niveau (le 2e saut ; le 1er est offert par le tutoriel) | 45 or | `SHOP_ITEMS.skip.baseCost` |
 | Le prix est multiplié par ce nombre à chaque niveau | 3 × | `SHOP_ITEMS.skip.costGrowth` |
 
 ### Liens d'orbite
@@ -531,8 +531,8 @@ Toutes les statistiques du jeu (307 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Vitesses du jeu (la 1re est la normale, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« x2, puis x4 ») et le tutoriel (« x2, x4 »)) | 1 ; 2 ; 4 × | `GAME_SPEED_OPTIONS` |
-| Sauts dans le temps (un bouton par saut, achetés dans le shop ; la touche T fait le plus grand) ⚠️ (aussi écrit dans le shop (« +10 s, puis +30 s, puis +100 s »)) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
+| Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« x4 ») et le tutoriel (« x2 », « x4 »)) | 1 ; 2 ; 4 × | `GAME_SPEED_OPTIONS` |
+| Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop ; la touche T fait le plus grand) ⚠️ (aussi écrit dans le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
 
 ### Recharge du saut
 

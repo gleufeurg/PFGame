@@ -11,7 +11,7 @@
 
 `node game-design/outils/joueur-robot.js 300` fait jouer un robot pendant 300 minutes « réelles » (le nombre est au choix) :
 
-- il joue jusqu'à sa mort, à la vitesse la plus rapide qu'il a achetée (x1, x2 ou x4), sauf pendant les duels (x1) ;
+- il joue jusqu'à sa mort, à la vitesse la plus rapide qu'il a (x2, offerte par le tutoriel, puis x4 quand il l'a achetée), sauf pendant les duels (x1) ;
 - à chaque mort, il achète le prochain dieu dès qu'il peut. Si ce dieu coûte moins d'une partie et demie de gains, il économise pour lui. Sinon, il garde la moitié de son or et achète les améliorations les moins chères ;
 - il prend les compétences les moins chères, tous dieux confondus, et le meilleur lien d'orbite acheté ;
 - il ne saute pas dans le temps et ne change pas les orbites. Il compte 15 s par mort, le temps de faire ses achats.
@@ -34,7 +34,7 @@ Un vrai joueur fait d'autres choix (il achète des dégâts plutôt que la moins
 | Esquive maximum (`DODGE_MAX`) | aucun | 75 % | le bug ci-dessus |
 | Vie de Cerbère / de l'Hydre (`BOSSES`) | 40 / 90 | 15 / 60 | ils bloquaient le début du jeu plusieurs parties de suite |
 | Prix des dieux | 50 or, puis ×1,8 | 20 or, puis ×2,5 | les 4 premiers dieux arrivent plus vite ; le 12ᵉ coûte 477 000 or au lieu de 32 000 |
-| Accélérer le temps | 40 puis 120 or | 20 puis 80 or | jouer en x2 dès les premières parties |
+| Accélérer le temps | 40 puis 120 or | 20 puis 80 or (depuis, x2 est offerte par le tutoriel : seul x4 s'achète, 80 or) | jouer en x2 dès les premières parties |
 | Améliorations du joueur | toutes avec un maximum | Dégâts, Cadence de tir, Vie max, Régénération et Dégâts critiques **infinies** | il reste toujours quelque chose à acheter |
 | Prix des compétences (`SKILL_TIER_GROWTH`) | pareil pour tous les dieux | ×1,5 à chaque dieu (×86 pour Hestia, la 12ᵉ) | les derniers dieux arrivent quand on gagne beaucoup d'XP : leur arbre se remplissait d'un coup |
 

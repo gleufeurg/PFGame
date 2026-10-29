@@ -88,7 +88,7 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 
 ### Certains textes du jeu citent des réglages (les deux branches)
 
-- **Ce qu'on voit :** dans l'éditeur de réglages, quelques nombres ont un ⚠️ : ils sont aussi écrits dans un texte du jeu. Si on les change, le texte ne suit pas. Exemples : « les ennemis touchés brûlent pendant 3 s » (combo Feu de forêt, `COMBO_BURN_DURATION`), les bonus du lien « Opposé » (`OPPOSITE_BONUSES`), « Toutes les 5 minutes » dans le tutoriel (l'heure des super ennemis), « x2, puis x4 » dans le shop (`GAME_SPEED_OPTIONS`).
+- **Ce qu'on voit :** dans l'éditeur de réglages, quelques nombres ont un ⚠️ : ils sont aussi écrits dans un texte du jeu. Si on les change, le texte ne suit pas. Exemples : « les ennemis touchés brûlent pendant 3 s » (combo Feu de forêt, `COMBO_BURN_DURATION`), les bonus du lien « Opposé » (`OPPOSITE_BONUSES`), « Toutes les 5 minutes » dans le tutoriel (l'heure des super ennemis), « x2 » et « 10 secondes » dans le tutoriel (`GAME_SPEED_OPTIONS`, `TIME_SKIP_OPTIONS`).
 - **Pourquoi :** ces textes sont écrits à la main, et traduits dans les 6 langues. Les descriptions du shop, elles, se mettent à jour toutes seules (« +{value} PV max »).
 - **De même :** la valeur de **chaque compétence** des skill trees n'est pas dans l'éditeur : elle est écrite dans sa description (« +0.5 dégât par balle »), dans `SKILL_TREES_DATA`. On la change à la main dans `index.html`, avec sa description et ses traductions.
 - **Que faire :** après avoir changé un réglage ⚠️, changer aussi le texte dans `index.html` et dans `langues/` (ou demander à Claude). Plus tard, ces textes pourraient s'écrire avec `{value}`, comme ceux du shop.

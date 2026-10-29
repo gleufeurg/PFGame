@@ -321,8 +321,6 @@ window.TRADUCTIONS.ja = {
     "Droite": "右",
     "Dryade": "ドリュアス",
     "Débloque la vitesse du jeu x{speed}": "ゲーム速度 x{speed} を解放",
-    "Débloque la vitesse x2, puis x4": "速度 x2、次に x4 を解放",
-    "Débloque le saut de +10 s, puis +30 s, puis +100 s": "+10秒、+30秒、+100秒のスキップを順に解放",
     "Débloque le saut de +{seconds} s (touche T)": "+{seconds}秒のスキップを解放（Tキー）",
     "Débloque le thème exclusif « Olympe doré » : or, rayons de lumière et poussière d'or animés": "限定テーマ「黄金のオリンポス」を解放：金色、光の筋、舞う金粉のアニメーション",
     "Déclaration": "告白",
@@ -1526,8 +1524,6 @@ window.TRADUCTIONS.ja = {
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).": "このパネルにはすべてのステータスが表示される：HP、ダメージ、そして各惑星のステータス。変化したステータスは点滅する（上がると緑）。",
     "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier.": "このパネルにはすべてのステータスが表示される：HP、ダメージ、そして各惑星のステータス。変化したステータスは点滅する（上がると緑）。タイトルを押すと開いたりたたんだりできる。",
     "Le temps": "時間",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps (touche T) : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "このボタンでゲームを加速（x2、x4）したり、時間を飛ばしたり（Tキー）できる：飛ばした時間の敵がすべて一度に現れるので、倒しきろう。ジャンプの後は、次まで少し待つ必要がある。",
-    "Ce bouton accélère le jeu (x2, x4) et fait sauter dans le temps : tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant.": "このボタンでゲームを加速（x2、x4）したり、時間を飛ばしたりできる：飛ばした時間の敵がすべて一度に現れるので、倒しきろう。ジャンプの後は、次まで少し待つ必要がある。",
     "Les liens d'orbite": "軌道リンク",
     "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici.": "惑星は同じ軌道の隣の惑星とリンクして、その属性を借りられる：すると射撃に特殊効果がつく（爆発、凍結、炎上…）。リンクはここで選ぶ。",
     "Les orbites": "軌道",
@@ -1577,5 +1573,8 @@ window.TRADUCTIONS.ja = {
     "niv. {level}": "Lv.{level}",
     "Total : +{percent} de dégâts": "合計：ダメージ+{percent}",
     "niveau {level} : +{percent} de dégâts": "レベル{level}：ダメージ+{percent}",
-    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ チュートリアル中は時間を飛ばせない"
+    "Débloque la vitesse x4": "速度 x4 を解放",
+    "Débloque le saut de +30 s, puis +100 s": "+30 秒のスキップを解放、次に +100 秒",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる（T キー）！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。",
+    "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。"
 };
