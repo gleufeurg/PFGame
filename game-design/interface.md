@@ -131,6 +131,7 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 
 - **« Compris »** passe à la bulle suivante. Si plusieurs bulles arrivent en même temps (ex : « Les orbites » et « Le temps »), elles s'affichent l'une après l'autre.
 - **« Passer le tutoriel »** (lien discret en bas de chaque bulle) : plus aucune bulle. Un message rappelle qu'on peut le recommencer dans les paramètres.
+- **Pas de saut dans le temps** tant que les bulles du début (« Bienvenue ! », les récompenses, les ennemis, le shop et « Le temps ») n'ont pas été vues : sinon tous les ennemis arriveraient d'un coup et le joueur raterait les explications. Un saut tenté affiche « ⏳ Pas de saut dans le temps pendant le tutoriel ». « Passer le tutoriel » enlève ce blocage (fonction `isTutorialBlockingSkip`).
 - **Paramètres** : la case « Tutoriel » (décochée = passé, la recocher le remet en marche) et le bouton **« Recommencer »**, qui ferme les paramètres et repart de « Bienvenue ! ».
 - **Souris ou doigt** : à la souris les bulles disent « Clique », au doigt « Touche » (`textTouch`, ex : la planète, l'arbre) ; la touche T n'est citée qu'à l'ordinateur. Sur petit écran, `textSmall` ajoute des précisions (le panneau des stats).
 - **Sauvegarde** : les bulles déjà vues et « Passer » sont gardés (`tutorial` dans la sauvegarde). Une sauvegarde d'avant le tutoriel compte comme « tout vu » : le joueur connaît déjà le jeu (il peut le revoir avec « Recommencer »). « Effacer ma progression » le fait recommencer.

@@ -5591,6 +5591,11 @@
                 playSound("denied");
                 return;
             }
+            if (isTutorialBlockingSkip()) {
+                showToast(t("⏳ Pas de saut dans le temps pendant le tutoriel"));
+                playSound("denied");
+                return;
+            }
             if (bossDuel !== null) {
                 showToast(t("⚔️ Impossible de sauter le temps pendant un duel"));
                 playSound("denied");
@@ -13635,6 +13640,13 @@
             if (wasOpen) {
                 showToast(t("Tutoriel passé : tu peux le recommencer dans les paramètres."));
             }
+        }
+
+        //PAS DE SAUT DANS LE TEMPS pendant le début du tutoriel : tous les ennemis arriveraient d'un coup, et le joueur
+        //passerait à côté des explications. Le saut revient quand ces bulles sont vues (ou avec « Passer le tutoriel »).
+        const TUTORIAL_NO_SKIP_STEPS = ["welcome", "rewards", "enemies", "shop", "time"];
+        function isTutorialBlockingSkip() {
+            return !tutorialSkipped && TUTORIAL_NO_SKIP_STEPS.some(function (id) { return !tutorialDone.has(id); }); //some = "au moins une"
         }
 
         //Paramètres : « Recommencer » le tutoriel depuis le début

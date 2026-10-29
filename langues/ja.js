@@ -1576,5 +1576,6 @@ window.TRADUCTIONS.ja = {
     "✨ Arbre complet : l'Éveil de {name} est disponible !": "✨ ツリー完成：{name}を覚醒させられるようになった！",
     "niv. {level}": "Lv.{level}",
     "Total : +{percent} de dégâts": "合計：ダメージ+{percent}",
-    "niveau {level} : +{percent} de dégâts": "レベル{level}：ダメージ+{percent}"
+    "niveau {level} : +{percent} de dégâts": "レベル{level}：ダメージ+{percent}",
+    "⏳ Pas de saut dans le temps pendant le tutoriel": "⏳ チュートリアル中は時間を飛ばせない"
 };
