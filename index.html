@@ -2578,6 +2578,61 @@
             flex-wrap: wrap; /*les 3 boutons passent à la ligne s'il n'y a pas la place*/
         }
 
+        /*SAUVEGARDES : 3 boutons côte à côte, un par partie (celle en cours est entourée)*/
+        #saveSlotsArea {
+            margin: 18px 0 8px;
+        }
+
+        .settingTitle {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        #saveSlots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /*3 colonnes de même largeur*/
+            gap: 8px;
+        }
+
+        .saveSlotButton {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 0;   /*le texte passe à la ligne au lieu d'élargir la grille*/
+            padding: 8px 6px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background-color: var(--ui-surface);
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .saveSlotButton:hover {
+            border-color: var(--ui-muted);
+        }
+
+        .saveSlotButton.active {
+            border-color: var(--ui-accent);
+            cursor: default;
+        }
+
+        .saveSlotName {
+            font-weight: 800;
+        }
+
+        .saveSlotInfo {
+            font-size: 12px;
+            color: var(--ui-muted);
+            text-align: center;
+        }
+
+        .saveSlotButton.active .saveSlotInfo:first-of-type {
+            color: var(--ui-accent);
+        }
+
         #saveCodeOverlay {
             z-index: 40; /*par-dessus les paramètres*/
         }
@@ -2869,6 +2924,10 @@
             <button id="adPrivacyButton" class="primaryButton hidden">Mes choix de confidentialité (pubs)</button>
             <div id="premiumBoxSettings" class="premiumBox"></div>
             <div id="supportBoxSettings" class="premiumBox supportBox"></div>
+            <div id="saveSlotsArea">
+                <span class="settingTitle">Sauvegardes</span>
+                <div id="saveSlots"></div>
+            </div>
             <div class="settingRow saveRow">
                 <button id="exportSaveButton" class="primaryButton">Exporter ma sauvegarde</button>
                 <button id="importSaveButton" class="primaryButton">Importer</button>
@@ -5495,6 +5554,23 @@
         const PREMIUM_SKIPS = reglage("PREMIUM_SKIPS");      // seulement avec le Pack Premium
         const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS").concat(PREMIUM_SKIPS); // un bouton par valeur (en secondes) : ceux du shop, puis ceux du Pack Premium. La touche T fait le plus grand saut débloqué.
 
+        //EMPLACEMENTS DE SAUVEGARDE : 3 parties séparées (Paramètres > Sauvegardes). Déclaré ici : les super ennemis vaincus sont lus dès le départ.
+        const SAVE_SLOT_COUNT = 3;
+        let saveSlot = 1;                   // la partie en cours (1, 2 ou 3)
+        try {
+            const savedSlot = Number(localStorage.getItem("saveSlot"));
+            if (Number.isInteger(savedSlot) && savedSlot >= 1 && savedSlot <= SAVE_SLOT_COUNT) {
+                saveSlot = savedSlot;
+            }
+        } catch (error) {
+        }
+
+        //La clé de localStorage d'une donnée de la partie : la partie 1 garde les anciens noms ("progress"),
+        //les autres ont leur numéro au bout ("progress2", "progress3"). Les réglages (son, thème...) et les achats sont communs.
+        function getSlotKey(key, slot = saveSlot) { // = saveSlot : la valeur si on ne donne pas ce paramètre
+            return slot === 1 ? key : key + slot;
+        }
+
         //PACK PREMIUM (acheté une fois, retenu par le navigateur) : déclaré ici car les boutons de temps en ont besoin dès le départ
         let isPremiumOwned = false;
         try {
@@ -6094,7 +6170,7 @@
 
         function loadDefeatedBosses() {
             try {
-                const saved = JSON.parse(localStorage.getItem("defeatedBosses"));
+                const saved = JSON.parse(localStorage.getItem(getSlotKey("defeatedBosses")));
                 if (Array.isArray(saved)) {
                     for (const id of saved) {
                         defeatedBossIds.add(id);
@@ -6106,7 +6182,7 @@
 
         function saveDefeatedBosses() {
             try {
-                localStorage.setItem("defeatedBosses", JSON.stringify([...defeatedBossIds])); //[...set] = transforme le Set en tableau
+                localStorage.setItem(getSlotKey("defeatedBosses"), JSON.stringify([...defeatedBossIds])); //[...set] = transforme le Set en tableau
             } catch (error) {
             }
         }
@@ -11640,7 +11716,7 @@
         //Tout est rangé dans le navigateur (localStorage), comme le volume. Dans l'application mobile, c'est pareil :
         //l'appli garde son propre localStorage sur le téléphone (il disparaît seulement si on désinstalle le jeu).
         //JSON.stringify = transforme un objet en texte (localStorage ne garde que du texte), JSON.parse = l'inverse.
-        const SAVE_KEY = "progress";
+        const SAVE_KEY = getSlotKey("progress");   // "progress", "progress2" ou "progress3" (voir EMPLACEMENTS DE SAUVEGARDE)
         const SAVE_VERSION = 2;             // à augmenter si le format change (pour convertir les vieilles sauvegardes). 2 = x2 et +10 s offerts
         const AUTO_SAVE_INTERVAL = 5000;    // millisecondes : sauvegarde régulière (l'or et l'XP changent sans arrêt pendant une partie)
         let isProgressLoaded = false;       // on ne sauvegarde rien tant que la sauvegarde n'est pas chargée (sinon on l'écraserait)
@@ -11802,16 +11878,16 @@
             return Number.isInteger(orbit) && orbit >= 0 && orbit < ORBITS.length ? orbit : 0; //isInteger = un nombre entier
         }
 
-        //Effacer : on vide la sauvegarde et on recharge la page. Le Pack Premium (un achat) et les réglages sont gardés.
+        //Effacer : on vide la sauvegarde de la partie en cours et on recharge la page. Les autres parties, le Pack Premium (un achat) et les réglages sont gardés.
         function eraseProgress() {
-            if (!confirm(t("Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif."))) { //confirm = fenêtre OK / Annuler
+            if (!confirm(t("Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.", { slot: saveSlot }))) { //confirm = fenêtre OK / Annuler
                 return;
             }
             isProgressErased = true;
             try {
-                localStorage.removeItem(SAVE_KEY);
-                localStorage.removeItem("records");
-                localStorage.removeItem("defeatedBosses");
+                for (const key of SAVE_CODE_KEYS) {
+                    localStorage.removeItem(getSlotKey(key));
+                }
             } catch (error) {
             }
             location.reload(); //recharge la page : le jeu redémarre à zéro
@@ -11819,11 +11895,58 @@
 
         document.getElementById("resetProgressButton").addEventListener("click", eraseProgress);
 
+        //SAUVEGARDES (Paramètres) : un bouton par partie, avec son résumé. Changer de partie sauvegarde celle en cours et recharge la page.
+        const saveSlotsArea = document.getElementById("saveSlots");
+
+        //Le résumé d'une partie : "3 dieux · 1 250 or", ou null si elle est vide
+        function getSaveSlotSummary(slot) {
+            let data = null;
+            try {
+                data = JSON.parse(localStorage.getItem(getSlotKey("progress", slot)));
+            } catch (error) {
+            }
+            if (data === null || typeof data !== "object") {
+                return null;
+            }
+            const gods = Object.values(data.trees || {}).filter(function (tree) { return tree.owned; }).length; //Object.values = les valeurs de l'objet
+            const gold = formatNumber(Math.floor(Number(data.gold) || 0));
+            return gods > 1 ? t("{gods} dieux · {gold} or", { gods: gods, gold: gold }) : t("{gods} dieu · {gold} or", { gods: gods, gold: gold });
+        }
+
+        function renderSaveSlots() {
+            saveProgress(); //le résumé de la partie en cours est à jour
+            saveSlotsArea.innerHTML = "";
+            for (let slot = 1; slot <= SAVE_SLOT_COUNT; slot++) {
+                const summary = getSaveSlotSummary(slot);
+                const button = document.createElement("button");
+                button.className = "saveSlotButton";
+                button.classList.toggle("active", slot === saveSlot);
+                button.appendChild(createElementWithText("span", "saveSlotName", t("Partie {slot}", { slot: slot })));
+                button.appendChild(createElementWithText("span", "saveSlotInfo", slot === saveSlot ? t("▶ en cours") : ""));
+                button.appendChild(createElementWithText("span", "saveSlotInfo", summary === null ? t("Vide : nouvelle partie") : summary));
+                button.addEventListener("click", function () { switchSaveSlot(slot); });
+                saveSlotsArea.appendChild(button);
+            }
+        }
+
+        function switchSaveSlot(slot) {
+            if (slot === saveSlot) {
+                return;
+            }
+            saveProgress(); //la partie en cours est gardée telle quelle
+            isProgressErased = true; //plus de sauvegarde automatique avant le rechargement (elle irait dans la mauvaise partie)
+            try {
+                localStorage.setItem("saveSlot", String(slot));
+            } catch (error) {
+            }
+            location.reload(); //recharge la page : le jeu démarre avec la partie choisie
+        }
+
         //CODE DE SAUVEGARDE : toute la progression dans un texte à copier quelque part (mail, notes...), puis à recoller
         //(sur un autre navigateur, un autre appareil, ou après avoir vidé les données). C'est la sécurité si localStorage est effacé.
         //Les achats (packs) et les réglages (son, thème) ne sont PAS dans le code : seulement la progression du jeu.
         const SAVE_CODE_PREFIX = "PFG1:";                                  // pour reconnaître un vrai code (1 = version du format)
-        const SAVE_CODE_KEYS = [SAVE_KEY, "records", "defeatedBosses"];   // les clés de localStorage mises dans le code
+        const SAVE_CODE_KEYS = ["progress", "records", "defeatedBosses"];   // les données mises dans le code (celles de la partie en cours, voir getSlotKey)
         const saveCodeOverlay = document.getElementById("saveCodeOverlay");
         const saveCodeArea = document.getElementById("saveCodeArea");
         const saveCodeActionButton = document.getElementById("saveCodeActionButton");
@@ -11850,7 +11973,7 @@
             const data = {};
             for (const key of SAVE_CODE_KEYS) {
                 try {
-                    data[key] = localStorage.getItem(key); //null si la clé n'existe pas
+                    data[key] = localStorage.getItem(getSlotKey(key)); //null si la clé n'existe pas
                 } catch (error) {
                 }
             }
@@ -11865,7 +11988,7 @@
             }
             try {
                 const data = JSON.parse(base64ToText(code.slice(SAVE_CODE_PREFIX.length)));
-                JSON.parse(data[SAVE_KEY]); //la progression doit elle-même être du JSON valide
+                JSON.parse(data.progress); //la progression doit elle-même être du JSON valide
                 return data;
             } catch (error) {
                 return null; //code abîmé (mal copié)
@@ -11926,9 +12049,9 @@
             try {
                 for (const key of SAVE_CODE_KEYS) {
                     if (typeof data[key] === "string") {
-                        localStorage.setItem(key, data[key]);
+                        localStorage.setItem(getSlotKey(key), data[key]);
                     } else {
-                        localStorage.removeItem(key);
+                        localStorage.removeItem(getSlotKey(key));
                     }
                 }
             } catch (error) {
@@ -12393,7 +12516,7 @@
 
         function loadRecords() {
             try {
-                const saved = JSON.parse(localStorage.getItem("records"));
+                const saved = JSON.parse(localStorage.getItem(getSlotKey("records")));
                 if (saved !== null) {
                     bestKills = saved.bestKills;
                     bestTime = saved.bestTime;
@@ -12406,7 +12529,7 @@
             bestKills = Math.max(bestKills, killsThisRun);
             bestTime = Math.max(bestTime, runTime);
             try {
-                localStorage.setItem("records", JSON.stringify({ bestKills: bestKills, bestTime: bestTime }));
+                localStorage.setItem(getSlotKey("records"), JSON.stringify({ bestKills: bestKills, bestTime: bestTime }));
             } catch (error) {
             }
         }
@@ -13375,6 +13498,7 @@
             updatePause();
             renderSettings();
             renderPremiumBoxes();
+            renderSaveSlots();
             settingsPanel.classList.remove("hidden");
             playSound("menuOpen");
         }

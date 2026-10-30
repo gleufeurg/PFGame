@@ -339,7 +339,6 @@ window.TRADUCTIONS.ja = {
     "ETNA": "エトナ",
     "Eau": "水",
     "Effacer ma progression": "進行状況を消去",
-    "Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif.": "進行状況（ゴールド、XP、ショップ、スキル、記録）をすべて消去する？元には戻せないよ。",
     "Effet de combo au hasard": "ランダムなコンボ効果",
     "Effets du jeu": "効果音",
     "Eiréné": "エイレーネー",
@@ -1577,5 +1576,12 @@ window.TRADUCTIONS.ja = {
     "Débloque le saut de +30 s, puis +100 s": "+30 秒のスキップを解放、次に +100 秒",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる（T キー）！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "プレゼント：ゲームを加速（x2）できるようになり、時間を 10 秒飛ばせる！飛ばした時間の敵が一度に全部やって来るので、撃ち落とそう。スキップのあとは、次まで少し待つ必要がある。ショップで x4 と、もっと長いスキップが解放できる。",
-    "🌊 Une énorme vague d'ennemis arrive !": "🌊 敵の大群が押し寄せてくる！"
+    "🌊 Une énorme vague d'ennemis arrive !": "🌊 敵の大群が押し寄せてくる！",
+    "Sauvegardes": "セーブデータ",
+    "Partie {slot}": "データ {slot}",
+    "▶ en cours": "▶ プレイ中",
+    "Vide : nouvelle partie": "空き：新しいゲーム",
+    "{gods} dieux · {gold} or": "神 {gods} 柱 · {gold} ゴールド",
+    "{gods} dieu · {gold} or": "神 {gods} 柱 · {gold} ゴールド",
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "データ {slot} の進行状況（ゴールド、XP、ショップ、スキル、記録）をすべて消しますか？元に戻せません。"
 };

@@ -339,7 +339,6 @@ window.TRADUCTIONS.it = {
     "ETNA": "ETNA",
     "Eau": "Acqua",
     "Effacer ma progression": "Cancella i miei progressi",
-    "Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif.": "Cancellare tutti i tuoi progressi (oro, XP, shop, abilità, record)? È definitivo.",
     "Effet de combo au hasard": "Effetto combo a caso",
     "Effets du jeu": "Effetti di gioco",
     "Eiréné": "Irene",
@@ -1577,5 +1576,12 @@ window.TRADUCTIONS.it = {
     "Débloque le saut de +30 s, puis +100 s": "Sblocca il salto di +30 s, poi +100 s",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Un regalo: ora puoi accelerare il gioco (x2) e saltare 10 secondi nel tempo (tasto T)! Tutti i nemici del tempo saltato arrivano in un colpo solo, tocca a te abbatterli. Dopo un salto bisogna aspettare un po' prima del successivo. Il negozio sblocca x4 e salti più lunghi.",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "Un regalo: ora puoi accelerare il gioco (x2) e saltare 10 secondi nel tempo! Tutti i nemici del tempo saltato arrivano in un colpo solo, tocca a te abbatterli. Dopo un salto bisogna aspettare un po' prima del successivo. Il negozio sblocca x4 e salti più lunghi.",
-    "🌊 Une énorme vague d'ennemis arrive !": "🌊 Sta arrivando un'enorme ondata di nemici!"
+    "🌊 Une énorme vague d'ennemis arrive !": "🌊 Sta arrivando un'enorme ondata di nemici!",
+    "Sauvegardes": "Salvataggi",
+    "Partie {slot}": "Partita {slot}",
+    "▶ en cours": "▶ in corso",
+    "Vide : nouvelle partie": "Vuoto: nuova partita",
+    "{gods} dieux · {gold} or": "{gods} dèi · {gold} oro",
+    "{gods} dieu · {gold} or": "{gods} dio · {gold} oro",
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Cancellare tutti i progressi della partita {slot} (oro, XP, negozio, abilità, record)? È definitivo."
 };

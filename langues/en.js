@@ -339,7 +339,6 @@ window.TRADUCTIONS.en = {
     "ETNA": "ETNA",
     "Eau": "Water",
     "Effacer ma progression": "Erase my progress",
-    "Effacer toute ta progression (or, XP, shop, compétences, records) ? C'est définitif.": "Erase all your progress (gold, XP, shop, skills, records)? This can't be undone.",
     "Effet de combo au hasard": "Random combo effect",
     "Effets du jeu": "Game effects",
     "Eiréné": "Eirene",
@@ -1577,5 +1576,12 @@ window.TRADUCTIONS.en = {
     "Débloque le saut de +30 s, puis +100 s": "Unlocks the +30 s skip, then +100 s",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "A gift: you can now speed up the game (x2) and jump 10 seconds through time (T key)! All the enemies of the skipped time arrive at once, so shoot them down. After a jump, you have to wait a little before the next one. The shop unlocks x4 and longer jumps.",
     "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.": "A gift: you can now speed up the game (x2) and jump 10 seconds through time! All the enemies of the skipped time arrive at once, so shoot them down. After a jump, you have to wait a little before the next one. The shop unlocks x4 and longer jumps.",
-    "🌊 Une énorme vague d'ennemis arrive !": "🌊 A huge wave of enemies is coming!"
+    "🌊 Une énorme vague d'ennemis arrive !": "🌊 A huge wave of enemies is coming!",
+    "Sauvegardes": "Saves",
+    "Partie {slot}": "Game {slot}",
+    "▶ en cours": "▶ current",
+    "Vide : nouvelle partie": "Empty: new game",
+    "{gods} dieux · {gold} or": "{gods} gods · {gold} gold",
+    "{gods} dieu · {gold} or": "{gods} god · {gold} gold",
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Erase all progress of game {slot} (gold, XP, shop, skills, records)? This cannot be undone."
 };
