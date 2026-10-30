@@ -1386,7 +1386,6 @@ window.TRADUCTIONS.en = {
     "Durée de la traînée de feu": "Fire trail duration",
     "Largeur de la traînée de feu": "Fire trail width",
     "Temps de survie": "Survival time",
-    "Compétences (S)": "Skills (S)",
     "Débloquer · {cost} XP": "Unlock · {cost} XP",
     "Pas assez d'XP ({cost} XP)": "Not enough XP ({cost} XP)",
     "ou touche encore l'étoile": "or tap the star again",

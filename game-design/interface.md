@@ -4,14 +4,13 @@
 
 | Touche | Effet |
 | --- | --- |
-| S | ouvre la fenêtre des skills (le dernier arbre vu), ou la ferme (comme le bouton ✦ à gauche de la roue crantée) |
 | R | rejoue (écran de game over) |
 | Échap | ferme la fenêtre ouverte, sinon ouvre les paramètres |
 | Entrée, Espace ou Échap | pendant une bulle du tutoriel : « Compris » (les autres touches ne font rien tant qu'elle est affichée) |
 
-Il n'y a plus de raccourci pour sauter dans le temps (la touche T a été retirée) : on passe par le menu du temps.
+Il n'y a plus de raccourci pour sauter dans le temps ni pour les skills (les touches T et S ont été retirées) : on passe par le menu du temps et par le bouton ✦ (à gauche de la roue crantée), qui ouvre le dernier arbre vu.
 
-Pendant qu'on tape un code de triche, S et R ne se déclenchent pas : taper « hestia » n'ouvre pas les skills sur le « s ».
+Pendant qu'on tape un code de triche (à partir de sa 2e lettre), R ne se déclenche pas.
 
 ## Au doigt (téléphone et tablette)
 
@@ -21,7 +20,7 @@ Le jeu repère un écran tactile avec `IS_TOUCH_DEVICE` (la question CSS `pointe
 | --- | --- |
 | Toucher une planète | ouvre son arbre de compétences |
 | Glisser une planète | change sa place sur son orbite, ou la fait passer sur une autre orbite (voir « Les 3 orbites ») |
-| Bouton « ✦ Skills » (en bas à droite) | remplace la touche S (point turquoise : une compétence peut être prise) |
+| Bouton « ✦ Skills » (en bas à droite) | ouvre les skills (point turquoise : une compétence peut être prise) |
 | Bouton du temps (à côté du chrono) | vitesses et sauts de temps, comme à l'ordinateur |
 | Roue crantée | paramètres (remplace Échap) |
 | 1er toucher sur une compétence | la choisit : sa carte s'affiche en grand, avec le bouton « Débloquer » (l'étoile est entourée) |

@@ -1386,7 +1386,6 @@ window.TRADUCTIONS.zh = {
     "Durée de la traînée de feu": "火焰轨迹持续时间",
     "Largeur de la traînée de feu": "火焰轨迹宽度",
     "Temps de survie": "生存时间",
-    "Compétences (S)": "技能（S）",
     "Débloquer · {cost} XP": "解锁 · {cost} XP",
     "Pas assez d'XP ({cost} XP)": "XP 不足（{cost} XP）",
     "ou touche encore l'étoile": "或再次点击这颗星",

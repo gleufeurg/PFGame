@@ -1386,7 +1386,6 @@ window.TRADUCTIONS.ja = {
     "Durée de la traînée de feu": "炎の軌跡の持続時間",
     "Largeur de la traînée de feu": "炎の軌跡の幅",
     "Temps de survie": "生存時間",
-    "Compétences (S)": "スキル（S）",
     "Débloquer · {cost} XP": "解放 · {cost} XP",
     "Pas assez d'XP ({cost} XP)": "XPが足りない（{cost} XP）",
     "ou touche encore l'étoile": "または星をもう一度タップ",

@@ -2762,9 +2762,9 @@
     <div id="toast" class="hiddenToast"></div>
     <!-- ALERTE : un super ennemi (ou un nouvel ennemi) arrive dans quelques secondes -->
     <div id="spawnAlert" class="hidden"></div>
-    <!-- Bouton des SKILL TREES (comme la touche S) : à gauche de la roue sur ordinateur, en bas à droite au doigt.
+    <!-- Bouton des SKILL TREES : à gauche de la roue sur ordinateur, en bas à droite au doigt.
          Le point turquoise = une compétence peut être débloquée avec l'XP qu'on a. -->
-    <button id="skillsButton" aria-label="Compétences" title="Compétences (S)">
+    <button id="skillsButton" aria-label="Compétences" title="Compétences">
         <svg viewBox="0 0 24 24"><path d="M10 3l2.2 6.3L18.5 11.5l-6.3 2.2L10 20l-2.2-6.3L1.5 11.5l6.3-2.2z M19 1.5l0.9 2.6 2.6 0.9-2.6 0.9-0.9 2.6-0.9-2.6-2.6-0.9 2.6-0.9z M18.5 15l0.7 1.8 1.8 0.7-1.8 0.7-0.7 1.8-0.7-1.8-1.8-0.7 1.8-0.7z"/></svg>
         <span class="skillsButtonText">✦ Skills</span>
         <span id="skillsBadge" class="hidden"></span>
@@ -10306,7 +10306,7 @@
         const treeBonusArea = document.getElementById("treeBonusArea");
         const orbitLinkArea = document.getElementById("orbitLinkArea");
         let currentTree = null;
-        let lastOpenedTree = null;      // le dernier arbre ouvert (la touche S le rouvre)
+        let lastOpenedTree = null;      // le dernier arbre ouvert (le bouton ✦ le rouvre)
         let justUnlockedNode = null;    // la compétence qu'on vient d'acheter (pour l'animation)
         const prevGodButton = document.getElementById("prevGodButton");
         const nextGodButton = document.getElementById("nextGodButton");
@@ -10370,7 +10370,7 @@
             }
         });
 
-        //Touche S : ouvre le dernier arbre vu (ou celui de la 1re planète), ou ferme la fenêtre
+        //Bouton ✦ : ouvre le dernier arbre vu (ou celui de la 1re planète), ou ferme la fenêtre
         function toggleSkillTreeWindow() {
             if (isGameOver || isSettingsOpen) {
                 return;
@@ -10403,7 +10403,7 @@
             showStatsPanel();
             setupTreeWorld(); //après l'affichage : il faut que la fenêtre soit visible pour connaître sa taille
             hideNodeCard();
-            //TUTORIEL : l'arbre ouvert autrement qu'en cliquant sur la planète (touche S, bouton ✦) compte aussi
+            //TUTORIEL : l'arbre ouvert autrement qu'en cliquant sur la planète (bouton ✦) compte aussi
             if (tutorialStep === "planet") {
                 finishTutorialStep();
             }
@@ -13143,12 +13143,9 @@
             if (CHEATS_ENABLED && checkCheatCode(key)) {
                 return; //un code vient d'être tapé, ou on est peut-être en train d'en taper un : pas de raccourci
             }
-            //RACCOURCIS : R = rejouer (game over), S = skills
+            //RACCOURCI : R = rejouer (game over)
             if (key === "r" && isGameOver && !isSettingsOpen) {
                 restartGame();
-            }
-            if (key === "s") {
-                toggleSkillTreeWindow();
             }
         });
 
@@ -13545,7 +13542,7 @@
             }
         });
 
-        //BOUTON DES SKILLS (comme la touche S) : ouvre la fenêtre des skills, ou la ferme
+        //BOUTON DES SKILLS : ouvre la fenêtre des skills, ou la ferme
         skillsButton.addEventListener("click", function (event) {
             event.stopPropagation(); //sinon le clic arriverait aussi sur le fond de la fenêtre des skills, qui la referme
             toggleSkillTreeWindow();

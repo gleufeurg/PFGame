@@ -1386,7 +1386,6 @@ window.TRADUCTIONS.it = {
     "Durée de la traînée de feu": "Durata della scia di fuoco",
     "Largeur de la traînée de feu": "Larghezza della scia di fuoco",
     "Temps de survie": "Tempo di sopravvivenza",
-    "Compétences (S)": "Abilità (S)",
     "Débloquer · {cost} XP": "Sblocca · {cost} XP",
     "Pas assez d'XP ({cost} XP)": "XP insufficienti ({cost} XP)",
     "ou touche encore l'étoile": "o tocca di nuovo la stella",

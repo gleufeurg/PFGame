@@ -1386,7 +1386,6 @@ window.TRADUCTIONS.de = {
     "Durée de la traînée de feu": "Dauer der Feuerspur",
     "Largeur de la traînée de feu": "Breite der Feuerspur",
     "Temps de survie": "Überlebenszeit",
-    "Compétences (S)": "Fähigkeiten (S)",
     "Débloquer · {cost} XP": "Freischalten · {cost} XP",
     "Pas assez d'XP ({cost} XP)": "Nicht genug XP ({cost} XP)",
     "ou touche encore l'étoile": "oder tippe erneut auf den Stern",
