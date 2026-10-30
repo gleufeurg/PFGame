@@ -7,6 +7,8 @@ Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un 
 | Code | Effet |
 | --- | --- |
 | nom d'un dieu, sans accent : `hephaistos`, `poseidon`, `demeter`, `eole`, `apollon`, `artemis`, `athena`, `zeus`, `ares`, `aphrodite`, `hermes`, `hestia` | ce dieu rejoint l'orbite et tout son skill tree est débloqué, avec sa 1re voie seulement (les voies sont exclusives : rembourser pour essayer les autres) |
+| nom d'un super ennemi, sans accent : `cerbere`, `hydre`, `meduse`, `typhon`, `chimere`, `charybde`, `python`, `cronos` | ce super ennemi arrive tout de suite, avec son pouvoir (et sa vie du moment de la partie). Ce n'est pas un duel (le chrono continue), et le battre ne compte pas comme une victoire : les paliers du menu de mort ne changent pas (`summonBossCheat`). Impossible pendant le game over |
+| `tartare` | les 8 super ennemis arrivent d'un coup (le Tartare, la prison des monstres) |
 | `ragnarok` | **tout le jeu débloqué** : shop au maximum (les améliorations infinies au niveau 20), tous les dieux avec leurs skill trees complets (1re voie de chaque arbre), tous les super ennemis vaincus (donc tous les paliers du menu de mort), et sur `monetisation` le Pack Premium et le Pack Soutien |
 | `pantheon` | tous les dieux en orbite, avec tous leurs skill trees complets (1re voie de chaque arbre) |
 | `olympe` | tous les dieux rejoignent l'orbite (skill trees vides) |

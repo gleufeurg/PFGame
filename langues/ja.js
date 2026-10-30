@@ -1585,5 +1585,9 @@ window.TRADUCTIONS.ja = {
     "{gods} dieu · {gold} or": "神 {gods} 柱 · {gold} ゴールド",
     "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "データ {slot} の進行状況（ゴールド、XP、ショップ、スキル、記録）をすべて消しますか？元に戻せません。",
     "Réinitialiser la vitesse de jeu en début de partie": "ゲーム開始時にゲーム速度をリセット",
-    "(décoche pour garder x2 ou x4)": "（チェックを外すと x2 や x4 のまま）"
+    "(décoche pour garder x2 ou x4)": "（チェックを外すと x2 や x4 のまま）",
+    "{name} est invoqué": "{name} を召喚した",
+    "{name} est invoquée": "{name} を召喚した",
+    "Tous les super ennemis sont invoqués": "すべてのスーパー敵を召喚した",
+    "impossible pendant le game over": "ゲームオーバー中は使えない"
 };

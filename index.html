@@ -6534,7 +6534,9 @@
                 spawnHydraWave(group); //les 8 dernières têtes sont tombées : la dernière vague arrive
                 return;
             }
-            registerBossDefeat(group.boss);
+            if (!group.isCheat) {
+                registerBossDefeat(group.boss); //un super ennemi invoqué par un code de triche ne compte pas
+            }
             if (group.isDuel && bossDuel !== null) {
                 endBossDuel();
             }
@@ -13075,6 +13077,31 @@
                 return t("Toutes les divinités sont en orbite");
             }
         };
+        //Le nom de chaque super ennemi (sans accents : cerbere, hydre, meduse...) l'invoque tout de suite, avec son pouvoir.
+        //Ce n'est pas un duel, et le battre ne compte pas comme une victoire (paliers du menu de mort inchangés).
+        function summonBossCheat(boss) {
+            if (isGameOver) {
+                return t("impossible pendant le game over");
+            }
+            const enemy = spawnBoss(boss);
+            if (enemy && enemy.bossGroup) {
+                enemy.bossGroup.isCheat = true;
+            }
+            return t(boss.feminine ? "{name} est invoquée" : "{name} est invoqué", { name: boss.name });
+        }
+        for (const boss of BOSSES) {
+            CHEAT_CODES[boss.id] = function () { return summonBossCheat(boss); };
+        }
+        CHEAT_CODES.tartare = function () { // tous les super ennemis d'un coup (le Tartare = la prison des monstres)
+            if (isGameOver) {
+                return t("impossible pendant le game over");
+            }
+            for (const boss of BOSSES) {
+                summonBossCheat(boss);
+            }
+            return t("Tous les super ennemis sont invoqués");
+        };
+
         //Le nom de chaque dieu (sans accents) : il rejoint l'orbite et tout son skill tree est débloqué
         for (const tree of SKILL_TREES) {
             CHEAT_CODES[toCheatCode(tree.id)] = function () { //le code reste le nom français (hephaistos...) dans toutes les langues

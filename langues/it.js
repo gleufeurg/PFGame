@@ -1585,5 +1585,9 @@ window.TRADUCTIONS.it = {
     "{gods} dieu · {gold} or": "{gods} dio · {gold} oro",
     "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Cancellare tutti i progressi della partita {slot} (oro, XP, negozio, abilità, record)? È definitivo.",
     "Réinitialiser la vitesse de jeu en début de partie": "Reimposta la velocità di gioco a inizio partita",
-    "(décoche pour garder x2 ou x4)": "(togli la spunta per tenere x2 o x4)"
+    "(décoche pour garder x2 ou x4)": "(togli la spunta per tenere x2 o x4)",
+    "{name} est invoqué": "{name} è stato evocato",
+    "{name} est invoquée": "{name} è stata evocata",
+    "Tous les super ennemis sont invoqués": "Tutti i super nemici sono stati evocati",
+    "impossible pendant le game over": "impossibile durante il game over"
 };

@@ -1585,5 +1585,9 @@ window.TRADUCTIONS.en = {
     "{gods} dieu · {gold} or": "{gods} god · {gold} gold",
     "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Erase all progress of game {slot} (gold, XP, shop, skills, records)? This cannot be undone.",
     "Réinitialiser la vitesse de jeu en début de partie": "Reinitialise game speed at game's beginning",
-    "(décoche pour garder x2 ou x4)": "(uncheck to keep x2 or x4)"
+    "(décoche pour garder x2 ou x4)": "(uncheck to keep x2 or x4)",
+    "{name} est invoqué": "{name} has been summoned",
+    "{name} est invoquée": "{name} has been summoned",
+    "Tous les super ennemis sont invoqués": "All super enemies have been summoned",
+    "impossible pendant le game over": "not possible during game over"
 };
