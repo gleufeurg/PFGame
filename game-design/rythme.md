@@ -84,15 +84,15 @@ Après la 2e série de retours : l'esquive se calcule en points (chance = x / (x
 
 Le rythme des dieux ne change presque pas. Le 1er niveau d'Éveil arrive vers 50 minutes ; à 3 heures, le robot en a 127 au total (répartis sur ses dieux complets). L'XP de fin de partie (20 000 à 35 000 par partie) a maintenant toujours quelque chose à acheter.
 
-## Depuis : le tutoriel et le 2e dieu à 1 000 or
+## Depuis : le tutoriel et les dieux x50
 
-La 1re partie finit vers 37 s (la vague du tutoriel) avec juste de quoi acheter le 1er dieu (20 or) ; le 2e coûte **1 000 or** au lieu de 50, et chaque dieu suivant toujours x2,5. x2 et le saut de +10 s sont offerts. Le robot (3 heures, `joueur-robot.js 180`) :
+La 1re partie finit vers 37 s (la vague du tutoriel) avec juste de quoi acheter le 1er dieu (20 or). Ensuite, **chaque dieu coûte 50 fois plus cher** que le précédent : 1 000, 50 000, 2 500 000 or… x2 et le saut de +10 s sont offerts, et chaque partie recommence en x1. Le robot (3 heures, `joueur-robot.js 180`) :
 
-| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ | 5ᵉ | 6ᵉ | 7ᵉ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Minutes réelles | 1 | 15 | 32 | 52 | 97 | 123 | 180 |
+| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ et suivants |
+| --- | --- | --- | --- | --- |
+| Minutes réelles | 1 | 12 | 2 h 54 | pas atteints (le 4ᵉ coûte 2,5 millions d'or ; le robot gagne environ 3 000 or par partie à 3 h) |
 
-**Beaucoup plus lent** : 7 dieux en 3 heures au lieu de 11 (le 2e arrive à 15 min au lieu de 2, le 7e à 3 h au lieu de 39 min), car tous les dieux suivants coûtent 20 fois plus cher (le 12e : 9,5 millions d'or au lieu de 477 000). Pour garder le 2e à 1 000 or sans trop ralentir la suite, on peut baisser `SHOP_ITEMS.god.costGrowth` (avec 1,8, le 12e coûte 357 000 or, comme avant).
+Le robot n'a que **3 dieux en 3 heures** (11 avant). Avec x50, les derniers dieux sont pratiquement impossibles à obtenir (le 12ᵉ coûte 97 656 milliards de milliards d'or). Pour garder 20 puis 1 000 or au début sans bloquer la suite, il faudrait un multiplicateur plus petit à partir du 3ᵉ dieu.
 
 ## Ce qui reste à surveiller
 

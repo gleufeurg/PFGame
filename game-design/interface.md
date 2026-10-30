@@ -143,6 +143,8 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 
 Pendant un **duel** contre un super ennemi (sa 1re rencontre), le chrono s'arrête et s'affiche « ⚔️ 5:00 » en rouge, qui palpite ; le jeu repasse en vitesse x1 (x2 et x4 grisés) et le saut dans le temps est impossible. La vitesse d'avant revient toute seule à la fin du duel (voir [ennemis.md](ennemis.md)).
 
+**Chaque partie commence en vitesse x1** (`restartGame`) : le joueur rechoisit x2 ou x4 dans le menu du temps.
+
 La vitesse x2 et le saut de +10 s sont **offerts** par le tutoriel (bulle « Le temps », juste après « Les ennemis ») ; avant cette bulle, le bouton du temps est caché. Le shop débloque la suite :
 
 | Amélioration | Offert | Niveau 1 | Niveau 2 |

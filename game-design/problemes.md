@@ -86,10 +86,10 @@ Chaque problème indique la ou les branches concernées : `portfolio`, `monetisa
 - **Pourquoi :** c'est le rythme voulu pour le jeu (voir [rythme.md](rythme.md)), mais un recruteur n'a pas forcément le temps de jouer.
 - **Que faire (choix à faire) :** sur `portfolio`, montrer tous les projets dans la liste des dieux (même ceux pas encore achetés, en aperçu), ou ajouter un bouton « Voir tous les projets ».
 
-### Les dieux arrivent beaucoup plus lentement depuis le 2e à 1 000 or (les deux branches)
+### Les dieux deviennent presque impossibles à obtenir avec x50 (`monetisation`)
 
-- **Ce qu'on voit :** le 2e dieu coûte 1 000 or (il coûtait 50) et chaque suivant x2,5 : le joueur robot n'a que 7 dieux après 3 heures (11 avant). Voir [rythme.md](rythme.md).
-- **Que faire :** baisser `SHOP_ITEMS.god.costGrowth` dans l'éditeur de réglages (1,8 redonne à peu près les anciens prix des derniers dieux), puis relancer `node game-design/outils/joueur-robot.js 180`.
+- **Ce qu'on voit :** chaque dieu coûte 50 fois plus que le précédent (20, 1 000, 50 000, 2,5 millions…) : le joueur robot n'a que 3 dieux après 3 heures (11 avant), et le 4ᵉ (2,5 millions d'or) est hors de portée. Voir [rythme.md](rythme.md).
+- **Que faire :** baisser `SHOP_ITEMS.god.costGrowth` dans l'éditeur de réglages, ou donner un multiplicateur plus petit à partir du 3ᵉ dieu, puis relancer `node game-design/outils/joueur-robot.js 180`.
 
 ### Certains textes du jeu citent des réglages (les deux branches)
 

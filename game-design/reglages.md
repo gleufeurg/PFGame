@@ -2,7 +2,7 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
@@ -502,9 +502,8 @@ Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel) | 20 or | `SHOP_ITEMS.god.firstCost` |
-| Prix du 2e dieu | 1000 or | `SHOP_ITEMS.god.baseCost` |
-| À partir du 2e, chaque dieu coûte X fois plus cher que le précédent | 2,5 × | `SHOP_ITEMS.god.costGrowth` |
+| Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel) | 20 or | `SHOP_ITEMS.god.baseCost` |
+| Chaque dieu coûte X fois plus cher que le précédent (le 2e : 20 x 50 = 1 000 or) | 50 × | `SHOP_ITEMS.god.costGrowth` |
 
 ## Compétences
 
