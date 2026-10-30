@@ -20,7 +20,7 @@ Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un 
 | `harmonia` | tous les dieux passent en lien d'orbite « Les deux côtés » (Harmonie, déesse de l'harmonie) |
 | `penia` | retire le Pack Premium, pour retester les pubs (Penia, déesse de la pauvreté ; branche `monetisation` seulement) |
 
-Ce ne sont pas des codes mais des raccourcis : la touche T passe le plus grand saut de temps débloqué, et les boutons orange « ⏩ » font la même chose.
+Il n'y a pas de raccourci clavier pour sauter dans le temps : on passe par les boutons orange « ⏩ » du menu du temps.
 
 Tous les codes sont dans `CHEAT_CODES` dans `index.html`.
 

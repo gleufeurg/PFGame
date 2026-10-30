@@ -372,7 +372,7 @@ const REGLAGES = {
     "Temps": {
         "Vitesses et sauts": {
             "GAME_SPEED_OPTIONS": { valeur: [1, 2, 4], unite: "×", texte: "Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« x4 ») et le tutoriel (« x2 », « x4 »)" },
-            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop ; la touche T fait le plus grand)", texteDuJeu: "le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)" }
+            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)" }
         },
         "Recharge du saut": {
             "SKIP_COOLDOWN_MIN": { valeur: 4, unite: "s", texte: "Temps de recharge minimum après un saut" },

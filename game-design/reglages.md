@@ -543,7 +543,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
 | Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« x4 ») et le tutoriel (« x2 », « x4 »)) | 1 ; 2 ; 4 × | `GAME_SPEED_OPTIONS` |
-| Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop ; la touche T fait le plus grand) ⚠️ (aussi écrit dans le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
+| Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
 
 ### Recharge du saut
 

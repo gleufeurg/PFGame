@@ -5546,7 +5546,7 @@
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
         const PREMIUM_SKIPS = reglage("PREMIUM_SKIPS");      // seulement avec le Pack Premium
-        const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS").concat(PREMIUM_SKIPS); // un bouton par valeur (en secondes) : ceux du shop, puis ceux du Pack Premium. La touche T fait le plus grand saut débloqué.
+        const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS").concat(PREMIUM_SKIPS); // un bouton par valeur (en secondes) : ceux du shop, puis ceux du Pack Premium.
 
         //EMPLACEMENTS DE SAUVEGARDE : 3 parties séparées (Paramètres > Sauvegardes). Déclaré ici : les super ennemis vaincus sont lus dès le départ.
         const SAVE_SLOT_COUNT = 3;
@@ -5605,12 +5605,6 @@
             }
             const fromShop = GAME_SPEED_OPTIONS.slice(0, 2 + timeUpgrades.speed); //x1 et x2 (offerte), puis celles achetées
             return isPremium() ? fromShop.concat(PREMIUM_SPEEDS) : fromShop;
-        }
-
-        //Le plus grand saut débloqué (pour la touche T), ou 0 si aucun n'est débloqué
-        function getBiggestSkip() {
-            const options = getUnlockedSkipOptions();
-            return options.length > 0 ? options[options.length - 1] : 0;
         }
 
         //TEMPS DE RECHARGE : après un saut, il faut attendre avant le suivant (sinon les sauts s'enchaînent, les ennemis
@@ -11551,7 +11545,7 @@
                     description = t("Débloque le lien d'orbite « {name} »", { name: LINK_MODES[LINK_UNLOCK_ORDER[item.level]].name });
                 }
                 if (item.timeUpgrade === "skip" && !isMaxed) {
-                    description = t("Débloque le saut de +{seconds} s (touche T)", { seconds: TIME_SKIP_OPTIONS[item.level + 1] });
+                    description = t("Débloque le saut de +{seconds} s", { seconds: TIME_SKIP_OPTIONS[item.level + 1] });
                 }
 
                 const button = document.createElement("button");
@@ -13149,12 +13143,9 @@
             if (CHEATS_ENABLED && checkCheatCode(key)) {
                 return; //un code vient d'être tapé, ou on est peut-être en train d'en taper un : pas de raccourci
             }
-            //RACCOURCIS : R = rejouer (game over), T = passer le temps, S = skills
+            //RACCOURCIS : R = rejouer (game over), S = skills
             if (key === "r" && isGameOver && !isSettingsOpen) {
                 restartGame();
-            }
-            if (key === "t") {
-                skipTime(getBiggestSkip());
             }
             if (key === "s") {
                 toggleSkillTreeWindow();
@@ -13733,7 +13724,7 @@
             planet: { title: "Ta première planète", target: "planet", mustClick: true, text: "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.", textTouch: "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences." },
             skillTree: { title: "Les compétences", target: "#treeCanvas", text: "Chaque dieu a son arbre de compétences. Clique sur une étoile pour voir ce qu'elle donne, puis sur « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres.", textTouch: "Chaque dieu a son arbre de compétences. Touche une étoile pour voir ce qu'elle donne, puis « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres." },
             stats: { title: "Tes statistiques", target: "#statsPanel", text: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).", textSmall: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier." },
-            time: { title: "Le temps", target: "#timeMenu", text: "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps (touche T) ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs.", textTouch: "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs." },
+            time: { title: "Le temps", target: "#timeMenu", text: "Cadeau : tu peux maintenant accélérer le jeu (x2) et sauter 10 secondes dans le temps ! Tous les ennemis du temps sauté arrivent d'un coup, à toi de les abattre. Après un saut, il faut attendre un peu avant le suivant. Le shop débloque x4 et des sauts plus longs." },
             links: { title: "Les liens d'orbite", target: "#orbitLinkArea", text: "Une planète peut se lier à une voisine de son orbite pour lui emprunter son attribut : ses tirs gagnent alors un effet spécial (explosion, gel, brûlure...). Choisis le lien ici." },
             orbits: { title: "Les orbites", target: "planet2", text: "Tu as plusieurs planètes ! Fais glisser une planète pour changer sa place, ou pour la mettre sur une autre orbite, plus près ou plus loin. Une planète ne se lie qu'à celles de son orbite." },
             awakening: { title: "L'Éveil", target: "#awakeningButton", text: "Tu as pris toutes les compétences possibles de ce dieu ! Ton XP sert maintenant à l'éveiller : chaque niveau d'Éveil donne plus de dégâts à sa planète, sans fin, et coûte un peu plus cher." },
