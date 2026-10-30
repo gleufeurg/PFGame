@@ -1583,5 +1583,7 @@ window.TRADUCTIONS.en = {
     "Vide : nouvelle partie": "Empty: new game",
     "{gods} dieux · {gold} or": "{gods} gods · {gold} gold",
     "{gods} dieu · {gold} or": "{gods} god · {gold} gold",
-    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Erase all progress of game {slot} (gold, XP, shop, skills, records)? This cannot be undone."
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Erase all progress of game {slot} (gold, XP, shop, skills, records)? This cannot be undone.",
+    "Réinitialiser la vitesse de jeu en début de partie": "Reinitialise game speed at game's beginning",
+    "(décoche pour garder x2 ou x4)": "(uncheck to keep x2 or x4)"
 };

@@ -1583,5 +1583,7 @@ window.TRADUCTIONS.de = {
     "Vide : nouvelle partie": "Leer: neues Spiel",
     "{gods} dieux · {gold} or": "{gods} Götter · {gold} Gold",
     "{gods} dieu · {gold} or": "{gods} Gott · {gold} Gold",
-    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Den gesamten Fortschritt von Spiel {slot} löschen (Gold, EP, Shop, Fähigkeiten, Rekorde)? Das ist endgültig."
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "Den gesamten Fortschritt von Spiel {slot} löschen (Gold, EP, Shop, Fähigkeiten, Rekorde)? Das ist endgültig.",
+    "Réinitialiser la vitesse de jeu en début de partie": "Spieltempo zu Spielbeginn zurücksetzen",
+    "(décoche pour garder x2 ou x4)": "(abwählen, um x2 oder x4 zu behalten)"
 };

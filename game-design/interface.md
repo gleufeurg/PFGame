@@ -109,6 +109,8 @@ Comment ça marche (partie `START & UPDATE`, « ARRIÈRE-PLAN ») :
 
 ## Pause dans les menus
 
+Option **« Réinitialiser la vitesse de jeu en début de partie »** (cochée par défaut, clé `resetSpeedEachRun`) : voir « Le temps » plus bas.
+
 Option **« Mettre le jeu en pause dans les menus »** dans les paramètres (cochée par défaut, clé `pauseInMenus`) : cochée, le jeu s'arrête quand la fenêtre des skills ou les paramètres sont ouverts ; décochée, il continue. Si le joueur meurt pendant qu'il regarde ses skills, la fenêtre se ferme et le shop s'affiche.
 
 ## Le tutoriel
@@ -143,7 +145,7 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 
 Pendant un **duel** contre un super ennemi (sa 1re rencontre), le chrono s'arrête et s'affiche « ⚔️ 5:00 » en rouge, qui palpite ; le jeu repasse en vitesse x1 (x2 et x4 grisés) et le saut dans le temps est impossible. La vitesse d'avant revient toute seule à la fin du duel (voir [ennemis.md](ennemis.md)).
 
-**Chaque partie commence en vitesse x1** (`restartGame`) : le joueur rechoisit x2 ou x4 dans le menu du temps.
+**Chaque partie commence en vitesse x1** (`restartGame`) : le joueur rechoisit x2 ou x4 dans le menu du temps. Option **« Réinitialiser la vitesse de jeu en début de partie »** dans les paramètres (cochée par défaut, clé `resetSpeedEachRun`) : décochée, une nouvelle partie garde la vitesse choisie.
 
 La vitesse x2 et le saut de +10 s sont **offerts** par le tutoriel (bulle « Le temps », juste après « Les ennemis ») ; avant cette bulle, le bouton du temps est caché. Le shop débloque la suite :
 

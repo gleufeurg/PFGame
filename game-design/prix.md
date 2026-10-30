@@ -4,7 +4,7 @@ Généré à partir du code du jeu par `game-design/outils/generer-docs.js`.
 
 Le shop se paie en **or**, gagné en tuant les ennemis et dépensé quand on meurt. Les skills se paient en **XP**, dans le skill tree de chaque dieu.
 
-- Tout le shop au maximum (sans les améliorations infinies) coûte **99 649 234 693 877 550 000 or**, dont 99 649 234 693 877 550 000 or pour les 12 dieux.
+- Tout le shop au maximum (sans les améliorations infinies) coûte **2 222 222 227 590 or**, dont 2 222 222 222 220 or pour les 12 dieux.
 - Les améliorations **infinies** (∞) n'ont pas de dernier niveau : Cadence de tir, Portée, Vie max, Dégâts, Régénération, Esquive, Dégâts critiques.
 - Tous les skills des 12 dieux, en prenant à chaque fois la voie la plus chère (on ne prend qu'une voie par arbre), coûtent **245 381 XP**.
 
@@ -14,7 +14,7 @@ Chaque niveau coûte plus cher que le précédent : prix = prix de départ × mu
 
 | Amélioration | Effet par niveau | Multiplicateur | Prix par niveau (or) | Total (or) |
 | --- | --- | --- | --- | --- |
-| Nouvelle divinité (12 niv.) | Une nouvelle planète et son skill tree rejoignent l'orbite | ×50 | 20, 1 000, 50 000, 2 500 000, 125 000 000, 6 250 000 000, 312 500 000 000, 15 625 000 000 000, 781 250 000 000 000, 39 062 500 000 000 000, 1 953 125 000 000 000 000, 97 656 250 000 000 000 000 | 99 649 234 693 877 550 000 |
+| Nouvelle divinité (12 niv.) | Une nouvelle planète et son skill tree rejoignent l'orbite | ×10 | 20, 200, 2 000, 20 000, 200 000, 2 000 000, 20 000 000, 200 000 000, 2 000 000 000, 20 000 000 000, 200 000 000 000, 2 000 000 000 000 | 2 222 222 222 220 |
 | Chance de critique (10 niv.) | +2% de chance de coup critique | ×1,6 | 20, 32, 51, 82, 131, 210, 336, 537, 859, 1 374 | 3 632 |
 | Liens d'orbite (4 niv.) | Débloque les liens d'orbite : Droite, puis Gauche, puis Les deux côtés, puis Opposé | ×2,5 | 30, 75, 188, 469 | 762 |
 | Balle supplémentaire (3 niv.) | +1 balle par tir | ×2,5 | 60, 150, 375 | 585 |

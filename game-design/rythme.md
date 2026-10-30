@@ -84,15 +84,15 @@ Après la 2e série de retours : l'esquive se calcule en points (chance = x / (x
 
 Le rythme des dieux ne change presque pas. Le 1er niveau d'Éveil arrive vers 50 minutes ; à 3 heures, le robot en a 127 au total (répartis sur ses dieux complets). L'XP de fin de partie (20 000 à 35 000 par partie) a maintenant toujours quelque chose à acheter.
 
-## Depuis : le tutoriel et les dieux x50
+## Depuis : le tutoriel et les dieux x10
 
-La 1re partie finit vers 37 s (la vague du tutoriel) avec juste de quoi acheter le 1er dieu (20 or). Ensuite, **chaque dieu coûte 50 fois plus cher** que le précédent : 1 000, 50 000, 2 500 000 or… x2 et le saut de +10 s sont offerts, et chaque partie recommence en x1. Le robot (3 heures, `joueur-robot.js 180`) :
+La 1re partie finit vers 37 s (la vague du tutoriel) avec juste de quoi acheter le 1er dieu (20 or). Ensuite, **chaque dieu coûte 10 fois plus cher** que le précédent : 200, 2 000, 20 000 or… (essayé d'abord avec x50 : seulement 3 dieux en 3 heures). x2 et le saut de +10 s sont offerts, et chaque partie recommence en x1. Le robot (3 heures, `joueur-robot.js 180`) :
 
-| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ et suivants |
-| --- | --- | --- | --- | --- |
-| Minutes réelles | 1 | 12 | 2 h 54 | pas atteints (le 4ᵉ coûte 2,5 millions d'or ; le robot gagne environ 3 000 or par partie à 3 h) |
+| Dieu | 1ᵉʳ | 2ᵉ | 3ᵉ | 4ᵉ | 5ᵉ et suivants |
+| --- | --- | --- | --- | --- | --- |
+| Minutes réelles | 1 | 5 | 22 | 1 h 26 | pas atteint en 3 h (le 5ᵉ coûte 200 000 or) |
 
-Le robot n'a que **3 dieux en 3 heures** (11 avant). Avec x50, les derniers dieux sont pratiquement impossibles à obtenir (le 12ᵉ coûte 97 656 milliards de milliards d'or). Pour garder 20 puis 1 000 or au début sans bloquer la suite, il faudrait un multiplicateur plus petit à partir du 3ᵉ dieu.
+Le robot a **4 dieux en 3 heures** (11 avec l'ancien x2,5). Les derniers dieux restent hors de portée (le 12ᵉ coûte 2 000 milliards d'or) : pour un jeu de plusieurs heures, un multiplicateur plus petit à partir du 4ᵉ ou 5ᵉ dieu les rendrait atteignables.
 
 ## Ce qui reste à surveiller
 

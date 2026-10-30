@@ -344,7 +344,7 @@ const REGLAGES = {
         },
         "Nouvelle divinité": {
             "SHOP_ITEMS.god.baseCost": { valeur: 20, unite: "or", texte: "Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel)" },
-            "SHOP_ITEMS.god.costGrowth": { valeur: 10, unite: "×", texte: "Chaque dieu coûte X fois plus cher que le précédent (le 2e : 20 x 50 = 1 000 or)" }
+            "SHOP_ITEMS.god.costGrowth": { valeur: 10, unite: "×", texte: "Chaque dieu coûte X fois plus cher que le précédent (le 2e : 20 x 10 = 200 or)" }
         }
     },
     "Compétences": {

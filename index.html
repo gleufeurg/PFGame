@@ -2913,6 +2913,10 @@
                 <label for="pauseInMenusCheckbox">Mettre le jeu en pause dans les menus <span class="smallText">(paramètres et skills)</span></label>
             </div>
             <div class="settingRow">
+                <input type="checkbox" id="resetSpeedCheckbox">
+                <label for="resetSpeedCheckbox">Réinitialiser la vitesse de jeu en début de partie <span class="smallText">(décoche pour garder x2 ou x4)</span></label>
+            </div>
+            <div class="settingRow">
                 <input type="checkbox" id="sharpGraphicsCheckbox">
                 <label for="sharpGraphicsCheckbox">Graphismes nets <span class="smallText">(décoche si le jeu rame sur ton téléphone)</span></label>
             </div>
@@ -4846,6 +4850,13 @@
         let pauseInMenus = true;
         try {
             pauseInMenus = localStorage.getItem("pauseInMenus") !== "0";
+        } catch (error) {
+        }
+
+        //Option des paramètres "Réinitialiser la vitesse de jeu en début de partie" (cochée par défaut, retenue par le navigateur, voir restartGame)
+        let resetSpeedEachRun = true;
+        try {
+            resetSpeedEachRun = localStorage.getItem("resetSpeedEachRun") !== "0";
         } catch (error) {
         }
 
@@ -11607,7 +11618,9 @@
             runGold = 0;
             runXp = 0;
             skipCooldown = 0;
-            gameSpeed = 1; //chaque partie commence en vitesse x1 (le joueur rechoisit x2 ou x4 dans le menu du temps)
+            if (resetSpeedEachRun) {
+                gameSpeed = 1; //option des paramètres : chaque partie commence en vitesse x1 (le joueur rechoisit x2 ou x4)
+            }
             renderSpeedButtons();
             updateTimeMenuButton();
             computeStats();
@@ -13535,6 +13548,18 @@
 
         loadSoundSettings();
         createVolumeSliders();
+
+        //VITESSE À CHAQUE PARTIE : décoché, une nouvelle partie garde la vitesse choisie (x2, x4...)
+        const resetSpeedCheckbox = document.getElementById("resetSpeedCheckbox");
+        resetSpeedCheckbox.checked = resetSpeedEachRun;
+        resetSpeedCheckbox.addEventListener("change", function () {
+            resetSpeedEachRun = resetSpeedCheckbox.checked;
+            try {
+                localStorage.setItem("resetSpeedEachRun", resetSpeedEachRun ? "1" : "0");
+            } catch (error) {
+            }
+            playSound("click");
+        });
 
         //PAUSE DANS LES MENUS : décoché, le jeu continue pendant qu'on regarde les skills ou les paramètres
         const pauseInMenusCheckbox = document.getElementById("pauseInMenusCheckbox");

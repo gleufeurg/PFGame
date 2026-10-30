@@ -1583,5 +1583,7 @@ window.TRADUCTIONS.zh = {
     "Vide : nouvelle partie": "空：新游戏",
     "{gods} dieux · {gold} or": "{gods} 位神明 · {gold} 金币",
     "{gods} dieu · {gold} or": "{gods} 位神明 · {gold} 金币",
-    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "要删除存档 {slot} 的全部进度吗（金币、经验、商店、技能、纪录）？此操作无法撤销。"
+    "Effacer toute la progression de la partie {slot} (or, XP, shop, compétences, records) ? C'est définitif.": "要删除存档 {slot} 的全部进度吗（金币、经验、商店、技能、纪录）？此操作无法撤销。",
+    "Réinitialiser la vitesse de jeu en début de partie": "每局开始时重置游戏速度",
+    "(décoche pour garder x2 ou x4)": "（取消勾选可保留 x2 或 x4）"
 };

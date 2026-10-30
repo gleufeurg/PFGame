@@ -503,7 +503,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
 | Prix du 1er dieu (acheté à la fin de la 1re partie, pendant le tutoriel) | 20 or | `SHOP_ITEMS.god.baseCost` |
-| Chaque dieu coûte X fois plus cher que le précédent (le 2e : 20 x 50 = 1 000 or) | 50 × | `SHOP_ITEMS.god.costGrowth` |
+| Chaque dieu coûte X fois plus cher que le précédent (le 2e : 20 x 10 = 200 or) | 10 × | `SHOP_ITEMS.god.costGrowth` |
 
 ## Compétences
 

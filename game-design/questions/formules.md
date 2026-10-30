@@ -261,10 +261,10 @@ Les multiplicateurs commencent à 1 et augmentent avec les compétences, par exe
 
 ```
 prix du shop    = arrondi(prix de départ × multiplicateur ^ niveau déjà acheté)
-nouveau dieu    = arrondi(20 × 50 ^ dieux déjà achetés)        (avant : 20 × 2,5 ^ ..., et au tout début 50 × 1,8 ^ ...)
+nouveau dieu    = arrondi(20 × 10 ^ dieux déjà achetés)        (avant : × 50, puis × 2,5 ; au tout début 50 × 1,8 ^ ...)
 ```
 
-Ex : 20 or (le 1er, acheté dans le tutoriel), puis 1 000, 50 000, 2 500 000…
+Ex : 20 or (le 1er, acheté dans le tutoriel), puis 200, 2 000, 20 000… le 12ᵉ coûte 2 000 milliards d'or.
 
 Les améliorations **infinies** (Dégâts, Cadence de tir, Vie max, Régénération, Dégâts critiques, Portée, Esquive) suivent la même formule, sans niveau maximum : chaque niveau coûte 1,5 ou 1,6 fois plus que le précédent.
 
