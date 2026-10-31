@@ -46,6 +46,14 @@ node game-design/outils/generer-docs.js
 
 Le script ouvre `index.html` dans un navigateur invisible, lit les données du jeu (skill trees, shop, combos, réglages) et réécrit `prix.md`, `skills/` et `reglages.md`.
 
+## Dessiner l'icône du jeu
+
+```
+node game-design/outils/generer-icone.js
+```
+
+Dessine l'icône (le triangle du joueur, une orbite et 3 planètes, sur la mer étoilée) et l'enregistre à toutes les tailles : l'icône et l'écran de démarrage de l'application Android (`android/app/src/main/res/`), `icone.png` (l'icône du site, dans l'onglet du navigateur) et `game-design/icone-512.png` (à donner au Play Store). Pour changer le dessin, modifier la fonction `drawIcon` du script, puis le relancer.
+
 ## Mesurer le rythme du jeu : le joueur robot
 
 ```

@@ -2,7 +2,9 @@
 
 Pour tester le jeu plus vite. Tape les lettres au clavier, en partie ou dans un menu : un message confirme le code. Après une pause de plus d'1,5 s, on recommence un nouveau mot.
 
-**Les codes ne marchent que sur ton ordinateur :** quand le jeu est ouvert depuis le fichier `index.html` (ou un serveur local, `localhost`). Sur le site en ligne (GitHub Pages) et dans l'application mobile, ils sont coupés, pour que les joueurs ne puissent pas tricher (`CHEATS_ENABLED`, fonction `areCheatsAllowed`). Pour les activer quand même sur le site : ouvrir la console du navigateur (F12), taper `localStorage.setItem("triche", "1")`, puis recharger la page (`localStorage.removeItem("triche")` pour les recouper).
+**Au doigt (téléphone) :** quand les codes sont autorisés, les paramètres ont un champ « Code de triche » : tape le code (accents et majuscules ne comptent pas), puis « OK » ou Entrée.
+
+**Les codes ne marchent que sur ton ordinateur :** quand le jeu est ouvert depuis le fichier `index.html` (ou un serveur local, `localhost`). Sur le site en ligne (GitHub Pages) et dans l'application mobile, ils sont coupés, pour que les joueurs ne puissent pas tricher (`CHEATS_ENABLED`, fonction `areCheatsAllowed`). Pour les activer quand même sur le site : ouvrir la console du navigateur (F12), taper `localStorage.setItem("triche", "1")`, puis recharger la page (`localStorage.removeItem("triche")` pour les recouper). Pour une version de TEST de l'application, passer `FORCE_CHEATS` à `true` dans `index.html` avant `npm run sync` (et le remettre à `false` avant d'envoyer l'application sur le Play Store).
 
 | Code | Effet |
 | --- | --- |

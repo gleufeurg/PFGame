@@ -221,6 +221,8 @@ Les planètes tournent sur **3 orbites** autour du joueur (`ORBITS`, partie `PLA
 
 Quand la portée du joueur dépasse l'écran, la caméra dézoome doucement, jusqu'à ce que la portée occupe environ 95 % de la demi-largeur de l'écran. Au-delà de 1000 px de portée, elle ne dézoome plus.
 
+**Téléphone en hauteur :** l'écran est étroit (environ 390 px), donc la caméra dézoomait très vite et tout devenait petit. Elle se base maintenant sur 60 % de la hauteur de l'écran quand c'est plus que sa largeur (`CAMERA_PORTRAIT_HEIGHT_RATIO`) : elle dézoome environ 1,3 fois moins, et le cercle de portée dépasse un peu sur les côtés. Rien ne change sur ordinateur ni en paysage.
+
 Les 3 orbites restent aussi toujours à l'écran, en largeur **et** en hauteur, à 16 px du bord (`CAMERA_ORBIT_MARGIN`). Sur ordinateur et en portrait, ça ne change presque rien (la portée demande déjà ce zoom) ; sur un écran bas (téléphone en paysage, dans la version web), la caméra dézoome pour montrer toutes les planètes.
 
 ## La portée des dieux

@@ -189,7 +189,7 @@ const REGLAGES = {
             "CHECKPOINT_OFFSET": { valeur: 2, unite: "s", texte: "Paliers (menu de mort) : la partie repart X secondes après l'heure du super ennemi" }
         },
         "Cerbère": {
-            "BOSSES.cerbere.time": { valeur: 300, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.cerbere.time": { valeur: 300, unite: "s", texte: "Arrive à X secondes de jeu" },
             "BOSSES.cerbere.health": { valeur: 15, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.cerbere.size": { valeur: 34, unite: "px", texte: "Taille" },
             "BOSSES.cerbere.speed": { valeur: 60, unite: "px/s", texte: "Vitesse" },
@@ -197,7 +197,7 @@ const REGLAGES = {
             "BOSSES.cerbere.xp": { valeur: 15, unite: "XP", texte: "XP gagnée en le tuant" }
         },
         "Hydre de Lerne": {
-            "BOSSES.hydre.time": { valeur: 600, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.hydre.time": { valeur: 600, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.hydre.health": { valeur: 60, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.hydre.size": { valeur: 38, unite: "px", texte: "Taille" },
             "BOSSES.hydre.speed": { valeur: 55, unite: "px/s", texte: "Vitesse" },
@@ -215,7 +215,7 @@ const REGLAGES = {
             "HYDRA_WAVE_REWARD": { valeur: 0.06, unite: "%", texte: "Or et XP d'une tête de la vague (× ceux de la 1re hydre)" }
         },
         "Méduse": {
-            "BOSSES.meduse.time": { valeur: 900, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.meduse.time": { valeur: 900, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.meduse.health": { valeur: 160, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.meduse.size": { valeur: 42, unite: "px", texte: "Taille" },
             "BOSSES.meduse.speed": { valeur: 50, unite: "px/s", texte: "Vitesse" },
@@ -225,7 +225,7 @@ const REGLAGES = {
             "MEDUSA_FIRST_GAZE": { valeur: 2.5, unite: "s", texte: "1er regard, X secondes après son arrivée à l'écran" }
         },
         "Typhon": {
-            "BOSSES.typhon.time": { valeur: 1200, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.typhon.time": { valeur: 1200, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.typhon.health": { valeur: 260, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.typhon.size": { valeur: 46, unite: "px", texte: "Taille" },
             "BOSSES.typhon.speed": { valeur: 50, unite: "px/s", texte: "Vitesse" },
@@ -233,7 +233,7 @@ const REGLAGES = {
             "BOSSES.typhon.xp": { valeur: 60, unite: "XP", texte: "XP gagnée en le tuant" }
         },
         "Chimère": {
-            "BOSSES.chimere.time": { valeur: 1500, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.chimere.time": { valeur: 1500, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.chimere.health": { valeur: 400, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.chimere.size": { valeur: 50, unite: "px", texte: "Taille" },
             "BOSSES.chimere.speed": { valeur: 45, unite: "px/s", texte: "Vitesse" },
@@ -241,7 +241,7 @@ const REGLAGES = {
             "BOSSES.chimere.xp": { valeur: 90, unite: "XP", texte: "XP gagnée en la tuant" }
         },
         "Charybde": {
-            "BOSSES.charybde.time": { valeur: 1800, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.charybde.time": { valeur: 1800, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.charybde.health": { valeur: 600, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.charybde.size": { valeur: 54, unite: "px", texte: "Taille" },
             "BOSSES.charybde.speed": { valeur: 45, unite: "px/s", texte: "Vitesse" },
@@ -249,7 +249,7 @@ const REGLAGES = {
             "BOSSES.charybde.xp": { valeur: 130, unite: "XP", texte: "XP gagnée en la tuant" }
         },
         "Python": {
-            "BOSSES.python.time": { valeur: 2100, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.python.time": { valeur: 2100, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.python.health": { valeur: 850, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.python.size": { valeur: 58, unite: "px", texte: "Taille" },
             "BOSSES.python.speed": { valeur: 40, unite: "px/s", texte: "Vitesse" },
@@ -257,7 +257,7 @@ const REGLAGES = {
             "BOSSES.python.xp": { valeur: 180, unite: "XP", texte: "XP gagnée en le tuant" }
         },
         "Cronos": {
-            "BOSSES.cronos.time": { valeur: 2400, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel (« Toutes les 5 minutes »)" },
+            "BOSSES.cronos.time": { valeur: 2400, unite: "s", texte: "Arrive à X secondes de jeu", texteDuJeu: "le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis" },
             "BOSSES.cronos.health": { valeur: 1200, unite: "PV", texte: "Vie (× la vie qui monte avec le temps, à son arrivée)" },
             "BOSSES.cronos.size": { valeur: 64, unite: "px", texte: "Taille" },
             "BOSSES.cronos.speed": { valeur: 40, unite: "px/s", texte: "Vitesse" },
@@ -371,8 +371,8 @@ const REGLAGES = {
     },
     "Temps": {
         "Vitesses et sauts": {
-            "GAME_SPEED_OPTIONS": { valeur: [1, 2, 4], unite: "×", texte: "Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« x4 ») et le tutoriel (« x2 », « x4 »)" },
-            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop)", texteDuJeu: "le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)" }
+            "GAME_SPEED_OPTIONS": { valeur: [1, 2, 4], unite: "×", texte: "Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop)" },
+            "TIME_SKIP_OPTIONS": { valeur: [10, 30, 100], unite: "s", texte: "Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop)" }
         },
         "Recharge du saut": {
             "SKIP_COOLDOWN_MIN": { valeur: 4, unite: "s", texte: "Temps de recharge minimum après un saut" },
@@ -382,19 +382,19 @@ const REGLAGES = {
     },
     "Combos d'orbite": {
         "Lien « Opposé »": {
-            "OPPOSITE_BONUSES.fire.damage": { valeur: 1, unite: "", texte: "Héphaïstos en face : dégâts par balle en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.water.shield": { valeur: 1, unite: "", texte: "Poséidon en face : bouclier", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.water.shieldRecharge": { valeur: 0.5, unite: "%", texte: "Poséidon en face : recharge du bouclier plus rapide", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.plant.lifeOnHit": { valeur: 0.03, unite: "PV", texte: "Déméter en face : vie à chaque balle qui touche", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.air.attackSpeed": { valeur: 0.25, unite: "%", texte: "Éole en face : vitesse d'attaque en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.light.critChance": { valeur: 0.1, unite: "%", texte: "Apollon en face : chance de critique en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.moon.range": { valeur: 60, unite: "px", texte: "Artémis en face : portée en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.aegis.comboProcChance": { valeur: 0.15, unite: "%", texte: "Athéna en face : chance de déclencher un combo au hasard", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.thunder.critDamage": { valeur: 0.5, unite: "%", texte: "Zeus en face : dégâts critiques en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.war.lifeOnKill": { valeur: 0.5, unite: "PV", texte: "Arès en face : vie à chaque ennemi tué", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.love.maxHealthOnHit": { valeur: 0.001, unite: "PV", texte: "Aphrodite en face : vie max à chaque balle qui touche", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.swift.bulletSpeed": { valeur: 0.5, unite: "%", texte: "Hermès en face : vitesse des balles en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" },
-            "OPPOSITE_BONUSES.hearth.regen": { valeur: 0.15, unite: "PV/s", texte: "Hestia en face : régénération en plus", texteDuJeu: "la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)" }
+            "OPPOSITE_BONUSES.fire.damage": { valeur: 1, unite: "", texte: "Héphaïstos en face : dégâts par balle en plus" },
+            "OPPOSITE_BONUSES.water.shield": { valeur: 1, unite: "", texte: "Poséidon en face : bouclier", texteDuJeu: "la description du bonus (« un bouclier qui bloque un coup »)" },
+            "OPPOSITE_BONUSES.water.shieldRecharge": { valeur: 0.5, unite: "%", texte: "Poséidon en face : recharge du bouclier plus rapide" },
+            "OPPOSITE_BONUSES.plant.lifeOnHit": { valeur: 0.03, unite: "PV", texte: "Déméter en face : vie à chaque balle qui touche" },
+            "OPPOSITE_BONUSES.air.attackSpeed": { valeur: 0.25, unite: "%", texte: "Éole en face : vitesse d'attaque en plus" },
+            "OPPOSITE_BONUSES.light.critChance": { valeur: 0.1, unite: "%", texte: "Apollon en face : chance de critique en plus" },
+            "OPPOSITE_BONUSES.moon.range": { valeur: 60, unite: "px", texte: "Artémis en face : portée en plus" },
+            "OPPOSITE_BONUSES.aegis.comboProcChance": { valeur: 0.15, unite: "%", texte: "Athéna en face : chance de déclencher un combo au hasard" },
+            "OPPOSITE_BONUSES.thunder.critDamage": { valeur: 0.5, unite: "%", texte: "Zeus en face : dégâts critiques en plus" },
+            "OPPOSITE_BONUSES.war.lifeOnKill": { valeur: 0.5, unite: "PV", texte: "Arès en face : vie à chaque ennemi tué" },
+            "OPPOSITE_BONUSES.love.maxHealthOnHit": { valeur: 0.001, unite: "PV", texte: "Aphrodite en face : vie max à chaque balle qui touche" },
+            "OPPOSITE_BONUSES.swift.bulletSpeed": { valeur: 0.5, unite: "%", texte: "Hermès en face : vitesse des balles en plus" },
+            "OPPOSITE_BONUSES.hearth.regen": { valeur: 0.15, unite: "PV/s", texte: "Hestia en face : régénération en plus" }
         },
         "Explosions et zones": {
             "COMBO_EXPLOSION_RADIUS": { valeur: 70, unite: "px", texte: "Explosion : rayon" },
@@ -404,7 +404,7 @@ const REGLAGES = {
             "COMBO_MINE_DURATION": { valeur: 6, unite: "s", texte: "Graine explosive : disparaît après X secondes si personne ne marche dessus" },
             "COMBO_MINE_DAMAGE": { valeur: 2.5, unite: "×", texte: "Graine explosive : dégâts (× les dégâts de la balle)" },
             "COMBO_METEOR_DAMAGE": { valeur: 3, unite: "×", texte: "Météore : dégâts (× les dégâts de la balle)" },
-            "COMBO_NOVA_COUNT": { valeur: 6, unite: "", texte: "Éclats qui partent dans toutes les directions", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" },
+            "COMBO_NOVA_COUNT": { valeur: 6, unite: "", texte: "Éclats qui partent dans toutes les directions" },
             "COMBO_NOVA_DAMAGE": { valeur: 0.6, unite: "×", texte: "Dégâts d'un éclat (× les dégâts de la balle)" },
             "COMBO_VORTEX_RADIUS": { valeur: 110, unite: "px", texte: "Tourbillon : rayon" },
             "COMBO_VORTEX_PULL": { valeur: 0.6, unite: "%", texte: "Tourbillon : force d'attraction (100 % = colle tout le monde sur l'impact)" },
@@ -412,7 +412,7 @@ const REGLAGES = {
             "COMBO_BLACKHOLE_RADIUS": { valeur: 150, unite: "px", texte: "Trou noir : rayon" }
         },
         "Brûlure, poison, saignement": {
-            "COMBO_BURN_DURATION": { valeur: 3, unite: "s", texte: "Brûlure : durée", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" },
+            "COMBO_BURN_DURATION": { valeur: 3, unite: "s", texte: "Brûlure : durée" },
             "COMBO_BURN_DPS": { valeur: 0.6, unite: "×", texte: "Brûlure : dégâts par seconde (× les dégâts de la balle)" },
             "COMBO_POISON_DURATION": { valeur: 4, unite: "s", texte: "Poison : durée" },
             "COMBO_POISON_DPS": { valeur: 0.5, unite: "×", texte: "Poison : dégâts par seconde (× les dégâts de la balle)" },
@@ -439,29 +439,30 @@ const REGLAGES = {
             "COMBO_SPLIT_DAMAGE": { valeur: 0.5, unite: "×", texte: "Balle divisée : dégâts de chaque morceau (× les dégâts de la balle)" },
             "COMBO_PIERCE_COUNT": { valeur: 1, unite: "", texte: "Ennemis traversés par la balle" },
             "COMBO_ECHO_DELAY": { valeur: 0.5, unite: "s", texte: "Écho : frappe une 2e fois après X secondes" },
-            "COMBO_THUNDER_TARGETS": { valeur: 2, unite: "", texte: "Foudre : ennemis frappés au hasard sur tout l'écran", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" },
+            "COMBO_THUNDER_TARGETS": { valeur: 2, unite: "", texte: "Foudre : ennemis frappés au hasard sur tout l'écran" },
             "COMBO_THUNDER_DAMAGE": { valeur: 1.5, unite: "×", texte: "Foudre : dégâts (× les dégâts de la balle)" }
         },
         "Critiques, soins et bouclier": {
             "COMBO_CRIT_CHANCE": { valeur: 0.2, unite: "%", texte: "Chance de critique en plus" },
-            "COMBO_CRIT_BONUS_DAMAGE": { valeur: 1, unite: "%", texte: "Dégâts critiques en plus", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" },
+            "COMBO_CRIT_BONUS_DAMAGE": { valeur: 1, unite: "%", texte: "Dégâts critiques en plus" },
             "COMBO_HEAL": { valeur: 0.08, unite: "PV", texte: "Soin à chaque coup" },
             "COMBO_SHIELD_CHARGE": { valeur: 0.6, unite: "s", texte: "Recharge du bouclier gagnée à chaque coup" },
             "COMBO_EXECUTE_THRESHOLD": { valeur: 0.2, unite: "%", texte: "Achève les ennemis sous X % de leur vie (pas les super ennemis)" },
-            "COMBO_WEAKEN_DURATION": { valeur: 3, unite: "s", texte: "Affaibli : durée", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" },
-            "COMBO_WEAKEN_MULTIPLIER": { valeur: 1.5, unite: "×", texte: "Affaibli : dégâts subis (1.5 = +50 %)", texteDuJeu: "les descriptions des combos et des fusions (index.html et langues/)" }
+            "COMBO_WEAKEN_DURATION": { valeur: 3, unite: "s", texte: "Affaibli : durée" },
+            "COMBO_WEAKEN_MULTIPLIER": { valeur: 1.5, unite: "×", texte: "Affaibli : dégâts subis (1.5 = +50 %)" }
         }
     },
     "Caméra": {
         "Dézoom selon la portée": {
             "CAMERA_RANGE_SCREEN_RATIO": { valeur: 0.95, unite: "%", texte: "La portée occupe au plus X % de la demi-largeur de l'écran" },
+            "CAMERA_PORTRAIT_HEIGHT_RATIO": { valeur: 0.6, unite: "%", texte: "Écran en hauteur (téléphone) : la caméra se base sur X % de la hauteur de l'écran quand c'est plus que sa largeur (la portée peut alors dépasser un peu sur les côtés, et le jeu dézoome moins)" },
             "CAMERA_MAX_RANGE": { valeur: 1000, unite: "px", texte: "Au-delà de cette portée, la caméra ne dézoome plus (et les ennemis naissent plus près)" }
         }
     },
     "Pack Premium": {
         "Temps": {
-            "PREMIUM_SPEEDS": { valeur: [8, 10], unite: "×", texte: "Vitesses du jeu en plus avec le Pack Premium (après celles du shop)", texteDuJeu: "les avantages du Pack Premium (« Vitesses du jeu x8 et x10 », PREMIUM_PERKS)" },
-            "PREMIUM_SKIPS": { valeur: [500, 999], unite: "s", texte: "Sauts dans le temps en plus avec le Pack Premium (après ceux du shop)", texteDuJeu: "les avantages du Pack Premium (« Sauts dans le temps de +500 s et +999 s », PREMIUM_PERKS)" }
+            "PREMIUM_SPEEDS": { valeur: [8, 10], unite: "×", texte: "Vitesses du jeu en plus avec le Pack Premium (après celles du shop)" },
+            "PREMIUM_SKIPS": { valeur: [500, 999], unite: "s", texte: "Sauts dans le temps en plus avec le Pack Premium (après ceux du shop)" }
         }
     }
 };

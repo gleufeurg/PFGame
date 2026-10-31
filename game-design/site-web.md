@@ -8,7 +8,7 @@ Seulement les fichiers du jeu :
 
 | Publié | Pas publié (reste dans le dépôt GitHub) |
 | --- | --- |
-| `index.html`, `reglages.js` (toutes les statistiques du jeu), `langues/`, `polices/`, `confidentialite.html` (la page de confidentialité demandée par AdMob et la Play Console) | `CLAUDE.md` (les consignes pour Claude), `game-design/` (cette documentation), `README.md`, et tout le reste |
+| `index.html`, `reglages.js` (toutes les statistiques du jeu), `icone.png` (l'icône de l'onglet), `langues/`, `polices/`, `confidentialite.html` (la page de confidentialité demandée par AdMob et la Play Console) | `CLAUDE.md` (les consignes pour Claude), `game-design/` (cette documentation), `README.md`, et tout le reste |
 
 Le site montre la branche **`monetisation`** (c'était déjà le cas avant). C'est le fichier `.github/workflows/publier-site.yml` qui s'en occupe : à chaque push sur `monetisation` (donc à chaque fusion de `portfolio` dans `monetisation`), GitHub prépare un dossier avec seulement ces fichiers, puis le met en ligne. On le suit dans l'onglet **Actions** du dépôt (« Publier le site ») : une coche verte = le site est à jour, une croix rouge = la publication a échoué (le site garde alors son ancienne version).
 

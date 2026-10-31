@@ -2,7 +2,7 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
@@ -285,7 +285,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 300 s | `BOSSES.cerbere.time` |
+| Arrive à X secondes de jeu | 300 s | `BOSSES.cerbere.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 15 PV | `BOSSES.cerbere.health` |
 | Taille | 34 px | `BOSSES.cerbere.size` |
 | Vitesse | 60 px/s | `BOSSES.cerbere.speed` |
@@ -296,7 +296,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 600 s | `BOSSES.hydre.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 600 s | `BOSSES.hydre.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 60 PV | `BOSSES.hydre.health` |
 | Taille | 38 px | `BOSSES.hydre.size` |
 | Vitesse | 55 px/s | `BOSSES.hydre.speed` |
@@ -317,7 +317,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 900 s | `BOSSES.meduse.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 900 s | `BOSSES.meduse.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 160 PV | `BOSSES.meduse.health` |
 | Taille | 42 px | `BOSSES.meduse.size` |
 | Vitesse | 50 px/s | `BOSSES.meduse.speed` |
@@ -330,7 +330,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 1200 s | `BOSSES.typhon.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 1200 s | `BOSSES.typhon.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 260 PV | `BOSSES.typhon.health` |
 | Taille | 46 px | `BOSSES.typhon.size` |
 | Vitesse | 50 px/s | `BOSSES.typhon.speed` |
@@ -341,7 +341,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 1500 s | `BOSSES.chimere.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 1500 s | `BOSSES.chimere.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 400 PV | `BOSSES.chimere.health` |
 | Taille | 50 px | `BOSSES.chimere.size` |
 | Vitesse | 45 px/s | `BOSSES.chimere.speed` |
@@ -352,7 +352,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 1800 s | `BOSSES.charybde.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 1800 s | `BOSSES.charybde.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 600 PV | `BOSSES.charybde.health` |
 | Taille | 54 px | `BOSSES.charybde.size` |
 | Vitesse | 45 px/s | `BOSSES.charybde.speed` |
@@ -363,7 +363,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 2100 s | `BOSSES.python.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 2100 s | `BOSSES.python.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 850 PV | `BOSSES.python.health` |
 | Taille | 58 px | `BOSSES.python.size` |
 | Vitesse | 40 px/s | `BOSSES.python.speed` |
@@ -374,7 +374,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel (« Toutes les 5 minutes »)) | 2400 s | `BOSSES.cronos.time` |
+| Arrive à X secondes de jeu ⚠️ (aussi écrit dans le tutoriel dit qu'un super ennemi arrive « toutes les X minutes », X = l'heure de Cerbère : garde le même écart entre les super ennemis) | 2400 s | `BOSSES.cronos.time` |
 | Vie (× la vie qui monte avec le temps, à son arrivée) | 1200 PV | `BOSSES.cronos.health` |
 | Taille | 64 px | `BOSSES.cronos.size` |
 | Vitesse | 40 px/s | `BOSSES.cronos.speed` |
@@ -542,8 +542,8 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« x4 ») et le tutoriel (« x2 », « x4 »)) | 1 ; 2 ; 4 × | `GAME_SPEED_OPTIONS` |
-| Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop) ⚠️ (aussi écrit dans le shop (« +30 s, puis +100 s ») et le tutoriel (« 10 secondes »)) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
+| Vitesses du jeu (la 1re est la normale, la 2e est offerte par le tutoriel, les autres s'achètent dans le shop) | 1 ; 2 ; 4 × | `GAME_SPEED_OPTIONS` |
+| Sauts dans le temps (un bouton par saut : le 1er est offert par le tutoriel, les autres s'achètent dans le shop) | 10 ; 30 ; 100 s | `TIME_SKIP_OPTIONS` |
 
 ### Recharge du saut
 
@@ -559,19 +559,19 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Héphaïstos en face : dégâts par balle en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 1 | `OPPOSITE_BONUSES.fire.damage` |
-| Poséidon en face : bouclier ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 1 | `OPPOSITE_BONUSES.water.shield` |
-| Poséidon en face : recharge du bouclier plus rapide ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 50 % | `OPPOSITE_BONUSES.water.shieldRecharge` |
-| Déméter en face : vie à chaque balle qui touche ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 0,03 PV | `OPPOSITE_BONUSES.plant.lifeOnHit` |
-| Éole en face : vitesse d'attaque en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 25 % | `OPPOSITE_BONUSES.air.attackSpeed` |
-| Apollon en face : chance de critique en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 10 % | `OPPOSITE_BONUSES.light.critChance` |
-| Artémis en face : portée en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 60 px | `OPPOSITE_BONUSES.moon.range` |
-| Athéna en face : chance de déclencher un combo au hasard ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 15 % | `OPPOSITE_BONUSES.aegis.comboProcChance` |
-| Zeus en face : dégâts critiques en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 50 % | `OPPOSITE_BONUSES.thunder.critDamage` |
-| Arès en face : vie à chaque ennemi tué ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 0,5 PV | `OPPOSITE_BONUSES.war.lifeOnKill` |
-| Aphrodite en face : vie max à chaque balle qui touche ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 0,001 PV | `OPPOSITE_BONUSES.love.maxHealthOnHit` |
-| Hermès en face : vitesse des balles en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 50 % | `OPPOSITE_BONUSES.swift.bulletSpeed` |
-| Hestia en face : régénération en plus ⚠️ (aussi écrit dans la description de ce bonus (OPPOSITE_BONUSES dans index.html, et langues/)) | 0,15 PV/s | `OPPOSITE_BONUSES.hearth.regen` |
+| Héphaïstos en face : dégâts par balle en plus | 1 | `OPPOSITE_BONUSES.fire.damage` |
+| Poséidon en face : bouclier ⚠️ (aussi écrit dans la description du bonus (« un bouclier qui bloque un coup »)) | 1 | `OPPOSITE_BONUSES.water.shield` |
+| Poséidon en face : recharge du bouclier plus rapide | 50 % | `OPPOSITE_BONUSES.water.shieldRecharge` |
+| Déméter en face : vie à chaque balle qui touche | 0,03 PV | `OPPOSITE_BONUSES.plant.lifeOnHit` |
+| Éole en face : vitesse d'attaque en plus | 25 % | `OPPOSITE_BONUSES.air.attackSpeed` |
+| Apollon en face : chance de critique en plus | 10 % | `OPPOSITE_BONUSES.light.critChance` |
+| Artémis en face : portée en plus | 60 px | `OPPOSITE_BONUSES.moon.range` |
+| Athéna en face : chance de déclencher un combo au hasard | 15 % | `OPPOSITE_BONUSES.aegis.comboProcChance` |
+| Zeus en face : dégâts critiques en plus | 50 % | `OPPOSITE_BONUSES.thunder.critDamage` |
+| Arès en face : vie à chaque ennemi tué | 0,5 PV | `OPPOSITE_BONUSES.war.lifeOnKill` |
+| Aphrodite en face : vie max à chaque balle qui touche | 0,001 PV | `OPPOSITE_BONUSES.love.maxHealthOnHit` |
+| Hermès en face : vitesse des balles en plus | 50 % | `OPPOSITE_BONUSES.swift.bulletSpeed` |
+| Hestia en face : régénération en plus | 0,15 PV/s | `OPPOSITE_BONUSES.hearth.regen` |
 
 ### Explosions et zones
 
@@ -584,7 +584,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Graine explosive : disparaît après X secondes si personne ne marche dessus | 6 s | `COMBO_MINE_DURATION` |
 | Graine explosive : dégâts (× les dégâts de la balle) | 2,5 × | `COMBO_MINE_DAMAGE` |
 | Météore : dégâts (× les dégâts de la balle) | 3 × | `COMBO_METEOR_DAMAGE` |
-| Éclats qui partent dans toutes les directions ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 6 | `COMBO_NOVA_COUNT` |
+| Éclats qui partent dans toutes les directions | 6 | `COMBO_NOVA_COUNT` |
 | Dégâts d'un éclat (× les dégâts de la balle) | 0,6 × | `COMBO_NOVA_DAMAGE` |
 | Tourbillon : rayon | 110 px | `COMBO_VORTEX_RADIUS` |
 | Tourbillon : force d'attraction (100 % = colle tout le monde sur l'impact) | 60 % | `COMBO_VORTEX_PULL` |
@@ -595,7 +595,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Brûlure : durée ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 3 s | `COMBO_BURN_DURATION` |
+| Brûlure : durée | 3 s | `COMBO_BURN_DURATION` |
 | Brûlure : dégâts par seconde (× les dégâts de la balle) | 0,6 × | `COMBO_BURN_DPS` |
 | Poison : durée | 4 s | `COMBO_POISON_DURATION` |
 | Poison : dégâts par seconde (× les dégâts de la balle) | 0,5 × | `COMBO_POISON_DPS` |
@@ -628,7 +628,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Balle divisée : dégâts de chaque morceau (× les dégâts de la balle) | 0,5 × | `COMBO_SPLIT_DAMAGE` |
 | Ennemis traversés par la balle | 1 | `COMBO_PIERCE_COUNT` |
 | Écho : frappe une 2e fois après X secondes | 0,5 s | `COMBO_ECHO_DELAY` |
-| Foudre : ennemis frappés au hasard sur tout l'écran ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 2 | `COMBO_THUNDER_TARGETS` |
+| Foudre : ennemis frappés au hasard sur tout l'écran | 2 | `COMBO_THUNDER_TARGETS` |
 | Foudre : dégâts (× les dégâts de la balle) | 1,5 × | `COMBO_THUNDER_DAMAGE` |
 
 ### Critiques, soins et bouclier
@@ -636,12 +636,12 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
 | Chance de critique en plus | 20 % | `COMBO_CRIT_CHANCE` |
-| Dégâts critiques en plus ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 100 % | `COMBO_CRIT_BONUS_DAMAGE` |
+| Dégâts critiques en plus | 100 % | `COMBO_CRIT_BONUS_DAMAGE` |
 | Soin à chaque coup | 0,08 PV | `COMBO_HEAL` |
 | Recharge du bouclier gagnée à chaque coup | 0,6 s | `COMBO_SHIELD_CHARGE` |
 | Achève les ennemis sous X % de leur vie (pas les super ennemis) | 20 % | `COMBO_EXECUTE_THRESHOLD` |
-| Affaibli : durée ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 3 s | `COMBO_WEAKEN_DURATION` |
-| Affaibli : dégâts subis (1.5 = +50 %) ⚠️ (aussi écrit dans les descriptions des combos et des fusions (index.html et langues/)) | 1,5 × | `COMBO_WEAKEN_MULTIPLIER` |
+| Affaibli : durée | 3 s | `COMBO_WEAKEN_DURATION` |
+| Affaibli : dégâts subis (1.5 = +50 %) | 1,5 × | `COMBO_WEAKEN_MULTIPLIER` |
 
 ## Caméra
 
@@ -650,6 +650,7 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
 | La portée occupe au plus X % de la demi-largeur de l'écran | 95 % | `CAMERA_RANGE_SCREEN_RATIO` |
+| Écran en hauteur (téléphone) : la caméra se base sur X % de la hauteur de l'écran quand c'est plus que sa largeur (la portée peut alors dépasser un peu sur les côtés, et le jeu dézoome moins) | 60 % | `CAMERA_PORTRAIT_HEIGHT_RATIO` |
 | Au-delà de cette portée, la caméra ne dézoome plus (et les ennemis naissent plus près) | 1000 px | `CAMERA_MAX_RANGE` |
 
 ## Pack Premium
@@ -658,6 +659,6 @@ Toutes les statistiques du jeu (310 réglages) sont dans le fichier `reglages.js
 
 | Réglage | Valeur | Nom dans le code |
 | --- | --- | --- |
-| Vitesses du jeu en plus avec le Pack Premium (après celles du shop) ⚠️ (aussi écrit dans les avantages du Pack Premium (« Vitesses du jeu x8 et x10 », PREMIUM_PERKS)) | 8 ; 10 × | `PREMIUM_SPEEDS` |
-| Sauts dans le temps en plus avec le Pack Premium (après ceux du shop) ⚠️ (aussi écrit dans les avantages du Pack Premium (« Sauts dans le temps de +500 s et +999 s », PREMIUM_PERKS)) | 500 ; 999 s | `PREMIUM_SKIPS` |
+| Vitesses du jeu en plus avec le Pack Premium (après celles du shop) | 8 ; 10 × | `PREMIUM_SPEEDS` |
+| Sauts dans le temps en plus avec le Pack Premium (après ceux du shop) | 500 ; 999 s | `PREMIUM_SKIPS` |
 

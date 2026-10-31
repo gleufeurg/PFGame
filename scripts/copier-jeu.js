@@ -6,7 +6,7 @@ const path = require("path"); // pour assembler les chemins de fichiers propreme
 
 const RACINE = path.join(__dirname, "..");  // __dirname = le dossier de ce script (scripts/) ; ".." = le dossier au-dessus
 const DOSSIER_WWW = path.join(RACINE, "www");
-const FICHIERS = ["index.html", "reglages.js", "polices", "langues"]; // un fichier, ou un dossier (copié avec tout ce qu'il contient)
+const FICHIERS = ["index.html", "reglages.js", "icone.png", "polices", "langues"]; // un fichier, ou un dossier (copié avec tout ce qu'il contient)
 
 fs.rmSync(DOSSIER_WWW, { recursive: true, force: true }); // on repart d'un dossier vide (recursive = avec tout ce qu'il contient)
 fs.mkdirSync(DOSSIER_WWW);

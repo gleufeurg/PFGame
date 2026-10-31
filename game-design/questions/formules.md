@@ -232,7 +232,7 @@ balles par tir      = arrondi(balles par tir), côte à côte, à 10 px d'écart
 ```
 
 - Chacun vise l'ennemi le plus proche de lui, dans sa portée : 300 px pour le joueur, 250 px pour une planète (depuis la planète).
-- **La caméra** : `zoom = min(1 ; (largeur de l'écran ÷ 2 × 0,95) ÷ min(portée du joueur ; 1000) ; (min(largeur ; hauteur) ÷ 2 − 16) ÷ 296)`. Le dernier terme garde les 3 orbites à l'écran : 296 = rayon de l'orbite extérieure (270) + taille d'une planète (20) + son épaisseur (6).
+- **La caméra** : `zoom = min(1 ; (max(largeur de l'écran ; hauteur × 0,6) ÷ 2 × 0,95) ÷ min(portée du joueur ; 1000) ; (min(largeur ; hauteur) ÷ 2 − 16) ÷ 296)`. Le dernier terme garde les 3 orbites à l'écran : 296 = rayon de l'orbite extérieure (270) + taille d'une planète (20) + son épaisseur (6).
 
 ### Les orbites des planètes
 
