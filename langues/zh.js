@@ -1511,7 +1511,6 @@ window.TRADUCTIONS.zh = {
     "Les ennemis": "敌人",
     "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...).": "敌人有 4 种，每种对应一个元素：火（红色）最快，风（白色）快但脆弱，水（蓝色）结实，植物（绿色）慢但非常结实。时间越久，它们的生命越多。带黄色轮廓的敌人移动方式不同（螺旋、之字形……）。",
     "Le shop": "商店",
-    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi.": "死亡是游戏的一部分：你的金币会保留，商店会让你在下一局变得更强。先买一个「新神祇」：一颗绕着你转、也会射击的行星。",
     "Ta première planète": "你的第一颗行星",
     "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.": "这是你的神！点击它的行星，打开它的技能树。",
     "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences.": "这是你的神！轻触它的行星，打开它的技能树。",
@@ -1591,5 +1590,7 @@ window.TRADUCTIONS.zh = {
     "Code de triche": "作弊码",
     "OK": "确定",
     "Code inconnu": "未知代码",
-    "+{damage} dégât par balle": "每发子弹伤害 +{damage}"
+    "+{damage} dégât par balle": "每发子弹伤害 +{damage}",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.": "死亡是游戏的一部分：你的金币会保留，商店会让你在下一局更强。购买一个「新神明」：点击它！它是一颗绕着你转、也会射击的星球。",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi.": "死亡是游戏的一部分：你的金币会保留，商店会让你在下一局更强。购买一个「新神明」：点一下它！它是一颗绕着你转、也会射击的星球。"
 };

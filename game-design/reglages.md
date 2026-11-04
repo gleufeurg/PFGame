@@ -2,7 +2,7 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (566 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (570 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
@@ -14,7 +14,7 @@ Toutes les statistiques du jeu (566 réglages) sont dans le fichier `reglages.js
 - [Joueur](#joueur) : Stats de départ, Défense, Corps
 - [Tirs](#tirs) : Joueur, Planètes, Balles
 - [Planètes](#planètes) : Stats de départ, Orbites
-- [Pouvoirs des dieux](#pouvoirs-des-dieux) : Rythme des pouvoirs, Héphaïstos : traînée de feu, Poséidon : la vague, Déméter : le rayon de vie, Artémis, Zeus, Arès : le cri de guerre, Contre les super ennemis
+- [Pouvoirs des dieux](#pouvoirs-des-dieux) : Rythme des pouvoirs, Héphaïstos : traînée de feu, Héphaïstos : la voie du marteau, Poséidon : la vague, Déméter : le rayon de vie, Artémis, Zeus, Arès : le cri de guerre, Contre les super ennemis
 - [Ennemis](#ennemis) : Feu (rouge), Eau (bleu), Plante (vert), Air (blanc), Vie qui monte avec le temps, Taille, Apparition, Mouvements spéciaux
 - [Super ennemis](#super-ennemis) : Tous les super ennemis, Cerbère, Hydre de Lerne, Méduse, Typhon, Chimère, Charybde, Python, Cronos
 - [Shop](#shop) : Cadence de tir, Portée, Balle supplémentaire, Vie max, Dégâts, Régénération, Esquive, Chance de critique, Dégâts critiques, Vitesse des balles, Accélérer le temps, Sauter dans le temps, Liens d'orbite, Nouvelle divinité
@@ -136,6 +136,15 @@ Toutes les statistiques du jeu (566 réglages) sont dans le fichier `reglages.js
 | Durée d'un point de feu avant qu'il s'éteigne (+ les compétences) | 1,2 s | `FIRE_TRAIL_DURATION` |
 | Taille d'un point de feu (× la taille des balles) | 9 px | `FIRE_TRAIL_RADIUS` |
 | Durée de la brûlure après avoir touché la traînée | 1 s | `FIRE_TRAIL_BURN_TIME` |
+
+### Héphaïstos : la voie du marteau
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Avant chaque tir, la planète se charge pendant X secondes : elle grossit et tremble (moins si elle tire plus vite) | 1 s | `HAMMER_CHARGE_TIME` |
+| Taille en plus de la planète quand elle est chargée, juste avant le tir | 35 % | `HAMMER_CHARGE_GROW` |
+| Tremblement de la planète chargée (graphismes élevés) | 2,5 px | `HAMMER_SHAKE` |
+| Après le tir, la planète se dégonfle et se calme en X secondes | 0,4 s | `HAMMER_RELEASE_TIME` |
 
 ### Poséidon : la vague
 

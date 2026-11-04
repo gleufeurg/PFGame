@@ -1511,7 +1511,6 @@ window.TRADUCTIONS.it = {
     "Les ennemis": "I nemici",
     "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...).": "Ci sono 4 tipi di nemici, uno per elemento: il fuoco (rosso) è il più veloce, l'aria (bianco) è veloce e fragile, l'acqua (blu) è resistente, la pianta (verde) è lenta e molto resistente. Più passa il tempo, più vita hanno. Quelli con un contorno giallo si muovono in modo diverso (a spirale, a zigzag...).",
     "Le shop": "Lo shop",
-    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi.": "Morire fa parte del gioco: il tuo oro resta, e lo shop ti rende più forte per la partita successiva. Comincia con una «Nuova divinità»: un pianeta che ti gira intorno e spara anche lui.",
     "Ta première planète": "Il tuo primo pianeta",
     "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.": "Ecco il tuo dio! Clicca sul suo pianeta per aprire il suo albero delle abilità.",
     "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences.": "Ecco il tuo dio! Tocca il suo pianeta per aprire il suo albero delle abilità.",
@@ -1591,5 +1590,7 @@ window.TRADUCTIONS.it = {
     "Code de triche": "Codice trucco",
     "OK": "OK",
     "Code inconnu": "Codice sconosciuto",
-    "+{damage} dégât par balle": "+{damage} danni per proiettile"
+    "+{damage} dégât par balle": "+{damage} danni per proiettile",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Morire fa parte del gioco: il tuo oro resta, e il negozio ti rende più forte per la partita successiva. Compra una « Nuova divinità »: cliccaci sopra! È un pianeta che ti gira intorno e spara anche lui.",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Morire fa parte del gioco: il tuo oro resta, e il negozio ti rende più forte per la partita successiva. Compra una « Nuova divinità »: toccala! È un pianeta che ti gira intorno e spara anche lui."
 };

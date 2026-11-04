@@ -1511,7 +1511,6 @@ window.TRADUCTIONS.en = {
     "Les ennemis": "The enemies",
     "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...).": "There are 4 kinds of enemies, one per element: fire (red) is the fastest, air (white) is fast and fragile, water (blue) is sturdy, plant (green) is slow and very sturdy. The more time passes, the more health they have. The ones with a yellow outline move differently (in a spiral, in a zigzag...).",
     "Le shop": "The shop",
-    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi.": "Dying is part of the game: you keep your gold, and the shop makes you stronger for the next run. Start with a \"New deity\": a planet that orbits around you and shoots too.",
     "Ta première planète": "Your first planet",
     "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.": "Here is your god! Click their planet to open their skill tree.",
     "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences.": "Here is your god! Tap their planet to open their skill tree.",
@@ -1591,5 +1590,7 @@ window.TRADUCTIONS.en = {
     "Code de triche": "Cheat code",
     "OK": "OK",
     "Code inconnu": "Unknown code",
-    "+{damage} dégât par balle": "+{damage} damage per bullet"
+    "+{damage} dégât par balle": "+{damage} damage per bullet",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Dying is part of the game: your gold stays, and the shop makes you stronger for the next game. Buy a \"New deity\": click it! It's a planet that orbits you and shoots too.",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Dying is part of the game: your gold stays, and the shop makes you stronger for the next game. Buy a \"New deity\": tap it! It's a planet that orbits you and shoots too."
 };

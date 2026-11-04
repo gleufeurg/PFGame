@@ -1511,7 +1511,6 @@ window.TRADUCTIONS.ja = {
     "Les ennemis": "敵",
     "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...).": "敵は4種類、属性ごとに1種類：火（赤）は一番速い。風（白）は速くてもろい。水（青）は頑丈で、植物（緑）は遅くてとても頑丈。時間が経つほどHPが増える。黄色い縁取りの敵は違う動きをする（らせん、ジグザグ…）。",
     "Le shop": "ショップ",
-    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi.": "倒されるのもゲームのうち：ゴールドは残り、ショップで次のプレイに向けて強くなれる。まずは「新しい神」から：あなたの周りを回って、一緒に撃ってくれる惑星だ。",
     "Ta première planète": "最初の惑星",
     "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.": "これがあなたの神！惑星をクリックしてスキルツリーを開こう。",
     "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences.": "これがあなたの神！惑星をタップしてスキルツリーを開こう。",
@@ -1591,5 +1590,7 @@ window.TRADUCTIONS.ja = {
     "Code de triche": "チートコード",
     "OK": "OK",
     "Code inconnu": "不明なコード",
-    "+{damage} dégât par balle": "弾ダメージ+{damage}"
+    "+{damage} dégât par balle": "弾ダメージ+{damage}",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.": "死ぬのもゲームのうち：ゴールドは残り、ショップで次のゲームに向けて強くなれる。「新しい神」を買おう：クリックして！あなたの周りを回って一緒に撃ってくれる惑星だ。",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi.": "死ぬのもゲームのうち：ゴールドは残り、ショップで次のゲームに向けて強くなれる。「新しい神」を買おう：タップして！あなたの周りを回って一緒に撃ってくれる惑星だ。"
 };

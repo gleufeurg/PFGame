@@ -1511,7 +1511,6 @@ window.TRADUCTIONS.de = {
     "Les ennemis": "Die Gegner",
     "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...).": "Es gibt 4 Arten von Gegnern, eine pro Element: Feuer (rot) ist am schnellsten, Luft (weiß) ist schnell und zerbrechlich, Wasser (blau) ist robust, Pflanze (grün) ist langsam und sehr robust. Je mehr Zeit vergeht, desto mehr Leben haben sie. Die mit einem gelben Rand bewegen sich anders (in Spiralen, im Zickzack ...).",
     "Le shop": "Der Shop",
-    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi.": "Sterben gehört zum Spiel: Dein Gold bleibt, und der Shop macht dich für die nächste Runde stärker. Fang mit einer „Neuen Gottheit“ an: einem Planeten, der um dich kreist und ebenfalls schießt.",
     "Ta première planète": "Dein erster Planet",
     "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.": "Hier ist dein Gott! Klick auf seinen Planeten, um seinen Skillbaum zu öffnen.",
     "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences.": "Hier ist dein Gott! Tippe auf seinen Planeten, um seinen Skillbaum zu öffnen.",
@@ -1591,5 +1590,7 @@ window.TRADUCTIONS.de = {
     "Code de triche": "Cheatcode",
     "OK": "OK",
     "Code inconnu": "Unbekannter Code",
-    "+{damage} dégât par balle": "+{damage} Schaden pro Kugel"
+    "+{damage} dégât par balle": "+{damage} Schaden pro Kugel",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Sterben gehört zum Spiel: Dein Gold bleibt, und der Shop macht dich für das nächste Spiel stärker. Kauf eine „Neue Gottheit“: klick darauf! Das ist ein Planet, der um dich kreist und ebenfalls schießt.",
+    "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi.": "Sterben gehört zum Spiel: Dein Gold bleibt, und der Shop macht dich für das nächste Spiel stärker. Kauf eine „Neue Gottheit“: tipp darauf! Das ist ein Planet, der um dich kreist und ebenfalls schießt."
 };

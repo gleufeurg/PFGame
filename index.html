@@ -5377,6 +5377,34 @@
             ctx.lineDashOffset = 0;
         }
 
+        //Le tir du marteau : toute la pression part d'un coup (une onde, et des étincelles en graphismes élevés)
+        function releaseHammer(planet) {
+            planet.hammerCharge = 0;
+            planet.hammerRelease = HAMMER_RELEASE_TIME;
+            spawnShockwave(planet.x, planet.y, planet.color, planet.size * 3, 0.35);
+            if (isHighGraphics) {
+                spawnParticles(planet.x, planet.y, planet.color, 10, 160);
+            }
+        }
+
+        //La taille et le tremblement d'une planète du marteau : elle grossit en se chargeant, puis se dégonfle un peu trop
+        //au tir (elle « relâche la pression ») et revient doucement à sa taille
+        function getHammerPose(planet) {
+            const charge = planet.hammerCharge || 0;
+            const release = HAMMER_RELEASE_TIME > 0 ? (planet.hammerRelease || 0) / HAMMER_RELEASE_TIME : 0; //1 = juste après le tir, 0 = calmée
+            let scale = 1 + HAMMER_CHARGE_GROW * charge * charge; //charge² : ça gonfle de plus en plus vite
+            if (release > 0) {
+                scale = 1 - 0.15 * Math.sin((1 - release) * Math.PI) * release; //un petit creux, puis elle se calme
+            }
+            let shakeX = 0;
+            let shakeY = 0;
+            if (isHighGraphics && charge > 0) { //le tremblement : seulement en graphismes élevés
+                shakeX = Math.sin(visualTime * 83) * HAMMER_SHAKE * charge * charge;
+                shakeY = Math.cos(visualTime * 71) * HAMMER_SHAKE * charge * charge;
+            }
+            return { scale: scale, shakeX: shakeX, shakeY: shakeY, charge: charge };
+        }
+
         function drawPlanets() {
             for (const planet of planets) {
                 const isHovered = planet === hoveredPlanet;
@@ -5386,7 +5414,11 @@
                 }
                 const isStone = isPetrified(planet);   //pétrifiée par Méduse : grise, avec des fissures
                 const shake = planet.petrifyShake > 0 ? Math.sin(visualTime * 70) * 3.5 * planet.petrifyShake / PETRIFY_SHAKE_DURATION : 0; //elle tremble quand elle est touchée
-                const points = getShapePoints(planet.x + shake, planet.y - lift, planet.size, 4, 0);
+                const hammer = getHammerPose(planet); //voie du marteau d'Héphaïstos (sinon : taille normale, pas de tremblement)
+                if (hammer.charge > 0) {
+                    drawGlow(planet.color, planet.x, planet.y, planet.size * (1.5 + hammer.charge), 0.25 + 0.6 * hammer.charge); //la chaleur monte
+                }
+                const points = getShapePoints(planet.x + shake + hammer.shakeX, planet.y - lift + hammer.shakeY, planet.size * hammer.scale, 4, 0);
                 fillStretchedShape(ctx, points, 0, PLANET_DEPTH + lift, isStone ? PETRIFIED_SIDE_COLOR : planet.sideColor); //l'épaisseur (le côté foncé)
                 fillShape(ctx, points, 0, 0, isStone ? PETRIFIED_COLOR : planet.color);                                    //le dessus
                 if (isStone) {
@@ -7409,13 +7441,32 @@
         //(planet.stats = PLANET_BASE_STATS + les stats de tir de son skill tree + les liens "opposé" reçus)
         const PLANET_FIRE_INTERVAL = reglage("PLANET_FIRE_INTERVAL");      // un tir toutes les X secondes (divisé par la vitesse d'attaque de la planète)
 
+        //HÉPHAÏSTOS, VOIE DU MARTEAU : avant chaque tir, la planète se charge (elle grossit et tremble), puis elle relâche
+        //toute la pression dans son tir et se calme. C'est seulement visuel : le tir ne change pas.
+        const HAMMER_TREE = "Héphaïstos";
+        const HAMMER_PATH = 0;                                          // la 1re voie de son arbre : « Voie du marteau »
+        const HAMMER_CHARGE_TIME = reglage("HAMMER_CHARGE_TIME");       // secondes de charge avant le tir
+        const HAMMER_CHARGE_GROW = reglage("HAMMER_CHARGE_GROW");       // 0.35 = 35% plus grosse quand elle est chargée
+        const HAMMER_SHAKE = reglage("HAMMER_SHAKE");                   // pixels de tremblement (graphismes élevés)
+        const HAMMER_RELEASE_TIME = reglage("HAMMER_RELEASE_TIME");     // secondes pour se dégonfler après le tir
+
+        function isHammerPlanet(planet) {
+            return planet.tree.id === HAMMER_TREE && getChosenPath(planet.tree) === HAMMER_PATH;
+        }
+
         function updatePlanetShooting(deltaTime) {
             for (const planet of planets) {
+                planet.hammerRelease = Math.max(0, (planet.hammerRelease || 0) - deltaTime);
                 if (isPetrified(planet)) {
+                    planet.hammerCharge = 0;
                     continue; //pétrifiée par Méduse : elle ne tire plus
                 }
                 planet.fireTimer += deltaTime;
-                if (planet.fireTimer < PLANET_FIRE_INTERVAL / Math.max(MIN_SHOOTER_SPEED, planet.stats.attackSpeed)) {
+                const interval = PLANET_FIRE_INTERVAL / Math.max(MIN_SHOOTER_SPEED, planet.stats.attackSpeed);
+                //La charge du marteau : de 0 à 1 pendant la dernière seconde avant le tir (moins si la planète tire très vite)
+                const chargeTime = Math.min(HAMMER_CHARGE_TIME, interval * 0.8);
+                planet.hammerCharge = isHammerPlanet(planet) ? clamp(1 - (interval - planet.fireTimer) / chargeTime, 0, 1) : 0;
+                if (planet.fireTimer < interval) {
                     continue;
                 }
                 const closestEnemy = findNearestEnemy(planet.x, planet.y, planet.stats.range, []);
@@ -7430,6 +7481,9 @@
                     const ringColor = combos.length > 0 ? getComboColor(combos[0]) : null;
                     fireVolley(planet.x, planet.y, closestEnemy, planet.stats, planet.color, effects, ringColor);
                     planet.fireTimer = 0;
+                    if (planet.hammerCharge > 0) {
+                        releaseHammer(planet);
+                    }
                 }
             }
         }
@@ -13860,6 +13914,7 @@
         //Chaque étape a un titre, un texte (textTouch = la version au doigt, textSmall = la version petit écran) et une cible à éclairer (target) :
         //un sélecteur CSS (ex : "#hud"), "planet" (la 1re planète), "planet2" (la 2e), ou rien (la bulle au milieu).
         //mustClick = il faut cliquer sur la planète éclairée pour continuer (pas de bouton « Compris »).
+        //« Le shop » aussi : il faut acheter la « Nouvelle divinité » éclairée (voir isTutorialMustClick).
         //Le jeu déclenche chaque étape au bon moment avec triggerTutorial("nom") (voir "TUTORIEL :" dans le code) ;
         //une seule bulle à la fois, les autres attendent leur tour. Pendant une bulle, le jeu est en pause.
         //Les étapes vues sont gardées dans la sauvegarde (saveProgress / loadProgress).
@@ -13867,7 +13922,7 @@
             welcome: { title: "Bienvenue !", text: "Tu es le triangle au milieu de l'écran. Il tire tout seul sur les ennemis qui arrivent de tous les côtés. Si un ennemi te touche, tu perds autant de vie qu'il lui en reste." },
             rewards: { title: "Or et XP", target: "#hud", text: "Chaque ennemi tué te rapporte de l'or et de l'XP. L'or se dépense dans le shop, quand tu meurs. L'XP sert à apprendre les compétences de tes dieux." },
             enemies: { title: "Les ennemis", text: "Il y a 4 sortes d'ennemis, une par élément : le feu (rouge) est le plus rapide, l'air (blanc) est rapide et fragile, l'eau (bleu) est solide, la plante (vert) est lente et très solide. Plus le temps passe, plus ils ont de vie. Ceux qui ont un contour jaune bougent autrement (en spirale, en zigzag...)." },
-            shop: { title: "Le shop", target: "#shopGodItem", text: "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Commence par une « Nouvelle divinité » : une planète qui tourne autour de toi et tire elle aussi." },
+            shop: { title: "Le shop", target: "#shopGodItem", text: "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : clique dessus ! C'est une planète qui tourne autour de toi et tire elle aussi.", textTouch: "Mourir fait partie du jeu : ton or reste, et le shop te rend plus fort pour la partie suivante. Achète une « Nouvelle divinité » : touche-la ! C'est une planète qui tourne autour de toi et tire elle aussi." },
             planet: { title: "Ta première planète", target: "planet", mustClick: true, text: "Voici ton dieu ! Clique sur sa planète pour ouvrir son arbre de compétences.", textTouch: "Voici ton dieu ! Touche sa planète pour ouvrir son arbre de compétences." },
             skillTree: { title: "Les compétences", target: "#treeCanvas", text: "Chaque dieu a son arbre de compétences. Clique sur une étoile pour voir ce qu'elle donne, puis sur « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres.", textTouch: "Chaque dieu a son arbre de compétences. Touche une étoile pour voir ce qu'elle donne, puis « Débloquer » pour la prendre avec ton XP. Commence par l'étoile qui brille. Les branches colorées sont des voies : en choisir une bloque les autres." },
             stats: { title: "Tes statistiques", target: "#statsPanel", text: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte).", textSmall: "Ce panneau montre toutes tes stats : ta vie, tes dégâts, et celles de chaque planète. Une stat qui change clignote (en vert si elle monte). Appuie sur son titre pour l'ouvrir ou le replier." },
@@ -13921,7 +13976,7 @@
                 timeMenu.classList.remove("hidden"); //...menu ouvert, pour montrer x2 et +10 s
                 updateTimeMenuButton();
             }
-            document.getElementById("tutorialNextButton").classList.toggle("hidden", step.mustClick === true);
+            document.getElementById("tutorialNextButton").classList.toggle("hidden", isTutorialMustClick(tutorialStep));
             tutorialLayer.classList.toggle("highGraphics", isHighGraphics);
             tutorialLayer.classList.remove("hidden");
             isTutorialOpen = true;
@@ -14118,15 +14173,37 @@
             event.stopPropagation();
             skipTutorial();
         });
-        //Le voile bloque les clics. Pour l'étape « Ta première planète », un clic (ou toucher) sur la planète éclairée ouvre son arbre
+        //Faut-il cliquer sur la cible pour continuer (pas de bouton « Compris ») ?
+        //« Le shop » : oui, il faut acheter le 1er dieu... sauf s'il est déjà acheté ou trop cher (ex : tutoriel recommencé)
+        function isTutorialMustClick(id) {
+            if (id === "shop") {
+                const godItem = SHOP_ITEMS.find(function (item) { return item.unlocksGod; });
+                return godItem.level === 0 && gold >= getShopItemCost(godItem);
+            }
+            return TUTORIAL_STEPS[id] !== undefined && TUTORIAL_STEPS[id].mustClick === true;
+        }
+
+        //Le voile bloque les clics. Un clic (ou toucher) sur la cible éclairée : « Ta première planète » ouvre son arbre,
+        //« Le shop » achète la « Nouvelle divinité »
         tutorialLayer.addEventListener("click", function (event) {
             const step = TUTORIAL_STEPS[tutorialStep];
-            if (step === undefined || !step.mustClick) {
+            if (step === undefined || !isTutorialMustClick(tutorialStep)) {
                 return;
             }
             const target = getTutorialTargetRect(step);
-            const isInside = target !== null && Math.hypot(event.clientX - (target.x + target.width / 2), event.clientY - (target.y + target.height / 2)) <= target.width / 2;
-            if (isInside) {
+            if (target === null) {
+                return;
+            }
+            const isInside = target.round
+                ? Math.hypot(event.clientX - (target.x + target.width / 2), event.clientY - (target.y + target.height / 2)) <= target.width / 2
+                : event.clientX >= target.x && event.clientX <= target.x + target.width && event.clientY >= target.y && event.clientY <= target.y + target.height;
+            if (!isInside) {
+                return;
+            }
+            if (tutorialStep === "shop") {
+                finishTutorialStep();
+                buyShopItem(SHOP_ITEMS.find(function (item) { return item.unlocksGod; }));
+            } else {
                 finishTutorialStep();
                 openSkillTree(planets[0].tree);
             }
@@ -14139,7 +14216,7 @@
             }
             event.stopPropagation();
             initAudio(); //la touche ne va plus jusqu'à l'écouteur qui allume le son : on l'allume ici
-            if (["Enter", " ", "Escape"].includes(event.key) && !TUTORIAL_STEPS[tutorialStep].mustClick) {
+            if (["Enter", " ", "Escape"].includes(event.key) && !isTutorialMustClick(tutorialStep)) {
                 event.preventDefault();
                 finishTutorialStep();
             }

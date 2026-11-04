@@ -123,7 +123,7 @@ Des bulles expliquent le jeu **au bon moment**, une à la fois (partie `TUTORIEL
 | Or et XP | après 5 ennemis tués | l'or et l'XP (en haut à gauche) : l'or pour le shop, l'XP pour les compétences |
 | Les ennemis | après 10 s de partie | au milieu : les 4 éléments (couleur, vitesse, solidité), la vie qui monte avec le temps, le contour jaune des mouvements spéciaux |
 | Le temps | juste après « Les ennemis » | le menu du temps, ouvert : **cadeau**, la vitesse x2 et le saut de +10 s, le temps de recharge ; le shop débloque x4 et des sauts plus longs |
-| Le shop | à la 1re mort (vers 37 s, à cause de la vague du tutoriel) | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort |
+| Le shop | à la 1re mort (vers 37 s, à cause de la vague du tutoriel) | le bouton « Nouvelle divinité » : l'or reste, le shop rend plus fort. **Il faut acheter le dieu** en cliquant (ou touchant) le bouton éclairé : pas de bouton « Compris », Entrée ne fait rien (`isTutorialMustClick`). Si le 1er dieu est déjà acheté ou trop cher (tutoriel recommencé), la bulle a son bouton « Compris » |
 | Ta première planète | au début de la partie qui suit l'achat du 1er dieu | la planète. **Il faut cliquer (ou toucher) la planète** pour continuer (pas de bouton « Compris », Entrée ne fait rien) : ça ouvre son arbre |
 | Les compétences | à la 1re ouverture de l'arbre d'un dieu en orbite | l'arbre : choisir une étoile, « Débloquer », commencer par l'étoile qui brille, les voies |
 | Tes statistiques | juste après | le panneau des stats, qui clignote quand une stat change. Sur petit écran, le panneau s'ouvre en entier et la bulle dit qu'on appuie sur son titre pour le replier |

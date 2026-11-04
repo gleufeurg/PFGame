@@ -88,6 +88,12 @@ const REGLAGES = {
             "FIRE_TRAIL_RADIUS": { valeur: 9, unite: "px", texte: "Taille d'un point de feu (× la taille des balles)" },
             "FIRE_TRAIL_BURN_TIME": { valeur: 1, unite: "s", texte: "Durée de la brûlure après avoir touché la traînée" }
         },
+        "Héphaïstos : la voie du marteau": {
+            "HAMMER_CHARGE_TIME": { valeur: 1, unite: "s", texte: "Avant chaque tir, la planète se charge pendant X secondes : elle grossit et tremble (moins si elle tire plus vite)" },
+            "HAMMER_CHARGE_GROW": { valeur: 0.35, unite: "%", texte: "Taille en plus de la planète quand elle est chargée, juste avant le tir" },
+            "HAMMER_SHAKE": { valeur: 2.5, unite: "px", texte: "Tremblement de la planète chargée (graphismes élevés)" },
+            "HAMMER_RELEASE_TIME": { valeur: 0.4, unite: "s", texte: "Après le tir, la planète se dégonfle et se calme en X secondes" }
+        },
         "Poséidon : la vague": {
             "TIDE_WAVE_SPEED": { valeur: 320, unite: "px/s", texte: "Vitesse du front de la vague" },
             "TIDE_PUSH_FACTOR": { valeur: 2, unite: "×", texte: "Distance max dont un ennemi est emporté (× le recul de la vague)" },
