@@ -6,7 +6,7 @@ Le jeu reste **un seul fichier `index.html`**. Pour en faire une application And
 
 | Fichier / dossier | À quoi il sert | Dans GitHub ? |
 | --- | --- | --- |
-| `package.json` | la liste des outils (Capacitor 8.5.3) et les commandes `npm run ...` | oui |
+| `package.json` | la liste des outils (Capacitor 8.6.0) et les commandes `npm run ...` | oui |
 | `package-lock.json` | les versions exactes installées (créé par `npm install`, ne pas modifier à la main) | oui |
 | `capacitor.config.json` | le nom de l'appli (`appName`) et son identifiant (`appId`) | oui |
 | `scripts/copier-jeu.js` | copie `index.html`, `reglages.js` (les statistiques du jeu) et les dossiers `polices/` et `langues/` dans `www/`, et y ajoute `capacitor.js` (la bibliothèque `@capacitor/core`, qui donne accès aux plugins comme AdMob) | oui |
@@ -84,3 +84,41 @@ Voir [interface.md](interface.md) : commandes au doigt, petits écrans, sauvegar
 4. **Étape 4 : publier.**
    - **Play Store** : compte Google Play Console (25 $ une fois). Un compte personnel récent doit d'abord faire un test fermé avec **au moins 12 testeurs pendant 14 jours** avant de pouvoir publier. L'icône est prête (`game-design/icone-512.png`, dessinée par `game-design/outils/generer-icone.js`, qui fait aussi l'icône et l'écran de démarrage de l'appli). Il faut aussi des captures d'écran, une description et une page de **règles de confidentialité** (obligatoire avec des pubs).
    - **App Store (iPhone)** : il faut **un Mac** avec Xcode (`npx cap add ios`, puis `npm run ios`) et un compte Apple Developer (99 $ par an).
+
+## Publier sur le Play Store (une fois le compte Google Play Console payé)
+
+### 1. Le compte
+- Sur [play.google.com/console](https://play.google.com/console), finir la **vérification d'identité** (pièce d'identité, numéro de téléphone) : Google la demande avant toute publication. Ça peut prendre quelques jours.
+
+### 2. Créer l'application dans la Play Console
+- **Créer une application** : nom « Geometry : Idle defense », langue par défaut français, **Jeu**, **Gratuit**, puis accepter les règles.
+- La Play Console affiche ensuite une liste de tâches « Configurer votre application ». Les réponses pour ce jeu :
+
+| Tâche | Réponse |
+| --- | --- |
+| Règles de confidentialité | `https://gleufeurg.github.io/PFGame/confidentialite.html` |
+| Accès à l'application | toutes les fonctionnalités sont disponibles sans restriction (pas de compte) |
+| Annonces | **Oui**, l'application contient des annonces |
+| Classification du contenu | questionnaire : catégorie Jeu ; violence de type « dessin animé / formes abstraites » (on tire sur des formes) ; pas de sang, de jeux d'argent ni de discussion entre joueurs |
+| Public cible | **13 ans et plus** (en dessous, Google impose des règles de pub pour enfants) |
+| Sécurité des données | l'appli ne collecte rien elle-même, mais **AdMob** collecte l'identifiant publicitaire de l'appareil, des données d'utilisation et de diagnostic (pour les pubs et les statistiques) ; données chiffrées pendant le transfert ; pas de suppression possible (pas de compte) |
+| Application gouvernementale, financière, santé | non |
+
+### 3. La fiche du Play Store
+- **Icône** : `game-design/icone-512.png`.
+- **Image de présentation** (1024 x 500) et **au moins 2 captures d'écran** de téléphone : à faire (Claude peut les générer à partir du jeu).
+- **Description courte** (80 caractères max) et **description complète**, en français et en anglais.
+
+### 4. Fabriquer la version à publier (fichier `.aab`)
+1. Avant chaque version publiée, dans `index.html` : `ADS_TEST_MODE = false` (vraies pubs) et `FORCE_CHEATS = false` ; et `PAYMENT_TEST_MODE` ne doit **jamais** rester à `true` dans une version publiée (les packs seraient gratuits : voir l'étape 3 de « La suite » ci-dessus).
+2. Dans `android/app/build.gradle` : augmenter `versionCode` de 1 à **chaque** envoi (1, 2, 3...) et changer `versionName` (« 1.0 », « 1.1 »...). Le Play Store refuse deux envois avec le même `versionCode`.
+3. `npm run sync`, puis dans Android Studio : **Build → Generate Signed App Bundle / APK** → **Android App Bundle** → **Create new...** (la 1re fois) pour créer la **clé de signature** (un fichier `.jks`, avec un mot de passe).
+   - ⚠️ **Range le fichier `.jks` HORS du dossier du jeu** (par exemple dans Documents), garde une copie (clé USB, cloud perso) et note le mot de passe. Sans elle, impossible de publier une mise à jour. Les fichiers `.jks` sont de toute façon ignorés par GitHub (`.gitignore`).
+   - Choisir **release**, puis **Create** : le fichier `app-release.aab` est dans `android/app/release/`.
+4. La 1re fois, la Play Console propose la **signature d'application par Google Play** : accepter (Google garde sa propre clé, la tienne sert à prouver que l'envoi vient de toi).
+
+### 5. Les tests, puis la publication
+1. **Test interne** (Tests → Test interne) : envoyer le `.aab`, ajouter ton adresse comme testeuse, puis installer l'appli depuis le lien du Play Store sur ton téléphone. C'est immédiat (pas de vérification de Google) : ça sert à vérifier que tout marche.
+2. **Test fermé** (obligatoire pour un compte personnel récent) : au moins **12 testeurs**, inscrits et qui gardent l'appli **pendant 14 jours d'affilée**. Leurs adresses Gmail se mettent dans une liste de testeurs ; ils reçoivent un lien pour installer l'appli.
+3. Après les 14 jours : **Demander l'accès à la production** (quelques questions sur le test), puis envoyer la version en **Production**. Google vérifie l'appli (de quelques heures à quelques jours).
+4. Une fois publiée : dans **AdMob**, relier l'appli à sa fiche du Play Store (Applications → Paramètres de l'application → ajouter le lien du store), et publier le **message RGPD** (voir [monetisation.md](monetisation.md)) si ce n'est pas déjà fait.

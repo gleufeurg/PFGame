@@ -4,3 +4,7 @@
 # Application mobile (Capacitor)
 node_modules/
 www/
+
+# Clé de signature de l'application (à garder hors de GitHub, voir game-design/mobile.md)
+*.jks
+*.keystore
