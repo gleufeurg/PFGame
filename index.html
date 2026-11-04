@@ -9588,20 +9588,20 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "DMG", name: "Dactyle", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "TAIL", name: "Telchine", description: "Balles 8% plus grosses", effect: { stat: "bulletSize", value: 0.08 } },
-                    { label: "×CRIT", name: "Cyclope", description: "+10% de dégâts critiques", effect: { stat: "critDamage", value: 0.1 } }
+                    { label: "DMG", name: "Dactyle", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Héphaïstos.Dactyle.damage") } },
+                    { label: "TAIL", name: "Telchine", description: "Balles {bulletSize:%}% plus grosses", effect: { stat: "bulletSize", value: reglage("SKILLS.Héphaïstos.Telchine.bulletSize") } },
+                    { label: "×CRIT", name: "Cyclope", description: "+{critDamage:%}% de dégâts critiques", effect: { stat: "critDamage", value: reglage("SKILLS.Héphaïstos.Cyclope.critDamage") } }
                 ],
                 //Les compétences de la branche "traînée" (ids trail1 à trail4 dans la forme "fire") :
                 //une étincelle qui s'échappe de la langue de droite, comme la traînée laissée par une balle
                 extraSkills: {
                     //Au bout des voies
-                    hammer2: { label: "DMG", name: "Lemnos", description: "+15% de dégâts", effect: { stat: "damageMultiplier", value: 0.15 } },
-                    lava2: { label: "BRÛLE", name: "Cacus", description: "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: 0.4 } },
-                    trail1: { label: "TRAÎNÉE", name: "Phlégéthon", description: "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (40% des dégâts de la balle par seconde)", effect: { stat: "fireTrail", value: 0.4 } },
-                    trail2: { label: "DURÉE", name: "Pyrois", description: "La traînée de feu dure 0.6 s de plus", effect: { stat: "fireTrailDuration", value: 0.6 } },
-                    trail3: { label: "BRÛLE", name: "Aethon", description: "La traînée de feu brûle plus fort : +40% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: 0.4 } },
-                    trail4: { label: "BRASIER", name: "Pyriphlégéthon", description: "Brasier : la traînée de feu est 2 fois plus large et dure 1 s de plus", effects: [{ stat: "fireTrailWidth", value: 1 }, { stat: "fireTrailDuration", value: 1 }] }
+                    hammer2: { label: "DMG", name: "Lemnos", description: "+{damageMultiplier:%}% de dégâts", effect: { stat: "damageMultiplier", value: reglage("SKILLS.Héphaïstos.Lemnos.damageMultiplier") } },
+                    lava2: { label: "BRÛLE", name: "Cacus", description: "La traînée de feu brûle plus fort : +{fireTrail:%}% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: reglage("SKILLS.Héphaïstos.Cacus.fireTrail") } },
+                    trail1: { label: "TRAÎNÉE", name: "Phlégéthon", description: "Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent ({fireTrail:%}% des dégâts de la balle par seconde)", effect: { stat: "fireTrail", value: reglage("SKILLS.Héphaïstos.Phlégéthon.fireTrail") } },
+                    trail2: { label: "DURÉE", name: "Pyrois", description: "La traînée de feu dure {fireTrailDuration} s de plus", effect: { stat: "fireTrailDuration", value: reglage("SKILLS.Héphaïstos.Pyrois.fireTrailDuration") } },
+                    trail3: { label: "BRÛLE", name: "Aethon", description: "La traînée de feu brûle plus fort : +{fireTrail:%}% des dégâts de la balle par seconde", effect: { stat: "fireTrail", value: reglage("SKILLS.Héphaïstos.Aethon.fireTrail") } },
+                    trail4: { label: "BRASIER", name: "Pyriphlégéthon", description: "Brasier : la traînée de feu est {fireTrailWidth:x} fois plus large et dure {fireTrailDuration} s de plus", effects: [{ stat: "fireTrailWidth", value: reglage("SKILLS.Héphaïstos.Pyriphlégéthon.fireTrailWidth") }, { stat: "fireTrailDuration", value: reglage("SKILLS.Héphaïstos.Pyriphlégéthon.fireTrailDuration") }] }
                 },
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9610,23 +9610,23 @@
                 ],
                 shape: "fire",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "DMG", name: "Hestia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
+                    start: { label: "DMG", name: "Hestia", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Héphaïstos.Hestia.damage") } },
                     notables: [
-                        { label: "CRIT", name: "Prométhée", description: "+3% de chance de coup critique", effect: { stat: "critChance", value: 0.03 } },
-                        { label: "×CRIT", name: "Kédalion", description: "+25% de dégâts critiques", effect: { stat: "critDamage", value: 0.25 } },
-                        { label: "TAIL", name: "Stéropès", description: "Balles 20% plus grosses", effect: { stat: "bulletSize", value: 0.2 } },
-                        { label: "DMG", name: "Argès", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                        { label: "PERF", name: "Aglaé", description: "Les balles traversent 1 ennemi de plus", effect: { stat: "pierce", value: 1 } },
-                        { label: "DMG", name: "Talos", description: "+15% de dégâts", effect: { stat: "damageMultiplier", value: 0.15 } },
-                        { label: "DMG", name: "Kratos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "PERF", name: "Bia", description: "Les balles traversent 1 ennemi de plus", effect: { stat: "pierce", value: 1 } }
+                        { label: "CRIT", name: "Prométhée", description: "+{critChance:%}% de chance de coup critique", effect: { stat: "critChance", value: reglage("SKILLS.Héphaïstos.Prométhée.critChance") } },
+                        { label: "×CRIT", name: "Kédalion", description: "+{critDamage:%}% de dégâts critiques", effect: { stat: "critDamage", value: reglage("SKILLS.Héphaïstos.Kédalion.critDamage") } },
+                        { label: "TAIL", name: "Stéropès", description: "Balles {bulletSize:%}% plus grosses", effect: { stat: "bulletSize", value: reglage("SKILLS.Héphaïstos.Stéropès.bulletSize") } },
+                        { label: "DMG", name: "Argès", description: "+{damage} dégâts par balle", effect: { stat: "damage", value: reglage("SKILLS.Héphaïstos.Argès.damage") } },
+                        { label: "PERF", name: "Aglaé", description: "Les balles traversent {pierce} ennemi de plus", effect: { stat: "pierce", value: reglage("SKILLS.Héphaïstos.Aglaé.pierce") } },
+                        { label: "DMG", name: "Talos", description: "+{damageMultiplier:%}% de dégâts", effect: { stat: "damageMultiplier", value: reglage("SKILLS.Héphaïstos.Talos.damageMultiplier") } },
+                        { label: "DMG", name: "Kratos", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Héphaïstos.Kratos.damage") } },
+                        { label: "PERF", name: "Bia", description: "Les balles traversent {pierce} ennemi de plus", effect: { stat: "pierce", value: reglage("SKILLS.Héphaïstos.Bia.pierce") } }
                     ],
                     keystones: [
-                        { label: "MART", name: "Brontès", description: "Marteau : +100% de dégâts, mais 35% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: 1 }, { stat: "attackSpeed", value: -0.35 }] },
-                        { label: "ENCL", name: "Cabires", description: "Enclume : balles 2 fois plus grosses, mais 30% plus lentes", effects: [{ stat: "bulletSize", value: 1 }, { stat: "bulletSpeed", value: -0.3 }] },
-                        { label: "MAGMA", name: "Hécate", description: "Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran", effect: { stat: "pierce", value: 999 } }
+                        { label: "MART", name: "Brontès", description: "Marteau : +{damageMultiplier:%}% de dégâts, mais {attackSpeed:-%}% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: reglage("SKILLS.Héphaïstos.Brontès.damageMultiplier") }, { stat: "attackSpeed", value: reglage("SKILLS.Héphaïstos.Brontès.attackSpeed") }] },
+                        { label: "ENCL", name: "Cabires", description: "Enclume : balles {bulletSize:x} fois plus grosses, mais {bulletSpeed:-%}% plus lentes", effects: [{ stat: "bulletSize", value: reglage("SKILLS.Héphaïstos.Cabires.bulletSize") }, { stat: "bulletSpeed", value: reglage("SKILLS.Héphaïstos.Cabires.bulletSpeed") }] },
+                        { label: "MAGMA", name: "Hécate", description: "Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran", effect: { stat: "pierce", value: reglage("SKILLS.Héphaïstos.Hécate.pierce") } }
                     ],
-                    grand: { label: "ETNA", name: "Etna", description: "GRANDE KEYSTONE : +150% de dégâts et balles 50% plus grosses, mais 30% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: 1.5 }, { stat: "bulletSize", value: 0.5 }, { stat: "attackSpeed", value: -0.3 }] }
+                    grand: { label: "ETNA", name: "Etna", description: "GRANDE KEYSTONE : +{damageMultiplier:%}% de dégâts et balles {bulletSize:%}% plus grosses, mais {attackSpeed:-%}% de vitesse d'attaque en moins", effects: [{ stat: "damageMultiplier", value: reglage("SKILLS.Héphaïstos.Etna.damageMultiplier") }, { stat: "bulletSize", value: reglage("SKILLS.Héphaïstos.Etna.bulletSize") }, { stat: "attackSpeed", value: reglage("SKILLS.Héphaïstos.Etna.attackSpeed") }] }
                 }
             },
             {
@@ -9638,21 +9638,21 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "PV", name: "Néréide", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "REG", name: "Océanide", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
-                    { label: "FRÊLE", name: "Naïade", description: "Ennemis frêles : +2% de dégâts subis", effect: { stat: "fragility", value: 0.02 } }
+                    { label: "PV", name: "Néréide", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Poséidon.Néréide.maxHealth") } },
+                    { label: "REG", name: "Océanide", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Poséidon.Océanide.regen") } },
+                    { label: "FRÊLE", name: "Naïade", description: "Ennemis frêles : +{fragility:%}% de dégâts subis", effect: { stat: "fragility", value: reglage("SKILLS.Poséidon.Naïade.fragility") } }
                 ],
                 //Les compétences de la branche "écume" (ids spray1 à spray4 dans la forme "waves") : de la portée,
                 //donc une vague qui va plus loin (elle va jusqu'à la portée de Poséidon)
                 extraSkills: {
                     //Au bout des voies
-                    shore2: { label: "POR", name: "Amymone", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
-                    abyss2: { label: "FRÊLE", name: "Pontos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
-                    storm2: { label: "VAGUE", name: "Eurybia", description: "La vague : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                    spray1: { label: "POR", name: "Cymo", description: "+20 de portée", effect: { stat: "range", value: 20 } },
-                    spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : +60 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 60 } },
-                    spray3: { label: "POR", name: "Rhodé", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                    spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : +80 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 80 } }
+                    shore2: { label: "POR", name: "Amymone", description: "+{range} de portée (la vague va aussi plus loin)", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Amymone.range") } },
+                    abyss2: { label: "FRÊLE", name: "Pontos", description: "Ennemis frêles : +{fragility:%}% de dégâts subis", effect: { stat: "fragility", value: reglage("SKILLS.Poséidon.Pontos.fragility") } },
+                    storm2: { label: "VAGUE", name: "Eurybia", description: "La vague : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Poséidon.Eurybia.cooldownReduction") } },
+                    spray1: { label: "POR", name: "Cymo", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Cymo.range") } },
+                    spray2: { label: "RESSAC", name: "Cymopolée", description: "Ressac : +{range} de portée (la vague va aussi plus loin)", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Cymopolée.range") } },
+                    spray3: { label: "POR", name: "Rhodé", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Rhodé.range") } },
+                    spray4: { label: "HOULE", name: "Benthésicymé", description: "Houle : +{range} de portée (la vague va aussi plus loin)", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Benthésicymé.range") } }
                 },
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9662,23 +9662,23 @@
                 ],
                 shape: "waves",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les 10 s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +35% de dégâts subis pendant 4 s", effects: [{ stat: "tideWave", value: 60 }, { stat: "fragility", value: 0.35 }] },
+                    start: { label: "VAGUE", name: "Thétis", description: "Raz-de-marée : toutes les {@PLANET_POWERS.tide.interval} s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +{fragility:%}% de dégâts subis pendant {@FRAGILE_DURATION} s", effects: [{ stat: "tideWave", value: reglage("SKILLS.Poséidon.Thétis.tideWave") }, { stat: "fragility", value: reglage("SKILLS.Poséidon.Thétis.fragility") }] },
                     notables: [
-                        { label: "REG", name: "Doris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "POR", name: "Galatée", description: "+40 de portée (la vague va aussi plus loin)", effect: { stat: "range", value: 40 } },
-                        { label: "ESQ", name: "Protée", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } },
-                        { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en 10 s", effect: { stat: "shield", value: 1 } },
-                        { label: "FRÊLE", name: "Glaucos", description: "Ennemis frêles : +5% de dégâts subis", effect: { stat: "fragility", value: 0.05 } },
-                        { label: "VAGUE", name: "Leucothée", description: "La vague : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                        { label: "RECUL", name: "Palémon", description: "+30 de recul de la vague", effect: { stat: "tideWave", value: 30 } },
-                        { label: "PV", name: "Nérée", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } }
+                        { label: "REG", name: "Doris", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Poséidon.Doris.regen") } },
+                        { label: "POR", name: "Galatée", description: "+{range} de portée (la vague va aussi plus loin)", effect: { stat: "range", value: reglage("SKILLS.Poséidon.Galatée.range") } },
+                        { label: "ESQ", name: "Protée", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Poséidon.Protée.dodge") } },
+                        { label: "BOUC", name: "Phorcys", description: "Bouclier : bloque un coup, se recharge en {@SHIELD_COOLDOWN} s", effect: { stat: "shield", value: reglage("SKILLS.Poséidon.Phorcys.shield") } },
+                        { label: "FRÊLE", name: "Glaucos", description: "Ennemis frêles : +{fragility:%}% de dégâts subis", effect: { stat: "fragility", value: reglage("SKILLS.Poséidon.Glaucos.fragility") } },
+                        { label: "VAGUE", name: "Leucothée", description: "La vague : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Poséidon.Leucothée.cooldownReduction") } },
+                        { label: "RECUL", name: "Palémon", description: "+{tideWave} de recul de la vague", effect: { stat: "tideWave", value: reglage("SKILLS.Poséidon.Palémon.tideWave") } },
+                        { label: "PV", name: "Nérée", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Poséidon.Nérée.maxHealth") } }
                     ],
                     keystones: [
-                        { label: "OCÉAN", name: "Amphitrite", description: "Bouclier des marées : chaque vague te rend invincible pendant 2 s", effect: { stat: "tideShield", value: 2 } },
-                        { label: "ABYSS", name: "Céto", description: "Ennemis frêles : +15% de dégâts subis", effect: { stat: "fragility", value: 0.15 } },
-                        { label: "VAGUE", name: "Triton", description: "La vague : +40 de réduction de recharge, et +80 de portée", effects: [{ stat: "cooldownReduction", value: 40 }, { stat: "range", value: 80 }] }
+                        { label: "OCÉAN", name: "Amphitrite", description: "Bouclier des marées : chaque vague te rend invincible pendant {tideShield} s", effect: { stat: "tideShield", value: reglage("SKILLS.Poséidon.Amphitrite.tideShield") } },
+                        { label: "ABYSS", name: "Céto", description: "Ennemis frêles : +{fragility:%}% de dégâts subis", effect: { stat: "fragility", value: reglage("SKILLS.Poséidon.Céto.fragility") } },
+                        { label: "VAGUE", name: "Triton", description: "La vague : +{cooldownReduction} de réduction de recharge, et +{range} de portée", effects: [{ stat: "cooldownReduction", value: reglage("SKILLS.Poséidon.Triton.cooldownReduction") }, { stat: "range", value: reglage("SKILLS.Poséidon.Triton.range") }] }
                     ],
-                    grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : ennemis frêles +25% de dégâts subis, et bouclier des marées +1 s", effects: [{ stat: "fragility", value: 0.25 }, { stat: "tideShield", value: 1 }] }
+                    grand: { label: "MER", name: "Océanos", description: "GRANDE KEYSTONE : ennemis frêles +{fragility:%}% de dégâts subis, et bouclier des marées +{tideShield} s", effects: [{ stat: "fragility", value: reglage("SKILLS.Poséidon.Océanos.fragility") }, { stat: "tideShield", value: reglage("SKILLS.Poséidon.Océanos.tideShield") }] }
                 }
             },
             {
@@ -9690,9 +9690,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "VIE", name: "Dryade", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } },
-                    { label: "XP", name: "Hamadryade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
-                    { label: "FLEUR", name: "Mélie", description: "+8 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 8 } }
+                    { label: "VIE", name: "Dryade", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Déméter.Dryade.lifeOnKill") } },
+                    { label: "XP", name: "Hamadryade", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Déméter.Hamadryade.xpMultiplier") } },
+                    { label: "FLEUR", name: "Mélie", description: "+{bloomRadius} de rayon du rayon de vie", effect: { stat: "bloomRadius", value: reglage("SKILLS.Déméter.Mélie.bloomRadius") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9702,29 +9702,29 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    root2: { label: "LIANE", name: "Despina", description: "+1 liane à chaque rayon de vie", effect: { stat: "vineCount", value: 1 } },
-                    harvest2: { label: "SOIN", name: "Métanire", description: "Le rayon de vie soigne 0.5 PV de plus", effect: { stat: "bloomHeal", value: 0.5 } },
-                    forest2: { label: "FLEUR", name: "Dryope", description: "+25 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 25 } }
+                    root2: { label: "LIANE", name: "Despina", description: "+{vineCount} liane à chaque rayon de vie", effect: { stat: "vineCount", value: reglage("SKILLS.Déméter.Despina.vineCount") } },
+                    harvest2: { label: "SOIN", name: "Métanire", description: "Le rayon de vie soigne {bloomHeal} PV de plus", effect: { stat: "bloomHeal", value: reglage("SKILLS.Déméter.Métanire.bloomHeal") } },
+                    forest2: { label: "FLEUR", name: "Dryope", description: "+{bloomRadius} de rayon du rayon de vie", effect: { stat: "bloomRadius", value: reglage("SKILLS.Déméter.Dryope.bloomRadius") } }
                 },
                 shape: "flower",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VIE", name: "Perséphone", description: "Rayon de vie : toutes les 9 s, Déméter te soigne de 1 PV et affaiblit les ennemis autour d'elle (+50% de dégâts subis pendant 3 s)", effects: [{ stat: "bloomHeal", value: 1 }, { stat: "bloomRadius", value: 120 }] },
+                    start: { label: "VIE", name: "Perséphone", description: "Rayon de vie : toutes les {@PLANET_POWERS.bloom.interval} s, Déméter te soigne de {bloomHeal} PV et affaiblit les ennemis autour d'elle (+{@COMBO_WEAKEN_MULTIPLIER:plus%}% de dégâts subis pendant {@WEAKEN_FROM_BLOOM} s)", effects: [{ stat: "bloomHeal", value: reglage("SKILLS.Déméter.Perséphone.bloomHeal") }, { stat: "bloomRadius", value: reglage("SKILLS.Déméter.Perséphone.bloomRadius") }] },
                     notables: [
-                        { label: "XP", name: "Thallo", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                        { label: "SOIN", name: "Auxo", description: "Le rayon de vie soigne 0.5 PV de plus", effect: { stat: "bloomHeal", value: 0.5 } },
-                        { label: "REG", name: "Chloris", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "VIE", name: "Aristée", description: "+0.2 PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "FLEUR", name: "Iasion", description: "+25 de rayon du rayon de vie", effect: { stat: "bloomRadius", value: 25 } },
-                        { label: "LIANE", name: "Eubouleus", description: "+1 liane à chaque rayon de vie", effect: { stat: "vineCount", value: 1 } },
-                        { label: "FLEUR", name: "Carpo", description: "Le rayon de vie : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                        { label: "LIANE", name: "Anthée", description: "Les lianes immobilisent 1 s de plus", effect: { stat: "vineDuration", value: 1 } }
+                        { label: "XP", name: "Thallo", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Déméter.Thallo.xpMultiplier") } },
+                        { label: "SOIN", name: "Auxo", description: "Le rayon de vie soigne {bloomHeal} PV de plus", effect: { stat: "bloomHeal", value: reglage("SKILLS.Déméter.Auxo.bloomHeal") } },
+                        { label: "REG", name: "Chloris", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Déméter.Chloris.regen") } },
+                        { label: "VIE", name: "Aristée", description: "+{lifeOnKill} PV regagnés par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Déméter.Aristée.lifeOnKill") } },
+                        { label: "FLEUR", name: "Iasion", description: "+{bloomRadius} de rayon du rayon de vie", effect: { stat: "bloomRadius", value: reglage("SKILLS.Déméter.Iasion.bloomRadius") } },
+                        { label: "LIANE", name: "Eubouleus", description: "+{vineCount} liane à chaque rayon de vie", effect: { stat: "vineCount", value: reglage("SKILLS.Déméter.Eubouleus.vineCount") } },
+                        { label: "FLEUR", name: "Carpo", description: "Le rayon de vie : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Déméter.Carpo.cooldownReduction") } },
+                        { label: "LIANE", name: "Anthée", description: "Les lianes immobilisent {vineDuration} s de plus", effect: { stat: "vineDuration", value: reglage("SKILLS.Déméter.Anthée.vineDuration") } }
                     ],
                     keystones: [
-                        { label: "ARBRE", name: "Karpos", description: "Lianes : chaque rayon de vie fait pousser 3 lianes sous des ennemis, qui les immobilisent 2.5 s (pas les super ennemis)", effect: { stat: "vineCount", value: 3 } },
-                        { label: "MOISS", name: "Triptolème", description: "Le rayon de vie soigne 2 PV de plus, et +30 de réduction de recharge", effects: [{ stat: "bloomHeal", value: 2 }, { stat: "cooldownReduction", value: 30 }] },
-                        { label: "FORÊT", name: "Pan", description: "+60 de rayon du rayon de vie et +2 lianes", effects: [{ stat: "bloomRadius", value: 60 }, { stat: "vineCount", value: 2 }] }
+                        { label: "ARBRE", name: "Karpos", description: "Lianes : chaque rayon de vie fait pousser {vineCount} lianes sous des ennemis, qui les immobilisent {@VINE_BASE_DURATION} s (pas les super ennemis)", effect: { stat: "vineCount", value: reglage("SKILLS.Déméter.Karpos.vineCount") } },
+                        { label: "MOISS", name: "Triptolème", description: "Le rayon de vie soigne {bloomHeal} PV de plus, et +{cooldownReduction} de réduction de recharge", effects: [{ stat: "bloomHeal", value: reglage("SKILLS.Déméter.Triptolème.bloomHeal") }, { stat: "cooldownReduction", value: reglage("SKILLS.Déméter.Triptolème.cooldownReduction") }] },
+                        { label: "FORÊT", name: "Pan", description: "+{bloomRadius} de rayon du rayon de vie et +{vineCount} lianes", effects: [{ stat: "bloomRadius", value: reglage("SKILLS.Déméter.Pan.bloomRadius") }, { stat: "vineCount", value: reglage("SKILLS.Déméter.Pan.vineCount") }] }
                     ],
-                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +3 lianes, qui immobilisent 2 s de plus, et +100 de réduction de recharge du rayon de vie (2 fois plus souvent)", effects: [{ stat: "vineCount", value: 3 }, { stat: "vineDuration", value: 2 }, { stat: "cooldownReduction", value: 100 }] }
+                    grand: { label: "GAÏA", name: "Gaïa", description: "GRANDE KEYSTONE : +{vineCount} lianes, qui immobilisent {vineDuration} s de plus, et +{cooldownReduction} de réduction de recharge du rayon de vie (2 fois plus souvent)", effects: [{ stat: "vineCount", value: reglage("SKILLS.Déméter.Gaïa.vineCount") }, { stat: "vineDuration", value: reglage("SKILLS.Déméter.Gaïa.vineDuration") }, { stat: "cooldownReduction", value: reglage("SKILLS.Déméter.Gaïa.cooldownReduction") }] }
                 }
             },
             {
@@ -9736,9 +9736,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "POR", name: "Aura", description: "+15 de portée", effect: { stat: "range", value: 15 } },
-                    { label: "VEL", name: "Héliade", description: "+10% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.1 } },
-                    { label: "VIT", name: "Anémoï", description: "+6% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.06 } }
+                    { label: "POR", name: "Aura", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Éole.Aura.range") } },
+                    { label: "VEL", name: "Héliade", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Éole.Héliade.bulletSpeed") } },
+                    { label: "VIT", name: "Anémoï", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Anémoï.attackSpeed") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9747,28 +9747,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    gust2: { label: "VIT", name: "Kaikias", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    gale2: { label: "VEL", name: "Skiron", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
+                    gust2: { label: "VIT", name: "Kaikias", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Kaikias.attackSpeed") } },
+                    gale2: { label: "VEL", name: "Skiron", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Éole.Skiron.bulletSpeed") } }
                 },
                 shape: "wind",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VIT", name: "Zéphyr", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
+                    start: { label: "VIT", name: "Zéphyr", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Zéphyr.attackSpeed") } },
                     notables: [
-                        { label: "POR", name: "Éos", description: "+30 de portée", effect: { stat: "range", value: 30 } },
-                        { label: "VIT", name: "Héméra", description: "+20% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.2 } },
-                        { label: "VEL", name: "Iris", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "VIT", name: "Borée", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                        { label: "AIR", name: "Notos", description: "+1 dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: 1 } },
-                        { label: "AIR", name: "Euros", description: "+2 dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: 2 } },
-                        { label: "VEL", name: "Phosphoros", description: "+30% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.3 } },
-                        { label: "VIT", name: "Hespéros", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } }
+                        { label: "POR", name: "Éos", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Éole.Éos.range") } },
+                        { label: "VIT", name: "Héméra", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Héméra.attackSpeed") } },
+                        { label: "VEL", name: "Iris", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Éole.Iris.bulletSpeed") } },
+                        { label: "VIT", name: "Borée", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Borée.attackSpeed") } },
+                        { label: "AIR", name: "Notos", description: "+{damageVs} dégât contre les plantes", effect: { stat: "damageVs", element: "plant", value: reglage("SKILLS.Éole.Notos.damageVs") } },
+                        { label: "AIR", name: "Euros", description: "+{damageVs} dégâts contre les plantes", effect: { stat: "damageVs", element: "plant", value: reglage("SKILLS.Éole.Euros.damageVs") } },
+                        { label: "VEL", name: "Phosphoros", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Éole.Phosphoros.bulletSpeed") } },
+                        { label: "VIT", name: "Hespéros", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Éole.Hespéros.attackSpeed") } }
                     ],
                     keystones: [
-                        { label: "RAFALE", name: "Séléné", description: "Rafale : +100% de vitesse d'attaque, mais 30% de dégâts en moins", effects: [{ stat: "attackSpeed", value: 1 }, { stat: "damageMultiplier", value: -0.3 }] },
-                        { label: "x2", name: "Phaéton", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "OURAG", name: "Astraïos", description: "Ouragan : +60% de vitesse d'attaque, mais balles 40% plus petites", effects: [{ stat: "attackSpeed", value: 0.6 }, { stat: "bulletSize", value: -0.4 }] }
+                        { label: "RAFALE", name: "Séléné", description: "Rafale : +{attackSpeed:%}% de vitesse d'attaque, mais {damageMultiplier:-%}% de dégâts en moins", effects: [{ stat: "attackSpeed", value: reglage("SKILLS.Éole.Séléné.attackSpeed") }, { stat: "damageMultiplier", value: reglage("SKILLS.Éole.Séléné.damageMultiplier") }] },
+                        { label: "x2", name: "Phaéton", description: "+{bulletCount} balle par tir", effect: { stat: "bulletCount", value: reglage("SKILLS.Éole.Phaéton.bulletCount") } },
+                        { label: "OURAG", name: "Astraïos", description: "Ouragan : +{attackSpeed:%}% de vitesse d'attaque, mais balles {bulletSize:-%}% plus petites", effects: [{ stat: "attackSpeed", value: reglage("SKILLS.Éole.Astraïos.attackSpeed") }, { stat: "bulletSize", value: reglage("SKILLS.Éole.Astraïos.bulletSize") }] }
                     ],
-                    grand: { label: "TEMPÊTE", name: "Thyella", description: "GRANDE KEYSTONE : +150% de vitesse d'attaque et +1 balle par tir, mais 30% de dégâts en moins", effects: [{ stat: "attackSpeed", value: 1.5 }, { stat: "bulletCount", value: 1 }, { stat: "damageMultiplier", value: -0.3 }] }
+                    grand: { label: "TEMPÊTE", name: "Thyella", description: "GRANDE KEYSTONE : +{attackSpeed:%}% de vitesse d'attaque et +{bulletCount} balle par tir, mais {damageMultiplier:-%}% de dégâts en moins", effects: [{ stat: "attackSpeed", value: reglage("SKILLS.Éole.Thyella.attackSpeed") }, { stat: "bulletCount", value: reglage("SKILLS.Éole.Thyella.bulletCount") }, { stat: "damageMultiplier", value: reglage("SKILLS.Éole.Thyella.damageMultiplier") }] }
                 }
             },
             {
@@ -9780,9 +9780,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "OR", name: "Pléiade", description: "+5% d'or gagné", effect: { stat: "goldMultiplier", value: 0.05 } },
-                    { label: "XP", name: "Hyade", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
-                    { label: "DMG", name: "Titanide", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } }
+                    { label: "OR", name: "Pléiade", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Pléiade.goldMultiplier") } },
+                    { label: "XP", name: "Hyade", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Apollon.Hyade.xpMultiplier") } },
+                    { label: "DMG", name: "Titanide", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Apollon.Titanide.damage") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9792,29 +9792,29 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    fortune2: { label: "OR", name: "Amalthée", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
-                    light2: { label: "VIT", name: "Phébé", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    dark2: { label: "DMG", name: "Nyx", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                    fortune2: { label: "OR", name: "Amalthée", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Amalthée.goldMultiplier") } },
+                    light2: { label: "VIT", name: "Phébé", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Apollon.Phébé.attackSpeed") } },
+                    dark2: { label: "DMG", name: "Nyx", description: "+{damage} dégâts par balle", effect: { stat: "damage", value: reglage("SKILLS.Apollon.Nyx.damage") } }
                 },
                 shape: "sun",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "OR", name: "Tyché", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
+                    start: { label: "OR", name: "Tyché", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Tyché.goldMultiplier") } },
                     notables: [
-                        { label: "OR", name: "Kairos", description: "+15% d'or gagné", effect: { stat: "goldMultiplier", value: 0.15 } },
-                        { label: "OR", name: "Eutychia", description: "+25% d'or gagné", effect: { stat: "goldMultiplier", value: 0.25 } },
-                        { label: "XP", name: "Coéos", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } },
-                        { label: "XP", name: "Mnémosyne", description: "+20% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.2 } },
-                        { label: "DMG", name: "Hypérion", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "AIR", name: "Astrée", description: "+1 dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: 1 } },
-                        { label: "OR", name: "Agathodaïmon", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                        { label: "DMG", name: "Théia", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } }
+                        { label: "OR", name: "Kairos", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Kairos.goldMultiplier") } },
+                        { label: "OR", name: "Eutychia", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Eutychia.goldMultiplier") } },
+                        { label: "XP", name: "Coéos", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Apollon.Coéos.xpMultiplier") } },
+                        { label: "XP", name: "Mnémosyne", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Apollon.Mnémosyne.xpMultiplier") } },
+                        { label: "DMG", name: "Hypérion", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Apollon.Hypérion.damage") } },
+                        { label: "AIR", name: "Astrée", description: "+{damageVs} dégât contre les ennemis d'air", effect: { stat: "damageVs", element: "air", value: reglage("SKILLS.Apollon.Astrée.damageVs") } },
+                        { label: "OR", name: "Agathodaïmon", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Agathodaïmon.goldMultiplier") } },
+                        { label: "DMG", name: "Théia", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Apollon.Théia.damage") } }
                     ],
                     keystones: [
-                        { label: "TRÉSOR", name: "Ploutos", description: "+50% d'or gagné", effect: { stat: "goldMultiplier", value: 0.5 } },
-                        { label: "NOVA", name: "Astéria", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "TROU", name: "Érébos", description: "+3 dégâts par balle", effect: { stat: "damage", value: 3 } }
+                        { label: "TRÉSOR", name: "Ploutos", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Ploutos.goldMultiplier") } },
+                        { label: "NOVA", name: "Astéria", description: "+{bulletCount} balle par tir", effect: { stat: "bulletCount", value: reglage("SKILLS.Apollon.Astéria.bulletCount") } },
+                        { label: "TROU", name: "Érébos", description: "+{damage} dégâts par balle", effect: { stat: "damage", value: reglage("SKILLS.Apollon.Érébos.damage") } }
                     ],
-                    grand: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +100% d'or gagné", effect: { stat: "goldMultiplier", value: 1 } }
+                    grand: { label: "BANG", name: "Chaos", description: "GRANDE KEYSTONE : +{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Apollon.Chaos.goldMultiplier") } }
                 }
             },
             //Pour ajouter un nouveau dieu plus tard : copie ce bloc, change son nom, sa couleur, sa forme et ses compétences.
@@ -9827,9 +9827,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "POR", name: "Nymphe", description: "+10 de portée", effect: { stat: "range", value: 10 } },
-                    { label: "DMG", name: "Oréade", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "VEL", name: "Pléione", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } }
+                    { label: "POR", name: "Nymphe", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Artémis.Nymphe.range") } },
+                    { label: "DMG", name: "Oréade", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Artémis.Oréade.damage") } },
+                    { label: "VEL", name: "Pléione", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Artémis.Pléione.bulletSpeed") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9838,28 +9838,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    hunt2: { label: "REBOND", name: "Méléagre", description: "Les balles rebondissent sur 1 ennemi de plus", effect: { stat: "bounce", value: 1 } },
-                    moon2: { label: "LUNE", name: "Endymion", description: "Flèche de lune : +1 fois les dégâts d'une balle", effect: { stat: "moonArrow", value: 1 } }
+                    hunt2: { label: "REBOND", name: "Méléagre", description: "Les balles rebondissent sur {bounce} ennemi de plus", effect: { stat: "bounce", value: reglage("SKILLS.Artémis.Méléagre.bounce") } },
+                    moon2: { label: "LUNE", name: "Endymion", description: "Flèche de lune : +{moonArrow} fois les dégâts d'une balle", effect: { stat: "moonArrow", value: reglage("SKILLS.Artémis.Endymion.moonArrow") } }
                 },
                 shape: "bow",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic (la forme à 3 branches gardée de côté)
                 skills: {
-                    start: { label: "LUNE", name: "Léto", description: "Flèche de lune : toutes les 6 s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (3 fois les dégâts d'une balle)", effect: { stat: "moonArrow", value: 3 } },
+                    start: { label: "LUNE", name: "Léto", description: "Flèche de lune : toutes les {@PLANET_POWERS.moonArrow.interval} s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage ({moonArrow} fois les dégâts d'une balle)", effect: { stat: "moonArrow", value: reglage("SKILLS.Artémis.Léto.moonArrow") } },
                     notables: [
-                        { label: "VIT", name: "Callisto", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "DMG", name: "Britomartis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "LUNE", name: "Aréthuse", description: "Flèche de lune : +1 fois les dégâts d'une balle", effect: { stat: "moonArrow", value: 1 } },
-                        { label: "VEL", name: "Opis", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "LUNE", name: "Cyrène", description: "La flèche de lune : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                        { label: "VIT", name: "Atalante", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                        { label: "DMG", name: "Procris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "POR", name: "Taygète", description: "+30 de portée", effect: { stat: "range", value: 30 } }
+                        { label: "VIT", name: "Callisto", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Artémis.Callisto.attackSpeed") } },
+                        { label: "DMG", name: "Britomartis", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Artémis.Britomartis.damage") } },
+                        { label: "LUNE", name: "Aréthuse", description: "Flèche de lune : +{moonArrow} fois les dégâts d'une balle", effect: { stat: "moonArrow", value: reglage("SKILLS.Artémis.Aréthuse.moonArrow") } },
+                        { label: "VEL", name: "Opis", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Artémis.Opis.bulletSpeed") } },
+                        { label: "LUNE", name: "Cyrène", description: "La flèche de lune : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Artémis.Cyrène.cooldownReduction") } },
+                        { label: "VIT", name: "Atalante", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Artémis.Atalante.attackSpeed") } },
+                        { label: "DMG", name: "Procris", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Artémis.Procris.damage") } },
+                        { label: "POR", name: "Taygète", description: "+{range} de portée", effect: { stat: "range", value: reglage("SKILLS.Artémis.Taygète.range") } }
                     ],
                     keystones: [
-                        { label: "ORION", name: "Orion", description: "Rebond : les balles d'Artémis rebondissent sur 2 autres ennemis proches", effect: { stat: "bounce", value: 2 } },
-                        { label: "ARC", name: "Hippolyte", description: "Flèche de lune : +3 fois les dégâts d'une balle, et +30 de réduction de recharge", effects: [{ stat: "moonArrow", value: 3 }, { stat: "cooldownReduction", value: 30 }] },
-                        { label: "CERF", name: "Actéon", description: "+1 rebond et +25% de vitesse d'attaque", effects: [{ stat: "bounce", value: 1 }, { stat: "attackSpeed", value: 0.25 }] }
+                        { label: "ORION", name: "Orion", description: "Rebond : les balles d'Artémis rebondissent sur {bounce} autres ennemis proches", effect: { stat: "bounce", value: reglage("SKILLS.Artémis.Orion.bounce") } },
+                        { label: "ARC", name: "Hippolyte", description: "Flèche de lune : +{moonArrow} fois les dégâts d'une balle, et +{cooldownReduction} de réduction de recharge", effects: [{ stat: "moonArrow", value: reglage("SKILLS.Artémis.Hippolyte.moonArrow") }, { stat: "cooldownReduction", value: reglage("SKILLS.Artémis.Hippolyte.cooldownReduction") }] },
+                        { label: "CERF", name: "Actéon", description: "+{bounce} rebond et +{attackSpeed:%}% de vitesse d'attaque", effects: [{ stat: "bounce", value: reglage("SKILLS.Artémis.Actéon.bounce") }, { stat: "attackSpeed", value: reglage("SKILLS.Artémis.Actéon.attackSpeed") }] }
                     ],
-                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +100 de réduction de recharge de la flèche de lune (2 fois plus souvent), et +4 fois les dégâts d'une balle", effects: [{ stat: "cooldownReduction", value: 100 }, { stat: "moonArrow", value: 4 }] }
+                    grand: { label: "LUNE", name: "Agrotera", description: "GRANDE KEYSTONE : +{cooldownReduction} de réduction de recharge de la flèche de lune (2 fois plus souvent), et +{moonArrow} fois les dégâts d'une balle", effects: [{ stat: "cooldownReduction", value: reglage("SKILLS.Artémis.Agrotera.cooldownReduction") }, { stat: "moonArrow", value: reglage("SKILLS.Artémis.Agrotera.moonArrow") }] }
                 }
             },
             //ATHÉNA : 2e divinité à acheter dans le shop (après Artémis). Sagesse et stratégie : défense, XP et un peu d'attaque.
@@ -9872,9 +9872,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "PV", name: "Nikè", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "ESQ", name: "Aglaure", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } },
-                    { label: "XP", name: "Hersé", description: "+4% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.04 } }
+                    { label: "PV", name: "Nikè", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Athéna.Nikè.maxHealth") } },
+                    { label: "ESQ", name: "Aglaure", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Athéna.Aglaure.dodge") } },
+                    { label: "XP", name: "Hersé", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Athéna.Hersé.xpMultiplier") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9883,28 +9883,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    aegis2: { label: "ESQ", name: "Pallas", description: "+8 points d'esquive", effect: { stat: "dodge", value: 8 } },
-                    spear2: { label: "DMG", name: "Bellérophon", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } }
+                    aegis2: { label: "ESQ", name: "Pallas", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Athéna.Pallas.dodge") } },
+                    spear2: { label: "DMG", name: "Bellérophon", description: "+{damage} dégâts par balle", effect: { stat: "damage", value: reglage("SKILLS.Athéna.Bellérophon.damage") } }
                 },
                 shape: "laurel",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "SAG", name: "Métis", description: "+5% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.05 } },
+                    start: { label: "SAG", name: "Métis", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Athéna.Métis.xpMultiplier") } },
                     notables: [
-                        { label: "DMG", name: "Érichthonios", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "PV", name: "Pandrosos", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                        { label: "VIT", name: "Arachné", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Tritonis", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                        { label: "DMG", name: "Ergané", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "VIT", name: "Zélos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "REG", name: "Hygie", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "XP", name: "Aidôs", description: "+10% d'XP gagnée", effect: { stat: "xpMultiplier", value: 0.1 } }
+                        { label: "DMG", name: "Érichthonios", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Athéna.Érichthonios.damage") } },
+                        { label: "PV", name: "Pandrosos", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Athéna.Pandrosos.maxHealth") } },
+                        { label: "VIT", name: "Arachné", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Athéna.Arachné.attackSpeed") } },
+                        { label: "ESQ", name: "Tritonis", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Athéna.Tritonis.dodge") } },
+                        { label: "DMG", name: "Ergané", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Athéna.Ergané.damage") } },
+                        { label: "VIT", name: "Zélos", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Athéna.Zélos.attackSpeed") } },
+                        { label: "REG", name: "Hygie", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Athéna.Hygie.regen") } },
+                        { label: "XP", name: "Aidôs", description: "+{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Athéna.Aidôs.xpMultiplier") } }
                     ],
                     keystones: [
-                        { label: "ÉGIDE", name: "Égide", description: "+8 points d'esquive", effect: { stat: "dodge", value: 8 } },
-                        { label: "LANCE", name: "Promachos", description: "+2 dégâts par balle", effect: { stat: "damage", value: 2 } },
-                        { label: "CHOU", name: "Glaucopis", description: "+60 de portée (les yeux de la chouette)", effect: { stat: "range", value: 60 } }
+                        { label: "ÉGIDE", name: "Égide", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Athéna.Égide.dodge") } },
+                        { label: "LANCE", name: "Promachos", description: "+{damage} dégâts par balle", effect: { stat: "damage", value: reglage("SKILLS.Athéna.Promachos.damage") } },
+                        { label: "CHOU", name: "Glaucopis", description: "+{range} de portée (les yeux de la chouette)", effect: { stat: "range", value: reglage("SKILLS.Athéna.Glaucopis.range") } }
                     ],
-                    grand: { label: "PARTH", name: "Parthénos", description: "GRANDE KEYSTONE : +100% d'XP gagnée", effect: { stat: "xpMultiplier", value: 1 } }
+                    grand: { label: "PARTH", name: "Parthénos", description: "GRANDE KEYSTONE : +{xpMultiplier:%}% d'XP gagnée", effect: { stat: "xpMultiplier", value: reglage("SKILLS.Athéna.Parthénos.xpMultiplier") } }
                 }
             },
             //ZEUS : roi des dieux, la foudre. Gros dégâts et tirs multiples.
@@ -9917,9 +9917,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "DMG", name: "Astrapé", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "VIT", name: "Brontè", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
-                    { label: "ÉCLAIR", name: "Kéraunos", description: "Éclairs : +5% de dégâts", effect: { stat: "arcDamage", value: 0.05 } }
+                    { label: "DMG", name: "Astrapé", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Zeus.Astrapé.damage") } },
+                    { label: "VIT", name: "Brontè", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Zeus.Brontè.attackSpeed") } },
+                    { label: "ÉCLAIR", name: "Kéraunos", description: "Éclairs : +{arcDamage:%}% de dégâts", effect: { stat: "arcDamage", value: reglage("SKILLS.Zeus.Kéraunos.arcDamage") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9928,28 +9928,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    arc2: { label: "ÉCLAIR", name: "Salmonée", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
-                    ram2: { label: "VIT", name: "Dodone", description: "+20% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.2 } }
+                    arc2: { label: "ÉCLAIR", name: "Salmonée", description: "+{chainArcs} éclair par balle", effect: { stat: "chainArcs", value: reglage("SKILLS.Zeus.Salmonée.chainArcs") } },
+                    ram2: { label: "VIT", name: "Dodone", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Zeus.Dodone.attackSpeed") } }
                 },
                 shape: "bolt",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "ÉCLAIR", name: "Thémis", description: "Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (40% des dégâts), qui devient conducteur", effects: [{ stat: "chainArcs", value: 1 }, { stat: "arcDamage", value: 0.4 }] },
+                    start: { label: "ÉCLAIR", name: "Thémis", description: "Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche ({arcDamage:%}% des dégâts), qui devient conducteur", effects: [{ stat: "chainArcs", value: reglage("SKILLS.Zeus.Thémis.chainArcs") }, { stat: "arcDamage", value: reglage("SKILLS.Zeus.Thémis.arcDamage") }] },
                     notables: [
-                        { label: "DMG", name: "Dikè", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "ÉCLAIR", name: "Eiréné", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
-                        { label: "POR", name: "Eunomia", description: "+40 de portée des éclairs", effect: { stat: "arcRange", value: 40 } },
-                        { label: "ÉCLAIR", name: "Horkos", description: "Éclairs : +10% de dégâts", effect: { stat: "arcDamage", value: 0.1 } },
-                        { label: "VIT", name: "Ganymède", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ÉCLAIR", name: "Hébé", description: "+1 éclair par balle", effect: { stat: "chainArcs", value: 1 } },
-                        { label: "DMG", name: "Némésis", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "ÉCLAIR", name: "Io", description: "Éclairs : +15% de dégâts", effect: { stat: "arcDamage", value: 0.15 } }
+                        { label: "DMG", name: "Dikè", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Zeus.Dikè.damage") } },
+                        { label: "ÉCLAIR", name: "Eiréné", description: "+{chainArcs} éclair par balle", effect: { stat: "chainArcs", value: reglage("SKILLS.Zeus.Eiréné.chainArcs") } },
+                        { label: "POR", name: "Eunomia", description: "+{arcRange} de portée des éclairs", effect: { stat: "arcRange", value: reglage("SKILLS.Zeus.Eunomia.arcRange") } },
+                        { label: "ÉCLAIR", name: "Horkos", description: "Éclairs : +{arcDamage:%}% de dégâts", effect: { stat: "arcDamage", value: reglage("SKILLS.Zeus.Horkos.arcDamage") } },
+                        { label: "VIT", name: "Ganymède", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Zeus.Ganymède.attackSpeed") } },
+                        { label: "ÉCLAIR", name: "Hébé", description: "+{chainArcs} éclair par balle", effect: { stat: "chainArcs", value: reglage("SKILLS.Zeus.Hébé.chainArcs") } },
+                        { label: "DMG", name: "Némésis", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Zeus.Némésis.damage") } },
+                        { label: "ÉCLAIR", name: "Io", description: "Éclairs : +{arcDamage:%}% de dégâts", effect: { stat: "arcDamage", value: reglage("SKILLS.Zeus.Io.arcDamage") } }
                     ],
                     keystones: [
-                        { label: "AIGLE", name: "Aétos", description: "Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (3 fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour", effect: { stat: "boltDamage", value: 3 } },
-                        { label: "BÉLIER", name: "Ammon", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } },
-                        { label: "OLYMPE", name: "Olympios", description: "+2 éclairs par balle et +40 de portée des éclairs", effects: [{ stat: "chainArcs", value: 2 }, { stat: "arcRange", value: 40 }] }
+                        { label: "AIGLE", name: "Aétos", description: "Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre ({boltDamage} fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour", effect: { stat: "boltDamage", value: reglage("SKILLS.Zeus.Aétos.boltDamage") } },
+                        { label: "BÉLIER", name: "Ammon", description: "+{bulletCount} balle par tir", effect: { stat: "bulletCount", value: reglage("SKILLS.Zeus.Ammon.bulletCount") } },
+                        { label: "OLYMPE", name: "Olympios", description: "+{chainArcs} éclairs par balle et +{arcRange} de portée des éclairs", effects: [{ stat: "chainArcs", value: reglage("SKILLS.Zeus.Olympios.chainArcs") }, { stat: "arcRange", value: reglage("SKILLS.Zeus.Olympios.arcRange") }] }
                     ],
-                    grand: { label: "ÉTHER", name: "Aithér", description: "GRANDE KEYSTONE : la foudre fait +4 fois les dégâts de la balle et électrocute 50% plus loin", effects: [{ stat: "boltDamage", value: 4 }, { stat: "boltRadius", value: 0.5 }] }
+                    grand: { label: "ÉTHER", name: "Aithér", description: "GRANDE KEYSTONE : la foudre fait +{boltDamage} fois les dégâts de la balle et électrocute {boltRadius:%}% plus loin", effects: [{ stat: "boltDamage", value: reglage("SKILLS.Zeus.Aithér.boltDamage") }, { stat: "boltRadius", value: reglage("SKILLS.Zeus.Aithér.boltRadius") }] }
                 }
             },
             //ARÈS : la guerre. Dégâts, et de la vie à chaque ennemi tué.
@@ -9962,9 +9962,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "DMG", name: "Phobos", description: "+0.5 dégât par balle", effect: { stat: "damage", value: 0.5 } },
-                    { label: "CRI", name: "Deimos", description: "Cri de guerre : +0.3 s", effect: { stat: "warCryDuration", value: 0.3 } },
-                    { label: "VIE", name: "Alala", description: "+0.05 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.05 } }
+                    { label: "DMG", name: "Phobos", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Arès.Phobos.damage") } },
+                    { label: "CRI", name: "Deimos", description: "Cri de guerre : +{warCryDuration} s", effect: { stat: "warCryDuration", value: reglage("SKILLS.Arès.Deimos.warCryDuration") } },
+                    { label: "VIE", name: "Alala", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Arès.Alala.lifeOnKill") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -9973,28 +9973,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    carnage2: { label: "VIE", name: "Diomède", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                    cry2: { label: "CRI", name: "Ascalaphe", description: "Cri de guerre : +1 s", effect: { stat: "warCryDuration", value: 1 } }
+                    carnage2: { label: "VIE", name: "Diomède", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Arès.Diomède.lifeOnKill") } },
+                    cry2: { label: "CRI", name: "Ascalaphe", description: "Cri de guerre : +{warCryDuration} s", effect: { stat: "warCryDuration", value: reglage("SKILLS.Arès.Ascalaphe.warCryDuration") } }
                 },
                 shape: "sword",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "CRI", name: "Ényo", description: "Cri de guerre : toutes les 12 s, toi et toutes les planètes faites +15% de dégâts, +4% de chance de critique et +20% de dégâts critiques pendant 4 s", effect: { stat: "warCry", value: 1 } },
+                    start: { label: "CRI", name: "Ényo", description: "Cri de guerre : toutes les {@PLANET_POWERS.warCry.interval} s, toi et toutes les planètes faites +{@WAR_CRY_DAMAGE:%}% de dégâts, +{@WAR_CRY_CRIT_CHANCE:%}% de chance de critique et +{@WAR_CRY_CRIT_DAMAGE:%}% de dégâts critiques pendant {@WAR_CRY_BASE_DURATION} s", effect: { stat: "warCry", value: reglage("SKILLS.Arès.Ényo.warCry") } },
                     notables: [
-                        { label: "DMG", name: "Éris", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "VIT", name: "Kydoimos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "CRI", name: "Makhai", description: "Cri de guerre : +1 s", effect: { stat: "warCryDuration", value: 1 } },
-                        { label: "DMG", name: "Polémos", description: "+1 dégât par balle", effect: { stat: "damage", value: 1 } },
-                        { label: "VIE", name: "Penthésilée", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "CRI", name: "Otréra", description: "Le cri de guerre : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                        { label: "VIT", name: "Antiope", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "CRI", name: "Androktasiai", description: "Cri de guerre 50% plus fort", effect: { stat: "warCry", value: 0.5 } }
+                        { label: "DMG", name: "Éris", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Arès.Éris.damage") } },
+                        { label: "VIT", name: "Kydoimos", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Arès.Kydoimos.attackSpeed") } },
+                        { label: "CRI", name: "Makhai", description: "Cri de guerre : +{warCryDuration} s", effect: { stat: "warCryDuration", value: reglage("SKILLS.Arès.Makhai.warCryDuration") } },
+                        { label: "DMG", name: "Polémos", description: "+{damage} dégât par balle", effect: { stat: "damage", value: reglage("SKILLS.Arès.Polémos.damage") } },
+                        { label: "VIE", name: "Penthésilée", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Arès.Penthésilée.lifeOnKill") } },
+                        { label: "CRI", name: "Otréra", description: "Le cri de guerre : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Arès.Otréra.cooldownReduction") } },
+                        { label: "VIT", name: "Antiope", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Arès.Antiope.attackSpeed") } },
+                        { label: "CRI", name: "Androktasiai", description: "Cri de guerre {warCry:%}% plus fort", effect: { stat: "warCry", value: reglage("SKILLS.Arès.Androktasiai.warCry") } }
                     ],
                     keystones: [
-                        { label: "CYGNE", name: "Kyknos", description: "Soif de gloire : chaque ennemi tué par Arès lui donne +0.001 dégât par balle, pour toujours", effect: { stat: "damagePerKill", value: 0.001 } },
-                        { label: "CHAR", name: "Œnomaos", description: "Cri de guerre 2 fois plus fort", effect: { stat: "warCry", value: 1 } },
-                        { label: "SANG", name: "Phlégyas", description: "Le cri de guerre : +30 de réduction de recharge, et dure 1 s de plus", effects: [{ stat: "cooldownReduction", value: 30 }, { stat: "warCryDuration", value: 1 }] }
+                        { label: "CYGNE", name: "Kyknos", description: "Soif de gloire : chaque ennemi tué par Arès lui donne +{damagePerKill} dégât par balle, pour toujours", effect: { stat: "damagePerKill", value: reglage("SKILLS.Arès.Kyknos.damagePerKill") } },
+                        { label: "CHAR", name: "Œnomaos", description: "Cri de guerre {warCry:x} fois plus fort", effect: { stat: "warCry", value: reglage("SKILLS.Arès.Œnomaos.warCry") } },
+                        { label: "SANG", name: "Phlégyas", description: "Le cri de guerre : +{cooldownReduction} de réduction de recharge, et dure {warCryDuration} s de plus", effects: [{ stat: "cooldownReduction", value: reglage("SKILLS.Arès.Phlégyas.cooldownReduction") }, { stat: "warCryDuration", value: reglage("SKILLS.Arès.Phlégyas.warCryDuration") }] }
                     ],
-                    grand: { label: "KÈRES", name: "Kères", description: "GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +0.002 dégât de plus, pour toujours, et cri de guerre 2 fois plus fort", effects: [{ stat: "damagePerKill", value: 0.002 }, { stat: "warCry", value: 1 }] }
+                    grand: { label: "KÈRES", name: "Kères", description: "GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +{damagePerKill} dégât de plus, pour toujours, et cri de guerre {warCry:x} fois plus fort", effects: [{ stat: "damagePerKill", value: reglage("SKILLS.Arès.Kères.damagePerKill") }, { stat: "warCry", value: reglage("SKILLS.Arès.Kères.warCry") }] }
                 }
             },
             //APHRODITE : l'amour et la beauté. Vie, régénération et esquive.
@@ -10007,9 +10007,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "PV", name: "Charis", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "CHARME", name: "Himéros", description: "+6 de rayon de charme", effect: { stat: "charmRadius", value: 6 } },
-                    { label: "ESQ", name: "Pothos", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
+                    { label: "PV", name: "Charis", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Aphrodite.Charis.maxHealth") } },
+                    { label: "CHARME", name: "Himéros", description: "+{charmRadius} de rayon de charme", effect: { stat: "charmRadius", value: reglage("SKILLS.Aphrodite.Himéros.charmRadius") } },
+                    { label: "ESQ", name: "Pothos", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Aphrodite.Pothos.dodge") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -10018,28 +10018,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    crowd2: { label: "CHARME", name: "Harmonie", description: "+20 de rayon de charme", effect: { stat: "charmRadius", value: 20 } },
-                    sky2: { label: "CHARME", name: "Énée", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } }
+                    crowd2: { label: "CHARME", name: "Harmonie", description: "+{charmRadius} de rayon de charme", effect: { stat: "charmRadius", value: reglage("SKILLS.Aphrodite.Harmonie.charmRadius") } },
+                    sky2: { label: "CHARME", name: "Énée", description: "Charme : +{charmDuration} s", effect: { stat: "charmDuration", value: reglage("SKILLS.Aphrodite.Énée.charmDuration") } }
                 },
                 shape: "heart",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "CHARME", name: "Éros", description: "Rayon de charme : toutes les 8 s, Aphrodite charme les ennemis autour d'elle pendant 2 s : ils font demi-tour et blessent leurs alliés (pas les super ennemis)", effects: [{ stat: "charmRadius", value: 80 }, { stat: "charmDuration", value: 2 }] },
+                    start: { label: "CHARME", name: "Éros", description: "Rayon de charme : toutes les {@PLANET_POWERS.charm.interval} s, Aphrodite charme les ennemis autour d'elle pendant {charmDuration} s : ils font demi-tour et blessent leurs alliés (pas les super ennemis)", effects: [{ stat: "charmRadius", value: reglage("SKILLS.Aphrodite.Éros.charmRadius") }, { stat: "charmDuration", value: reglage("SKILLS.Aphrodite.Éros.charmDuration") }] },
                     notables: [
-                        { label: "CHARME", name: "Peitho", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
-                        { label: "ESQ", name: "Antéros", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                        { label: "CHARME", name: "Adonis", description: "+20 de rayon de charme", effect: { stat: "charmRadius", value: 20 } },
-                        { label: "CHARME", name: "Psyché", description: "Le rayon de charme : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } },
-                        { label: "VIE", name: "Hymen", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "PV", name: "Euphrosyne", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
-                        { label: "CHARME", name: "Hermaphrodite", description: "Charme : +0.5 s", effect: { stat: "charmDuration", value: 0.5 } },
-                        { label: "CHARME", name: "Rhodos", description: "Le rayon de charme : +15 de réduction de recharge", effect: { stat: "cooldownReduction", value: 15 } }
+                        { label: "CHARME", name: "Peitho", description: "Charme : +{charmDuration} s", effect: { stat: "charmDuration", value: reglage("SKILLS.Aphrodite.Peitho.charmDuration") } },
+                        { label: "ESQ", name: "Antéros", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Aphrodite.Antéros.dodge") } },
+                        { label: "CHARME", name: "Adonis", description: "+{charmRadius} de rayon de charme", effect: { stat: "charmRadius", value: reglage("SKILLS.Aphrodite.Adonis.charmRadius") } },
+                        { label: "CHARME", name: "Psyché", description: "Le rayon de charme : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Aphrodite.Psyché.cooldownReduction") } },
+                        { label: "VIE", name: "Hymen", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Aphrodite.Hymen.lifeOnKill") } },
+                        { label: "PV", name: "Euphrosyne", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Aphrodite.Euphrosyne.maxHealth") } },
+                        { label: "CHARME", name: "Hermaphrodite", description: "Charme : +{charmDuration} s", effect: { stat: "charmDuration", value: reglage("SKILLS.Aphrodite.Hermaphrodite.charmDuration") } },
+                        { label: "CHARME", name: "Rhodos", description: "Le rayon de charme : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Aphrodite.Rhodos.cooldownReduction") } }
                     ],
                     keystones: [
-                        { label: "FOULE", name: "Pandémos", description: "Foule : +50 de rayon de charme", effect: { stat: "charmRadius", value: 50 } },
-                        { label: "CIEL", name: "Ourania", description: "Les ennemis charmés blessent 2 fois plus leurs alliés", effect: { stat: "charmPower", value: 1 } },
-                        { label: "CYTHÈRE", name: "Cythérée", description: "Le rayon de charme : +40 de réduction de recharge", effect: { stat: "cooldownReduction", value: 40 } }
+                        { label: "FOULE", name: "Pandémos", description: "Foule : +{charmRadius} de rayon de charme", effect: { stat: "charmRadius", value: reglage("SKILLS.Aphrodite.Pandémos.charmRadius") } },
+                        { label: "CIEL", name: "Ourania", description: "Les ennemis charmés blessent {charmPower:x} fois plus leurs alliés", effect: { stat: "charmPower", value: reglage("SKILLS.Aphrodite.Ourania.charmPower") } },
+                        { label: "CYTHÈRE", name: "Cythérée", description: "Le rayon de charme : +{cooldownReduction} de réduction de recharge", effect: { stat: "cooldownReduction", value: reglage("SKILLS.Aphrodite.Cythérée.cooldownReduction") } }
                     ],
-                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : charme +1.5 s, et +100 de réduction de recharge du rayon de charme (2 fois plus souvent)", effects: [{ stat: "charmDuration", value: 1.5 }, { stat: "cooldownReduction", value: 100 }] }
+                    grand: { label: "PHANÈS", name: "Phanès", description: "GRANDE KEYSTONE : charme +{charmDuration} s, et +{cooldownReduction} de réduction de recharge du rayon de charme (2 fois plus souvent)", effects: [{ stat: "charmDuration", value: reglage("SKILLS.Aphrodite.Phanès.charmDuration") }, { stat: "cooldownReduction", value: reglage("SKILLS.Aphrodite.Phanès.cooldownReduction") }] }
                 }
             },
             //HERMÈS : le messager, la vitesse. Cadence, vitesse des balles et esquive.
@@ -10052,9 +10052,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "VEL", name: "Kéryx", description: "+8% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.08 } },
-                    { label: "VIT", name: "Hodios", description: "+4% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.04 } },
-                    { label: "ESQ", name: "Agoraios", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
+                    { label: "VEL", name: "Kéryx", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Hermès.Kéryx.bulletSpeed") } },
+                    { label: "VIT", name: "Hodios", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Hodios.attackSpeed") } },
+                    { label: "ESQ", name: "Agoraios", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hermès.Agoraios.dodge") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -10064,29 +10064,29 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    feather2_3: { label: "VIT", name: "Angelos", description: "+15% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.15 } },
-                    feather5_3: { label: "ESQ", name: "Dolios", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                    feather8_3: { label: "VEL", name: "Kriophoros", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } }
+                    feather2_3: { label: "VIT", name: "Angelos", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Angelos.attackSpeed") } },
+                    feather5_3: { label: "ESQ", name: "Dolios", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hermès.Dolios.dodge") } },
+                    feather8_3: { label: "VEL", name: "Kriophoros", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Hermès.Kriophoros.bulletSpeed") } }
                 },
                 shape: "wing",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "VIT", name: "Maïa", description: "+5% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.05 } },
+                    start: { label: "VIT", name: "Maïa", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Maïa.attackSpeed") } },
                     notables: [
-                        { label: "VEL", name: "Psychopompe", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "VIT", name: "Argos", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Chioné", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                        { label: "OR", name: "Autolycos", description: "+10% d'or gagné", effect: { stat: "goldMultiplier", value: 0.1 } },
-                        { label: "VEL", name: "Myrtilos", description: "+20% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.2 } },
-                        { label: "VIT", name: "Daphnis", description: "+10% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.1 } },
-                        { label: "ESQ", name: "Eudoros", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                        { label: "VEL", name: "Abdère", description: "+15% de vitesse des balles", effect: { stat: "bulletSpeed", value: 0.15 } }
+                        { label: "VEL", name: "Psychopompe", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Hermès.Psychopompe.bulletSpeed") } },
+                        { label: "VIT", name: "Argos", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Argos.attackSpeed") } },
+                        { label: "ESQ", name: "Chioné", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hermès.Chioné.dodge") } },
+                        { label: "OR", name: "Autolycos", description: "+{goldMultiplier:%}% d'or gagné", effect: { stat: "goldMultiplier", value: reglage("SKILLS.Hermès.Autolycos.goldMultiplier") } },
+                        { label: "VEL", name: "Myrtilos", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Hermès.Myrtilos.bulletSpeed") } },
+                        { label: "VIT", name: "Daphnis", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Daphnis.attackSpeed") } },
+                        { label: "ESQ", name: "Eudoros", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hermès.Eudoros.dodge") } },
+                        { label: "VEL", name: "Abdère", description: "+{bulletSpeed:%}% de vitesse des balles", effect: { stat: "bulletSpeed", value: reglage("SKILLS.Hermès.Abdère.bulletSpeed") } }
                     ],
                     keystones: [
-                        { label: "TALARIA", name: "Talaria", description: "+30% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.3 } },
-                        { label: "PÉTASE", name: "Pétase", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } },
-                        { label: "CADUCÉE", name: "Caducée", description: "+1 balle par tir", effect: { stat: "bulletCount", value: 1 } }
+                        { label: "TALARIA", name: "Talaria", description: "+{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Talaria.attackSpeed") } },
+                        { label: "PÉTASE", name: "Pétase", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hermès.Pétase.dodge") } },
+                        { label: "CADUCÉE", name: "Caducée", description: "+{bulletCount} balle par tir", effect: { stat: "bulletCount", value: reglage("SKILLS.Hermès.Caducée.bulletCount") } }
                     ],
-                    grand: { label: "AION", name: "Aion", description: "GRANDE KEYSTONE : +50% de vitesse d'attaque", effect: { stat: "attackSpeed", value: 0.5 } }
+                    grand: { label: "AION", name: "Aion", description: "GRANDE KEYSTONE : +{attackSpeed:%}% de vitesse d'attaque", effect: { stat: "attackSpeed", value: reglage("SKILLS.Hermès.Aion.attackSpeed") } }
                 }
             },
             //HESTIA : le foyer, la maison et la protection. Vie, régénération, esquive et bouclier.
@@ -10099,9 +10099,9 @@
                     html: "Espace réservé : présentation de ton projet (image, description, technologies, liens…)"
                 },
                 minorSkills: [
-                    { label: "REG", name: "Vestale", description: "+0.02 PV régénérés par seconde", effect: { stat: "regen", value: 0.02 } },
-                    { label: "PV", name: "Lare", description: "+1 PV max", effect: { stat: "maxHealth", value: 1 } },
-                    { label: "ESQ", name: "Pénate", description: "+2 points d'esquive", effect: { stat: "dodge", value: 2 } }
+                    { label: "REG", name: "Vestale", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Vestale.regen") } },
+                    { label: "PV", name: "Lare", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Lare.maxHealth") } },
+                    { label: "ESQ", name: "Pénate", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hestia.Pénate.dodge") } }
                 ],
                 //LES VOIES : 2 ou 3 branches rivales (voir getChosenPath). label = où écrire le nom de la voie (en %), nodes = ses compétences
                 paths: [
@@ -10110,28 +10110,28 @@
                 ],
                 //Les compétences au bout des voies (ids dans la forme de l'arbre)
                 extraSkills: {
-                    hearth2: { label: "REG", name: "Prytanée", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                    safety2: { label: "ESQ", name: "Éléos", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } }
+                    hearth2: { label: "REG", name: "Prytanée", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Prytanée.regen") } },
+                    safety2: { label: "ESQ", name: "Éléos", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hestia.Éléos.dodge") } }
                 },
                 shape: "hearth",            // forme de l'arbre : fire, waves, flower, wind, sun, bow, laurel, bolt, sword, heart, wing, hearth, grapes ou classic
                 skills: {
-                    start: { label: "PV", name: "Rhéa", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
+                    start: { label: "PV", name: "Rhéa", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Rhéa.maxHealth") } },
                     notables: [
-                        { label: "REG", name: "Tabiti", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "PV", name: "Agathodaimon", description: "+2 PV max", effect: { stat: "maxHealth", value: 2 } },
-                        { label: "VIE", name: "Philotès", description: "+0.2 PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: 0.2 } },
-                        { label: "ESQ", name: "Eucléia", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } },
-                        { label: "REG", name: "Homonoia", description: "+0.05 PV régénérés par seconde", effect: { stat: "regen", value: 0.05 } },
-                        { label: "PV", name: "Euthénia", description: "+3 PV max", effect: { stat: "maxHealth", value: 3 } },
-                        { label: "REG", name: "Elpis", description: "+0.1 PV régénérés par seconde", effect: { stat: "regen", value: 0.1 } },
-                        { label: "ESQ", name: "Hestiade", description: "+5 points d'esquive", effect: { stat: "dodge", value: 5 } }
+                        { label: "REG", name: "Tabiti", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Tabiti.regen") } },
+                        { label: "PV", name: "Agathodaimon", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Agathodaimon.maxHealth") } },
+                        { label: "VIE", name: "Philotès", description: "+{lifeOnKill} PV regagné par ennemi tué", effect: { stat: "lifeOnKill", value: reglage("SKILLS.Hestia.Philotès.lifeOnKill") } },
+                        { label: "ESQ", name: "Eucléia", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hestia.Eucléia.dodge") } },
+                        { label: "REG", name: "Homonoia", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Homonoia.regen") } },
+                        { label: "PV", name: "Euthénia", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Euthénia.maxHealth") } },
+                        { label: "REG", name: "Elpis", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Elpis.regen") } },
+                        { label: "ESQ", name: "Hestiade", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hestia.Hestiade.dodge") } }
                     ],
                     keystones: [
-                        { label: "VESTA", name: "Vesta", description: "+5 PV max", effect: { stat: "maxHealth", value: 5 } },
-                        { label: "CONSEIL", name: "Boulaia", description: "+0.15 PV régénérés par seconde", effect: { stat: "regen", value: 0.15 } },
-                        { label: "SALUT", name: "Sôtéria", description: "+10 points d'esquive", effect: { stat: "dodge", value: 10 } }
+                        { label: "VESTA", name: "Vesta", description: "+{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Vesta.maxHealth") } },
+                        { label: "CONSEIL", name: "Boulaia", description: "+{regen} PV régénérés par seconde", effect: { stat: "regen", value: reglage("SKILLS.Hestia.Boulaia.regen") } },
+                        { label: "SALUT", name: "Sôtéria", description: "+{dodge} points d'esquive", effect: { stat: "dodge", value: reglage("SKILLS.Hestia.Sôtéria.dodge") } }
                     ],
-                    grand: { label: "ANANKÉ", name: "Ananké", description: "GRANDE KEYSTONE : +8 PV max", effect: { stat: "maxHealth", value: 8 } }
+                    grand: { label: "ANANKÉ", name: "Ananké", description: "GRANDE KEYSTONE : +{maxHealth} PV max", effect: { stat: "maxHealth", value: reglage("SKILLS.Hestia.Ananké.maxHealth") } }
                 }
             }
         ];
@@ -10144,6 +10144,36 @@
                 return t(GRAND_KEYSTONE_PREFIX) + t(description.slice(GRAND_KEYSTONE_PREFIX.length));
             }
             return t(description);
+        }
+
+        //Les valeurs d'une compétence dans sa description (elles viennent de reglages.js, catégorie « Compétences des dieux ») :
+        //{damage} = la valeur de l'effet "damage" ; {critChance:%} = en % (0.03 -> 3) ; {attackSpeed:-%} = en %, sans le signe moins
+        //(« 35% en moins ») ; {bulletSize:x} = « X fois » (1 -> 2 fois) ; {@NOM} = un autre réglage (ex : {@SHIELD_COOLDOWN}) ;
+        //{@NOM:plus%} = un multiplicateur en % de plus (1.5 -> 50).
+        function fillSkillDescription(text, effects) {
+            return text.replace(/\{(@?[\w.]+)(?::([^}]+))?\}/g, function (whole, source, format) {
+                let value;
+                if (source.startsWith("@")) {
+                    value = reglage(source.slice(1)); //slice(1) = sans le @
+                } else {
+                    const effect = effects.find(function (candidate) { return candidate.stat === source; });
+                    if (effect === undefined) {
+                        return whole; //pas cet effet : on laisse le repère (ça se voit, pour le corriger)
+                    }
+                    value = effect.value;
+                }
+                if (format === "%") {
+                    value *= 100;
+                } else if (format === "-%") {
+                    value *= -100;
+                } else if (format === "x") {
+                    value += 1;
+                } else if (format === "plus%") {
+                    value = (value - 1) * 100;
+                }
+                return String(Number(value.toPrecision(6))); //toPrecision(6) : enlève les erreurs de calcul (8.000000001 -> 8), garde 0.001
+
+            });
         }
 
         const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
@@ -10273,7 +10303,7 @@
                     isKeystone: layout.role === "keystone" || layout.role === "grand",
                     label: t(skill.label),
                     name: skill.isNameTranslated ? skill.name : t(skill.name),
-                    description: translateSkillDescription(skill.description),
+                    description: fillSkillDescription(translateSkillDescription(skill.description), skill.effects || [skill.effect]),
                     effects: skill.effects || [skill.effect], //"effects" (plusieurs effets) ou "effect" (un seul)
                     unlocked: false
                 });

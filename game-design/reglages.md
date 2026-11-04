@@ -2,12 +2,12 @@
 
 Généré à partir de `reglages.js` par `game-design/outils/generer-docs.js`.
 
-Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
+Toutes les statistiques du jeu (566 réglages) sont dans le fichier `reglages.js`, à la racine du dépôt, rangées par catégories et sous-catégories. Pour les changer, le plus simple est l'**éditeur de réglages** : ouvre `game-design/outils/editeur-reglages.html` dans ton navigateur (double-clic), change les valeurs, « Tester dans le jeu », puis « Enregistrer » (voir [README.md](README.md)).
 
 - Les pourcentages sont écrits en % ici et dans l'éditeur, mais en fraction dans `reglages.js` (10 % = 0.1).
 - Le **nom dans le code** est celui que `index.html` lit avec `reglage("NOM")`.
 - ⚠️ = ce nombre est aussi écrit dans un texte du jeu : si on le change, il faut aussi changer ce texte (dans `index.html` et `langues/`).
-- Les valeurs de **chaque compétence** des skill trees ne sont pas ici : elles sont écrites dans leur description (voir [skills/](skills/README.md)), dans `SKILL_TREES_DATA` (`index.html`).
+- Les valeurs de **chaque compétence** des skill trees sont dans la catégorie « Compétences des dieux » (une sous-catégorie par dieu) : leur description dans le jeu se met à jour toute seule.`SKILL_TREES_DATA` (`index.html`).
 
 ## Sommaire
 
@@ -19,6 +19,7 @@ Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js
 - [Super ennemis](#super-ennemis) : Tous les super ennemis, Cerbère, Hydre de Lerne, Méduse, Typhon, Chimère, Charybde, Python, Cronos
 - [Shop](#shop) : Cadence de tir, Portée, Balle supplémentaire, Vie max, Dégâts, Régénération, Esquive, Chance de critique, Dégâts critiques, Vitesse des balles, Accélérer le temps, Sauter dans le temps, Liens d'orbite, Nouvelle divinité
 - [Compétences](#compétences) : Prix en XP, Éveil des dieux
+- [Compétences des dieux](#compétences-des-dieux) : Héphaïstos, Poséidon, Déméter, Éole, Apollon, Artémis, Athéna, Zeus, Arès, Aphrodite, Hermès, Hestia
 - [Tutoriel](#tutoriel) : La vague de la 1re partie
 - [Temps](#temps) : Vitesses et sauts, Recharge du saut
 - [Combos d'orbite](#combos-dorbite) : Lien « Opposé », Explosions et zones, Brûlure, poison, saignement, Ralentir et bloquer, Rebonds, éclats et foudre, Critiques, soins et bouclier
@@ -525,6 +526,323 @@ Toutes les statistiques du jeu (311 réglages) sont dans le fichier `reglages.js
 | Dégâts en plus pour la planète, par niveau d'Éveil | 5 % | `AWAKENING_DAMAGE_PER_LEVEL` |
 | Prix du 1er niveau d'Éveil du 1er dieu (× la hausse des compétences pour chaque dieu suivant) | 100 XP | `AWAKENING_BASE_COST` |
 | Le prix est multiplié par ce nombre à chaque niveau d'Éveil | 1,25 × | `AWAKENING_COST_GROWTH` |
+
+## Compétences des dieux
+
+### Héphaïstos
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Dactyle (petite compétence) : « +X dégât par balle » | 0,5 | `SKILLS.Héphaïstos.Dactyle.damage` |
+| Telchine (petite compétence) : « Balles X% plus grosses » | 8 % | `SKILLS.Héphaïstos.Telchine.bulletSize` |
+| Cyclope (petite compétence) : « +X% de dégâts critiques » | 10 % | `SKILLS.Héphaïstos.Cyclope.critDamage` |
+| Lemnos (au bout d'une voie) : « +X% de dégâts » | 15 % | `SKILLS.Héphaïstos.Lemnos.damageMultiplier` |
+| Cacus (au bout d'une voie) : « La traînée de feu brûle plus fort : +X% des dégâts de la balle par seconde » | 40 % | `SKILLS.Héphaïstos.Cacus.fireTrail` |
+| Phlégéthon (au bout d'une voie) : « Traînée de feu : les balles d'Héphaïstos laissent derrière elles une traînée de feu ; les ennemis qui la touchent brûlent (X% des dégâts de la balle par seconde) » | 40 % | `SKILLS.Héphaïstos.Phlégéthon.fireTrail` |
+| Pyrois (au bout d'une voie) : « La traînée de feu dure X s de plus » | 0,6 s | `SKILLS.Héphaïstos.Pyrois.fireTrailDuration` |
+| Aethon (au bout d'une voie) : « La traînée de feu brûle plus fort : +X% des dégâts de la balle par seconde » | 40 % | `SKILLS.Héphaïstos.Aethon.fireTrail` |
+| Pyriphlégéthon (au bout d'une voie) : « Brasier : la traînée de feu est X fois plus large et dure … s de plus » (100 % = 2 fois) | 100 % | `SKILLS.Héphaïstos.Pyriphlégéthon.fireTrailWidth` |
+| Pyriphlégéthon (au bout d'une voie) : « Brasier : la traînée de feu est … fois plus large et dure X s de plus » | 1 s | `SKILLS.Héphaïstos.Pyriphlégéthon.fireTrailDuration` |
+| Hestia (départ) : « +X dégât par balle » | 1 | `SKILLS.Héphaïstos.Hestia.damage` |
+| Prométhée (notable) : « +X% de chance de coup critique » | 3 % | `SKILLS.Héphaïstos.Prométhée.critChance` |
+| Kédalion (notable) : « +X% de dégâts critiques » | 25 % | `SKILLS.Héphaïstos.Kédalion.critDamage` |
+| Stéropès (notable) : « Balles X% plus grosses » | 20 % | `SKILLS.Héphaïstos.Stéropès.bulletSize` |
+| Argès (notable) : « +X dégâts par balle » | 2 | `SKILLS.Héphaïstos.Argès.damage` |
+| Aglaé (notable) : « Les balles traversent X ennemi de plus » | 1 | `SKILLS.Héphaïstos.Aglaé.pierce` |
+| Talos (notable) : « +X% de dégâts » | 15 % | `SKILLS.Héphaïstos.Talos.damageMultiplier` |
+| Kratos (notable) : « +X dégât par balle » | 1 | `SKILLS.Héphaïstos.Kratos.damage` |
+| Bia (notable) : « Les balles traversent X ennemi de plus » | 1 | `SKILLS.Héphaïstos.Bia.pierce` |
+| Brontès (keystone) : « Marteau : +X% de dégâts, mais …% de vitesse d'attaque en moins » | 100 % | `SKILLS.Héphaïstos.Brontès.damageMultiplier` |
+| Brontès (keystone) : « Marteau : +…% de dégâts, mais X% de vitesse d'attaque en moins » (négatif = en moins) | -35 % | `SKILLS.Héphaïstos.Brontès.attackSpeed` |
+| Cabires (keystone) : « Enclume : balles X fois plus grosses, mais …% plus lentes » (100 % = 2 fois) | 100 % | `SKILLS.Héphaïstos.Cabires.bulletSize` |
+| Cabires (keystone) : « Enclume : balles … fois plus grosses, mais X% plus lentes » (négatif = en moins) | -30 % | `SKILLS.Héphaïstos.Cabires.bulletSpeed` |
+| Hécate (keystone) : « Coulée de lave : les balles traversent TOUS les ennemis, jusqu'au bord de l'écran » (pas écrit dans la description) | 999 | `SKILLS.Héphaïstos.Hécate.pierce` |
+| Etna (grande keystone) : « GRANDE KEYSTONE : +X% de dégâts et balles …% plus grosses, mais …% de vitesse d'attaque en moins » | 150 % | `SKILLS.Héphaïstos.Etna.damageMultiplier` |
+| Etna (grande keystone) : « GRANDE KEYSTONE : +…% de dégâts et balles X% plus grosses, mais …% de vitesse d'attaque en moins » | 50 % | `SKILLS.Héphaïstos.Etna.bulletSize` |
+| Etna (grande keystone) : « GRANDE KEYSTONE : +…% de dégâts et balles …% plus grosses, mais X% de vitesse d'attaque en moins » (négatif = en moins) | -30 % | `SKILLS.Héphaïstos.Etna.attackSpeed` |
+
+### Poséidon
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Néréide (petite compétence) : « +X PV max » | 1 PV | `SKILLS.Poséidon.Néréide.maxHealth` |
+| Océanide (petite compétence) : « +X PV régénérés par seconde » | 0,02 PV/s | `SKILLS.Poséidon.Océanide.regen` |
+| Naïade (petite compétence) : « Ennemis frêles : +X% de dégâts subis » | 2 % | `SKILLS.Poséidon.Naïade.fragility` |
+| Amymone (au bout d'une voie) : « +X de portée (la vague va aussi plus loin) » | 40 px | `SKILLS.Poséidon.Amymone.range` |
+| Pontos (au bout d'une voie) : « Ennemis frêles : +X% de dégâts subis » | 5 % | `SKILLS.Poséidon.Pontos.fragility` |
+| Eurybia (au bout d'une voie) : « La vague : +X de réduction de recharge » | 15 | `SKILLS.Poséidon.Eurybia.cooldownReduction` |
+| Cymo (au bout d'une voie) : « +X de portée » | 20 px | `SKILLS.Poséidon.Cymo.range` |
+| Cymopolée (au bout d'une voie) : « Ressac : +X de portée (la vague va aussi plus loin) » | 60 px | `SKILLS.Poséidon.Cymopolée.range` |
+| Rhodé (au bout d'une voie) : « +X de portée » | 30 px | `SKILLS.Poséidon.Rhodé.range` |
+| Benthésicymé (au bout d'une voie) : « Houle : +X de portée (la vague va aussi plus loin) » | 80 px | `SKILLS.Poséidon.Benthésicymé.range` |
+| Thétis (départ) : « Raz-de-marée : toutes les … s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +…% de dégâts subis pendant … s » (pas écrit dans la description) | 60 | `SKILLS.Poséidon.Thétis.tideWave` |
+| Thétis (départ) : « Raz-de-marée : toutes les … s, une vague part de Poséidon jusqu'à sa portée, repousse les ennemis, les ralentit et les rend frêles : +X% de dégâts subis pendant … s » | 35 % | `SKILLS.Poséidon.Thétis.fragility` |
+| Doris (notable) : « +X PV régénérés par seconde » | 0,05 PV/s | `SKILLS.Poséidon.Doris.regen` |
+| Galatée (notable) : « +X de portée (la vague va aussi plus loin) » | 40 px | `SKILLS.Poséidon.Galatée.range` |
+| Protée (notable) : « +X points d'esquive » | 10 | `SKILLS.Poséidon.Protée.dodge` |
+| Phorcys (notable) : « Bouclier : bloque un coup, se recharge en … s » (pas écrit dans la description) | 1 | `SKILLS.Poséidon.Phorcys.shield` |
+| Glaucos (notable) : « Ennemis frêles : +X% de dégâts subis » | 5 % | `SKILLS.Poséidon.Glaucos.fragility` |
+| Leucothée (notable) : « La vague : +X de réduction de recharge » | 15 | `SKILLS.Poséidon.Leucothée.cooldownReduction` |
+| Palémon (notable) : « +X de recul de la vague » | 30 | `SKILLS.Poséidon.Palémon.tideWave` |
+| Nérée (notable) : « +X PV max » | 3 PV | `SKILLS.Poséidon.Nérée.maxHealth` |
+| Amphitrite (keystone) : « Bouclier des marées : chaque vague te rend invincible pendant X s » | 2 | `SKILLS.Poséidon.Amphitrite.tideShield` |
+| Céto (keystone) : « Ennemis frêles : +X% de dégâts subis » | 15 % | `SKILLS.Poséidon.Céto.fragility` |
+| Triton (keystone) : « La vague : +X de réduction de recharge, et +… de portée » | 40 | `SKILLS.Poséidon.Triton.cooldownReduction` |
+| Triton (keystone) : « La vague : +… de réduction de recharge, et +X de portée » | 80 px | `SKILLS.Poséidon.Triton.range` |
+| Océanos (grande keystone) : « GRANDE KEYSTONE : ennemis frêles +X% de dégâts subis, et bouclier des marées +… s » | 25 % | `SKILLS.Poséidon.Océanos.fragility` |
+| Océanos (grande keystone) : « GRANDE KEYSTONE : ennemis frêles +…% de dégâts subis, et bouclier des marées +X s » | 1 | `SKILLS.Poséidon.Océanos.tideShield` |
+
+### Déméter
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Dryade (petite compétence) : « +X PV regagné par ennemi tué » | 0,05 PV | `SKILLS.Déméter.Dryade.lifeOnKill` |
+| Hamadryade (petite compétence) : « +X% d'XP gagnée » | 5 % | `SKILLS.Déméter.Hamadryade.xpMultiplier` |
+| Mélie (petite compétence) : « +X de rayon du rayon de vie » | 8 | `SKILLS.Déméter.Mélie.bloomRadius` |
+| Despina (au bout d'une voie) : « +X liane à chaque rayon de vie » | 1 | `SKILLS.Déméter.Despina.vineCount` |
+| Métanire (au bout d'une voie) : « Le rayon de vie soigne X PV de plus » | 0,5 PV | `SKILLS.Déméter.Métanire.bloomHeal` |
+| Dryope (au bout d'une voie) : « +X de rayon du rayon de vie » | 25 | `SKILLS.Déméter.Dryope.bloomRadius` |
+| Perséphone (départ) : « Rayon de vie : toutes les … s, Déméter te soigne de X PV et affaiblit les ennemis autour d'elle (+…% de dégâts subis pendant … s) » | 1 PV | `SKILLS.Déméter.Perséphone.bloomHeal` |
+| Perséphone (départ) : « Rayon de vie : toutes les … s, Déméter te soigne de … PV et affaiblit les ennemis autour d'elle (+…% de dégâts subis pendant … s) » (pas écrit dans la description) | 120 | `SKILLS.Déméter.Perséphone.bloomRadius` |
+| Thallo (notable) : « +X% d'XP gagnée » | 10 % | `SKILLS.Déméter.Thallo.xpMultiplier` |
+| Auxo (notable) : « Le rayon de vie soigne X PV de plus » | 0,5 PV | `SKILLS.Déméter.Auxo.bloomHeal` |
+| Chloris (notable) : « +X PV régénérés par seconde » | 0,05 PV/s | `SKILLS.Déméter.Chloris.regen` |
+| Aristée (notable) : « +X PV regagnés par ennemi tué » | 0,2 PV | `SKILLS.Déméter.Aristée.lifeOnKill` |
+| Iasion (notable) : « +X de rayon du rayon de vie » | 25 | `SKILLS.Déméter.Iasion.bloomRadius` |
+| Eubouleus (notable) : « +X liane à chaque rayon de vie » | 1 | `SKILLS.Déméter.Eubouleus.vineCount` |
+| Carpo (notable) : « Le rayon de vie : +X de réduction de recharge » | 15 | `SKILLS.Déméter.Carpo.cooldownReduction` |
+| Anthée (notable) : « Les lianes immobilisent X s de plus » | 1 s | `SKILLS.Déméter.Anthée.vineDuration` |
+| Karpos (keystone) : « Lianes : chaque rayon de vie fait pousser X lianes sous des ennemis, qui les immobilisent … s (pas les super ennemis) » | 3 | `SKILLS.Déméter.Karpos.vineCount` |
+| Triptolème (keystone) : « Le rayon de vie soigne X PV de plus, et +… de réduction de recharge » | 2 PV | `SKILLS.Déméter.Triptolème.bloomHeal` |
+| Triptolème (keystone) : « Le rayon de vie soigne … PV de plus, et +X de réduction de recharge » | 30 | `SKILLS.Déméter.Triptolème.cooldownReduction` |
+| Pan (keystone) : « +X de rayon du rayon de vie et +… lianes » | 60 | `SKILLS.Déméter.Pan.bloomRadius` |
+| Pan (keystone) : « +… de rayon du rayon de vie et +X lianes » | 2 | `SKILLS.Déméter.Pan.vineCount` |
+| Gaïa (grande keystone) : « GRANDE KEYSTONE : +X lianes, qui immobilisent … s de plus, et +… de réduction de recharge du rayon de vie (2 fois plus souvent) » | 3 | `SKILLS.Déméter.Gaïa.vineCount` |
+| Gaïa (grande keystone) : « GRANDE KEYSTONE : +… lianes, qui immobilisent X s de plus, et +… de réduction de recharge du rayon de vie (2 fois plus souvent) » | 2 s | `SKILLS.Déméter.Gaïa.vineDuration` |
+| Gaïa (grande keystone) : « GRANDE KEYSTONE : +… lianes, qui immobilisent … s de plus, et +X de réduction de recharge du rayon de vie (2 fois plus souvent) » | 100 | `SKILLS.Déméter.Gaïa.cooldownReduction` |
+
+### Éole
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Aura (petite compétence) : « +X de portée » | 15 px | `SKILLS.Éole.Aura.range` |
+| Héliade (petite compétence) : « +X% de vitesse des balles » | 10 % | `SKILLS.Éole.Héliade.bulletSpeed` |
+| Anémoï (petite compétence) : « +X% de vitesse d'attaque » | 6 % | `SKILLS.Éole.Anémoï.attackSpeed` |
+| Kaikias (au bout d'une voie) : « +X% de vitesse d'attaque » | 15 % | `SKILLS.Éole.Kaikias.attackSpeed` |
+| Skiron (au bout d'une voie) : « +X% de vitesse des balles » | 20 % | `SKILLS.Éole.Skiron.bulletSpeed` |
+| Zéphyr (départ) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Éole.Zéphyr.attackSpeed` |
+| Éos (notable) : « +X de portée » | 30 px | `SKILLS.Éole.Éos.range` |
+| Héméra (notable) : « +X% de vitesse d'attaque » | 20 % | `SKILLS.Éole.Héméra.attackSpeed` |
+| Iris (notable) : « +X% de vitesse des balles » | 20 % | `SKILLS.Éole.Iris.bulletSpeed` |
+| Borée (notable) : « +X% de vitesse d'attaque » | 15 % | `SKILLS.Éole.Borée.attackSpeed` |
+| Notos (notable) : « +X dégât contre les plantes » | 1 | `SKILLS.Éole.Notos.damageVs` |
+| Euros (notable) : « +X dégâts contre les plantes » | 2 | `SKILLS.Éole.Euros.damageVs` |
+| Phosphoros (notable) : « +X% de vitesse des balles » | 30 % | `SKILLS.Éole.Phosphoros.bulletSpeed` |
+| Hespéros (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Éole.Hespéros.attackSpeed` |
+| Séléné (keystone) : « Rafale : +X% de vitesse d'attaque, mais …% de dégâts en moins » | 100 % | `SKILLS.Éole.Séléné.attackSpeed` |
+| Séléné (keystone) : « Rafale : +…% de vitesse d'attaque, mais X% de dégâts en moins » (négatif = en moins) | -30 % | `SKILLS.Éole.Séléné.damageMultiplier` |
+| Phaéton (keystone) : « +X balle par tir » | 1 | `SKILLS.Éole.Phaéton.bulletCount` |
+| Astraïos (keystone) : « Ouragan : +X% de vitesse d'attaque, mais balles …% plus petites » | 60 % | `SKILLS.Éole.Astraïos.attackSpeed` |
+| Astraïos (keystone) : « Ouragan : +…% de vitesse d'attaque, mais balles X% plus petites » (négatif = en moins) | -40 % | `SKILLS.Éole.Astraïos.bulletSize` |
+| Thyella (grande keystone) : « GRANDE KEYSTONE : +X% de vitesse d'attaque et +… balle par tir, mais …% de dégâts en moins » | 150 % | `SKILLS.Éole.Thyella.attackSpeed` |
+| Thyella (grande keystone) : « GRANDE KEYSTONE : +…% de vitesse d'attaque et +X balle par tir, mais …% de dégâts en moins » | 1 | `SKILLS.Éole.Thyella.bulletCount` |
+| Thyella (grande keystone) : « GRANDE KEYSTONE : +…% de vitesse d'attaque et +… balle par tir, mais X% de dégâts en moins » (négatif = en moins) | -30 % | `SKILLS.Éole.Thyella.damageMultiplier` |
+
+### Apollon
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Pléiade (petite compétence) : « +X% d'or gagné » | 5 % | `SKILLS.Apollon.Pléiade.goldMultiplier` |
+| Hyade (petite compétence) : « +X% d'XP gagnée » | 5 % | `SKILLS.Apollon.Hyade.xpMultiplier` |
+| Titanide (petite compétence) : « +X dégât par balle » | 0,5 | `SKILLS.Apollon.Titanide.damage` |
+| Amalthée (au bout d'une voie) : « +X% d'or gagné » | 25 % | `SKILLS.Apollon.Amalthée.goldMultiplier` |
+| Phébé (au bout d'une voie) : « +X% de vitesse d'attaque » | 15 % | `SKILLS.Apollon.Phébé.attackSpeed` |
+| Nyx (au bout d'une voie) : « +X dégâts par balle » | 2 | `SKILLS.Apollon.Nyx.damage` |
+| Tyché (départ) : « +X% d'or gagné » | 10 % | `SKILLS.Apollon.Tyché.goldMultiplier` |
+| Kairos (notable) : « +X% d'or gagné » | 15 % | `SKILLS.Apollon.Kairos.goldMultiplier` |
+| Eutychia (notable) : « +X% d'or gagné » | 25 % | `SKILLS.Apollon.Eutychia.goldMultiplier` |
+| Coéos (notable) : « +X% d'XP gagnée » | 10 % | `SKILLS.Apollon.Coéos.xpMultiplier` |
+| Mnémosyne (notable) : « +X% d'XP gagnée » | 20 % | `SKILLS.Apollon.Mnémosyne.xpMultiplier` |
+| Hypérion (notable) : « +X dégât par balle » | 1 | `SKILLS.Apollon.Hypérion.damage` |
+| Astrée (notable) : « +X dégât contre les ennemis d'air » | 1 | `SKILLS.Apollon.Astrée.damageVs` |
+| Agathodaïmon (notable) : « +X% d'or gagné » | 10 % | `SKILLS.Apollon.Agathodaïmon.goldMultiplier` |
+| Théia (notable) : « +X dégât par balle » | 1 | `SKILLS.Apollon.Théia.damage` |
+| Ploutos (keystone) : « +X% d'or gagné » | 50 % | `SKILLS.Apollon.Ploutos.goldMultiplier` |
+| Astéria (keystone) : « +X balle par tir » | 1 | `SKILLS.Apollon.Astéria.bulletCount` |
+| Érébos (keystone) : « +X dégâts par balle » | 3 | `SKILLS.Apollon.Érébos.damage` |
+| Chaos (grande keystone) : « GRANDE KEYSTONE : +X% d'or gagné » | 100 % | `SKILLS.Apollon.Chaos.goldMultiplier` |
+
+### Artémis
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Nymphe (petite compétence) : « +X de portée » | 10 px | `SKILLS.Artémis.Nymphe.range` |
+| Oréade (petite compétence) : « +X dégât par balle » | 0,5 | `SKILLS.Artémis.Oréade.damage` |
+| Pléione (petite compétence) : « +X% de vitesse des balles » | 8 % | `SKILLS.Artémis.Pléione.bulletSpeed` |
+| Méléagre (au bout d'une voie) : « Les balles rebondissent sur X ennemi de plus » | 1 | `SKILLS.Artémis.Méléagre.bounce` |
+| Endymion (au bout d'une voie) : « Flèche de lune : +X fois les dégâts d'une balle » | 1 | `SKILLS.Artémis.Endymion.moonArrow` |
+| Léto (départ) : « Flèche de lune : toutes les … s, Artémis tire une grande flèche qui transperce tous les ennemis sur son passage (X fois les dégâts d'une balle) » | 3 | `SKILLS.Artémis.Léto.moonArrow` |
+| Callisto (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Artémis.Callisto.attackSpeed` |
+| Britomartis (notable) : « +X dégât par balle » | 1 | `SKILLS.Artémis.Britomartis.damage` |
+| Aréthuse (notable) : « Flèche de lune : +X fois les dégâts d'une balle » | 1 | `SKILLS.Artémis.Aréthuse.moonArrow` |
+| Opis (notable) : « +X% de vitesse des balles » | 20 % | `SKILLS.Artémis.Opis.bulletSpeed` |
+| Cyrène (notable) : « La flèche de lune : +X de réduction de recharge » | 15 | `SKILLS.Artémis.Cyrène.cooldownReduction` |
+| Atalante (notable) : « +X% de vitesse d'attaque » | 15 % | `SKILLS.Artémis.Atalante.attackSpeed` |
+| Procris (notable) : « +X dégât par balle » | 1 | `SKILLS.Artémis.Procris.damage` |
+| Taygète (notable) : « +X de portée » | 30 px | `SKILLS.Artémis.Taygète.range` |
+| Orion (keystone) : « Rebond : les balles d'Artémis rebondissent sur X autres ennemis proches » | 2 | `SKILLS.Artémis.Orion.bounce` |
+| Hippolyte (keystone) : « Flèche de lune : +X fois les dégâts d'une balle, et +… de réduction de recharge » | 3 | `SKILLS.Artémis.Hippolyte.moonArrow` |
+| Hippolyte (keystone) : « Flèche de lune : +… fois les dégâts d'une balle, et +X de réduction de recharge » | 30 | `SKILLS.Artémis.Hippolyte.cooldownReduction` |
+| Actéon (keystone) : « +X rebond et +…% de vitesse d'attaque » | 1 | `SKILLS.Artémis.Actéon.bounce` |
+| Actéon (keystone) : « +… rebond et +X% de vitesse d'attaque » | 25 % | `SKILLS.Artémis.Actéon.attackSpeed` |
+| Agrotera (grande keystone) : « GRANDE KEYSTONE : +X de réduction de recharge de la flèche de lune (2 fois plus souvent), et +… fois les dégâts d'une balle » | 100 | `SKILLS.Artémis.Agrotera.cooldownReduction` |
+| Agrotera (grande keystone) : « GRANDE KEYSTONE : +… de réduction de recharge de la flèche de lune (2 fois plus souvent), et +X fois les dégâts d'une balle » | 4 | `SKILLS.Artémis.Agrotera.moonArrow` |
+
+### Athéna
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Nikè (petite compétence) : « +X PV max » | 1 PV | `SKILLS.Athéna.Nikè.maxHealth` |
+| Aglaure (petite compétence) : « +X points d'esquive » | 2 | `SKILLS.Athéna.Aglaure.dodge` |
+| Hersé (petite compétence) : « +X% d'XP gagnée » | 4 % | `SKILLS.Athéna.Hersé.xpMultiplier` |
+| Pallas (au bout d'une voie) : « +X points d'esquive » | 8 | `SKILLS.Athéna.Pallas.dodge` |
+| Bellérophon (au bout d'une voie) : « +X dégâts par balle » | 2 | `SKILLS.Athéna.Bellérophon.damage` |
+| Métis (départ) : « +X% d'XP gagnée » | 5 % | `SKILLS.Athéna.Métis.xpMultiplier` |
+| Érichthonios (notable) : « +X dégât par balle » | 1 | `SKILLS.Athéna.Érichthonios.damage` |
+| Pandrosos (notable) : « +X PV max » | 2 PV | `SKILLS.Athéna.Pandrosos.maxHealth` |
+| Arachné (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Athéna.Arachné.attackSpeed` |
+| Tritonis (notable) : « +X points d'esquive » | 5 | `SKILLS.Athéna.Tritonis.dodge` |
+| Ergané (notable) : « +X dégât par balle » | 1 | `SKILLS.Athéna.Ergané.damage` |
+| Zélos (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Athéna.Zélos.attackSpeed` |
+| Hygie (notable) : « +X PV régénérés par seconde » | 0,05 PV/s | `SKILLS.Athéna.Hygie.regen` |
+| Aidôs (notable) : « +X% d'XP gagnée » | 10 % | `SKILLS.Athéna.Aidôs.xpMultiplier` |
+| Égide (keystone) : « +X points d'esquive » | 8 | `SKILLS.Athéna.Égide.dodge` |
+| Promachos (keystone) : « +X dégâts par balle » | 2 | `SKILLS.Athéna.Promachos.damage` |
+| Glaucopis (keystone) : « +X de portée (les yeux de la chouette) » | 60 px | `SKILLS.Athéna.Glaucopis.range` |
+| Parthénos (grande keystone) : « GRANDE KEYSTONE : +X% d'XP gagnée » | 100 % | `SKILLS.Athéna.Parthénos.xpMultiplier` |
+
+### Zeus
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Astrapé (petite compétence) : « +X dégât par balle » | 0,5 | `SKILLS.Zeus.Astrapé.damage` |
+| Brontè (petite compétence) : « +X% de vitesse d'attaque » | 5 % | `SKILLS.Zeus.Brontè.attackSpeed` |
+| Kéraunos (petite compétence) : « Éclairs : +X% de dégâts » | 5 % | `SKILLS.Zeus.Kéraunos.arcDamage` |
+| Salmonée (au bout d'une voie) : « +X éclair par balle » | 1 | `SKILLS.Zeus.Salmonée.chainArcs` |
+| Dodone (au bout d'une voie) : « +X% de vitesse d'attaque » | 20 % | `SKILLS.Zeus.Dodone.attackSpeed` |
+| Thémis (départ) : « Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (…% des dégâts), qui devient conducteur » (pas écrit dans la description) | 1 | `SKILLS.Zeus.Thémis.chainArcs` |
+| Thémis (départ) : « Arc électrique : chaque balle de Zeus qui touche envoie un éclair vers un ennemi proche (X% des dégâts), qui devient conducteur » | 40 % | `SKILLS.Zeus.Thémis.arcDamage` |
+| Dikè (notable) : « +X dégât par balle » | 1 | `SKILLS.Zeus.Dikè.damage` |
+| Eiréné (notable) : « +X éclair par balle » | 1 | `SKILLS.Zeus.Eiréné.chainArcs` |
+| Eunomia (notable) : « +X de portée des éclairs » | 40 | `SKILLS.Zeus.Eunomia.arcRange` |
+| Horkos (notable) : « Éclairs : +X% de dégâts » | 10 % | `SKILLS.Zeus.Horkos.arcDamage` |
+| Ganymède (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Zeus.Ganymède.attackSpeed` |
+| Hébé (notable) : « +X éclair par balle » | 1 | `SKILLS.Zeus.Hébé.chainArcs` |
+| Némésis (notable) : « +X dégât par balle » | 1 | `SKILLS.Zeus.Némésis.damage` |
+| Io (notable) : « Éclairs : +X% de dégâts » | 15 % | `SKILLS.Zeus.Io.arcDamage` |
+| Aétos (keystone) : « Foudre : un ennemi conducteur touché par un 2e éclair reçoit la foudre (X fois les dégâts de la balle), qui électrocute les ennemis autour : ils deviennent conducteurs à leur tour » | 3 | `SKILLS.Zeus.Aétos.boltDamage` |
+| Ammon (keystone) : « +X balle par tir » | 1 | `SKILLS.Zeus.Ammon.bulletCount` |
+| Olympios (keystone) : « +X éclairs par balle et +… de portée des éclairs » | 2 | `SKILLS.Zeus.Olympios.chainArcs` |
+| Olympios (keystone) : « +… éclairs par balle et +X de portée des éclairs » | 40 | `SKILLS.Zeus.Olympios.arcRange` |
+| Aithér (grande keystone) : « GRANDE KEYSTONE : la foudre fait +X fois les dégâts de la balle et électrocute …% plus loin » | 4 | `SKILLS.Zeus.Aithér.boltDamage` |
+| Aithér (grande keystone) : « GRANDE KEYSTONE : la foudre fait +… fois les dégâts de la balle et électrocute X% plus loin » | 50 % | `SKILLS.Zeus.Aithér.boltRadius` |
+
+### Arès
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Phobos (petite compétence) : « +X dégât par balle » | 0,5 | `SKILLS.Arès.Phobos.damage` |
+| Deimos (petite compétence) : « Cri de guerre : +X s » | 0,3 s | `SKILLS.Arès.Deimos.warCryDuration` |
+| Alala (petite compétence) : « +X PV regagné par ennemi tué » | 0,05 PV | `SKILLS.Arès.Alala.lifeOnKill` |
+| Diomède (au bout d'une voie) : « +X PV regagné par ennemi tué » | 0,2 PV | `SKILLS.Arès.Diomède.lifeOnKill` |
+| Ascalaphe (au bout d'une voie) : « Cri de guerre : +X s » | 1 s | `SKILLS.Arès.Ascalaphe.warCryDuration` |
+| Ényo (départ) : « Cri de guerre : toutes les … s, toi et toutes les planètes faites +…% de dégâts, +…% de chance de critique et +…% de dégâts critiques pendant … s » (pas écrit dans la description) | 1 | `SKILLS.Arès.Ényo.warCry` |
+| Éris (notable) : « +X dégât par balle » | 1 | `SKILLS.Arès.Éris.damage` |
+| Kydoimos (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Arès.Kydoimos.attackSpeed` |
+| Makhai (notable) : « Cri de guerre : +X s » | 1 s | `SKILLS.Arès.Makhai.warCryDuration` |
+| Polémos (notable) : « +X dégât par balle » | 1 | `SKILLS.Arès.Polémos.damage` |
+| Penthésilée (notable) : « +X PV regagné par ennemi tué » | 0,2 PV | `SKILLS.Arès.Penthésilée.lifeOnKill` |
+| Otréra (notable) : « Le cri de guerre : +X de réduction de recharge » | 15 | `SKILLS.Arès.Otréra.cooldownReduction` |
+| Antiope (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Arès.Antiope.attackSpeed` |
+| Androktasiai (notable) : « Cri de guerre X% plus fort » | 50 % | `SKILLS.Arès.Androktasiai.warCry` |
+| Kyknos (keystone) : « Soif de gloire : chaque ennemi tué par Arès lui donne +X dégât par balle, pour toujours » | 0,001 | `SKILLS.Arès.Kyknos.damagePerKill` |
+| Œnomaos (keystone) : « Cri de guerre X fois plus fort » (100 % = 2 fois) | 100 % | `SKILLS.Arès.Œnomaos.warCry` |
+| Phlégyas (keystone) : « Le cri de guerre : +X de réduction de recharge, et dure … s de plus » | 30 | `SKILLS.Arès.Phlégyas.cooldownReduction` |
+| Phlégyas (keystone) : « Le cri de guerre : +… de réduction de recharge, et dure X s de plus » | 1 s | `SKILLS.Arès.Phlégyas.warCryDuration` |
+| Kères (grande keystone) : « GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +X dégât de plus, pour toujours, et cri de guerre … fois plus fort » | 0,002 | `SKILLS.Arès.Kères.damagePerKill` |
+| Kères (grande keystone) : « GRANDE KEYSTONE : chaque ennemi tué par Arès lui donne +… dégât de plus, pour toujours, et cri de guerre X fois plus fort » (100 % = 2 fois) | 100 % | `SKILLS.Arès.Kères.warCry` |
+
+### Aphrodite
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Charis (petite compétence) : « +X PV max » | 1 PV | `SKILLS.Aphrodite.Charis.maxHealth` |
+| Himéros (petite compétence) : « +X de rayon de charme » | 6 | `SKILLS.Aphrodite.Himéros.charmRadius` |
+| Pothos (petite compétence) : « +X points d'esquive » | 2 | `SKILLS.Aphrodite.Pothos.dodge` |
+| Harmonie (au bout d'une voie) : « +X de rayon de charme » | 20 | `SKILLS.Aphrodite.Harmonie.charmRadius` |
+| Énée (au bout d'une voie) : « Charme : +X s » | 0,5 s | `SKILLS.Aphrodite.Énée.charmDuration` |
+| Éros (départ) : « Rayon de charme : toutes les … s, Aphrodite charme les ennemis autour d'elle pendant … s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) » (pas écrit dans la description) | 80 | `SKILLS.Aphrodite.Éros.charmRadius` |
+| Éros (départ) : « Rayon de charme : toutes les … s, Aphrodite charme les ennemis autour d'elle pendant X s : ils font demi-tour et blessent leurs alliés (pas les super ennemis) » | 2 s | `SKILLS.Aphrodite.Éros.charmDuration` |
+| Peitho (notable) : « Charme : +X s » | 0,5 s | `SKILLS.Aphrodite.Peitho.charmDuration` |
+| Antéros (notable) : « +X points d'esquive » | 5 | `SKILLS.Aphrodite.Antéros.dodge` |
+| Adonis (notable) : « +X de rayon de charme » | 20 | `SKILLS.Aphrodite.Adonis.charmRadius` |
+| Psyché (notable) : « Le rayon de charme : +X de réduction de recharge » | 15 | `SKILLS.Aphrodite.Psyché.cooldownReduction` |
+| Hymen (notable) : « +X PV regagné par ennemi tué » | 0,2 PV | `SKILLS.Aphrodite.Hymen.lifeOnKill` |
+| Euphrosyne (notable) : « +X PV max » | 3 PV | `SKILLS.Aphrodite.Euphrosyne.maxHealth` |
+| Hermaphrodite (notable) : « Charme : +X s » | 0,5 s | `SKILLS.Aphrodite.Hermaphrodite.charmDuration` |
+| Rhodos (notable) : « Le rayon de charme : +X de réduction de recharge » | 15 | `SKILLS.Aphrodite.Rhodos.cooldownReduction` |
+| Pandémos (keystone) : « Foule : +X de rayon de charme » | 50 | `SKILLS.Aphrodite.Pandémos.charmRadius` |
+| Ourania (keystone) : « Les ennemis charmés blessent X fois plus leurs alliés » (100 % = 2 fois) | 100 % | `SKILLS.Aphrodite.Ourania.charmPower` |
+| Cythérée (keystone) : « Le rayon de charme : +X de réduction de recharge » | 40 | `SKILLS.Aphrodite.Cythérée.cooldownReduction` |
+| Phanès (grande keystone) : « GRANDE KEYSTONE : charme +X s, et +… de réduction de recharge du rayon de charme (2 fois plus souvent) » | 1,5 s | `SKILLS.Aphrodite.Phanès.charmDuration` |
+| Phanès (grande keystone) : « GRANDE KEYSTONE : charme +… s, et +X de réduction de recharge du rayon de charme (2 fois plus souvent) » | 100 | `SKILLS.Aphrodite.Phanès.cooldownReduction` |
+
+### Hermès
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Kéryx (petite compétence) : « +X% de vitesse des balles » | 8 % | `SKILLS.Hermès.Kéryx.bulletSpeed` |
+| Hodios (petite compétence) : « +X% de vitesse d'attaque » | 4 % | `SKILLS.Hermès.Hodios.attackSpeed` |
+| Agoraios (petite compétence) : « +X points d'esquive » | 2 | `SKILLS.Hermès.Agoraios.dodge` |
+| Angelos (au bout d'une voie) : « +X% de vitesse d'attaque » | 15 % | `SKILLS.Hermès.Angelos.attackSpeed` |
+| Dolios (au bout d'une voie) : « +X points d'esquive » | 5 | `SKILLS.Hermès.Dolios.dodge` |
+| Kriophoros (au bout d'une voie) : « +X% de vitesse des balles » | 20 % | `SKILLS.Hermès.Kriophoros.bulletSpeed` |
+| Maïa (départ) : « +X% de vitesse d'attaque » | 5 % | `SKILLS.Hermès.Maïa.attackSpeed` |
+| Psychopompe (notable) : « +X% de vitesse des balles » | 20 % | `SKILLS.Hermès.Psychopompe.bulletSpeed` |
+| Argos (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Hermès.Argos.attackSpeed` |
+| Chioné (notable) : « +X points d'esquive » | 5 | `SKILLS.Hermès.Chioné.dodge` |
+| Autolycos (notable) : « +X% d'or gagné » | 10 % | `SKILLS.Hermès.Autolycos.goldMultiplier` |
+| Myrtilos (notable) : « +X% de vitesse des balles » | 20 % | `SKILLS.Hermès.Myrtilos.bulletSpeed` |
+| Daphnis (notable) : « +X% de vitesse d'attaque » | 10 % | `SKILLS.Hermès.Daphnis.attackSpeed` |
+| Eudoros (notable) : « +X points d'esquive » | 5 | `SKILLS.Hermès.Eudoros.dodge` |
+| Abdère (notable) : « +X% de vitesse des balles » | 15 % | `SKILLS.Hermès.Abdère.bulletSpeed` |
+| Talaria (keystone) : « +X% de vitesse d'attaque » | 30 % | `SKILLS.Hermès.Talaria.attackSpeed` |
+| Pétase (keystone) : « +X points d'esquive » | 10 | `SKILLS.Hermès.Pétase.dodge` |
+| Caducée (keystone) : « +X balle par tir » | 1 | `SKILLS.Hermès.Caducée.bulletCount` |
+| Aion (grande keystone) : « GRANDE KEYSTONE : +X% de vitesse d'attaque » | 50 % | `SKILLS.Hermès.Aion.attackSpeed` |
+
+### Hestia
+
+| Réglage | Valeur | Nom dans le code |
+| --- | --- | --- |
+| Vestale (petite compétence) : « +X PV régénérés par seconde » | 0,02 PV/s | `SKILLS.Hestia.Vestale.regen` |
+| Lare (petite compétence) : « +X PV max » | 1 PV | `SKILLS.Hestia.Lare.maxHealth` |
+| Pénate (petite compétence) : « +X points d'esquive » | 2 | `SKILLS.Hestia.Pénate.dodge` |
+| Prytanée (au bout d'une voie) : « +X PV régénérés par seconde » | 0,1 PV/s | `SKILLS.Hestia.Prytanée.regen` |
+| Éléos (au bout d'une voie) : « +X points d'esquive » | 5 | `SKILLS.Hestia.Éléos.dodge` |
+| Rhéa (départ) : « +X PV max » | 2 PV | `SKILLS.Hestia.Rhéa.maxHealth` |
+| Tabiti (notable) : « +X PV régénérés par seconde » | 0,05 PV/s | `SKILLS.Hestia.Tabiti.regen` |
+| Agathodaimon (notable) : « +X PV max » | 2 PV | `SKILLS.Hestia.Agathodaimon.maxHealth` |
+| Philotès (notable) : « +X PV regagné par ennemi tué » | 0,2 PV | `SKILLS.Hestia.Philotès.lifeOnKill` |
+| Eucléia (notable) : « +X points d'esquive » | 5 | `SKILLS.Hestia.Eucléia.dodge` |
+| Homonoia (notable) : « +X PV régénérés par seconde » | 0,05 PV/s | `SKILLS.Hestia.Homonoia.regen` |
+| Euthénia (notable) : « +X PV max » | 3 PV | `SKILLS.Hestia.Euthénia.maxHealth` |
+| Elpis (notable) : « +X PV régénérés par seconde » | 0,1 PV/s | `SKILLS.Hestia.Elpis.regen` |
+| Hestiade (notable) : « +X points d'esquive » | 5 | `SKILLS.Hestia.Hestiade.dodge` |
+| Vesta (keystone) : « +X PV max » | 5 PV | `SKILLS.Hestia.Vesta.maxHealth` |
+| Boulaia (keystone) : « +X PV régénérés par seconde » | 0,15 PV/s | `SKILLS.Hestia.Boulaia.regen` |
+| Sôtéria (keystone) : « +X points d'esquive » | 10 | `SKILLS.Hestia.Sôtéria.dodge` |
+| Ananké (grande keystone) : « GRANDE KEYSTONE : +X PV max » | 8 PV | `SKILLS.Hestia.Ananké.maxHealth` |
 
 ## Tutoriel
 

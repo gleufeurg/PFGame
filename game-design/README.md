@@ -6,7 +6,7 @@ Ce dossier rassemble tout ce qui sert à concevoir le jeu. Il n'est pas chargé 
 
 | Document | Contenu | Comment il est tenu à jour |
 | --- | --- | --- |
-| [reglages.md](reglages.md) | **toutes les statistiques du jeu** (vie, vitesse, taille, prix... près de 300 réglages) rangées par catégories, avec leur valeur actuelle ; elles se changent avec l'éditeur de réglages | généré par `outils/generer-docs.js` (à partir de `reglages.js`) |
+| [reglages.md](reglages.md) | **toutes les statistiques du jeu** (vie, vitesse, taille, prix, valeurs des compétences... plus de 550 réglages) rangées par catégories, avec leur valeur actuelle ; elles se changent avec l'éditeur de réglages | généré par `outils/generer-docs.js` (à partir de `reglages.js`) |
 | [prix.md](prix.md) | prix du shop (or) et coût des skills (XP), dieu par dieu | généré par `outils/generer-docs.js` |
 | [rythme.md](rythme.md) | le rythme de progression (quand on obtient chaque dieu), mesuré avec le joueur robot, avant et après le rééquilibrage | écrit à la main (chiffres de `outils/joueur-robot.js`) |
 | [skills/](skills/README.md) | les 12 skill trees et leurs voies (choix exclusifs), les 66 combos et les 220 fusions d'orbite | généré par `outils/generer-docs.js` |
@@ -34,7 +34,7 @@ Toutes les statistiques du jeu (la vie et la vitesse des ennemis, leur taille, l
 3. **« 💾 Enregistrer »** réécrit `reglages.js` : choisis celui à la racine du dossier du jeu. (Si le navigateur ne sait pas enregistrer directement, le fichier est téléchargé : mets-le à la place de l'ancien.)
 4. Dans GitHub Desktop : Commit, puis Push. Puis relance `node game-design/outils/generer-docs.js` (ou demande à Claude) pour mettre à jour les documents.
 
-On peut aussi changer une `valeur` directement dans `reglages.js`. Les pourcentages y sont écrits en fraction (10 % = 0.1). Les valeurs de chaque compétence des skill trees, elles, restent dans `index.html` (`SKILL_TREES_DATA`), à côté de leur description qui les cite. La liste complète des réglages et de leurs valeurs : [reglages.md](reglages.md).
+On peut aussi changer une `valeur` directement dans `reglages.js`. Les pourcentages y sont écrits en fraction (10 % = 0.1). Les valeurs de **chaque compétence** des skill trees sont dans la catégorie « Compétences des dieux », une sous-catégorie par dieu (ex : `SKILLS.Héphaïstos.Dactyle.damage`) : leur description dans le jeu se met à jour toute seule, dans toutes les langues. La liste complète des réglages et de leurs valeurs : [reglages.md](reglages.md).
 
 ## Régénérer les documents automatiques
 

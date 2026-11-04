@@ -54,12 +54,11 @@ Dès qu'un problème est réglé (ou n'existe plus), il est retiré de la liste.
 - **Pourquoi :** les chiffres (dégâts, fréquence, rayons) ont été choisis à l'estime et testés seulement par le robot, pas par de vrais joueurs.
 - **Que faire :** jouer chaque dieu, puis changer les chiffres dans l'éditeur de réglages (catégories « Pouvoirs des dieux » et « Combos d'orbite »).
 
-### Les valeurs des compétences ne sont pas dans l'éditeur de réglages
+### Quelques textes ne suivent pas les réglages tout seuls
 
-- **Ce qu'on voit :** l'éditeur de réglages ne permet pas de changer ce que donne chaque compétence des arbres (par exemple « +0.5 dégât par balle »), ni les réglages propres à chaque dieu.
-- **Pourquoi :** ces valeurs sont écrites directement dans la description de chaque compétence (`SKILL_TREES_DATA`, dans `index.html`), et traduites dans les 6 langues.
-- **Que faire :** pour l'instant, demander à Claude de changer une compétence. Plus tard, on pourrait mettre ces valeurs dans `reglages.js`, avec des descriptions qui se remplissent toutes seules (comme celles du shop et des combos).
-- **De même :** 8 réglages ont encore un ⚠️ dans l'éditeur (l'heure de chaque super ennemi après Cerbère, et le bouclier de Poséidon) : le texte du jeu ne suit pas tout seul s'ils changent.
+- **Ce qu'on voit :** si on change certains réglages, un texte du jeu garde l'ancien nombre. Ça concerne : la description des **voies** des arbres (ex : « le Marteau (+100% de dégâts) »), « 2 fois plus souvent » dans 3 compétences (Agrotera, Gaïa, Phanès), l'heure de chaque super ennemi après Cerbère (le tutoriel dit « toutes les 5 minutes ») et « un bouclier qui bloque un coup » (lien Opposé de Poséidon). Dans l'éditeur, ces réglages ont un ⚠️.
+- **Pourquoi :** ces nombres sont écrits à la main dans le texte. Tous les autres (shop, compétences, combos, tutoriel) se remplissent tout seuls avec la valeur de `reglages.js`.
+- **Que faire :** après avoir changé un de ces réglages, demander à Claude de corriger le texte (dans `index.html` et `langues/`).
 
 ## À tester sur un vrai téléphone
 
