@@ -28,5 +28,5 @@ Les joueurs signalent les bugs et font leurs demandes dans un forum Discord. Cla
 - **Un ticket rouvert :** si quelqu'un écrit dans un ticket « closed » après notre dernier message, `pending` le montre de nouveau avec `[reopened]`. On retire le tag (`reopen`) et on le traite comme un ticket ouvert.
 - **Tant qu'on attend une réponse** (question, précision demandée), on écrit dans le ticket sans le fermer.
 - On ne supprime jamais un post ou un message sans l'accord d'Eva (le 🔒 du bot, lui, permet à l'auteur ou à un modérateur de supprimer son ticket).
-- Une tâche programmée vérifie le forum chaque nuit (heure de Paris).
+- Une tâche programmée vérifie le forum chaque nuit, à 1h17, 3h17 et 5h17 (heure de Paris).
 - **Priorité :** les tickets de Geometry : Idle defense passent avant ceux d'Omnidle (l'autre jeu d'Eva, traité par une autre session). Tant qu'il en reste, la session d'Omnidle ne dépasse pas 70 % de l'usage de la session de 5 heures.
