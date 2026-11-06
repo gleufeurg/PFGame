@@ -11,7 +11,7 @@ Les joueurs signalent les bugs et font leurs demandes dans un forum Discord. Cla
 
 - **Le bot :** dépôt `gleufeurg/discord-forum-bot`. `bot.mjs` tourne sur le PC d'Eva et pose un 🔒 sur chaque nouveau post (l'auteur ou un modérateur clique dessus pour supprimer le post) : l'ID du forum doit être dans `FORUM_IDS` de son `.env`. `discord.mjs` sert à Claude pour lire et répondre (voir le README du dépôt).
 - **Le token du bot** est enregistré seulement sur l'environnement cloud « discord bot » (jamais sur l'environnement Default). Une session sur un autre environnement reçoit une erreur 401.
-- **Commandes utiles** (dans le dossier du bot, avec `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt`) : `node discord.mjs pending 1567348346048356452` (les tickets qui attendent une réponse), `node discord.mjs read <postId> --limit 100 --json`, `node discord.mjs reply <postId> "texte" --yes`.
+- **Commandes utiles** (dans le dossier du bot, avec `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt`) : `node discord.mjs pending 1567348346048356452` (les tickets qui attendent une réponse), `node discord.mjs read <postId> --limit 100 --json`, `node discord.mjs reply <postId> "texte" --yes`, `node discord.mjs close <postId> --yes` (ticket fini) et `reopen`.
 
 ## Qui
 
@@ -24,6 +24,9 @@ Les joueurs signalent les bugs et font leurs demandes dans un forum Discord. Cla
 1. **Les faciles d'abord :** on corrige dans `index.html` (branche `monetisation`, en suivant `CLAUDE.md`), on pousse, puis on répond dans le ticket ce qui a été fait.
 2. **Ensuite les vagues :** on demande des précisions dans le ticket, sans rien construire sur une supposition.
 3. **Enfin les difficiles mais clairs :** seulement avec l'accord d'Eva, sauf s'ils sont ouverts depuis plus de 2 semaines sans indication contraire.
-- On ne supprime jamais un post ou un message sans l'accord d'Eva.
+- **Un ticket fini se ferme, il ne se supprime pas.** Quand c'est fini (correction envoyée, ou question réglée), on écrit un dernier message pour dire que c'est fini, puis on ferme le ticket avec `close` : le bot lui ajoute le tag « closed » du forum. Un ticket « closed » ne se relit plus : `pending` ne le montre plus.
+- **Un ticket rouvert :** si quelqu'un écrit dans un ticket « closed » après notre dernier message, `pending` le montre de nouveau avec `[reopened]`. On retire le tag (`reopen`) et on le traite comme un ticket ouvert.
+- **Tant qu'on attend une réponse** (question, précision demandée), on écrit dans le ticket sans le fermer.
+- On ne supprime jamais un post ou un message sans l'accord d'Eva (le 🔒 du bot, lui, permet à l'auteur ou à un modérateur de supprimer son ticket).
 - Une tâche programmée vérifie le forum chaque nuit (heure de Paris).
 - **Priorité :** les tickets de Geometry : Idle defense passent avant ceux d'Omnidle (l'autre jeu d'Eva, traité par une autre session). Tant qu'il en reste, la session d'Omnidle ne dépasse pas 70 % de l'usage de la session de 5 heures.
