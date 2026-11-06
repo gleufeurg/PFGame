@@ -11,3 +11,4 @@
 - Les animations élaborées (effets de pouvoirs, décors...) se dessinent seulement en graphismes élevés (`isHighGraphics`, réglage « Graphismes » des paramètres), avec une version simple et légère sinon ; les règles du jeu restent les mêmes dans les deux modes.
 - `game-design/problemes.md` liste les problèmes connus, écrits simplement pour un humain (ce qu'on voit, pourquoi, que faire) : ajoute ceux que tu repères, et retire, sans demander, ceux qui sont corrigés, qui n'existent plus, ou que la développeuse demande d'enlever, dans le même commit.
 - Le site (GitHub Pages) ne publie que les fichiers du jeu (voir `game-design/site-web.md`) : un nouveau fichier ou dossier dont le jeu a besoin s'ajoute dans `.github/workflows/publier-site.yml` (et dans `scripts/copier-jeu.js` sur `monetisation`).
+- Les tickets des joueurs (forum Discord, bot « Tickets reader ») se traitent selon `game-design/tickets.md` : qui a le droit de demander quoi, et dans quel ordre.
