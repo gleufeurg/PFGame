@@ -12,6 +12,8 @@ Cette branche est la version « jeu » : sans la partie portfolio (les présenta
 
 Une pub récompensée fermée avant la fin ne donne rien.
 
+> **1re version de l'application : les packs sont cachés** (`PACKS_ENABLED = false` dans `index.html`), en attendant les vrais achats Google Play. Tout ce qui suit sur les packs reste prêt, et revient en passant `PACKS_ENABLED` à `true`.
+
 ## Le Pack Premium (2,99 €)
 
 Un achat unique, proposé dans les paramètres (plus dans le menu de mort, pour qu'il reste léger) :

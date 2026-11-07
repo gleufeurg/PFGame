@@ -110,7 +110,7 @@ Voir [interface.md](interface.md) : commandes au doigt, petits écrans, sauvegar
 - **Description courte** (80 caractères max) et **description complète**, en français et en anglais.
 
 ### 4. Fabriquer la version à publier (fichier `.aab`)
-1. Avant chaque version publiée, dans `index.html` : `ADS_TEST_MODE = false` (vraies pubs) et `FORCE_CHEATS = false` ; et `PAYMENT_TEST_MODE` ne doit **jamais** rester à `true` dans une version publiée (les packs seraient gratuits : voir l'étape 3 de « La suite » ci-dessus).
+1. Avant chaque version publiée, dans `index.html` : `ADS_TEST_MODE = false` (vraies pubs) et `FORCE_CHEATS = false` ; et les packs restent cachés (`PACKS_ENABLED = false`) tant que les vrais achats Google Play ne sont pas branchés : sinon, avec `PAYMENT_TEST_MODE = true`, ils seraient gratuits.
 2. Dans `android/app/build.gradle` : augmenter `versionCode` de 1 à **chaque** envoi (1, 2, 3...) et changer `versionName` (« 1.0 », « 1.1 »...). Le Play Store refuse deux envois avec le même `versionCode`.
 3. `npm run sync`, puis dans Android Studio : **Build → Generate Signed App Bundle / APK** → **Android App Bundle** → **Create new...** (la 1re fois) pour créer la **clé de signature** (un fichier `.jks`, avec un mot de passe).
    - ⚠️ **Range le fichier `.jks` HORS du dossier du jeu** (par exemple dans Documents), garde une copie (clé USB, cloud perso) et note le mot de passe. Sans elle, impossible de publier une mise à jour. Les fichiers `.jks` sont de toute façon ignorés par GitHub (`.gitignore`).

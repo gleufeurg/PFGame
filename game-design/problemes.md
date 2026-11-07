@@ -10,17 +10,17 @@ Dès qu'un problème est réglé (ou n'existe plus), il est retiré de la liste.
 
 ## À faire avant de publier l'application
 
-### Les pubs et les achats sont encore en mode test
+### Les pubs sont encore en mode test
 
-- **Ce qu'on voit :** dans l'application, les pubs sont des pubs d'exemple de Google ; sur le site, c'est une fausse pub. Acheter le Pack Premium ou le Pack Soutien ne coûte rien (l'achat est simulé).
-- **Pourquoi :** `ADS_TEST_MODE` et `PAYMENT_TEST_MODE` sont à `true` dans `index.html`, en attendant tes vrais identifiants.
-- **Que faire (toi) :** créer tes blocs de pub dans AdMob et donner leurs ID (étapes dans [monetisation.md](monetisation.md)) ; pour les vrais paiements, l'étape 3 de [mobile.md](mobile.md) (achats du Play Store). Il reste aussi à vérifier sur ton Samsung que les pubs de test s'affichent bien.
+- **Ce qu'on voit :** dans l'application, les pubs sont des pubs d'exemple de Google ; sur le site, c'est une fausse pub.
+- **Pourquoi :** `ADS_TEST_MODE` est à `true` dans `index.html`. Tes vrais identifiants AdMob sont déjà dans le code.
+- **Que faire :** passer `ADS_TEST_MODE` à `false` avant d'envoyer la version au Play Store (voir [mobile.md](mobile.md), « Publier sur le Play Store »). Il reste aussi à vérifier sur ton Samsung que les pubs s'affichent bien.
 
-### Les achats peuvent être obtenus gratuitement
+### Les packs (Premium et Soutien) sont cachés
 
-- **Ce qu'on voit :** quelqu'un qui connaît un peu l'informatique peut avoir le Pack Premium sans payer, en tapant `localStorage.setItem("premium", "1")` dans la console du navigateur (F12).
-- **Pourquoi :** le jeu retient les achats lui-même, dans le navigateur, sans vérifier auprès d'un magasin.
-- **Que faire :** dans l'application, utiliser les achats du Play Store (c'est Google qui dit si l'achat est payé, par exemple avec RevenueCat). Sur le site, il faudrait un serveur qui vérifie les paiements.
+- **Ce qu'on voit :** le Pack Premium et le Pack Soutien n'apparaissent nulle part dans le jeu (ni dans les paramètres, ni les vitesses x8 / x10, ni le thème « Olympe doré »).
+- **Pourquoi :** les vrais achats Google Play ne sont pas encore branchés. Sans eux, les packs seraient gratuits (achat simulé, `PAYMENT_TEST_MODE`) ou faciles à obtenir sans payer (le jeu retient l'achat lui-même, dans le navigateur). On les a donc cachés pour la 1re version : `PACKS_ENABLED = false` dans `index.html`. Même si quelqu'un écrit « premium » dans le navigateur, il n'a aucun avantage.
+- **Que faire (plus tard) :** une fois une version envoyée en test sur le Play Store, créer les 2 produits dans la Play Console, puis demander à Claude de brancher les achats Google Play (par exemple avec RevenueCat) et de remettre `PACKS_ENABLED` à `true`. Sur le site web, il faudrait un serveur qui vérifie les paiements.
 
 ### La fenêtre « RGPD » (consentement aux pubs) ne s'affiche pas encore
 

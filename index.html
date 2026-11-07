@@ -5644,7 +5644,11 @@
 
         //PASSER LE TEMPS : avance le temps de la partie d'un coup, et fait apparaître
         //tous les ennemis qui seraient apparus pendant ce temps (ils arrivent donc tous en même temps !)
-        const PREMIUM_SKIPS = reglage("PREMIUM_SKIPS");      // seulement avec le Pack Premium
+        //LES PACKS (Premium et Soutien) : false = cachés partout (1re version de l'appli, tant que les vrais achats Google Play
+        //ne sont pas branchés). Les avantages ne marchent pas non plus, même si "premium" est écrit dans le navigateur.
+        const PACKS_ENABLED = false;
+
+        const PREMIUM_SKIPS = PACKS_ENABLED ? reglage("PREMIUM_SKIPS") : [];      // seulement avec le Pack Premium
         const TIME_SKIP_OPTIONS = reglage("TIME_SKIP_OPTIONS").concat(PREMIUM_SKIPS); // un bouton par valeur (en secondes) : ceux du shop, puis ceux du Pack Premium.
 
         //EMPLACEMENTS DE SAUVEGARDE : 3 parties séparées (Paramètres > Sauvegardes). Déclaré ici : les super ennemis vaincus sont lus dès le départ.
@@ -5667,7 +5671,7 @@
         //PACK PREMIUM (acheté une fois, retenu par le navigateur) : déclaré ici car les boutons de temps en ont besoin dès le départ
         let isPremiumOwned = false;
         try {
-            isPremiumOwned = localStorage.getItem("premium") === "1";
+            isPremiumOwned = PACKS_ENABLED && localStorage.getItem("premium") === "1"; //packs cachés : personne n'a le Pack Premium
         } catch (error) {
         }
 
@@ -5678,7 +5682,7 @@
         //PACK SOUTIEN (voir PACK PREMIUM plus bas) : déclaré ici car le thème exclusif est appliqué dès le démarrage
         let isSupporterOwned = false;
         try {
-            isSupporterOwned = localStorage.getItem("supporter") === "1";
+            isSupporterOwned = PACKS_ENABLED && localStorage.getItem("supporter") === "1";
         } catch (error) {
         }
 
@@ -5833,7 +5837,7 @@
         renderSkipButtons();
 
         //VITESSE DU JEU : x1, x2, x4... (multiplie le temps qui passe à chaque image)
-        const PREMIUM_SPEEDS = reglage("PREMIUM_SPEEDS");    // seulement avec le Pack Premium
+        const PREMIUM_SPEEDS = PACKS_ENABLED ? reglage("PREMIUM_SPEEDS") : [];    // seulement avec le Pack Premium (PACKS_ENABLED)
         const GAME_SPEED_OPTIONS = reglage("GAME_SPEED_OPTIONS").concat(PREMIUM_SPEEDS); //concat = ajoute la 2e liste au bout de la 1re
         let gameSpeed = 1;
         const speedButtons = document.getElementById("speedButtons");
@@ -12587,6 +12591,14 @@
         //Les boîtes des packs, dans les paramètres (et le merci du Pack Soutien, sous le nom de la créatrice)
         function renderPremiumBoxes() {
             document.getElementById("supporterThanks").classList.toggle("hidden", !isSupporterOwned);
+            for (const pack of Object.values(PACKS)) {
+                for (const boxId of pack.boxIds) {
+                    document.getElementById(boxId).classList.toggle("hidden", !PACKS_ENABLED); //packs cachés (PACKS_ENABLED)
+                }
+            }
+            if (!PACKS_ENABLED) {
+                return;
+            }
             for (const packKey of Object.keys(PACKS)) {
                 const pack = PACKS[packKey];
                 for (const boxId of pack.boxIds) {
@@ -13843,6 +13855,9 @@
             for (const key of Object.keys(THEMES)) {
                 const theme = THEMES[key];
                 const isLocked = theme.supporterOnly && !isSupporterOwned;
+                if (theme.supporterOnly && !PACKS_ENABLED) {
+                    continue; //packs cachés : le thème du Pack Soutien n'apparaît pas du tout
+                }
                 const option = document.createElement("option");
                 option.value = key;
                 option.textContent = isLocked ? theme.name + " " + t("(Pack Soutien)") : theme.name; //bloqué : grisé par le navigateur (disabled), sans icône
